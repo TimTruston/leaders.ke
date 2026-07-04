@@ -1,5 +1,9 @@
 <script lang="ts">
+	import type { User } from 'better-auth';
 	import ThemeToggle from './ThemeToggle.svelte';
+
+	// user is null when signed out; drives the Log in / Log out switch.
+	let { user = null }: { user?: User | null } = $props();
 
 	const links = [
 		{ href: '/leaders', label: 'Leaders' },
@@ -29,12 +33,29 @@
 
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
-			<a
-				href="/signup"
-				class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
-			>
-				Get started
-			</a>
+			{#if user}
+				<form method="post" action="/logout">
+					<button
+						type="submit"
+						class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
+					>
+						Log out
+					</button>
+				</form>
+			{:else}
+				<a
+					href="/login"
+					class="hidden rounded-md px-3 py-2 text-sm font-medium text-text transition hover:text-heading sm:block"
+				>
+					Log in
+				</a>
+				<a
+					href="/signup"
+					class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
+				>
+					Get started
+				</a>
+			{/if}
 		</div>
 	</div>
 </header>

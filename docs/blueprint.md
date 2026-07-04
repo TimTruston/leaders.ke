@@ -5,6 +5,7 @@ Onboarding pipeline for the next generation of leaders
 The platform that verifies who is vying!
 Platform encourages people who claim to be vying to actually submit applications to IEBC
 Educational platform for future aspirants and political scholars
+
 ### Target Impact
 1. The 2027 Kenya General Elections will be won via meticulous use of AI Agents
 2. AI agents will shape the outcome of 2027 Kenya General Elections
