@@ -1,6 +1,5 @@
 ## Next
 
-- #2 add use:enhance to logout
 - #3 add a simple starter dashboard after login
 - #4 log in should change the header link to the account name
 - #5 add the verify-email, delete-account, change-email forms
@@ -14,6 +13,7 @@
 
 
 ## Done
+- #2 add use:enhance to logout (converted /logout endpoint to a page action)
 - #1 rename lastName to otherNames (widened to 100), enforce single-word firstName at signup
 - feat: add authentication UI with session-aware header
 - init commit

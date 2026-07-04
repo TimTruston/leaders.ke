@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { User } from 'better-auth';
+	import { enhance } from '$app/forms';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	// user is null when signed out; drives the Log in / Log out switch.
@@ -34,7 +35,7 @@
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
 			{#if user}
-				<form method="post" action="/logout">
+				<form method="post" action="/logout" use:enhance>
 					<button
 						type="submit"
 						class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
