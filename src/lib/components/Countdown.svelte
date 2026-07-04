@@ -18,7 +18,7 @@
 	]);
 </script>
 
-<div class="flex items-end gap-2 sm:gap-3" aria-label="Countdown to 10 August 2027">
+<div class="flex items-end justify-between gap-2 sm:gap-3" aria-label="Countdown to 10 August 2027">
 	{#each units as unit (unit.label)}
 		<div class="flex flex-col items-center">
 			<span
@@ -26,7 +26,7 @@
 			>
 				{String(unit.value).padStart(2, '0')}
 			</span>
-			<span class="mt-1 text-xs font-medium tracking-wide text-muted uppercase">{unit.label}</span>
+			<span class="mt-1 text-xs font-medium tracking-wide text-on-primary uppercase">{unit.label}</span>
 		</div>
 	{/each}
 </div>

@@ -51,7 +51,7 @@
 	<div
 		class="pointer-events-none absolute inset-0 bg-linear-to-b from-primary-soft/40 to-transparent"
 	></div>
-	<div class="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+	<div class="relative mx-auto grid max-w-7xl gap-5 px-2 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
 		<div class="flex flex-col justify-center">
 			<span
 				class="mb-4 inline-flex w-fit items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-on-primary"
@@ -88,16 +88,20 @@
 		<!-- Countdown card -->
 		<div class="flex items-center justify-center">
 			<div
-				class="w-full max-w-md rounded-3xl border border-border bg-surface p-8 shadow-sm"
+				class="w-full max-w-md rounded-3xl border border-border bg-surface p-8 shadow-sm text-center"
 			>
 				<p class="text-sm font-medium tracking-wide text-muted uppercase">
 					Countdown to the vote
 				</p>
-				<p class="mt-1 text-lg font-semibold text-heading">10 August 2027</p>
-				<div class="mt-6">
+				<div class="my-6 mx-auto">
 					<Countdown />
 				</div>
-				<div class="mt-8 grid grid-cols-3 gap-3 border-t border-border pt-6">
+
+				<p class="mt-2 text-xl font-semibold text-heading uppercase tracking-widest">
+					10 August 2027
+				</p>
+
+				<div class="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-6">
 					{#each stats as stat (stat.label)}
 						<div>
 							<p class="text-xl font-bold text-primary">{stat.value}</p>
@@ -111,7 +115,7 @@
 </section>
 
 <!-- Promoted leaders -->
-<section class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 	<div class="mb-8 flex items-end justify-between">
 		<div>
 			<h2 class="text-2xl font-bold text-heading">Promoted leaders</h2>
@@ -145,7 +149,7 @@
 
 <!-- Promoted news -->
 <section class="border-t border-border bg-surface-2">
-	<div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+	<div class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 		<div class="mb-8 flex items-end justify-between">
 			<div>
 				<h2 class="text-2xl font-bold text-heading">Latest civic news</h2>
@@ -172,7 +176,7 @@
 </section>
 
 <!-- CTA -->
-<section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
 	<div
 		class="flex flex-col items-center gap-4 rounded-3xl bg-primary px-6 py-12 text-center text-on-primary"
 	>
