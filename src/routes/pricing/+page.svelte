@@ -108,25 +108,27 @@
 		</p>
 	</div>
 
-	<!-- Office selector: drives the card prices -->
-	<div class="mt-8 pb-4 flex flex-col items-center gap-2">
-		<div
-			class="inline-flex items-center gap-1 rounded-full border border-border bg-surface-2 p-1"
-			role="group"
-			aria-label="Office"
-		>
-			{#each priceMatrix as row, o (row.office)}
-				<button
-					type="button"
-					aria-pressed={office === o}
-					onclick={() => (office = o)}
-					class="rounded-full px-4 py-1.5 text-sm font-semibold transition {office === o
-						? 'bg-primary text-on-primary'
-						: 'text-muted hover:text-heading'}"
-				>
-					{priceMatrix[o].office}
-				</button>
-			{/each}
+	<!-- Office selector: drives the card prices. Scrolls within its track on narrow screens (long labels). -->
+	<div class="mt-8 flex flex-col items-center gap-2 pb-4">
+		<div class="w-full overflow-x-auto">
+			<div
+				class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1"
+				role="group"
+				aria-label="Office"
+			>
+				{#each priceMatrix as row, o (row.office)}
+					<button
+						type="button"
+						aria-pressed={office === o}
+						onclick={() => (office = o)}
+						class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {office === o
+							? 'bg-primary text-on-primary'
+							: 'text-muted hover:text-heading'}"
+					>
+						{priceMatrix[o].office}
+					</button>
+				{/each}
+			</div>
 		</div>
 	</div>
 

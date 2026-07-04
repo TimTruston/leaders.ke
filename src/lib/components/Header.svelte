@@ -13,6 +13,9 @@
 		{ href: '/news', label: 'News' },
 		{ href: '/pricing', label: 'Pricing' }
 	];
+
+	// Mobile nav: the desktop links are hidden below md, so a hamburger opens a stacked panel.
+	let menuOpen = $state(false);
 </script>
 
 <header class="sticky top-0 z-40 border-b border-border bg-surface/80 backdrop-blur">
@@ -35,6 +38,7 @@
 
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
+
 			{#if user}
 				<a
 					href="/dashboard"
@@ -69,6 +73,51 @@
 					Get started
 				</a>
 			{/if}
+			<!-- Hamburger: mobile-only trigger for the nav panel -->
+			<button
+				type="button"
+				onclick={() => (menuOpen = !menuOpen)}
+				aria-label="Toggle menu"
+				aria-expanded={menuOpen}
+				class="grid size-9 place-items-center rounded-md text-heading transition hover:bg-surface-2 md:hidden"
+			>
+				{#if menuOpen}
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+						<path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+					</svg>
+				{:else}
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+						<path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+					</svg>
+				{/if}
+			</button>
 		</div>
+
 	</div>
+
+	<!-- Mobile nav panel -->
+	{#if menuOpen}
+		<nav class="border-t border-border bg-surface md:hidden">
+			<div class="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6">
+				{#each links as link (link.href)}
+					<a
+						href={link.href}
+						onclick={() => (menuOpen = false)}
+						class="block rounded-md px-3 py-2 text-sm font-medium text-text transition hover:bg-surface-2 hover:text-heading"
+					>
+						{link.label}
+					</a>
+				{/each}
+				{#if !user}
+					<a
+						href="/login"
+						onclick={() => (menuOpen = false)}
+						class="block rounded-md px-3 py-2 text-sm font-medium text-text transition hover:bg-surface-2 hover:text-heading"
+					>
+						Log in
+					</a>
+				{/if}
+			</div>
+		</nav>
+	{/if}
 </header>

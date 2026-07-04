@@ -51,7 +51,7 @@
 	<div
 		class="pointer-events-none absolute inset-0 bg-linear-to-b from-primary-soft/40 to-transparent"
 	></div>
-	<div class="relative mx-auto grid max-w-7xl gap-5 px-2 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+	<div class="relative mx-auto grid max-w-7xl gap-5 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
 		<div class="flex flex-col justify-center">
 			<span
 				class="mb-4 inline-flex w-fit items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-on-primary"
@@ -88,7 +88,7 @@
 		<!-- Countdown card -->
 		<div class="flex items-center justify-center">
 			<div
-				class="w-full max-w-md rounded-3xl border border-border bg-surface p-8 shadow-sm text-center"
+				class="w-full max-w-md rounded-3xl border border-border bg-surface p-8 my-6 shadow-sm text-center"
 			>
 				<p class="text-sm font-medium tracking-wide text-muted uppercase">
 					Countdown to the vote
