@@ -6,12 +6,36 @@ import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
 import { users, contacts } from '$lib/server/db/schema';
+import { sendEmail } from '$lib/server/email';
 
 export const auth = betterAuth({
 	baseURL: publicEnv.PUBLIC_BASE_URL,
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
-	emailAndPassword: { enabled: true },
+	emailAndPassword: {
+		enabled: true,
+		// Emails the reset link (via Postmark, or the console stub in dev). Powers /forgot-password.
+		sendResetPassword: async ({ user, url }) => {
+			await sendEmail({
+				to: user.email,
+				subject: 'Reset your leaders.ke password',
+				text: `Hi ${user.name || 'there'},\n\nReset your password with this link (valid for a limited time):\n${url}\n\nDidn't request it? Ignore this email — your password stays the same.`
+			});
+		}
+	},
+	user: {
+		changeEmail: {
+			enabled: true,
+			// Confirmation goes to the CURRENT address so the account owner approves the change. Powers /change-email.
+			sendChangeEmailVerification: async ({ user, newEmail, url }) => {
+				await sendEmail({
+					to: user.email,
+					subject: 'Confirm your leaders.ke email change',
+					text: `Hi ${user.name || 'there'},\n\nApprove changing your email to ${newEmail} with this link:\n${url}\n\nDidn't request it? Ignore this email — nothing changes.`
+				});
+			}
+		}
+	},
 	databaseHooks: {
 		user: {
 			create: {
