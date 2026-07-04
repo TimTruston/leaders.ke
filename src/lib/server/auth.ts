@@ -16,7 +16,8 @@ export const auth = betterAuth({
 		user: {
 			create: {
 				// Bridge each new auth account to a domain profile + an email contact.
-				// firstName/lastName are seeded from the signup name; a profile form fills the rest later.
+				// firstName/otherNames are seeded from the signup name (OAuth path); the email
+				// signup action overrides them with the exact form values.
 				after: async (authUser) => {
 					const [first, ...rest] = (authUser.name ?? '').trim().split(/\s+/);
 					const [profile] = await db
@@ -24,7 +25,7 @@ export const auth = betterAuth({
 						.values({
 							authUserId: authUser.id,
 							firstName: first || 'New',
-							lastName: rest.join(' ') || 'User'
+							otherNames: rest.join(' ') || 'User'
 						})
 						.returning();
 

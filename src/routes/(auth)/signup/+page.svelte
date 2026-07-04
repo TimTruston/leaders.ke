@@ -12,7 +12,13 @@
 	<form method="post" use:enhance class="space-y-4">
 		<div class="grid grid-cols-2 gap-3">
 			<Field label="First name" name="firstName" autocomplete="given-name" required placeholder="Jane" />
-			<Field label="Last name" name="lastName" autocomplete="family-name" required placeholder="Wanjiku" />
+			<Field
+				label="Other names"
+				name="otherNames"
+				autocomplete="family-name"
+				required
+				placeholder="Mumbi Mwangi"
+			/>
 		</div>
 		<Field label="Email" name="email" type="email" autocomplete="email" required />
 		<Field

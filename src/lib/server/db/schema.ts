@@ -28,8 +28,8 @@ export const positions = pgTable('positions', {
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   authUserId: text('auth_user_id').references(() => user.id, { onDelete: 'cascade' }).notNull().unique(),
-  firstName: varchar('first_name', { length: 50 }).notNull(),
-  lastName: varchar('last_name', { length: 50 }).notNull(),
+  firstName: varchar('first_name', { length: 50 }).notNull(), // single word, no spaces (enforced at signup)
+  otherNames: varchar('other_names', { length: 100 }).notNull(), // surname + any middle names, e.g. "Van Der Berg"
   bio: text('bio'),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

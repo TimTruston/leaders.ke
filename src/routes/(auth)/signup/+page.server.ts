@@ -15,18 +15,23 @@ export const actions: Actions = {
 	default: async (event) => {
 		const form = await event.request.formData();
 		const firstName = form.get('firstName')?.toString().trim() ?? '';
-		const lastName = form.get('lastName')?.toString().trim() ?? '';
+		const otherNames = form.get('otherNames')?.toString().trim() ?? '';
 		const email = form.get('email')?.toString() ?? '';
 		const password = form.get('password')?.toString() ?? '';
+
+		// First name is a single token; multi-word surnames belong in otherNames.
+		if (/\s/.test(firstName)) {
+			return fail(400, { message: 'First name must be a single word. Put the rest in other names.' });
+		}
 
 		try {
 			// better-auth stores a single `name`; the user.create.after hook bridges a profile + email contact.
 			const { user } = await auth.api.signUpEmail({
-				body: { name: `${firstName} ${lastName}`.trim(), email, password },
+				body: { name: `${firstName} ${otherNames}`.trim(), email, password },
 				headers: event.request.headers
 			});
-			// Overwrite the hook's name-split guess with the exact first/last from the form.
-			await db.update(users).set({ firstName, lastName }).where(eq(users.authUserId, user.id));
+			// Overwrite the hook's name-split guess with the exact values from the form.
+			await db.update(users).set({ firstName, otherNames }).where(eq(users.authUserId, user.id));
 		} catch (error) {
 			if (error instanceof APIError)
 				return fail(400, { message: error.message || 'Registration failed' });
