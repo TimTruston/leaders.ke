@@ -1,6 +1,5 @@
 ## Next
 
-- #3 add a simple starter dashboard after login
 - #4 log in should change the header link to the account name
 - #5 add the verify-email, delete-account, change-email forms
 - #6 wire emailAndPassword.sendResetPassword and user.changeEmail.enabled in auth.ts
@@ -13,6 +12,7 @@
 
 
 ## Done
+- #3 add starter /dashboard with candidate onboarding checklist; login/signup redirect there
 - #2 add use:enhance to logout (converted /logout endpoint to a page action)
 - #1 rename lastName to otherNames (widened to 100), enforce single-word firstName at signup
 - feat: add authentication UI with session-aware header

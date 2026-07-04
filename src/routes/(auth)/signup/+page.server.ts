@@ -7,7 +7,7 @@ import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = (event) => {
-	if (event.locals.user) redirect(302, '/');
+	if (event.locals.user) redirect(302, '/dashboard');
 	return {};
 };
 
@@ -38,6 +38,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		return redirect(302, '/');
+		return redirect(302, '/dashboard');
 	}
 };
