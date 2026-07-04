@@ -35,10 +35,21 @@
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
 			{#if user}
+				<a
+					href="/dashboard"
+					class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-medium text-heading transition hover:bg-surface-2"
+				>
+					<span
+						class="grid size-8 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-on-primary uppercase"
+					>
+						{user.name.trim().charAt(0)}
+					</span>
+					<span class="hidden max-w-40 truncate sm:block">{user.name}</span>
+				</a>
 				<form method="post" action="/logout" use:enhance>
 					<button
 						type="submit"
-						class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
+						class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2 focus:ring-2 focus:ring-ring focus:outline-none"
 					>
 						Log out
 					</button>
