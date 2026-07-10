@@ -1,0 +1,1 @@
+ALTER TABLE "leaders" ADD COLUMN "note" varchar(30);

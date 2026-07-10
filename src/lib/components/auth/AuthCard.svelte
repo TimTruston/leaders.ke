@@ -12,7 +12,7 @@
 	let { title, subtitle, children, footer }: Props = $props();
 </script>
 
-<div class="w-full max-w-sm rounded-2xl border border-border bg-surface p-8 shadow-sm">
+<div class="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-sm">
 	<h1 class="text-2xl font-bold text-heading">{title}</h1>
 	{#if subtitle}
 		<p class="mt-1 text-sm text-muted">{subtitle}</p>

@@ -15,6 +15,90 @@
       "when": 1783161459473,
       "tag": "0001_furry_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783436887706,
+      "tag": "0002_normal_infant_terrible",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783450080918,
+      "tag": "0003_confused_the_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783524000000,
+      "tag": "0004_rename_verifications_to_otps",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783536597428,
+      "tag": "0005_slow_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783539000000,
+      "tag": "0006_manifestos_to_campaign_pillars",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1783684798100,
+      "tag": "0007_add_experience_and_user_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1783685316628,
+      "tag": "0008_experience_from_nullable",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1783692178542,
+      "tag": "0009_leaders_note",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1783706060907,
+      "tag": "0010_users_slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1783715000000,
+      "tag": "0011_rename_dates_and_note",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1783714853913,
+      "tag": "0012_drop_leadership_experience_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1783718223425,
+      "tag": "0013_milky_scourge",
+      "breakpoints": true
     }
   ]
 }

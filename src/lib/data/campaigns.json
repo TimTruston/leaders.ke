@@ -1,0 +1,702 @@
+[
+  {
+    "leaderName": "William Ruto",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "William Ruto for President 2027",
+    "description": "William Ruto's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "Martha Karua",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "Martha Karua for President 2027",
+    "description": "Martha Karua's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "Kalonzo Musyoka",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "Kalonzo Musyoka for President 2027",
+    "description": "Kalonzo Musyoka's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "Fred Matiang'i",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "Fred Matiang'i for President 2027",
+    "description": "Fred Matiang'i's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "Boniface Mwangi",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "Boniface Mwangi for President 2027",
+    "description": "Boniface Mwangi's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "David Maraga",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "David Maraga for President 2027",
+    "description": "David Maraga's campaign for President in the 2027 General Election."
+  },
+  {
+    "leaderName": "Abdullswamad Sherrif Nassir",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Mombasa",
+    "title": "Abdullswamad Sherrif Nassir for Governor of Mombasa 2027",
+    "description": "Abdullswamad Sherrif Nassir's campaign for Governor of Mombasa in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mohammed Faki",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Mombasa",
+    "title": "Mohammed Faki for Senator of Mombasa 2027",
+    "description": "Mohammed Faki's campaign for Senator of Mombasa in the 2027 General Election."
+  },
+  {
+    "leaderName": "Fatuma Achani",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kwale",
+    "title": "Fatuma Achani for Governor of Kwale 2027",
+    "description": "Fatuma Achani's campaign for Governor of Kwale in the 2027 General Election."
+  },
+  {
+    "leaderName": "Issa Juma Boy",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kwale",
+    "title": "Issa Juma Boy for Senator of Kwale 2027",
+    "description": "Issa Juma Boy's campaign for Senator of Kwale in the 2027 General Election."
+  },
+  {
+    "leaderName": "Gideon Mung'aro",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kilifi",
+    "title": "Gideon Mung'aro for Governor of Kilifi 2027",
+    "description": "Gideon Mung'aro's campaign for Governor of Kilifi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Stewart Madzayo",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kilifi",
+    "title": "Stewart Madzayo for Senator of Kilifi 2027",
+    "description": "Stewart Madzayo's campaign for Senator of Kilifi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Dhadho Godhana",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Tana River",
+    "title": "Dhadho Godhana for Governor of Tana River 2027",
+    "description": "Dhadho Godhana's campaign for Governor of Tana River in the 2027 General Election."
+  },
+  {
+    "leaderName": "Danson Mungatana",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Tana River",
+    "title": "Danson Mungatana for Senator of Tana River 2027",
+    "description": "Danson Mungatana's campaign for Senator of Tana River in the 2027 General Election."
+  },
+  {
+    "leaderName": "Issa Timamy",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Lamu",
+    "title": "Issa Timamy for Governor of Lamu 2027",
+    "description": "Issa Timamy's campaign for Governor of Lamu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Joseph Githuku",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Lamu",
+    "title": "Joseph Githuku for Senator of Lamu 2027",
+    "description": "Joseph Githuku's campaign for Senator of Lamu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Andrew Mwadime",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Taita Taveta",
+    "title": "Andrew Mwadime for Governor of Taita Taveta 2027",
+    "description": "Andrew Mwadime's campaign for Governor of Taita Taveta in the 2027 General Election."
+  },
+  {
+    "leaderName": "Johnes Mwaruma",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Taita Taveta",
+    "title": "Johnes Mwaruma for Senator of Taita Taveta 2027",
+    "description": "Johnes Mwaruma's campaign for Senator of Taita Taveta in the 2027 General Election."
+  },
+  {
+    "leaderName": "Nadhif Jama",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Garissa",
+    "title": "Nadhif Jama for Governor of Garissa 2027",
+    "description": "Nadhif Jama's campaign for Governor of Garissa in the 2027 General Election."
+  },
+  {
+    "leaderName": "Abdulkadir Haji",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Garissa",
+    "title": "Abdulkadir Haji for Senator of Garissa 2027",
+    "description": "Abdulkadir Haji's campaign for Senator of Garissa in the 2027 General Election."
+  },
+  {
+    "leaderName": "Ahmed Abdullahi Jiir",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Wajir",
+    "title": "Ahmed Abdullahi Jiir for Governor of Wajir 2027",
+    "description": "Ahmed Abdullahi Jiir's campaign for Governor of Wajir in the 2027 General Election."
+  },
+  {
+    "leaderName": "Abass Sheikh Mohammed",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Wajir",
+    "title": "Abass Sheikh Mohammed for Senator of Wajir 2027",
+    "description": "Abass Sheikh Mohammed's campaign for Senator of Wajir in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mohamed Adan Khalif",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Mandera",
+    "title": "Mohamed Adan Khalif for Governor of Mandera 2027",
+    "description": "Mohamed Adan Khalif's campaign for Governor of Mandera in the 2027 General Election."
+  },
+  {
+    "leaderName": "Capt. Ali Roba",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Mandera",
+    "title": "Capt. Ali Roba for Senator of Mandera 2027",
+    "description": "Capt. Ali Roba's campaign for Senator of Mandera in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mohamed Muhammad Ali",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Marsabit",
+    "title": "Mohamed Muhammad Ali for Governor of Marsabit 2027",
+    "description": "Mohamed Muhammad Ali's campaign for Governor of Marsabit in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mohamed Said Chute",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Marsabit",
+    "title": "Mohamed Said Chute for Senator of Marsabit 2027",
+    "description": "Mohamed Said Chute's campaign for Senator of Marsabit in the 2027 General Election."
+  },
+  {
+    "leaderName": "Hassan Abdi Ibrahim Guyo",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Isiolo",
+    "title": "Hassan Abdi Ibrahim Guyo for Governor of Isiolo 2027",
+    "description": "Hassan Abdi Ibrahim Guyo's campaign for Governor of Isiolo in the 2027 General Election."
+  },
+  {
+    "leaderName": "Fatuma Dullo",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Isiolo",
+    "title": "Fatuma Dullo for Senator of Isiolo 2027",
+    "description": "Fatuma Dullo's campaign for Senator of Isiolo in the 2027 General Election."
+  },
+  {
+    "leaderName": "Kawira Mwangaza",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Meru",
+    "title": "Kawira Mwangaza for Governor of Meru 2027",
+    "description": "Kawira Mwangaza's campaign for Governor of Meru in the 2027 General Election."
+  },
+  {
+    "leaderName": "Kathuri Murungi",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Meru",
+    "title": "Kathuri Murungi for Senator of Meru 2027",
+    "description": "Kathuri Murungi's campaign for Senator of Meru in the 2027 General Election."
+  },
+  {
+    "leaderName": "Muthomi Njuki",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Tharaka-Nithi",
+    "title": "Muthomi Njuki for Governor of Tharaka-Nithi 2027",
+    "description": "Muthomi Njuki's campaign for Governor of Tharaka-Nithi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Gataya Mwenda",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Tharaka-Nithi",
+    "title": "Gataya Mwenda for Senator of Tharaka-Nithi 2027",
+    "description": "Gataya Mwenda's campaign for Senator of Tharaka-Nithi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Cecily Mbarire",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Embu",
+    "title": "Cecily Mbarire for Governor of Embu 2027",
+    "description": "Cecily Mbarire's campaign for Governor of Embu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Alexander Mundigi",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Embu",
+    "title": "Alexander Mundigi for Senator of Embu 2027",
+    "description": "Alexander Mundigi's campaign for Senator of Embu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Julius Malombe",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kitui",
+    "title": "Julius Malombe for Governor of Kitui 2027",
+    "description": "Julius Malombe's campaign for Governor of Kitui in the 2027 General Election."
+  },
+  {
+    "leaderName": "Enock Kiio Wambua",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kitui",
+    "title": "Enock Kiio Wambua for Senator of Kitui 2027",
+    "description": "Enock Kiio Wambua's campaign for Senator of Kitui in the 2027 General Election."
+  },
+  {
+    "leaderName": "Wavinya Ndeti",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Machakos",
+    "title": "Wavinya Ndeti for Governor of Machakos 2027",
+    "description": "Wavinya Ndeti's campaign for Governor of Machakos in the 2027 General Election."
+  },
+  {
+    "leaderName": "Agnes Kavindu",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Machakos",
+    "title": "Agnes Kavindu for Senator of Machakos 2027",
+    "description": "Agnes Kavindu's campaign for Senator of Machakos in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mutula Kilonzo Jr",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Makueni",
+    "title": "Mutula Kilonzo Jr for Governor of Makueni 2027",
+    "description": "Mutula Kilonzo Jr's campaign for Governor of Makueni in the 2027 General Election."
+  },
+  {
+    "leaderName": "Dan Maanzo",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Makueni",
+    "title": "Dan Maanzo for Senator of Makueni 2027",
+    "description": "Dan Maanzo's campaign for Senator of Makueni in the 2027 General Election."
+  },
+  {
+    "leaderName": "Moses Badilisha Kiarie",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nyandarua",
+    "title": "Moses Badilisha Kiarie for Governor of Nyandarua 2027",
+    "description": "Moses Badilisha Kiarie's campaign for Governor of Nyandarua in the 2027 General Election."
+  },
+  {
+    "leaderName": "John Methu",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nyandarua",
+    "title": "John Methu for Senator of Nyandarua 2027",
+    "description": "John Methu's campaign for Senator of Nyandarua in the 2027 General Election."
+  },
+  {
+    "leaderName": "Mutahi Kahiga",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nyeri",
+    "title": "Mutahi Kahiga for Governor of Nyeri 2027",
+    "description": "Mutahi Kahiga's campaign for Governor of Nyeri in the 2027 General Election."
+  },
+  {
+    "leaderName": "Wahome Wamatinga",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nyeri",
+    "title": "Wahome Wamatinga for Senator of Nyeri 2027",
+    "description": "Wahome Wamatinga's campaign for Senator of Nyeri in the 2027 General Election."
+  },
+  {
+    "leaderName": "Anne Waiguru",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kirinyaga",
+    "title": "Anne Waiguru for Governor of Kirinyaga 2027",
+    "description": "Anne Waiguru's campaign for Governor of Kirinyaga in the 2027 General Election."
+  },
+  {
+    "leaderName": "James Murango",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kirinyaga",
+    "title": "James Murango for Senator of Kirinyaga 2027",
+    "description": "James Murango's campaign for Senator of Kirinyaga in the 2027 General Election."
+  },
+  {
+    "leaderName": "Irungu Kang'ata",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Murang'a",
+    "title": "Irungu Kang'ata for Governor of Murang'a 2027",
+    "description": "Irungu Kang'ata's campaign for Governor of Murang'a in the 2027 General Election."
+  },
+  {
+    "leaderName": "Joe Nyutu",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Murang'a",
+    "title": "Joe Nyutu for Senator of Murang'a 2027",
+    "description": "Joe Nyutu's campaign for Senator of Murang'a in the 2027 General Election."
+  },
+  {
+    "leaderName": "Kimani Wamatangi",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kiambu",
+    "title": "Kimani Wamatangi for Governor of Kiambu 2027",
+    "description": "Kimani Wamatangi's campaign for Governor of Kiambu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Karungo wa Thang'wa",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kiambu",
+    "title": "Karungo wa Thang'wa for Senator of Kiambu 2027",
+    "description": "Karungo wa Thang'wa's campaign for Senator of Kiambu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Jeremiah Lomorukai",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Turkana",
+    "title": "Jeremiah Lomorukai for Governor of Turkana 2027",
+    "description": "Jeremiah Lomorukai's campaign for Governor of Turkana in the 2027 General Election."
+  },
+  {
+    "leaderName": "James Lomenen Ekomwa",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Turkana",
+    "title": "James Lomenen Ekomwa for Senator of Turkana 2027",
+    "description": "James Lomenen Ekomwa's campaign for Senator of Turkana in the 2027 General Election."
+  },
+  {
+    "leaderName": "Simon Kachapin",
+    "leaderTitle": "Governor",
+    "leaderRegion": "West Pokot",
+    "title": "Simon Kachapin for Governor of West Pokot 2027",
+    "description": "Simon Kachapin's campaign for Governor of West Pokot in the 2027 General Election."
+  },
+  {
+    "leaderName": "Julius Murgor",
+    "leaderTitle": "Senator",
+    "leaderRegion": "West Pokot",
+    "title": "Julius Murgor for Senator of West Pokot 2027",
+    "description": "Julius Murgor's campaign for Senator of West Pokot in the 2027 General Election."
+  },
+  {
+    "leaderName": "Jonathan Lati Lelelit",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Samburu",
+    "title": "Jonathan Lati Lelelit for Governor of Samburu 2027",
+    "description": "Jonathan Lati Lelelit's campaign for Governor of Samburu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Lelegwe Ltumbesi",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Samburu",
+    "title": "Lelegwe Ltumbesi for Senator of Samburu 2027",
+    "description": "Lelegwe Ltumbesi's campaign for Senator of Samburu in the 2027 General Election."
+  },
+  {
+    "leaderName": "George Natembeya",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Trans Nzoia",
+    "title": "George Natembeya for Governor of Trans Nzoia 2027",
+    "description": "George Natembeya's campaign for Governor of Trans Nzoia in the 2027 General Election."
+  },
+  {
+    "leaderName": "Allan Chesang",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Trans Nzoia",
+    "title": "Allan Chesang for Senator of Trans Nzoia 2027",
+    "description": "Allan Chesang's campaign for Senator of Trans Nzoia in the 2027 General Election."
+  },
+  {
+    "leaderName": "Jonathan Bii",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Uasin Gishu",
+    "title": "Jonathan Bii for Governor of Uasin Gishu 2027",
+    "description": "Jonathan Bii's campaign for Governor of Uasin Gishu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Jackson Mandago",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Uasin Gishu",
+    "title": "Jackson Mandago for Senator of Uasin Gishu 2027",
+    "description": "Jackson Mandago's campaign for Senator of Uasin Gishu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Wisley Rotich",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Elgeyo/Marakwet",
+    "title": "Wisley Rotich for Governor of Elgeyo/Marakwet 2027",
+    "description": "Wisley Rotich's campaign for Governor of Elgeyo/Marakwet in the 2027 General Election."
+  },
+  {
+    "leaderName": "William Kisang",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Elgeyo/Marakwet",
+    "title": "William Kisang for Senator of Elgeyo/Marakwet 2027",
+    "description": "William Kisang's campaign for Senator of Elgeyo/Marakwet in the 2027 General Election."
+  },
+  {
+    "leaderName": "Stephen Sang",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nandi",
+    "title": "Stephen Sang for Governor of Nandi 2027",
+    "description": "Stephen Sang's campaign for Governor of Nandi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Samson Cherargei",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nandi",
+    "title": "Samson Cherargei for Senator of Nandi 2027",
+    "description": "Samson Cherargei's campaign for Senator of Nandi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Benjamin Cheboi",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Baringo",
+    "title": "Benjamin Cheboi for Governor of Baringo 2027",
+    "description": "Benjamin Cheboi's campaign for Governor of Baringo in the 2027 General Election."
+  },
+  {
+    "leaderName": "William Cheptumo Kipkorir",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Baringo",
+    "title": "William Cheptumo Kipkorir for Senator of Baringo 2027",
+    "description": "William Cheptumo Kipkorir's campaign for Senator of Baringo in the 2027 General Election."
+  },
+  {
+    "leaderName": "Joshua Irungu",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Laikipia",
+    "title": "Joshua Irungu for Governor of Laikipia 2027",
+    "description": "Joshua Irungu's campaign for Governor of Laikipia in the 2027 General Election."
+  },
+  {
+    "leaderName": "John Kinyua",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Laikipia",
+    "title": "John Kinyua for Senator of Laikipia 2027",
+    "description": "John Kinyua's campaign for Senator of Laikipia in the 2027 General Election."
+  },
+  {
+    "leaderName": "Susan Kihika",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nakuru",
+    "title": "Susan Kihika for Governor of Nakuru 2027",
+    "description": "Susan Kihika's campaign for Governor of Nakuru in the 2027 General Election."
+  },
+  {
+    "leaderName": "Tabitha Keroche",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nakuru",
+    "title": "Tabitha Keroche for Senator of Nakuru 2027",
+    "description": "Tabitha Keroche's campaign for Senator of Nakuru in the 2027 General Election."
+  },
+  {
+    "leaderName": "Patrick Ole Ntutu",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Narok",
+    "title": "Patrick Ole Ntutu for Governor of Narok 2027",
+    "description": "Patrick Ole Ntutu's campaign for Governor of Narok in the 2027 General Election."
+  },
+  {
+    "leaderName": "Ledama Ole Kina",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Narok",
+    "title": "Ledama Ole Kina for Senator of Narok 2027",
+    "description": "Ledama Ole Kina's campaign for Senator of Narok in the 2027 General Election."
+  },
+  {
+    "leaderName": "Joseph Ole Lenku",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kajiado",
+    "title": "Joseph Ole Lenku for Governor of Kajiado 2027",
+    "description": "Joseph Ole Lenku's campaign for Governor of Kajiado in the 2027 General Election."
+  },
+  {
+    "leaderName": "Samuel Kanar Seki",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kajiado",
+    "title": "Samuel Kanar Seki for Senator of Kajiado 2027",
+    "description": "Samuel Kanar Seki's campaign for Senator of Kajiado in the 2027 General Election."
+  },
+  {
+    "leaderName": "Erick Mutai",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kericho",
+    "title": "Erick Mutai for Governor of Kericho 2027",
+    "description": "Erick Mutai's campaign for Governor of Kericho in the 2027 General Election."
+  },
+  {
+    "leaderName": "Aaron Cheruiyot",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kericho",
+    "title": "Aaron Cheruiyot for Senator of Kericho 2027",
+    "description": "Aaron Cheruiyot's campaign for Senator of Kericho in the 2027 General Election."
+  },
+  {
+    "leaderName": "Hillary Barchok",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Bomet",
+    "title": "Hillary Barchok for Governor of Bomet 2027",
+    "description": "Hillary Barchok's campaign for Governor of Bomet in the 2027 General Election."
+  },
+  {
+    "leaderName": "Hillary Sigei",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Bomet",
+    "title": "Hillary Sigei for Senator of Bomet 2027",
+    "description": "Hillary Sigei's campaign for Senator of Bomet in the 2027 General Election."
+  },
+  {
+    "leaderName": "Fernandez Barasa",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kakamega",
+    "title": "Fernandez Barasa for Governor of Kakamega 2027",
+    "description": "Fernandez Barasa's campaign for Governor of Kakamega in the 2027 General Election."
+  },
+  {
+    "leaderName": "Boni Khalwale",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kakamega",
+    "title": "Boni Khalwale for Senator of Kakamega 2027",
+    "description": "Boni Khalwale's campaign for Senator of Kakamega in the 2027 General Election."
+  },
+  {
+    "leaderName": "Wilber Khasilwa Otichillo",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Vihiga",
+    "title": "Wilber Khasilwa Otichillo for Governor of Vihiga 2027",
+    "description": "Wilber Khasilwa Otichillo's campaign for Governor of Vihiga in the 2027 General Election."
+  },
+  {
+    "leaderName": "Godfrey Osotsi",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Vihiga",
+    "title": "Godfrey Osotsi for Senator of Vihiga 2027",
+    "description": "Godfrey Osotsi's campaign for Senator of Vihiga in the 2027 General Election."
+  },
+  {
+    "leaderName": "Kenneth Lusaka",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Bungoma",
+    "title": "Kenneth Lusaka for Governor of Bungoma 2027",
+    "description": "Kenneth Lusaka's campaign for Governor of Bungoma in the 2027 General Election."
+  },
+  {
+    "leaderName": "Moses Wetangula",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Bungoma",
+    "title": "Moses Wetangula for Senator of Bungoma 2027",
+    "description": "Moses Wetangula's campaign for Senator of Bungoma in the 2027 General Election."
+  },
+  {
+    "leaderName": "Paul Otuoma",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Busia",
+    "title": "Paul Otuoma for Governor of Busia 2027",
+    "description": "Paul Otuoma's campaign for Governor of Busia in the 2027 General Election."
+  },
+  {
+    "leaderName": "Okiya Omtata",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Busia",
+    "title": "Okiya Omtata for Senator of Busia 2027",
+    "description": "Okiya Omtata's campaign for Senator of Busia in the 2027 General Election."
+  },
+  {
+    "leaderName": "James Orengo",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Siaya",
+    "title": "James Orengo for Governor of Siaya 2027",
+    "description": "James Orengo's campaign for Governor of Siaya in the 2027 General Election."
+  },
+  {
+    "leaderName": "Oburu Oginga",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Siaya",
+    "title": "Oburu Oginga for Senator of Siaya 2027",
+    "description": "Oburu Oginga's campaign for Senator of Siaya in the 2027 General Election."
+  },
+  {
+    "leaderName": "Prof Anyang' Nyong'o",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kisumu",
+    "title": "Prof Anyang' Nyong'o for Governor of Kisumu 2027",
+    "description": "Prof Anyang' Nyong'o's campaign for Governor of Kisumu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Tom Ojienda",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kisumu",
+    "title": "Tom Ojienda for Senator of Kisumu 2027",
+    "description": "Tom Ojienda's campaign for Senator of Kisumu in the 2027 General Election."
+  },
+  {
+    "leaderName": "Gladys Wanga",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Homa Bay",
+    "title": "Gladys Wanga for Governor of Homa Bay 2027",
+    "description": "Gladys Wanga's campaign for Governor of Homa Bay in the 2027 General Election."
+  },
+  {
+    "leaderName": "Moses Kajwang",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Homa Bay",
+    "title": "Moses Kajwang for Senator of Homa Bay 2027",
+    "description": "Moses Kajwang's campaign for Senator of Homa Bay in the 2027 General Election."
+  },
+  {
+    "leaderName": "Ochillo Ayacko",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Migori",
+    "title": "Ochillo Ayacko for Governor of Migori 2027",
+    "description": "Ochillo Ayacko's campaign for Governor of Migori in the 2027 General Election."
+  },
+  {
+    "leaderName": "Eddy Oketch",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Migori",
+    "title": "Eddy Oketch for Senator of Migori 2027",
+    "description": "Eddy Oketch's campaign for Senator of Migori in the 2027 General Election."
+  },
+  {
+    "leaderName": "Simba Arati",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Kisii",
+    "title": "Simba Arati for Governor of Kisii 2027",
+    "description": "Simba Arati's campaign for Governor of Kisii in the 2027 General Election."
+  },
+  {
+    "leaderName": "Richard Onyonka",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Kisii",
+    "title": "Richard Onyonka for Senator of Kisii 2027",
+    "description": "Richard Onyonka's campaign for Senator of Kisii in the 2027 General Election."
+  },
+  {
+    "leaderName": "Amos Nyaribo",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nyamira",
+    "title": "Amos Nyaribo for Governor of Nyamira 2027",
+    "description": "Amos Nyaribo's campaign for Governor of Nyamira in the 2027 General Election."
+  },
+  {
+    "leaderName": "Erick Okong'o Omogeni",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nyamira",
+    "title": "Erick Okong'o Omogeni for Senator of Nyamira 2027",
+    "description": "Erick Okong'o Omogeni's campaign for Senator of Nyamira in the 2027 General Election."
+  },
+  {
+    "leaderName": "Johnson Sakaja",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nairobi",
+    "title": "Johnson Sakaja for Governor of Nairobi 2027",
+    "description": "Johnson Sakaja's campaign for Governor of Nairobi in the 2027 General Election."
+  },
+  {
+    "leaderName": "Edwin Sifuna",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nairobi",
+    "title": "Edwin Sifuna for Senator of Nairobi 2027",
+    "description": "Edwin Sifuna's campaign for Senator of Nairobi in the 2027 General Election."
+  }
+]

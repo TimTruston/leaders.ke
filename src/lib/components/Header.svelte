@@ -6,11 +6,12 @@
 	// user is null when signed out; drives the Log in / Log out switch.
 	let { user = null }: { user?: User | null } = $props();
 
+	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
 	const links = [
 		{ href: '/leaders', label: 'Leaders' },
-		{ href: '/positions', label: 'Positions' },
-		{ href: '/issues', label: 'Issues' },
-		{ href: '/news', label: 'News' },
+		{ href: '/ranks', label: 'Ranks' },
+		{ href: '/compare', label: 'Compare' },
+		{ href: '/features', label: 'Features' },
 		{ href: '/pricing', label: 'Pricing' }
 	];
 

@@ -229,7 +229,12 @@
 
 	<!-- Base features -->
 	<div class="mt-12 rounded-2xl bg-surface-2 p-6">
-		<h2 class="text-xl font-semibold text-heading">Included in every package</h2>
+		<div class="flex flex-wrap items-end justify-between gap-2">
+			<h2 class="text-xl font-semibold text-heading">Included in every package</h2>
+			<a href="/features" class="text-sm font-semibold text-primary hover:underline">
+				Full feature list →
+			</a>
+		</div>
 		<ul class="mt-4 grid gap-2 sm:grid-cols-3">
 			{#each baseFeatures as feature (feature)}
 				<li class="flex items-start gap-2 text-sm">
@@ -353,7 +358,8 @@
 	
 	<!-- Price by office -->
 	<div class="mt-4 text-center">
-		<p class="mt-2 text-base">Each package is priced by the office you're vying for.</p>
+		<p class="mt-2 text-base">Packages are priced by the office you're vying for.</p>
+		<p class="mt-2 text-base">Your payment helps us verify your candidature against IEBC records, continuously build and maintain our systems and pay for the infrastructure.</p>
 		<p class="mt-2 text-base">Your campaign page becomes accessible once it's verified and paid.</p>
 	</div>
 

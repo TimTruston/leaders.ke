@@ -11,30 +11,30 @@
    so components never hardcode a hex. */
 :root {
 	--surface: #ffffff; /* main background */
-	--surface-2: #f4f8ee; /* cards, sections */
-	--surface-3: #eaf2dd; /* raised, hover */
+	--surface-2: #eef4e3; /* cards, sections (slightly deeper for separation) */
+	--surface-3: #e2ecd0; /* raised, hover */
 	--primary: #9fcf67; /* brand green accent bg */
-	--primary-soft: #d2edb2; /* light green accent bg */
-	--on-primary: #24331a; /* text/icons on a green fill */
-	--text: #777777; /* body text */
-	--heading: #3f4a34; /* headings, higher contrast than body */
-	--muted: #9aa295; /* secondary/caption text */
-	--border: #e4ecd9;
+	--primary-soft: #cceaa8; /* light green accent bg */
+	--on-primary: #1e2b15; /* text/icons on a green fill */
+	--text: #5f655c; /* body text, darker for more contrast */
+	--heading: #2f3826; /* headings */
+	--muted: #7c8573; /* secondary/caption text */
+	--border: #d6e1c6;
 	--ring: #9fcf67;
 }
 
 .dark {
-	--surface: #0f130d;
-	--surface-2: #171d12;
-	--surface-3: #212a19;
-	--primary: #9fcf67;
-	--primary-soft: #33421f;
-	--on-primary: #0f130d;
-	--text: #a9b1a0;
-	--heading: #eef3e6;
-	--muted: #7e8877;
-	--border: #2a331f;
-	--ring: #9fcf67;
+	--surface: #0e120c; /* deeper base so cards/text separate more */
+	--surface-2: #1a2113; /* cards lifted for clearer separation */
+	--surface-3: #263019; /* raised, hover */
+	--primary: #a8d873; /* brighter green pops on dark */
+	--primary-soft: #3b4c24; /* soft chips readable */
+	--on-primary: #0e120c;
+	--text: #c4ccb9; /* higher-contrast body text */
+	--heading: #f4f8ef; /* near-white headings */
+	--muted: #99a28b; /* brighter captions */
+	--border: #3a4330; /* more visible separators */
+	--ring: #a8d873;
 }
 
 /* Expose the tokens to Tailwind so utilities like bg-surface, text-heading,

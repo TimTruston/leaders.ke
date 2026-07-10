@@ -23,6 +23,16 @@ export const auth = betterAuth({
 			});
 		}
 	},
+	// Powers /verify-email (resend). No requireEmailVerification, so signup stays frictionless for now.
+	emailVerification: {
+		sendVerificationEmail: async ({ user, url }) => {
+			await sendEmail({
+				to: user.email,
+				subject: 'Verify your leaders.ke email',
+				text: `Hi ${user.name || 'there'},\n\nVerify your email with this link:\n${url}\n\nDidn't sign up? Ignore this email.`
+			});
+		}
+	},
 	user: {
 		changeEmail: {
 			enabled: true,
@@ -34,7 +44,9 @@ export const auth = betterAuth({
 					text: `Hi ${user.name || 'there'},\n\nApprove changing your email to ${newEmail} with this link:\n${url}\n\nDidn't request it? Ignore this email — nothing changes.`
 				});
 			}
-		}
+		},
+		// No sendDeleteAccountVerification, so deleteUser deletes immediately after the password check. Powers /delete-account.
+		deleteUser: { enabled: true }
 	},
 	databaseHooks: {
 		user: {

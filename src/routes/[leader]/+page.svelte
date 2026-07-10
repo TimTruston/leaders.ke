@@ -1,0 +1,268 @@
+<script lang="ts">
+	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
+	import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
+	const leader = $derived(data.leader);
+
+	const fmt = new Intl.NumberFormat('en-KE');
+	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
+</script>
+
+<svelte:head>
+	<title>{leader.name} — {leader.positionTitle}, {leader.regionLabel} | leaders.ke</title>
+	<meta
+		name="description"
+		content="{leader.name}, {leader.status} {leader.positionTitle} for {leader.regionLabel}: verified record, track record and active campaign."
+	/>
+</svelte:head>
+
+<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+	<!-- Breadcrumb: current campaign's seat if vying, else last held seat -->
+	<nav class="text-sm text-muted" aria-label="Breadcrumb">
+		<a href={data.breadcrumb.positionPath} class="hover:text-heading hover:underline">
+			{data.breadcrumb.positionTitle}
+		</a>
+		{#if data.breadcrumb.regionLabel}
+			<span class="mx-1">/</span>
+			<a href={data.breadcrumb.seatPath} class="hover:text-heading hover:underline">
+				{data.breadcrumb.regionLabel}
+			</a>
+		{/if}
+		<span class="mx-1">/</span>
+		<span>{leader.name}</span>
+	</nav>
+
+	<div class="mt-6 grid gap-6 lg:grid-cols-3">
+		<div class="lg:col-span-2">
+			<!-- Identity card -->
+			<div class="rounded-3xl border border-border bg-surface p-6 sm:p-8">
+				<div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+					<span
+						class="grid size-20 shrink-0 place-items-center rounded-full bg-primary-soft text-3xl font-bold text-on-primary"
+					>
+						{leader.initials}
+					</span>
+					<div class="min-w-0">
+						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
+							{leader.name}
+							{#if leader.verified}
+								<span
+									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
+								>
+									<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
+										<path
+											fill-rule="evenodd"
+											d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+									Verified
+								</span>
+							{:else}
+								<span
+									class="inline-flex items-center rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted"
+								>
+									Unverified
+								</span>
+							{/if}
+						</h1>
+						<p class="mt-1 text-sm text-muted">
+							<span class="capitalize">{leader.status}</span>
+							· {leader.positionTitle}, {leader.regionLabel}
+							{#if leader.party}· {leader.party}{/if}
+						</p>
+						<p class="mt-2 text-sm font-medium text-heading">
+							{fmt.format(leader.followers)} followers
+						</p>
+					</div>
+				</div>
+
+				{#if leader.bio}
+					<p class="mt-6 leading-relaxed">{leader.bio}</p>
+				{/if}
+			</div>
+
+			<!-- Delivery score: public rollup of the manifesto tracker -->
+			{#if data.delivery.total > 0}
+				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+					<h2 class="text-xl font-bold text-heading">Delivery score</h2>
+					<p class="mt-1 text-sm text-muted">
+						{data.delivery.delivered} of {data.delivery.total} manifesto pillars delivered
+						{#if data.delivery.inProgress > 0}· {data.delivery.inProgress} in progress{/if}
+					</p>
+					<div class="mt-3 flex h-3 overflow-hidden rounded-full bg-surface-2">
+						<div
+							class="h-full bg-primary"
+							style="width: {Math.round((data.delivery.delivered / data.delivery.total) * 100)}%"
+						></div>
+						<div
+							class="h-full bg-primary/40"
+							style="width: {Math.round((data.delivery.inProgress / data.delivery.total) * 100)}%"
+						></div>
+					</div>
+				</div>
+			{/if}
+
+			<!-- Leadership -->
+			{#if data.trackRecord.length > 0}
+				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+					<h2 class="text-xl font-bold text-heading">Leadership</h2>
+					
+						<ul class="mt-4 space-y-3">
+							{#each data.trackRecord as term (term.seatPath + term.startYear)}
+								<ExperienceBlock
+									title="{term.positionTitle}, {term.regionLabel}"
+									href={term.seatPath}
+									description={term.note}
+									dateLabel={term.status === 'aspirant'
+										? `Vying · from ${term.startYear}`
+										: `${term.startYear} to ${term.endYear ?? 'present'}`}
+									badge={term.status}
+									badgeClass={term.status === 'incumbent'
+										? 'bg-primary-soft text-on-primary'
+										: 'bg-surface text-muted'}
+								/>
+							{/each}
+						</ul>
+					
+				</div>
+			{/if}
+
+			<!-- Education + professional experience -->
+			{#if data.experience.education.length > 0 || data.experience.professional.length > 0}
+				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+					<h2 class="text-xl font-bold text-heading">Experience</h2>
+					{#if data.experience.education.length > 0}
+						<h3 class="mt-4 text-xs font-semibold tracking-wide text-muted uppercase">Education</h3>
+						<ul class="mt-3 space-y-3">
+							{#each data.experience.education as item, i (i)}
+								<ExperienceBlock
+									title={item.title}
+									subtitle={item.institution}
+									dateLabel={item.from ? `${item.from}${item.to ? `–${item.to}` : ''}` : ''}
+								/>
+							{/each}
+						</ul>
+					{/if}
+					{#if data.experience.professional.length > 0}
+						<h3 class="mt-5 text-xs font-semibold tracking-wide text-muted uppercase">Professional</h3>
+						<ul class="mt-3 space-y-3">
+							{#each data.experience.professional as item, i (i)}
+								<ExperienceBlock
+									title={item.title}
+									subtitle={item.institution}
+									dateLabel={item.from ? `${item.from}${item.to ? `–${item.to}` : ' – present'}` : ''}
+								/>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+			{/if}
+
+			<!-- In the news: aggregated coverage tagged to this leader -->
+			{#if data.news.length > 0}
+				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+					<h2 class="text-xl font-bold text-heading">In the news</h2>
+					<p class="mt-1 text-sm text-muted">Coverage from verified media, tagged automatically.</p>
+					<div class="mt-5 space-y-4">
+						{#each data.news as item (item.id)}
+							<article class="border-b border-border pb-4 last:border-b-0 last:pb-0">
+								<div class="flex flex-wrap items-baseline justify-between gap-2">
+									<h3 class="text-sm font-semibold text-heading">{item.title}</h3>
+									<span class="text-xs text-muted">{dateFmt.format(new Date(item.createdAt))}</span>
+								</div>
+								<p class="mt-1 text-sm leading-relaxed text-muted">{item.summary}</p>
+							</article>
+						{/each}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Sidebar: active campaign + seat links -->
+		<div class="space-y-6">
+			{#if data.campaign}
+				<div class="rounded-3xl border border-primary bg-surface p-6">
+					<p class="text-xs font-semibold tracking-wide text-primary uppercase">
+						🚀 Active {data.campaign.year} campaign
+					</p>
+					<p class="mt-2 text-sm leading-relaxed">
+						{data.campaign.pillarCount} manifesto pillar{data.campaign.pillarCount === 1 ? '' : 's'}
+						{#if data.campaign.latestPost}
+							· latest update: "{data.campaign.latestPost.title}" ({dateFmt.format(
+								new Date(data.campaign.latestPost.createdAt)
+							)})
+						{/if}
+					</p>
+					<a
+						href={data.campaign.path}
+						class="mt-4 inline-block w-full rounded-full bg-primary px-5 py-2.5 text-center font-semibold text-on-primary transition hover:brightness-95"
+					>
+						Open campaign
+					</a>
+					<p class="mt-2 text-center text-xs text-muted">Manifesto, updates and follow live there.</p>
+				</div>
+			{/if}
+
+			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
+				<div class="rounded-3xl border border-border bg-surface-2 p-6">
+					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
+					<ul class="mt-3 space-y-2 text-sm">
+						{#each data.contacts as c (c.channel + c.value)}
+							<li class="flex items-center gap-1.5">
+								<span class="capitalize">{c.channel}:</span>
+								<span class="text-heading">{c.value}</span>
+								{#if c.verified}
+									<span class="text-xs text-primary">✓</span>
+								{/if}
+							</li>
+						{/each}
+						{#if leader.address}
+							<li>{leader.address}</li>
+						{/if}
+						{#each Object.entries(leader.socials) as [platform, href] (platform)}
+							<li>
+								<a href={href} target="_blank" rel="noopener noreferrer" class="capitalize text-heading hover:text-primary">
+									{platform} ↗
+								</a>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
+			<div class="rounded-3xl border border-border bg-surface-2 p-6">
+				<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">This seat</h2>
+				<ul class="mt-3 space-y-2 text-sm">
+					<li>
+						<a href={data.breadcrumb.seatPath} class="font-medium text-heading hover:text-primary">
+							{data.breadcrumb.positionTitle}{#if data.breadcrumb.regionLabel}, {data.breadcrumb.regionLabel}{/if} hub →
+						</a>
+					</li>
+					<li>
+						<a href="{data.breadcrumb.seatCyclePath}/2027" class="font-medium text-heading hover:text-primary">
+							🗳️ 2027 contestants →
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			{#if !leader.verified}
+				<div class="rounded-3xl bg-primary p-6 text-on-primary">
+					<h2 class="text-lg font-bold text-on-primary">Is this you?</h2>
+					<p class="mt-2 text-sm text-on-primary/80">
+						Claim this profile, verify your candidature against IEBC records and unlock the full
+						campaign toolkit.
+					</p>
+					<a
+						href="/signup"
+						class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
+					>
+						Claim this profile
+					</a>
+				</div>
+			{/if}
+		</div>
+	</div>
+</section>

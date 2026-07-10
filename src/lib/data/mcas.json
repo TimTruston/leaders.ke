@@ -1,0 +1,1695 @@
+[
+  {
+    "name": "Juma Bakari",
+    "party": "UDA",
+    "title": "MCA",
+    "region": "Port Reitz",
+    "status": "incumbent"
+  },
+  {
+    "name": "Amina Chao",
+    "party": "ODM",
+    "title": "MCA",
+    "region": "Kipevu",
+    "status": "aspirant"
+  },
+  {
+    "name": "Peter Mwangangi",
+    "title": "MCA",
+    "region": "Airport",
+    "status": "aspirant"
+  },
+  {
+    "name": "Chris Bitta",
+    "title": "MCA",
+    "region": "East Ugenya",
+    "status": "aspirant",
+    "bio": "An experienced public administration professional with 20 years across various public service positions, specializing in project planning and management.",
+    "education": [
+      {
+        "title": "Bachelor of public administration",
+        "institution": "Kampala international university",
+        "time": "2012-2015"
+      }
+    ]
+  },
+  {
+    "name": "Maluki Mwendwa",
+    "title": "MCA",
+    "region": "Mumoni",
+    "status": "aspirant",
+    "bio": "Known as \"Kavindu Junior,\" he describes himself as the light of Mumoni Ward: a passionate and creative youth leader committed to bringing transformation and championing gender equality.",
+    "education": [
+      {
+        "title": "Digital marketing and financial literacy",
+        "institution": "Mt. kenya university",
+        "time": "2021-2025"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Director, Welding Services",
+        "institution": "Benteck welds kenya",
+        "time": "2018-2026"
+      },
+      {
+        "title": "Welding service",
+        "institution": "Benteck welds kenya",
+        "time": "2018-2026",
+        "description": "Director of the company"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "malukibmwendwa01@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0702542593"
+      },
+      {
+        "title": "Office",
+        "value": "Musosya shopping centre"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "facebook.com/search/top?q=Engineerr%20ben%20welder",
+        "href": "https://www.facebook.com/search/top?q=Engineerr%20ben%20welder"
+      }
+    ]
+  },
+  {
+    "name": "Wahinya Bhinghi",
+    "title": "MCA",
+    "region": "Kipkenyo",
+    "status": "aspirant",
+    "bio": "A young leader from Kipkenyo Ward focused on caring for and improving the lives of residents through teaching and community-driven business. He describes himself as hardworking and motivated to build a better future together with his community.",
+    "education": [
+      {
+        "title": "Chef",
+        "institution": "Self learning",
+        "time": "2015-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Head chef",
+        "institution": "Catering and event",
+        "time": "2019-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "wahinyabhinghi@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0110444898"
+      },
+      {
+        "title": "Office",
+        "value": "Kipkenyo"
+      }
+    ]
+  },
+  {
+    "name": "Abdalla Shadau",
+    "title": "MCA",
+    "region": "Timbwani",
+    "status": "aspirant",
+    "education": [
+      {
+        "title": "O level",
+        "institution": "Likoni secondary school",
+        "time": "1988-1991"
+      },
+      {
+        "title": "O level",
+        "institution": "Likoni secondary school",
+        "time": "1988-1991"
+      },
+      {
+        "title": "O level",
+        "institution": "Likoni secondary school",
+        "time": "1988-1991"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "abdallashadau22@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0798728834"
+      },
+      {
+        "title": "Office",
+        "value": "Likoni Mombasa Kenya"
+      }
+    ]
+  },
+  {
+    "name": "Gabriel Simba",
+    "title": "MCA",
+    "region": "Ilima",
+    "status": "aspirant",
+    "bio": "Describes himself as the real deal and the pride of Pan-Africanism."
+  },
+  {
+    "name": "Wvr Master",
+    "title": "MCA",
+    "region": "East Asembo",
+    "status": "aspirant",
+    "bio": "Victor Okoth, 38, is the MCA aspirant for East Asembo Ward in the 2027 election. Born and raised in Raliew Village, he holds a bachelor's degree in Computer Science and a qualification in Purchasing and Supply Management. He is married and known for helping build houses for widows in East Asembo. His priorities are roads, healthcare, water, women and youth empowerment, and digital literacy, and his vision is a modest, better ward for all, under the message: a leader who builds, not just promises."
+  },
+  {
+    "name": "Ben Achienge",
+    "title": "MCA",
+    "region": "Kanyamwa Kologi",
+    "status": "aspirant"
+  },
+  {
+    "name": "Oscar Amugongo",
+    "title": "MCA",
+    "region": "Kiptuya",
+    "status": "aspirant",
+    "bio": "His vision is a united, peaceful, and prosperous Kiptuiya Ward where every resident has access to opportunities, quality public services, and accountable leadership. He is committed to transparent, inclusive, and people-centered leadership that promotes sustainable development, empowers communities, and ensures the responsible use of public resources.",
+    "education": [
+      {
+        "title": "Architecture",
+        "institution": "Jkuat",
+        "time": "2013-2026"
+      },
+      {
+        "title": "Architecture",
+        "institution": "Jkuat",
+        "time": "2013-2026"
+      },
+      {
+        "title": "Architecture",
+        "institution": "Jkuat",
+        "time": "2013-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "amuscar100@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254708920542"
+      }
+    ]
+  },
+  {
+    "name": "Kevin Gekonge Nyaribari",
+    "title": "MCA",
+    "region": "Masaba",
+    "status": "aspirant",
+    "bio": "Kevin Onderi Gekonge is from Kiamokama Ward, Nyaribari Masaba Constituency, and is an aspiring Member of Parliament for the 2027 election under the Jubilee Party ticket."
+  },
+  {
+    "name": "Hon Andrew Gikaria",
+    "title": "MCA",
+    "region": "Karen",
+    "status": "aspirant",
+    "bio": "Andrew Gikaria is a visionary corporate leader and community champion positioning himself as the premier MCA aspirant for Karen Ward in Langata Constituency. As Chief Legal Officer and Managing Director at Nexelium KE, he bridges high-level corporate governance with grassroots community development."
+  },
+  {
+    "name": "Simon Mackenzie",
+    "title": "MCA",
+    "region": "Korogocho",
+    "status": "aspirant",
+    "bio": "Born, raised, and still living in Korogocho, he is committed to changing his community into a better place to live.",
+    "contacts": [
+      {
+        "title": "Phone",
+        "value": "0759867731"
+      },
+      {
+        "title": "Office",
+        "value": "Korogocho nyayo"
+      }
+    ]
+  },
+  {
+    "name": "Suleiman Tangauko",
+    "title": "MCA",
+    "region": "Kibarani",
+    "status": "aspirant",
+    "bio": "Born on 23 March 1987, he attended Mitangoni Primary School before transferring to Majajani Primary, where he completed his primary education in 2001. He joined Chumani Secondary School in 2002, graduating in 2005, then trained as a P1 teacher at Islamic Teachers Training College, qualifying in 2010 and joining the Teachers Service Commission in 2014. He also holds a diploma in teacher education from Pwani University.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "tangaukosuleiman@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254711673811"
+      }
+    ]
+  },
+  {
+    "name": "Cecil Ratip",
+    "title": "MCA",
+    "region": "South West Kisumu",
+    "status": "aspirant",
+    "bio": "Cecil Ratip was born and raised in South West Kisumu Ward, specifically Osiri-Katuk. A youth leader with ambitions to change his community, he champions youth empowerment and job creation as an aspirant for the MCA seat in 2027.",
+    "professional": [
+      {
+        "title": "IT Expert",
+        "institution": "KENYA FERRY PORTS AUTHORITY",
+        "time": "2019-2021"
+      },
+      {
+        "title": "IT CONSTANT",
+        "institution": "KISUMU",
+        "time": "2021-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "Cclratip@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0788620980"
+      },
+      {
+        "title": "Office",
+        "value": "Obambo, south west kisumu"
+      }
+    ]
+  },
+  {
+    "name": "Anthony Davids Mbaka",
+    "title": "MCA",
+    "region": "Muthwani",
+    "status": "aspirant",
+    "bio": "Anthony Davids Mbaka is a community leader, entrepreneur (Davids Travel House), governance advocate, and PNU Coordinator for Machakos County. He is running for MCA of Muthwani Ward, Mavoko Constituency, Machakos County, on a platform of infrastructure, economic empowerment, and accountable leadership under his SIR, MFEP and RAIL framework, with the campaign message \"Kazi Si Maneno\" (leadership that delivers). More information is available at anthonydavidsmbaka.co.ke and his official social media platforms.",
+    "education": [
+      {
+        "title": "Bachelor of Arts Degree in International Relations and Diplomacy",
+        "institution": "United States International University-Africa",
+        "time": "2015-2018"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Production Manager (led efficiency & QA improvements)",
+        "institution": "Bingwa Flour Mills",
+        "time": "2019-2020"
+      },
+      {
+        "title": "Production Manager",
+        "institution": "Bingwa Flour Mills",
+        "time": "2019-2020",
+        "description": "- Increased Milling efficiency through Operational redesign.\n- Implemented quality assurance and industry-compliant production systems.\n- Strengthened performance through Intergrated management Processes."
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "antodavy88@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254725791202"
+      },
+      {
+        "title": "Office",
+        "value": "Utawala Airways Business Centre, First Floor."
+      }
+    ],
+    "social": [
+      {
+        "title": "website",
+        "value": "anthonydavidsmbaka.co.ke/",
+        "href": "https://www.anthonydavidsmbaka.co.ke/"
+      },
+      {
+        "title": "twitter",
+        "value": "x.com/antodavy88",
+        "href": "https://x.com/antodavy88"
+      },
+      {
+        "title": "facebook",
+        "value": "facebook.com/search/top?q=Anthony%20Davids%20Mbaka-Muthwani%20Ward%20Aspirant%202027",
+        "href": "https://www.facebook.com/search/top?q=Anthony%20Davids%20Mbaka-Muthwani%20Ward%20Aspirant%202027"
+      },
+      {
+        "title": "instagram",
+        "value": "instagram.com/explore/search/keyword/?q=Anthony%20Davids%20Mbaka",
+        "href": "https://www.instagram.com/explore/search/keyword/?q=Anthony%20Davids%20Mbaka"
+      }
+    ]
+  },
+  {
+    "name": "Zakayo Matheka Wa Katine",
+    "title": "MCA",
+    "region": "Matungulu West",
+    "status": "aspirant",
+    "bio": "Kazi ni kazi: a soldier man committed to hard work for his community.",
+    "education": [
+      {
+        "title": "Degree",
+        "institution": "Nairobi",
+        "time": "2019-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Security",
+        "institution": "Ismax security",
+        "time": "2019-2025"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "zakayommatheka@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0726028376"
+      },
+      {
+        "title": "Office",
+        "value": "NAIROBI KENYA"
+      }
+    ]
+  },
+  {
+    "name": "Trevor Hamisi",
+    "title": "MCA",
+    "region": "Kiplombe",
+    "status": "aspirant",
+    "bio": "Trevor Hamisi is a passionate and driven individual focused on leadership, campaign strategy, digital communication, and graphic design. With a background in civil engineering studies at Kabete National Polytechnic, he brings discipline, analytical thinking, and creativity to his work, and has experience helping shape campaign messages and mobilize support.",
+    "education": [
+      {
+        "title": "Diploma in Civil engineering",
+        "institution": "Kabete National Polytechnic",
+        "time": "2022-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Graphic designer",
+        "institution": "Divine Branda",
+        "time": "2022-2026"
+      },
+      {
+        "title": "Graphic designer",
+        "institution": "Divine Branda",
+        "time": "2022-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "trevorhamisi@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0111754645"
+      },
+      {
+        "title": "Office",
+        "value": "Eldoret, Uasin Gishu"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "facebook.com/share/1DzDEHBgHs/",
+        "href": "https://www.facebook.com/share/1DzDEHBgHs/"
+      }
+    ]
+  },
+  {
+    "name": "Charles Owino",
+    "title": "MCA",
+    "region": "Kanyamwa Kosewe",
+    "status": "aspirant",
+    "bio": "A change for the people."
+  },
+  {
+    "name": "Stephen Ogalla",
+    "title": "MCA",
+    "region": "North Seme",
+    "status": "aspirant",
+    "bio": "Stephen Owino Ogalla is an MCA aspirant for North Seme Ward. His priorities include attracting investors to establish more companies in the ward, improving agricultural farming to boost food security, providing breakfast at ECD centres, improving roads and transport, and building more health centres and boreholes."
+  },
+  {
+    "name": "Denis Momanyi Among A",
+    "title": "MCA",
+    "region": "Gachuba",
+    "status": "aspirant"
+  },
+  {
+    "name": "Aron Cheruiyot",
+    "title": "MCA",
+    "region": "Merigi",
+    "status": "aspirant",
+    "bio": "An efficient and customer-oriented technical support professional with two years of experience in high-volume retail environments. He has a proven track record of handling financial transactions accurately while delivering friendly service, and is skilled in POS systems, inventory management, and driving loyalty program sign-ups.",
+    "education": [
+      {
+        "title": "Bachelor of science",
+        "institution": "University of machakos",
+        "time": "2021-2025"
+      },
+      {
+        "title": "Bachelor of science",
+        "institution": "University of machakos",
+        "time": "2021-2025"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "cheruiyotaron237@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0755376711"
+      }
+    ]
+  },
+  {
+    "name": "Amollo Jagita",
+    "title": "MCA",
+    "region": "Awasi/Onjiko",
+    "status": "aspirant",
+    "bio": "Hon. Raila Amollo (Ombiege Matata) is a dedicated grassroots leader and advocate for inclusive development in Awasi-Onjiko Ward. He is passionate about empowering youth and women, and about improving education, healthcare, infrastructure, and economic opportunities for all residents. His vision is a prosperous and self-reliant ward through transparent, people-centered governance."
+  },
+  {
+    "name": "Cleophas Mkala",
+    "title": "MCA",
+    "region": "Chala",
+    "status": "aspirant",
+    "bio": "An independent candidate committed to putting community needs first, free from political party divisions. His goal is transparent leadership that listens directly to citizens and focuses on practical solutions, accountability, and real development."
+  },
+  {
+    "name": "Jose Kyalo",
+    "title": "MCA",
+    "region": "Kalama",
+    "status": "aspirant",
+    "bio": "His agenda includes water and sanitation, infrastructure, youth and group employment, rural electrification, and free education bursaries."
+  },
+  {
+    "name": "Wamaitha",
+    "title": "MCA",
+    "region": "Hells Gate",
+    "status": "aspirant",
+    "bio": "Mary Wamaitha is a dedicated community organizer who has worked in MSME (micro, small, and medium enterprise) development for many years and is a long-time resident of Hells Gate Ward. Driven by a passion for social justice and sustainable local development, she is committed as MCA candidate to transparent bursary distribution, upgrading local feeder roads, and empowering women and youth through accessible county funds."
+  },
+  {
+    "name": "Mohamed Amal",
+    "title": "MCA",
+    "region": "Danyere",
+    "status": "aspirant",
+    "bio": "Vote wisely."
+  },
+  {
+    "name": "Carol Someh",
+    "title": "MCA",
+    "region": "Tapsagoi",
+    "status": "aspirant"
+  },
+  {
+    "name": "Zakaria Njogu",
+    "title": "MCA",
+    "region": "Mai Mahiu",
+    "status": "aspirant",
+    "bio": "Zakaria Njogu Mukuha brings proven grassroots experience, having delivered healthcare services door-to-door rather than simply promising them. Running under the Jubilee Party, he says he is not seeking office to build a political career but because he has seen his community suffer from broken systems and unfulfilled promises, and believes it is time for leadership that understands those struggles.",
+    "professional": [
+      {
+        "title": "Community Health Worker (Monitoring)",
+        "institution": "MOH",
+        "time": "2019-2026"
+      },
+      {
+        "title": "Community health worker",
+        "institution": "MOH",
+        "time": "2019-2026",
+        "description": "Monitoring"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "mmrgoverner7@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0726993075"
+      },
+      {
+        "title": "Office",
+        "value": "Maai mahiu"
+      }
+    ]
+  },
+  {
+    "name": "Powel Onyango",
+    "title": "MCA",
+    "region": "Dandora Area Iv",
+    "status": "aspirant",
+    "bio": "A leader described as lovely and supportive to the people of Kenya, guided by the motto \"One Kenya, One Nation.\"",
+    "education": [
+      {
+        "title": "Business In Sales",
+        "institution": "Mount Kenya University",
+        "time": "2023-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Sales Manager",
+        "institution": "Mogo Smartphones",
+        "time": "2024-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "powelonyango4@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0116075934"
+      },
+      {
+        "title": "Office",
+        "value": "Dandora Ward 4"
+      }
+    ]
+  },
+  {
+    "name": "Paul Oloo",
+    "title": "MCA",
+    "region": "Kanyasa",
+    "status": "aspirant"
+  },
+  {
+    "name": "Obed Nyabuto",
+    "title": "MCA",
+    "region": "Bombaba Borabu",
+    "status": "aspirant",
+    "bio": "Obed Nyabuto is a proud son of Bombaba Borabu Ward, born and raised in the community. Through his interactions with residents, he has identified the need for improved roads, reliable water projects, youth empowerment, better support for farmers, quality healthcare, and greater transparency in the use of public resources.",
+    "education": [
+      {
+        "title": "Bachelor of technology",
+        "institution": "Mount Kenya university",
+        "time": "2017-2024"
+      }
+    ]
+  },
+  {
+    "name": "Jones Kirwa",
+    "title": "MCA",
+    "region": "Lelmokwo/Ngechek",
+    "status": "aspirant"
+  },
+  {
+    "name": "Onesmus Nzomo",
+    "title": "MCA",
+    "region": "Kikumbulyu North",
+    "status": "aspirant",
+    "bio": "Beu ya Yeova."
+  },
+  {
+    "name": "Samwel Ojunga",
+    "title": "MCA",
+    "region": "Luanda Township",
+    "status": "aspirant"
+  },
+  {
+    "name": "Nalan",
+    "title": "MCA",
+    "region": "Waitaluk",
+    "status": "aspirant",
+    "bio": "A 20-year-old from Kapkoi looking forward to helping his people, particularly in health, education, transport, and sports."
+  },
+  {
+    "name": "Valentine Mkuru",
+    "title": "MCA",
+    "region": "Mfangano Island",
+    "status": "aspirant"
+  },
+  {
+    "name": "Mohamed Abdirahman",
+    "title": "MCA",
+    "region": "Kilimani",
+    "status": "aspirant",
+    "bio": "Member of the National Assembly for Mandera East and an associate member of the UK-based Association of Business Executives, with interests in infrastructure, education, and resource allocation for marginalized communities."
+  },
+  {
+    "name": "Joseph Omondi",
+    "title": "MCA",
+    "region": "Kware",
+    "status": "aspirant",
+    "bio": "Joseph Omondi \"Popularity\" Kwach is the incoming MCA aspirant for Kware Ward, leading a grassroots, energetic campaign under \"Team Kwach, Kware Ward 2027,\" focused on updates, events, and action plans for the ward.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "josekagawa693@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0705265851"
+      }
+    ]
+  },
+  {
+    "name": "Omar Abdallah",
+    "title": "MCA",
+    "region": "Kikumbulyu South",
+    "status": "aspirant",
+    "bio": "A leadership that listens and a vision that delivers, ready to serve the people of Kikumbulyu South.",
+    "education": [
+      {
+        "title": "Bachelor of Business and Information Technology",
+        "institution": "Mt Kenya University",
+        "time": "2013-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Political party agent",
+        "institution": "Iebc",
+        "time": "2013-2026"
+      },
+      {
+        "title": "Sales executive",
+        "institution": "Basco Products Limited",
+        "time": "2020-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "mikailomar230@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0713088239"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "facebook.com/umar.abdillahi.904",
+        "href": "https://www.facebook.com/umar.abdillahi.904"
+      }
+    ]
+  },
+  {
+    "name": "Obiero Moses Owino",
+    "title": "MCA",
+    "region": "Central Nyakach",
+    "status": "aspirant",
+    "bio": "Committed to empowering youth through skills training, entrepreneurship support, and internships, with plans to develop infrastructure, improve healthcare, and provide education bursaries. He aims to boost the local economy by supporting farmers and traders and attracting investment, while ensuring dedicated support for women, the elderly, and persons with disabilities, guided by transparent and accountable leadership.",
+    "education": [
+      {
+        "title": "Web and Graphic Design",
+        "institution": "Nairobits Digital school of Design",
+        "time": "2010-2012"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "obieromosesowinos@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254 732 830073"
+      },
+      {
+        "title": "Office",
+        "value": "Kisumu, Nyakach, Pap Onditi"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "web.facebook.com/profile.php?id=61583963213823",
+        "href": "https://web.facebook.com/profile.php?id=61583963213823"
+      },
+      {
+        "title": "tiktok",
+        "value": "tiktok.com/@honmosesowino2",
+        "href": "https://www.tiktok.com/@honmosesowino2"
+      }
+    ]
+  },
+  {
+    "name": "Joel Macheso",
+    "title": "MCA",
+    "region": "Chekalini",
+    "status": "aspirant",
+    "bio": "Coming from a humble background, he is running for this seat to ensure the market carries quality, adequate products, to keep roads well maintained, and to end the practice of favoring a few beneficiaries by supporting more residents through business opportunities."
+  },
+  {
+    "name": "Wakili Maxwell",
+    "title": "MCA",
+    "region": "Waithaka",
+    "status": "aspirant",
+    "bio": "Maxwell Aloo is a passionate leader, mentor, and youth empowerment champion committed to transforming Waithaka Ward, Dagoretti South, Nairobi. His background in leadership, community service, and mentorship shapes his vision for a united, empowered, and progressive ward, with a focus on education, youth opportunities, women's empowerment, infrastructure, a clean environment, security, and people-first leadership.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "wakilimaxwell464@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0752344214"
+      }
+    ]
+  },
+  {
+    "name": "Kepha Nyakundi",
+    "title": "MCA",
+    "region": "Bogichora",
+    "status": "aspirant"
+  },
+  {
+    "name": "Joel Kimanzi",
+    "title": "MCA",
+    "region": "Kyangwithya East",
+    "status": "aspirant",
+    "bio": "Joel Kimanzi Muthengi is from Kasyala Sub-Location, Ivaini Location, and is a dedicated leader ready to transform Kyangwithya East Ward. His ambition is to make the ward a beacon of progress through leadership that listens and is acceptable, accountable, and accessible.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "kimanzi.joel20@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0706730810/0723367259"
+      },
+      {
+        "title": "Office",
+        "value": "Kitui town"
+      }
+    ]
+  },
+  {
+    "name": "Wilfred Mutua",
+    "title": "MCA",
+    "region": "Nguumo",
+    "status": "aspirant",
+    "bio": "Wilfred Mumo Mutua is the incoming MCA aspirant for Nguumo Ward in 2027. His vision is to transform the ward through an inclusive, people-centred approach that ensures success for all residents.",
+    "education": [
+      {
+        "title": "Bachelor of Education Arts",
+        "institution": "Kabarak university",
+        "time": "2021-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "CEO, Kamaa Investments and Enterprises",
+        "institution": "Kamaa investments and Enterprises",
+        "time": "2025-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "wilfredmumom@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0742788311"
+      },
+      {
+        "title": "Office",
+        "value": "Nakuru,Kenya"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "wilfredmumom@gmail.com",
+        "href": "https://%20wilfredmumom@gmail.com/"
+      }
+    ]
+  },
+  {
+    "name": "Magadi Local Contractors Mlc",
+    "title": "MCA",
+    "region": "Kisa West",
+    "status": "aspirant",
+    "bio": "Hon. James Henry Khaule Odera is a son of Kisa West, born and raised in Emaholia/Shirombe Sub-Location. At 54, he is a businessman and community leader with 20 years of experience running businesses and serving the community. As MCA, his four priorities are roads and water, youth and women empowerment, schools and health, and resource accountability.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "jameskha72@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0725710201"
+      }
+    ],
+    "social": [
+      {
+        "title": "twitter",
+        "value": "x.com/Jamestrona",
+        "href": "https://x.com/Jamestrona"
+      },
+      {
+        "title": "facebook",
+        "value": "facebook.com/JamesOdera",
+        "href": "https://facebook.com/JamesOdera"
+      },
+      {
+        "title": "instagram",
+        "value": "instagram.com/Jamestrona",
+        "href": "https://instagram.com/Jamestrona"
+      }
+    ]
+  },
+  {
+    "name": "Jasper Muiruri",
+    "title": "MCA",
+    "region": "Kamenu",
+    "status": "aspirant",
+    "bio": "The future that Kamenu has been craving for: we are in charge."
+  },
+  {
+    "name": "Caren Anyona",
+    "title": "MCA",
+    "region": "Athi River",
+    "status": "aspirant",
+    "bio": "A hardworking and approachable leader who believes in listening to the people and standing with the community. Understanding the challenges residents face in Athi River, her mission is to fight for better services, accountable leadership, and practical solutions, with a vision for a cleaner, safer, and more united Athi River where every family and business has a fair opportunity to grow.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "carendorah@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0710874147"
+      }
+    ],
+    "social": [
+      {
+        "title": "twitter",
+        "value": "x.com/search?q=Vox%20Populi&f=user",
+        "href": "https://x.com/search?q=Vox%20Populi&f=user"
+      },
+      {
+        "title": "facebook",
+        "value": "facebook.com/search/top?q=Vox%20Populi",
+        "href": "https://www.facebook.com/search/top?q=Vox%20Populi"
+      },
+      {
+        "title": "instagram",
+        "value": "instagram.com/AthiRiver2.0Lab",
+        "href": "https://instagram.com/AthiRiver2.0Lab"
+      }
+    ]
+  },
+  {
+    "name": "Joram Kenya",
+    "title": "MCA",
+    "region": "Gathara",
+    "status": "aspirant",
+    "bio": "A dedicated aspirant for the Gathara Ward seat, committed to practical, people-first leadership focused on real development for every household, from improving access to clean water and reliable roads to supporting small businesses and youth employment. His approach prioritizes listening to residents first, then pursuing measurable, transparent progress, with every project, budget, and decision communicated openly. His goal is a ward with better-equipped schools, organized markets, reachable health services, and consistent, service-first representation.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "joramnjeri792@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0743808880"
+      }
+    ],
+    "social": [
+      {
+        "title": "twitter",
+        "value": "x.com/gloking_joram1",
+        "href": "https://x.com/gloking_joram1"
+      },
+      {
+        "title": "facebook",
+        "value": "facebook.com/search/top?q=Joram%20hpo",
+        "href": "https://www.facebook.com/search/top?q=Joram%20hpo"
+      }
+    ]
+  },
+  {
+    "name": "Ronald Kipsang Kemboi",
+    "title": "MCA",
+    "region": "Kapsoya",
+    "status": "aspirant"
+  },
+  {
+    "name": "Hon Karani",
+    "title": "MCA",
+    "region": "Tambua",
+    "status": "aspirant",
+    "bio": "Together, we can make Tambua better again."
+  },
+  {
+    "name": "Nicholas Moi",
+    "title": "MCA",
+    "region": "Lower Savannah",
+    "status": "aspirant",
+    "bio": "Nicholas Moi is a Nairobi resident who has lived and interacted closely with the community in and around Embakasi East, particularly Lower Savannah Ward. He understands the daily challenges of housing, small businesses, and youth unemployment facing residents.",
+    "education": [
+      {
+        "title": "Bachelor of Arts",
+        "institution": "University of Nairobi",
+        "time": "2010-2026"
+      },
+      {
+        "title": "Business and Customs Administration",
+        "institution": "University of Nairobi",
+        "time": "2018-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "nicholasmoi2005@yahoo.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0722418402"
+      }
+    ]
+  },
+  {
+    "name": "Maxwell Changilwa Amugune",
+    "title": "MCA",
+    "region": "Kabiro",
+    "status": "aspirant",
+    "bio": "Committed to resetting the benefits taken from his community, restoring them to the people who deserve them, and rebuilding the system to create a safer Kabiro for everyone, free of political brokers. His priorities include ensuring bursaries reach all residents equally, opening a dispensary for healthcare, opening a police post for security, modernizing Salim Road and other roads, and partnering with employers to create jobs for Kabiro's youth.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "maxchangilwa@gmail.com"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "facebook.com/changilwa001",
+        "href": "https://www.facebook.com/changilwa001"
+      }
+    ]
+  },
+  {
+    "name": "Willy Kipchumba",
+    "title": "MCA",
+    "region": "Kipkaren",
+    "status": "aspirant"
+  },
+  {
+    "name": "Kipkemboi Cornelius",
+    "title": "MCA",
+    "region": "Ngenyilel",
+    "status": "aspirant",
+    "bio": "Kipkemboi Cornelius is a resident of Chebaiywa Village who believes in transformative, servant leadership that puts the people of his ward first. Committed to honest, transparent, and accountable governance, he pledges to work tirelessly for the ward's development and oversight if given the opportunity to serve.",
+    "education": [
+      {
+        "title": "Bachelor of Computer Science",
+        "institution": "Makerere University",
+        "time": "2012-2016"
+      },
+      {
+        "title": "Higher Diploma in ICT",
+        "institution": "Makerere University",
+        "time": "2010-2012"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Rift Valley Regional Manager",
+        "institution": "Anams Research Company",
+        "time": "2019-2026"
+      },
+      {
+        "title": "Research Assistant",
+        "institution": "Kantar Public",
+        "time": "2016-2016"
+      },
+      {
+        "title": "Supervisor",
+        "institution": "Anams Research Company",
+        "time": "2017-2018"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "cor.kipkemboi100@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0707 597084"
+      },
+      {
+        "title": "Office",
+        "value": "Eldoret"
+      }
+    ],
+    "social": [
+      {
+        "title": "tiktok",
+        "value": "vm.tiktok.com/ZS9N5CpxkjVg7-fyBO0/",
+        "href": "https://vm.tiktok.com/ZS9N5CpxkjVg7-fyBO0/"
+      }
+    ]
+  },
+  {
+    "name": "Kennedy Karanja",
+    "title": "MCA",
+    "region": "Kamenu",
+    "status": "aspirant",
+    "education": [
+      {
+        "title": "Bachelor of Arts International Studies",
+        "institution": "Strathmore University",
+        "time": "2021-2025"
+      },
+      {
+        "title": "Bachelor of Arts International Studies",
+        "institution": "Strathmore University",
+        "time": "2021-2025"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "kennedyranja@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0701477923"
+      }
+    ],
+    "social": [
+      {
+        "title": "instagram",
+        "value": "instagram.com/kenn3dywangari",
+        "href": "https://www.instagram.com/kenn3dywangari"
+      },
+      {
+        "title": "linkedin",
+        "value": "linkedin.com/in/kennedy-karanja-wangari",
+        "href": "https://www.linkedin.com/in/kennedy-karanja-wangari"
+      }
+    ]
+  },
+  {
+    "name": "Winstone Ndolo Dinga",
+    "title": "MCA",
+    "region": "Miwani",
+    "status": "aspirant"
+  },
+  {
+    "name": "Francis Ndegwa Brymax Tech Ltd",
+    "title": "MCA",
+    "region": "Mwiyogo/Endarasha",
+    "status": "aspirant",
+    "bio": "Leadership backed by facts, not empty promises. Recognized among the leading MCA aspirants for Mwiyogo/Endarasha Ward in 2027, his campaign centres on service, accountability, and real development: roads, water, jobs, and opportunity for every resident."
+  },
+  {
+    "name": "Brian Onyango",
+    "title": "MCA",
+    "region": "Kojwach",
+    "status": "aspirant",
+    "bio": "Brian Onyango, also known as Justice Brian Onyango, was born in Kojwach Ward, Homa Bay County. Raised by his parents Millicent Onyango and Daniel Onyango, whose influence shaped his early values and discipline, he is the author of the book \"Onyango's Doctrine.\"",
+    "education": [
+      {
+        "title": "Criminal law",
+        "institution": "East Africa catholic university",
+        "time": "2023-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Business person",
+        "institution": "Brian and Brian  poultry farming",
+        "time": "2024-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "brianjackarenaz@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0746824502"
+      },
+      {
+        "title": "Office",
+        "value": "Nairobi kenya"
+      }
+    ],
+    "social": [
+      {
+        "title": "youtube",
+        "value": "youtube.com/@brianjack4200?si=WGw3-F6mQNTkNxuw",
+        "href": "https://youtube.com/@brianjack4200?si=WGw3-F6mQNTkNxuw"
+      }
+    ]
+  },
+  {
+    "name": "Micah Mukhwana Namunyu",
+    "title": "MCA",
+    "region": "Clay City",
+    "status": "aspirant",
+    "bio": "Micah Sikuku has lived in Clay City Ward for close to a decade. His campaign has already reached three churches while conducting civic education on voter registration. His vision for Clay City includes stocked dispensaries, timely bursaries, regular sports tournaments, county funds for traders, fixed roads and drainage, jobs for youth and women, and security lighting in every dark corner.",
+    "education": [
+      {
+        "title": "Diploma in International Relations",
+        "institution": "Strathmore University",
+        "time": "2026-2027"
+      },
+      {
+        "title": "Diploma in Law",
+        "institution": "Kenya School of Law",
+        "time": "2033-2024"
+      },
+      {
+        "title": "KCSE/ High school Diploma",
+        "institution": "Highway Academy",
+        "time": "2018-2021"
+      },
+      {
+        "title": "KCSE/ High school Diploma",
+        "institution": "Highway Academy",
+        "time": "2018-2021"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "consult.namunyulegal@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254745692521"
+      }
+    ],
+    "social": [
+      {
+        "title": "website",
+        "value": "micahsikukucom.odoo.com/",
+        "href": "https://micahsikukucom.odoo.com/"
+      },
+      {
+        "title": "instagram",
+        "value": "instagram.com/micahmukhwanasikuku?igsh=bzMxbXhvMnZpcmZ4",
+        "href": "https://www.instagram.com/micahmukhwanasikuku?igsh=bzMxbXhvMnZpcmZ4"
+      },
+      {
+        "title": "facebook",
+        "value": "facebook.com/share/1Ku1cigTPi/",
+        "href": "https://www.facebook.com/share/1Ku1cigTPi/"
+      },
+      {
+        "title": "linkedin",
+        "value": "linkedin.com/in/micah-mukhwana-namunyu-b12592253?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+        "href": "https://www.linkedin.com/in/micah-mukhwana-namunyu-b12592253?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+      },
+      {
+        "title": "youtube",
+        "value": "youtube.com/@micahsikuku-mukhwana?si=BiGwU3Et2lZFbcNo",
+        "href": "https://youtube.com/@micahsikuku-mukhwana?si=BiGwU3Et2lZFbcNo"
+      },
+      {
+        "title": "tiktok",
+        "value": "tiktok.com/@micahmukhwana?_r=1&_t=ZS-95vz9ciP0bJ",
+        "href": "https://www.tiktok.com/@micahmukhwana?_r=1&_t=ZS-95vz9ciP0bJ"
+      }
+    ]
+  },
+  {
+    "name": "Owuor Lawrence Nyakwar Jangum",
+    "title": "MCA",
+    "region": "West Nyakach",
+    "status": "aspirant"
+  },
+  {
+    "name": "Geoffrey Machira",
+    "title": "MCA",
+    "region": "Birongo",
+    "status": "aspirant"
+  },
+  {
+    "name": "Patrick Ngeera",
+    "title": "MCA",
+    "region": "Thangatha",
+    "status": "aspirant"
+  },
+  {
+    "name": "Christopher W Wafula",
+    "title": "MCA",
+    "region": "Sikhendu",
+    "status": "aspirant",
+    "bio": "Your vote, a better life."
+  },
+  {
+    "name": "Josphat Mwangangi",
+    "title": "MCA",
+    "region": "Miambani",
+    "status": "aspirant",
+    "bio": "Josphat \"Tee\" Mwangangi is committed to developing Miambani through empowerment and improved road network connectivity, under the slogan \"Tee ni wetu, maendeleo ni kwetu\" (Tee is ours, development is ours).",
+    "education": [
+      {
+        "title": "Bachelor of Education",
+        "institution": "Murang'a University of Technology",
+        "time": "2019-2023"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Teacher",
+        "institution": "School",
+        "time": "2024-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "mwangangmutia@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0748641889"
+      },
+      {
+        "title": "Office",
+        "value": "Kitui"
+      }
+    ]
+  },
+  {
+    "name": "Mca Benn Muriu",
+    "title": "MCA",
+    "region": "Ntima East",
+    "status": "aspirant",
+    "bio": "Muriuki Benson, alias \"Muriu,\" is a second-time MCA aspirant in Ntima West after previously losing to incumbent Kathurima Ntururu. He understands the key issues needed to clinch the seat in 2027.",
+    "education": [
+      {
+        "title": "Diploma in electrical and electronics engineering",
+        "institution": "Meru national polytichinic",
+        "time": "2014-2017"
+      }
+    ]
+  },
+  {
+    "name": "Micheal",
+    "title": "MCA",
+    "region": "Kiine",
+    "status": "aspirant",
+    "bio": "Michael Murimi Gichira is a grassroots aspirant for MCA of Kiine Ward, Kirinyaga County, known for his close connection with residents. He champions youth empowerment, economic growth, better infrastructure, education, and healthcare, promoting transparency, inclusivity, and practical solutions."
+  },
+  {
+    "name": "Ahmed Hajir",
+    "title": "MCA",
+    "region": "Liboi",
+    "status": "aspirant",
+    "bio": "Committed to enhancing self-reliance and community engagement."
+  },
+  {
+    "name": "Emmanuel Omondi",
+    "title": "MCA",
+    "region": "East Ugenya",
+    "status": "aspirant",
+    "bio": "A candidate from East Ugenya committed to uniting with residents to transform the ward."
+  },
+  {
+    "name": "Godphrey Kabila",
+    "title": "MCA",
+    "region": "Gwassi South",
+    "status": "aspirant",
+    "bio": "Godfrey Mongare Kabila is a candidate for Member of County Assembly for Gwassi South Ward in 2027, guided by the Constitution of Kenya and committed to transparent, accountable, and inclusive leadership. His core values are integrity, service, accountability, equity, and community empowerment."
+  },
+  {
+    "name": "Steve Okello",
+    "title": "MCA",
+    "region": "Rusinga Island",
+    "status": "aspirant",
+    "bio": "A young Kenyan with broad knowledge of democracy and governance."
+  },
+  {
+    "name": "Barasa Shikhutuli",
+    "title": "MCA",
+    "region": "Gitothua",
+    "status": "aspirant",
+    "bio": "Barasa Ezekiel is an independent candidate for Member of County Assembly. As a young leader, he is committed to inspiring youth to rise, take leadership, and actively participate in shaping their community, standing for transparency, accountability, and development that uplifts everyone.",
+    "education": [
+      {
+        "title": "Procurement and Supplies Management",
+        "institution": "Mount Kenya university",
+        "time": "2018-2022"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Warehouse Controller",
+        "institution": "Cold Solutions kenya limited Kiambu Sez",
+        "time": "2023-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "ezekiel.barasa24@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0722765460"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "facebook.com/search/top?q=Barasa%20Ezekiel",
+        "href": "https://www.facebook.com/search/top?q=Barasa%20Ezekiel"
+      }
+    ]
+  },
+  {
+    "name": "Dakawou Transporter Henry",
+    "title": "MCA",
+    "region": "Embakasi",
+    "status": "aspirant"
+  },
+  {
+    "name": "Brian Walela",
+    "title": "MCA",
+    "region": "Bukembe West",
+    "status": "aspirant",
+    "bio": "Nothing but development: it's time for greatness."
+  },
+  {
+    "name": "Duncan Rono",
+    "title": "MCA",
+    "region": "Githurai",
+    "status": "aspirant",
+    "bio": "Team Change."
+  },
+  {
+    "name": "Joyce Anthony",
+    "title": "MCA",
+    "region": "Kiguchwa",
+    "status": "aspirant",
+    "bio": "A humble woman, well-raised and taught to listen more than talk, to act more than talk, and to conduct herself well."
+  },
+  {
+    "name": "Amos Gitau",
+    "title": "MCA",
+    "region": "Woodley/Kenyatta Golf Course",
+    "status": "aspirant",
+    "bio": "A young visionary, home-grown, with a great vision for the ward."
+  },
+  {
+    "name": "Kiigen Koech Tv",
+    "title": "MCA",
+    "region": "Kilimani",
+    "status": "aspirant"
+  },
+  {
+    "name": "Abraham Aburi",
+    "title": "MCA",
+    "region": "Elburgon",
+    "status": "aspirant",
+    "bio": "Born in Molo Sub-County and raised in Njoro before moving to Elburgon, he schooled at PCEA Primary and later Turi Secondary School. Having grown up in Elburgon, he understands the community's challenges and believes that by coming together, Elburgon can become one of the fastest-growing wards in Nakuru and the country, with infrastructure among the most critical issues facing the community."
+  },
+  {
+    "name": "Mushi Duale",
+    "title": "MCA",
+    "region": "Karura",
+    "status": "aspirant"
+  },
+  {
+    "name": "Elly Cherenje",
+    "title": "MCA",
+    "region": "Kaptama",
+    "status": "aspirant"
+  },
+  {
+    "name": "Mohamed Abduuswamad",
+    "title": "MCA",
+    "region": "Junda",
+    "status": "aspirant"
+  },
+  {
+    "name": "Jim Trumark",
+    "title": "MCA",
+    "region": "Kakrao",
+    "status": "aspirant",
+    "bio": "Jim Auki Lwero is a visionary upcoming leader focused on community development, with a specialty in long-term community-development architectural design. He has the intellectual and practical capacity to advance Migori County's development through legislation in the County Assembly."
+  },
+  {
+    "name": "Humphrey Odohi Esena",
+    "title": "MCA",
+    "region": "Langas",
+    "status": "aspirant"
+  },
+  {
+    "name": "Joseph Wamai",
+    "title": "MCA",
+    "region": "Tigithi",
+    "status": "aspirant",
+    "bio": "His priorities include internet connectivity, youth empowerment, fair bursary distribution, integrity in leadership, street light installation, sports development, and unity, inclusivity, transparency, and accountability for all."
+  },
+  {
+    "name": "Annah Mumbi",
+    "title": "MCA",
+    "region": "Kalawa",
+    "status": "aspirant",
+    "bio": "Annah Kilonzo is from Kalawa Ward, Mbooni Constituency, Makueni County, and aims to bring change and development to the ward. Her manifesto includes bringing quality education, building better roads and bridges, improving electricity access, and transforming water projects."
+  },
+  {
+    "name": "Abdull Cade",
+    "title": "MCA",
+    "region": "Garsen North",
+    "status": "aspirant",
+    "bio": "Abdullahi Mohammed is a dedicated son of Garsen North Ward and a committed community member who understands the challenges facing the ward. Passionate about youth empowerment and education, he has extensive experience working closely with local residents to address real community needs.",
+    "education": [
+      {
+        "title": "Tourism and travel management",
+        "institution": "Mount kenya university",
+        "time": "2024-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Businesses",
+        "institution": "Hardware and Electrical limited",
+        "time": "2021-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "cadeabdull683@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0793039057"
+      }
+    ]
+  },
+  {
+    "name": "Ian Kabaka",
+    "title": "MCA",
+    "region": "Nyacheki",
+    "status": "aspirant",
+    "bio": "Ngoretande amaendereo asi omochi bwa abanto: a call for development to reach the people.",
+    "education": [
+      {
+        "title": "Bachelor of Education",
+        "institution": "Kisii University",
+        "time": "2018-2023"
+      }
+    ]
+  },
+  {
+    "name": "Muchika Vutiya",
+    "title": "MCA",
+    "region": "Chemuche",
+    "status": "aspirant",
+    "bio": "Vincent Muchika Vutiya is an emerging political thinker, legal scholar, and youth leader with a strong interest in governance, public policy, and leadership development. His work focuses on promoting accountable leadership, civic awareness, and responsible governance among young people, actively participating in initiatives that encourage political consciousness, economic empowerment, and ethical decision-making.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "vutiyavincent@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "+254793408333"
+      },
+      {
+        "title": "Office",
+        "value": "Nairobi Kenya"
+      }
+    ],
+    "social": [
+      {
+        "title": "facebook",
+        "value": "fb.com/l/6lp1kJRRR",
+        "href": "https://www.fb.com/l/6lp1kJRRR"
+      },
+      {
+        "title": "twitter",
+        "value": "x.com/VincentVutiya",
+        "href": "https://x.com/VincentVutiya"
+      },
+      {
+        "title": "instagram",
+        "value": "instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=kkxoma7",
+        "href": "https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=kkxoma7"
+      },
+      {
+        "title": "youtube",
+        "value": "youtube.com/@vincentvutiya?si=EycFowrYIIS19zIm",
+        "href": "https://youtube.com/@vincentvutiya?si=EycFowrYIIS19zIm"
+      },
+      {
+        "title": "linkedin",
+        "value": "linkedin.com/in/vincent-vutiya-5304ab281?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+        "href": "https://www.linkedin.com/in/vincent-vutiya-5304ab281?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+      }
+    ]
+  },
+  {
+    "name": "Boniface Mutua Mule",
+    "title": "MCA",
+    "region": "Kathonzweni",
+    "status": "aspirant",
+    "bio": "A well-disciplined man dedicated to helping and pushing his ward toward a better place full of hope.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "bonifacemule239@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0718362408"
+      }
+    ]
+  },
+  {
+    "name": "Hassan Mutai",
+    "title": "MCA",
+    "region": "Kedowa/Kimugul",
+    "status": "aspirant",
+    "bio": "Committed to putting people, services, and development first for Kimugul/Kedowa Ward. He describes change as inevitable and unstoppable, with a focus on youth serving youth.",
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "mutaihassan0@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0704590924"
+      },
+      {
+        "title": "Office",
+        "value": "Nairobi,Kenya"
+      }
+    ]
+  },
+  {
+    "name": "Steven Omondi",
+    "title": "MCA",
+    "region": "Matopeni/Spring Valley",
+    "status": "aspirant",
+    "bio": "A visionary leader with a strong interest in taking Matopeni/Spring Valley Ward to the next level.",
+    "education": [
+      {
+        "title": "Diploma in chemical engineering",
+        "institution": "The Nairobi national polytechnic",
+        "time": "2018-2021"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "soagwingi@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0743568010"
+      }
+    ],
+    "social": [
+      {
+        "title": "linkedin",
+        "value": "linkedin.com/in/stephen-omondi-4a57b4209?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+        "href": "https://www.linkedin.com/in/stephen-omondi-4a57b4209?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+      }
+    ]
+  },
+  {
+    "name": "Fidel Castro",
+    "title": "MCA",
+    "region": "Kabondo East",
+    "status": "aspirant",
+    "bio": "Fidel is a son of the ward, raised amid the same struggles and hopes that define the community. Having walked the same roads, attended local schools, and worked hard to reach where he is, he understands what it means to face unemployment and limited opportunities, and is frustrated by leaders who show up only during elections."
+  },
+  {
+    "name": "Victor Koech",
+    "title": "MCA",
+    "region": "Kiptagich",
+    "status": "aspirant",
+    "bio": "Committed to youth empowerment, support for persons with disabilities, and improved provision of water and feeder roads.",
+    "education": [
+      {
+        "title": "Certificate",
+        "institution": "NITA KISUMU",
+        "time": "2017-2026"
+      }
+    ],
+    "professional": [
+      {
+        "title": "Boiler operator",
+        "institution": "Tach Asia Tea Factory",
+        "time": "2021-2026"
+      }
+    ],
+    "contacts": [
+      {
+        "title": "Email",
+        "value": "victorkkoech1994@gmail.com"
+      },
+      {
+        "title": "Phone",
+        "value": "0729878078"
+      }
+    ]
+  },
+  {
+    "name": "Francis Mbinda Nginga",
+    "title": "MCA",
+    "region": "Kivumbini",
+    "status": "aspirant",
+    "bio": "The challenges facing Kivumbini Ward require a sober, focused, people-centered approach with all-inclusive participation to identify and solve local problems. On security, he advocates a common approach involving everyone to make Kivumbini a safe place for all, along with initiatives to keep youth engaged in community activities."
+  },
+  {
+    "name": "Brayden Kafani",
+    "title": "MCA",
+    "region": "Junju",
+    "status": "aspirant",
+    "bio": "Dedicated to representing the people, strengthening local governance, and improving service delivery."
+  }
+]

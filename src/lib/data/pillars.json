@@ -1,0 +1,28 @@
+[
+  {
+    "leaderName": "William Ruto",
+    "leaderTitle": "President",
+    "leaderRegion": "Kenya",
+    "title": "Affordable healthcare for all",
+    "summary": "Expand the social health insurance scheme to cover every household, prioritizing maternal and chronic care.",
+    "deliveryStatus": "in_progress",
+    "evidence": "3.2M households enrolled as of Q2 2027: https://example.gov.ke/sha-report"
+  },
+  {
+    "leaderName": "Johnson Sakaja",
+    "leaderTitle": "Governor",
+    "leaderRegion": "Nairobi",
+    "title": "Fix Nairobi's road drainage",
+    "summary": "Rehabilitate flood-prone arterial roads and clear blocked drainage before the next rainy season.",
+    "deliveryStatus": "promised"
+  },
+  {
+    "leaderName": "Edwin Sifuna",
+    "leaderTitle": "Senator",
+    "leaderRegion": "Nairobi",
+    "title": "Devolution oversight",
+    "summary": "Publish a quarterly scorecard tracking every shilling allocated to Nairobi County projects.",
+    "deliveryStatus": "delivered",
+    "evidence": "Q1 2027 scorecard published: https://example.gov.ke/nairobi-scorecard-q1"
+  }
+]

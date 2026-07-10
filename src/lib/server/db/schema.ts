@@ -12,6 +12,7 @@ export const vector = customType<{ data: number[] }>({
 export const priceBandEnum = pgEnum('price_band', ['national', 'regional', 'ward']);
 
 // 1. POSITION (Elective & Nominated Leadership Positions)
+// Every elective or nominated seat that exists to be filled.
 export const positions = pgTable('positions', {
   id: serial('id').primaryKey(),
   region: varchar('region', { length: 100 }).notNull(), // e.g., 'Kiambu', 'Westlands'
@@ -24,6 +25,7 @@ export const positions = pgTable('positions', {
 });
 
 // 2. USERS (Domain profile, bridged 1:1 to better-auth's `user` via authUserId.
+// Every signed-up person's domain profile: name and bio, one per login.
 // better-auth owns email/password/OAuth/sessions; phones live in `contacts`.)
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -31,14 +33,23 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 50 }).notNull(), // single word, no spaces (enforced at signup)
   otherNames: varchar('other_names', { length: 100 }).notNull(), // surname + any middle names, e.g. "Van Der Berg"
   bio: text('bio'),
+  address: varchar('address', { length: 200 }),
+  socials: jsonb('socials').$type<Record<string, string>>().default({}).notNull(), // platform -> profile URL, e.g. { twitter: 'https://...' }
+  // Permanent /[slug] identity, e.g. "kalonzo-musyoka" (suffixed "-2" etc on collision).
+  // Lives here (not on leaders) because it's the PERSON's URL: one user can have several
+  // leaders rows (Track Record spanning multiple seats/terms) sharing this one slug.
+  slug: varchar('slug', { length: 120 }),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
+}, (t) => [
+  uniqueIndex('one_user_per_slug').on(t.slug).where(sql`${t.deletedAt} is null`),
+]);
 
-// 2.1 CONTACTS (per-channel reachable addresses; each verified independently via the verifications OTP table)
+// 2.1 CONTACTS (per-channel reachable addresses; each verified independently via the otps table)
 export const contactChannelEnum = pgEnum('contact_channel', ['sms', 'whatsapp', 'email']);
 
+// A user's contacts, one row per channel.
 export const contacts = pgTable('contacts', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -56,17 +67,19 @@ export const contacts = pgTable('contacts', {
 ]);
 
 // 3. LEADERS (Public profiles connected to Users and positions. Tracks the service history of leaderships)
+// One person holding, or vying for, one position — the core public profile.
 export const leaders = pgTable('leaders', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   positionId: integer('position_id').references(() => positions.id).notNull(),
-  manifestoId: integer('manifesto_id'),
   faq: jsonb('faq').default([]),
   contacts: jsonb('contacts').default({}),
   status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'incumbent' | 'former'
-  verifiedAt: timestamp('verified_at', { withTimezone: true }), 
-  startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
-  endAt: timestamp('end_at', { withTimezone: true }),
+  description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
+  fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES; campaign goal (leader == main campaign in v1)
+  verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  from: timestamp('from', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
+  to: timestamp('to', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -77,27 +90,46 @@ export const leaders = pgTable('leaders', {
     .where(sql`${t.status} = 'incumbent' and ${t.deletedAt} is null`),
 ]);
 
-// 4. MANIFESTOS & PILLARS (Versioned policy storage)
-export const manifestos = pgTable('manifestos', {
+// 3.1 EXPERIENCE (education, professional and leadership history on a leader's profile)
+export const experienceTypeEnum = pgEnum('experience_type', ['education', 'professional']);
+
+// One line of a leader's history: a school, a job, or a prior office held.
+export const experience = pgTable('experience', {
   id: serial('id').primaryKey(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
-  version: integer('version').default(1).notNull(),
+  type: experienceTypeEnum('type').notNull(),
+  positionId: integer('position_id').references(() => positions.id), // set when type = 'leadership'
+  title: varchar('title', { length: 255 }).notNull(),
+  institution: varchar('institution', { length: 255 }).notNull(),
+  from: timestamp('from', { withTimezone: true }), // null when the source only gave a free-text/unparseable range
+  to: timestamp('to', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true })
-});
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('experience_leader_idx').on(t.leaderId),
+]);
 
+// 4. MANIFESTO PILLARS - A leader's policy platform
+
+// Public delivery tracker: every pillar carries a status citizens can verify.
+export const deliveryStatusEnum = pgEnum('delivery_status', ['promised', 'in_progress', 'delivered']);
+
+// One promise within a manifesto, with a publicly-visible delivery status.
 export const pillars = pgTable('pillars', {
   id: serial('id').primaryKey(),
-  manifestoId: integer('manifesto_id').references(() => manifestos.id, { onDelete: 'cascade' }).notNull(),
+  campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
   title: varchar('title', { length: 255 }).notNull(),
   summary: text('summary').notNull(),
+  deliveryStatus: deliveryStatusEnum('delivery_status').default('promised').notNull(),
+  evidence: text('evidence'), // public proof of delivery, e.g. "7 of 10 dispensaries built: <link>"
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
 // 5. CAMPAIGNS (Nested Campaign Architectures)
+// A leader's push for office, or a mission nested under one.
 export const campaigns = pgTable('campaigns', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
@@ -117,6 +149,7 @@ export const campaigns = pgTable('campaigns', {
 ]);
 
 // 6. MANAGEMENT & AMBASSADORS (JSONB Configured Access Controls)
+// A person granted access to run a leader's dashboard on their behalf.
 export const managers = pgTable('managers', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id).notNull(), // Soft delete handles detachment
@@ -129,6 +162,7 @@ export const managers = pgTable('managers', {
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
+// A person who mobilizes citizens on the ground for a leader's campaign.
 export const ambassadors = pgTable('ambassadors', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id).notNull(),
@@ -142,6 +176,7 @@ export const ambassadors = pgTable('ambassadors', {
 });
 
 // 7. EVENTS
+// A physical or scheduled gathering tied to a campaign.
 export const events = pgTable('events', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
@@ -149,8 +184,8 @@ export const events = pgTable('events', {
   title: varchar('title', { length: 255 }).notNull(),
   agenda: text('agenda').notNull(),
   venue: varchar('venue', { length: 255 }).notNull(),
-  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
-  endAt: timestamp('end_at', { withTimezone: true }).notNull(),
+  from: timestamp('from', { withTimezone: true }).notNull(),
+  to: timestamp('to', { withTimezone: true }).notNull(),
   attendants: jsonb('attendants').default(['public']).notNull(), // 'public' | 'ambassadors' | 'managers' | 'leaders'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -158,6 +193,7 @@ export const events = pgTable('events', {
 });
 
 // 8. POSTS & ENGAGEMENT
+// Any published update: a campaign post, a broadcast, or an aggregated news mention.
 export const posts = pgTable('posts', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id), // system-aggregated posts can have a null creatorId
@@ -177,6 +213,7 @@ export const posts = pgTable('posts', {
 });
 
 // 8.1 FEATURED
+// A post that's been paid to appear promoted on the homepage or directory.
 export const featured = pgTable('featured', {
   id: serial('id').primaryKey(),
   postId: integer('post_id').references(() => posts.id, { onDelete: 'cascade' }).notNull(),
@@ -187,6 +224,7 @@ export const featured = pgTable('featured', {
 });
 
 // 8.1 BANNED
+// A post moderated off the platform, with the reason it was taken down.
 export const banned = pgTable('banned', {
   id: serial('id').primaryKey(),
   postId: integer('post_id').references(() => posts.id, { onDelete: 'cascade' }).notNull(),
@@ -196,6 +234,7 @@ export const banned = pgTable('banned', {
 });
 
 // 8.3 TAGS
+// Links a news post to the leader(s) it mentions.
 export const tags = pgTable('tags', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id, { onDelete: 'cascade' }), // nullable if the tag is system-generated
@@ -206,6 +245,7 @@ export const tags = pgTable('tags', {
 });
 
 // 9. ISSUES (Civic Feedback Engine)
+// A civic topic citizens raise and vote on, tied to a position.
 export const issues = pgTable('issues', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
@@ -227,6 +267,7 @@ export const commentCreatorTypeEnum = pgEnum('comment_creator_type', [
 ]);
 
 // 10. COMMENTS
+// A threaded, votable reply on a post or an issue.
 export const comments = pgTable('comments', {
   id: serial('id').primaryKey(),  
   // 1. Unified Creator Pointer (Every actor is structurally a User first)
@@ -248,10 +289,19 @@ export const comments = pgTable('comments', {
 // What a follower subscribes to. digestId points at that row's id (null for platform-wide).
 export const digestEnum = pgEnum('digest', ['platform', 'position', 'leader', 'campaign']);
 
-// 11. FOLLOWERS (Many-to-Many Relationship between Users and Campaigns or Leaders)
+// 11. FOLLOWERS (Users OR anonymous citizens following Campaigns, Leaders or Positions.
+// userId is nullable: citizens follow with just a name + phone/email, no account needed;
+// geo columns power ward/constituency-targeted broadcasts.)
+// A citizen subscribed to a leader's, campaign's, or position's updates.
 export const followers = pgTable('followers', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }), // null for account-less follows
+  name: varchar('name', { length: 100 }), // display name for account-less follows
+  phoneNumber: varchar('phone_number', { length: 20 }),
+  emailAddress: varchar('email_address', { length: 100 }),
+  county: varchar('county', { length: 50 }),
+  constituency: varchar('constituency', { length: 50 }),
+  ward: varchar('ward', { length: 50 }),
   digest: digestEnum('digest').notNull(),
   digestId: integer('digest_id'), // polymorphic: positions/leaders/campaigns id; null for platform-wide follow
   email: boolean('email').default(false).notNull(),
@@ -261,14 +311,17 @@ export const followers = pgTable('followers', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  // One live follow per (user, target). coalesce(digestId, 0) makes platform-wide (null) dedupe too,
-  // since NULL != NULL in a plain unique index would otherwise allow duplicate platform follows.
+  // One live follow per (user, target) for signed-in follows. coalesce(digestId, 0) makes
+  // platform-wide (null) dedupe too; account-less rows (null userId) dedupe at the app layer
+  // by (digest, digestId, emailAddress/phoneNumber) since NULL never collides in unique indexes.
   uniqueIndex('one_follow_per_target')
     .on(t.userId, t.digest, sql`coalesce(${t.digestId}, 0)`)
     .where(sql`${t.deletedAt} is null`),
+  index('followers_target_idx').on(t.digest, t.digestId),
 ]);
 
 // 12. FILES
+// An uploaded media asset attached to a leader profile or campaign.
 export const files = pgTable('files', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
@@ -286,49 +339,63 @@ export const files = pgTable('files', {
   index('files_campaign_idx').on(t.campaignId),
 ]);
 
-// 12. PARTIES (Political Parties)
+// 12. PARTIES (Political Parties, per the ORPP register)
+// A registered political party a leader can belong to.
 export const parties = pgTable('parties', {
   id: serial('id').primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description').notNull(),
-  logoUrl: text('logo_url').notNull(),
-  verified: boolean('verified').default(false).notNull(),
+  name: varchar('name', { length: 255 }).notNull(), // full registered name, e.g. 'United Democratic Alliance'
+  abbreviation: varchar('abbreviation', { length: 30 }), // e.g. 'UDA'
+  slogan: text('slogan'),
+  description: text('description'),
+  symbol: text('symbol'), // ORPP-registered symbol, e.g. 'Wheelbarrow'
+  colors: text('colors'), // ORPP-registered colors, e.g. 'Green and Yellow'
+  logo: text('logo'), // logo image URL, once uploaded
+  contacts: jsonb('contacts').default({}), // phone/email, not in the ORPP register
+  postal: text('postal'), // postal address
+  hq: text('hq'), // physical head office address
+  status: varchar('status', { length: 20 }).notNull(), // 'full' | 'provisional' registration status
+  notes: text('notes'), // e.g. 'Formerly Wiper Democratic Movement (WDM)'
+  certifiedAt: timestamp('certified_at', { withTimezone: true }), // ORPP certificate date of issue
+  verifiedAt: timestamp('verified_at', { withTimezone: true }), // platform verification, distinct from ORPP certification
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
 // 13. PARTY_MEMBERSHIPS (Many-to-Many Relationship between Leaders and Parties)
+// Links a leader to a party for a given stretch of time.
 export const partyMemberships = pgTable('party_memberships', {
   id: serial('id').primaryKey(),
   partyId: integer('party_id').references(() => parties.id, { onDelete: 'cascade' }).notNull(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
   role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
-  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
-  endAt: timestamp('end_at', { withTimezone: true }),
+  from: timestamp('from', { withTimezone: true }).notNull(),
+  to: timestamp('to', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
 // 12. ALLIANCES (Unregistered Political Alliances)
+// An informal coalition of parties/leaders, outside formal party registration.
 export const alliances = pgTable('alliances', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
-  description: text('description').notNull(),
+  description: text('description'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
 // 13. ALLIANCE_MEMBERSHIPS (Many-to-Many Relationship between Leaders and Alliances)
+// Links a leader to an alliance for a given stretch of time.
 export const allianceMemberships = pgTable('alliance_memberships', {
   id: serial('id').primaryKey(),
   allianceId: integer('alliance_id').references(() => alliances.id, { onDelete: 'cascade' }).notNull(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
   role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
-  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
-  endAt: timestamp('end_at', { withTimezone: true }),
+  from: timestamp('from', { withTimezone: true }).notNull(),
+  to: timestamp('to', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -340,6 +407,7 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', ['pending', 
 export const subscriptionOriginEnum = pgEnum('subscription_origin', ['new', 'renewal', 'upgrade', 'downgrade']);
 
 // 14. SUBSCRIPTIONS (Paid premium packages). Each purchase/renewal/upgrade is a NEW row; never mutate tier in place.
+// A campaign's paid package (tier + billing cycle), one live row per campaign.
 export const subscriptions = pgTable('subscriptions', {
   id: serial('id').primaryKey(),
   campaignId: integer('campaign_id').references(() => campaigns.id).notNull(), // no cascade, financial record must outlive the campaign row
@@ -368,6 +436,7 @@ export const subscriptions = pgTable('subscriptions', {
 ]);
 
 // 15. PRICING (fix 6 — SRC-independent subscription rate card, versioned so a rate change never rewrites history)
+// The current subscription rate for a given office band, tier, and billing cycle.
 export const pricing = pgTable('pricing', {
   id: serial('id').primaryKey(),
   band: priceBandEnum('band').notNull(),
@@ -388,6 +457,7 @@ export const pricing = pgTable('pricing', {
 export const paymentPurposeEnum = pgEnum('payment_purpose', ['subscription', 'credits', 'feature', 'donation']);
 export const paymentStatusEnum = pgEnum('payment_status', ['pending', 'success', 'failed', 'reversed']);
 
+// An immutable record of one real-money charge, whatever it was for.
 export const payments = pgTable('payments', {
   id: serial('id').primaryKey(),
   payerId: integer('payer_id').references(() => users.id).notNull(),
@@ -406,6 +476,7 @@ export const payments = pgTable('payments', {
 });
 
 // 17. WALLETS & CREDIT LEDGER (fix 5 — prepaid credits for broadcasts/features; balance is a cache of the ledger)
+// A campaign's current prepaid credit balance, one row per campaign.
 export const wallets = pgTable('wallets', {
   id: serial('id').primaryKey(),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull().unique(),
@@ -416,6 +487,7 @@ export const wallets = pgTable('wallets', {
 
 export const creditTxnKindEnum = pgEnum('credit_txn_kind', ['topup', 'spend', 'refund', 'bonus']);
 
+// One event that moved a wallet's balance: a topup, a spend, a refund, or a bonus.
 export const creditTransactions = pgTable('credit_transactions', {
   id: serial('id').primaryKey(),
   walletId: integer('wallet_id').references(() => wallets.id, { onDelete: 'cascade' }).notNull(),
@@ -430,10 +502,13 @@ export const creditTransactions = pgTable('credit_transactions', {
   index('credit_txn_wallet_idx').on(t.walletId),
 ]);
 
-// 18. OTP VERIFICATIONS & DEVICES (fix 7 — Safaricom OTP + fingerprinting to block single-phone farming)
+// 18. OTPS & DEVICES (fix 7 — Safaricom OTP + fingerprinting to block single-phone farming)
+// Named `otps`, not `verifications`, to avoid colliding with better-auth's own
+// internal `verification` table in auth.schema.ts (unrelated email-link tokens).
 export const otpChannelEnum = pgEnum('otp_channel', ['sms', 'whatsapp', 'email']);
 
-export const verifications = pgTable('verifications', {
+// A one-time passcode sent to verify a phone number or email.
+export const otps = pgTable('otps', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
   channel: otpChannelEnum('channel').notNull(),
@@ -444,9 +519,10 @@ export const verifications = pgTable('verifications', {
   consumedAt: timestamp('consumed_at', { withTimezone: true }), // set once verified, prevents replay
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
-  index('verifications_destination_idx').on(t.destination),
+  index('otps_destination_idx').on(t.destination),
 ]);
 
+// A device fingerprint seen for a user, used to detect single-phone farming.
 export const devices = pgTable('devices', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -466,6 +542,7 @@ export const chatChannelEnum = pgEnum('chat_channel', ['web', 'whatsapp']);
 export const chatSenderEnum = pgEnum('chat_sender', ['follower', 'ai', 'leader', 'manager', 'ambassador']);
 export const chatTargetEnum = pgEnum('chat_target', ['leader', 'manager', 'ambassador']);
 
+// One chat thread, scoped to the platform, a position, a leader, or a campaign.
 export const conversations = pgTable('conversations', {
   id: serial('id').primaryKey(),
   scope: digestEnum('scope').notNull(), // platform | position | leader | campaign — same RAG scoping as follows
@@ -479,6 +556,7 @@ export const conversations = pgTable('conversations', {
   index('conversations_scope_idx').on(t.scope, t.scopeId),
 ]);
 
+// One message within a conversation, from a follower, the AI, or a team member.
 export const messages = pgTable('messages', {
   id: serial('id').primaryKey(),
   conversationId: integer('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
@@ -490,6 +568,66 @@ export const messages = pgTable('messages', {
 }, (t) => [
   index('messages_conversation_idx').on(t.conversationId),
 ]);
+
+// 21. ENDORSEMENTS (Phase 4 social proof: endorsements, testimonials and vote pledges.
+// Account-less like followers; approvedAt gates what shows publicly.)
+export const endorsementKindEnum = pgEnum('endorsement_kind', ['endorsement', 'testimonial', 'pledge']);
+
+// Public social proof for a leader: an endorsement, a testimonial, or a vote pledge.
+export const endorsements = pgTable('endorsements', {
+  id: serial('id').primaryKey(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  kind: endorsementKindEnum('kind').notNull(),
+  authorName: varchar('author_name', { length: 100 }).notNull(),
+  authorRole: varchar('author_role', { length: 100 }), // e.g. "Chair, Boda SACCO" — sells the endorsement
+  message: text('message'), // pledges may carry no message
+  ward: varchar('ward', { length: 50 }),
+  approvedAt: timestamp('approved_at', { withTimezone: true }), // null = pending team review
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('endorsements_leader_idx').on(t.leaderId, t.kind),
+]);
+
+// 22. DONATIONS (Phase 4 fundraising ledger. M-Pesa STK push replaces the manual
+// confirm flow once Daraja credentials land; reference then stores the receipt.)
+export const donationStatusEnum = pgEnum('donation_status', ['pending', 'confirmed', 'failed']);
+
+// One campaign-fundraising donation from a citizen.
+export const donations = pgTable('donations', {
+  id: serial('id').primaryKey(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  donorName: varchar('donor_name', { length: 100 }).notNull(),
+  phoneNumber: varchar('phone_number', { length: 20 }),
+  amount: integer('amount').notNull(), // KES
+  status: donationStatusEnum('status').default('pending').notNull(),
+  reference: varchar('reference', { length: 100 }), // M-Pesa receipt once integrated
+  isPublic: boolean('is_public').default(true).notNull(), // donor consented to appear on the donor wall
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('donations_leader_idx').on(t.leaderId, t.status),
+]);
+
+// 23. BALLOT SIMULATIONS (/vote/2027: a single simulated ballot event per citizen, not one row
+// per level. `selections` stores a candidateId per level so the share page re-fetches live
+// candidate data instead of freezing it — a later profile update or verification shows up automatically.)
+// One citizen's simulated 2027 ballot: their picks at every level, for sharing.
+export const ballotSimulations = pgTable('ballot_simulations', {
+  id: serial('id').primaryKey(),
+  publicId: varchar('public_id', { length: 12 }).notNull().unique(), // the /vote/2027/[publicId] slug
+  county: varchar('county', { length: 100 }).notNull(),
+  constituency: varchar('constituency', { length: 100 }).notNull(),
+  ward: varchar('ward', { length: 100 }).notNull(),
+  pollingStation: varchar('polling_station', { length: 150 }),
+  // { president, governor, senator, womanRep, mp, mca } -> candidateId string ("db:<leaderId>" | "mock:<slug>") | null
+  selections: jsonb('selections').notNull(),
+  voterName: varchar('voter_name', { length: 100 }), // opt-in, never rendered on the share page
+  voterContact: varchar('voter_contact', { length: 100 }), // opt-in phone or email, never rendered on the share page
+  consentedToContact: boolean('consented_to_contact').default(false).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
 
 // Better-auth generated tables (run: bun run auth:schema)
 export * from './auth.schema';
