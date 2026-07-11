@@ -20,7 +20,7 @@ export type PersonRow = {
 	party?: string;
 	title: string;
 	region: string;
-	status: 'incumbent' | 'aspirant' | 'former';
+	status: 'current' | 'aspirant' | 'former';
 	bio?: string;
 	education?: ExperienceRow[];
 	professional?: ExperienceRow[];
@@ -124,7 +124,7 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, row: Pe
 	}
 }
 
-// Incumbent term start = the 2022 swearing-in (also used as a placeholder start
+// Current term start = the 2022 swearing-in (also used as a placeholder start
 // for 'former' rows until a row supplies its own dates); aspirants carry a
 // future start date (2027 election day), matching the schema's convention.
 const INCUMBENT_START = new Date('2022-09-13T00:00:00+03:00');
@@ -159,9 +159,9 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 		}
 
 		// Person-level idempotency check runs BEFORE the seat-availability guard below, so an
-		// already-seeded incumbent still gets a chance to backfill a missing party_membership
+		// already-seeded current still gets a chance to backfill a missing party_membership
 		// (e.g. the parties table was rebuilt after leaders/mcas already ran) instead of being
-		// short-circuited by "this seat already has an incumbent."
+		// short-circuited by "this seat already has an current."
 		const email = `${slugify(row.name)}@seed.leaders.ke`;
 		const [already] = await db.select({ id: authUsers.id }).from(authUsers).where(eq(authUsers.email, email));
 
@@ -195,20 +195,20 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 			// to create just the leaders row below, reusing this domain user.
 		}
 
-		// A seat can only have one live incumbent (DB constraint); check regardless of who's
+		// A seat can only have one live current (DB constraint); check regardless of who's
 		// already seeded there, since a prior run may have used a different data source/spelling.
-		if (row.status === 'incumbent') {
-			const [existingIncumbent] = await db
+		if (row.status === 'current') {
+			const [existingCurrent] = await db
 				.select({ id: leaders.id })
 				.from(leaders)
-				.where(and(eq(leaders.positionId, position.id), eq(leaders.status, 'incumbent'), isNull(leaders.deletedAt)));
-			if (existingIncumbent) {
+				.where(and(eq(leaders.positionId, position.id), eq(leaders.status, 'current'), isNull(leaders.deletedAt)));
+			if (existingCurrent) {
 				skipped++;
 				continue;
 			}
 		}
 
-		// Wrapped so a failure partway (e.g. a race on the incumbent constraint) never
+		// Wrapped so a failure partway (e.g. a race on the current constraint) never
 		// leaves an orphan auth/domain-user row with no attached leader.
 		await db.transaction(async (tx) => {
 			let domainUserId = existingDomainUser?.id;

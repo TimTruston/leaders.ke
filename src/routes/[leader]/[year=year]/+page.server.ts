@@ -4,39 +4,45 @@ import { db } from '$lib/server/db';
 import {
 	campaigns,
 	donations,
-	endorsements,
 	followers,
 	pillars,
+	pledges,
 	posts
 } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, findLeaderBySlug, fullName, leaderPath } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, getDomainUser, leaderPath, resolveCurrentTerm } from '$lib/server/leader';
+import {
+	getFlaggedReviewCounts,
+	getMyReview,
+	handleDeleteReviewAction,
+	handleReviewAction,
+	listApprovedReviews,
+	listReviewPillarOptions
+} from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
 import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
-// tracker, updates, endorsements wall, pledges, fundraising and the AI
+// tracker, updates, citizen reviews, vote pledges, fundraising and the AI
 // constituent chat. Only the active cycle has a workspace; other years bounce
 // to the permanent record.
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const recordPath = leaderPath({ slug: params.leader });
 	if (Number(params.year) !== ACTIVE_CYCLE) redirect(302, recordPath);
 
-	const row = await findLeaderBySlug(params.leader);
+	const row = await requireLiveLeader(params);
 
 	if (!row) error(404, 'Campaign not found');
 
 	const leaderId = row.leaders.id;
-	const endorsementScope = and(
-		eq(endorsements.leaderId, leaderId),
-		isNull(endorsements.deletedAt)
-	);
+	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 
 	const [
 		pillarRows,
 		postRows,
 		[followerRow],
-		endorsementRows,
-		testimonialRows,
+		reviewRows,
+		reviewPillarOptions,
+		flaggedReviewCounts,
 		[pledgeRow],
 		[raisedRow]
 	] = await Promise.all([
@@ -75,20 +81,17 @@ export const load: PageServerLoad = async ({ params }) => {
 					isNull(followers.deletedAt)
 				)
 			),
-		db
-			.select()
-			.from(endorsements)
-			.where(and(endorsementScope, eq(endorsements.kind, 'endorsement')))
-			.orderBy(desc(endorsements.createdAt)),
-		db
-			.select()
-			.from(endorsements)
-			.where(and(endorsementScope, eq(endorsements.kind, 'testimonial')))
-			.orderBy(desc(endorsements.createdAt)),
+		// Citizen reviews of this person (follows them across every seat), plus
+		// this campaign's pillar options for the review form.
+		listApprovedReviews(row.users.id, viewer?.id),
+		listReviewPillarOptions(leaderId),
+		getFlaggedReviewCounts(row.users.id),
+		// Live vote pledges across all of the leader's campaigns
 		db
 			.select({ n: count() })
-			.from(endorsements)
-			.where(and(endorsementScope, eq(endorsements.kind, 'pledge'))),
+			.from(pledges)
+			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
+			.where(and(eq(campaigns.leaderId, leaderId), isNull(pledges.deletedAt))),
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
@@ -101,16 +104,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			)
 	]);
 
-	const approvedOnly = (rows: typeof endorsementRows) =>
-		rows
-			.filter((e) => e.approvedAt)
-			.map((e) => ({
-				id: e.id,
-				authorName: e.authorName,
-				authorRole: e.authorRole,
-				message: e.message,
-				ward: e.ward
-			}));
+	const myReview = viewer ? await getMyReview(row.users.id, viewer.id) : null;
 
 	const name = fullName(row.users);
 	return {
@@ -134,8 +128,12 @@ export const load: PageServerLoad = async ({ params }) => {
 			pillars: pillarRows
 		},
 		posts: postRows.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() })),
-		endorsements: approvedOnly(endorsementRows),
-		testimonials: approvedOnly(testimonialRows),
+		reviews: reviewRows,
+		reviewPillarOptions,
+		flaggedReviewCounts,
+		myReview,
+		viewerName: viewer ? fullName(viewer) : null,
+		signedIn: !!locals.user,
 		pledgeCount: pledgeRow.n,
 		fundraising: {
 			goal: row.leaders.fundraisingGoal,
@@ -144,8 +142,17 @@ export const load: PageServerLoad = async ({ params }) => {
 	};
 };
 
+// Resolves the same leader row the /[leader] profile page would show (whichever
+// term isn't 'former'), and requires it to be verified — a campaign workspace is
+// never public before the profile it belongs to is.
 async function requireLiveLeader(params: { leader: string }) {
-	return await findLeaderBySlug(params.leader);
+	const resolved = await resolveCurrentTerm(params.leader);
+	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) return null;
+	return {
+		users: resolved.row.users,
+		leaders: resolved.currentTerm.leaders,
+		positions: resolved.currentTerm.positions
+	};
 }
 
 export const actions: Actions = {
@@ -204,45 +211,16 @@ export const actions: Actions = {
 		return { followed: true, name };
 	},
 
-	pledge: async (event) => {
+	review: async (event) => {
 		const row = await requireLiveLeader(event.params);
-		if (!row) return fail(400, { error: 'Campaign not found.' });
-
-		const form = await event.request.formData();
-		const name = String(form.get('name') ?? '').trim();
-		const ward = String(form.get('ward') ?? '').trim();
-		if (!name) return fail(400, { error: 'Your name is required to pledge.' });
-
-		// Pledges count immediately (no message to moderate).
-		await db.insert(endorsements).values({
-			leaderId: row.leaders.id,
-			kind: 'pledge',
-			authorName: name,
-			ward: ward || null,
-			approvedAt: new Date()
-		});
-		return { pledged: true };
+		if (!row) return fail(400, { reviewError: 'Campaign not found.' });
+		return await handleReviewAction(event, row.users.id, row.leaders.id);
 	},
 
-	endorse: async (event) => {
+	deleteReview: async (event) => {
 		const row = await requireLiveLeader(event.params);
-		if (!row) return fail(400, { error: 'Campaign not found.' });
-
-		const form = await event.request.formData();
-		const authorName = String(form.get('authorName') ?? '').trim();
-		const authorRole = String(form.get('authorRole') ?? '').trim();
-		const message = String(form.get('message') ?? '').trim();
-		if (!authorName || !message) return fail(400, { error: 'Your name and message are required.' });
-
-		// Citizen submissions await team approval before showing publicly.
-		await db.insert(endorsements).values({
-			leaderId: row.leaders.id,
-			kind: 'testimonial',
-			authorName,
-			authorRole: authorRole || null,
-			message
-		});
-		return { endorsed: true };
+		if (!row) return fail(400, { reviewError: 'Campaign not found.' });
+		return await handleDeleteReviewAction(event, row.users.id);
 	},
 
 	donate: async (event) => {

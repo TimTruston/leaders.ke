@@ -1,8 +1,9 @@
 <script lang="ts">
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
+	import Reviews from '$lib/components/Reviews.svelte';
 	import type { PageProps } from './$types';
 
-	let { data }: PageProps = $props();
+	let { data, form }: PageProps = $props();
 	const leader = $derived(data.leader);
 
 	const fmt = new Intl.NumberFormat('en-KE');
@@ -119,7 +120,7 @@
 										? `Vying · from ${term.startYear}`
 										: `${term.startYear} to ${term.endYear ?? 'present'}`}
 									badge={term.status}
-									badgeClass={term.status === 'incumbent'
+									badgeClass={term.status === 'current'
 										? 'bg-primary-soft text-on-primary'
 										: 'bg-surface text-muted'}
 								/>
@@ -178,6 +179,19 @@
 					</div>
 				</div>
 			{/if}
+
+			<!-- Citizen reviews -->
+			<Reviews
+				leaderName={leader.name}
+				positionTitle={leader.positionTitle}
+				reviews={data.reviews}
+				pillarOptions={data.reviewPillarOptions}
+				signedIn={data.signedIn}
+				flaggedReviewCounts={data.flaggedReviewCounts}
+				myReview={data.myReview}
+				viewerName={data.viewerName}
+				{form}
+			/>
 		</div>
 
 		<!-- Sidebar: active campaign + seat links -->

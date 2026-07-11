@@ -31,12 +31,12 @@ export const load: PageServerLoad = async ({ params }) => {
 	const regions = positionRows
 		.map((p) => {
 			const seatLeaders = leaderRows.filter((r) => r.positions.id === p.id);
-			const incumbent = seatLeaders.find((r) => r.leaders.status === 'incumbent');
+			const current = seatLeaders.find((r) => r.leaders.status === 'current');
 			return {
 				region: p.region,
 				path: `/${params.position}/${slugify(p.region)}`,
 				boundary: p.boundary,
-				incumbentName: incumbent ? fullName(incumbent.users) : null,
+				currentName: current ? fullName(current.users) : null,
 				contestantCount: seatLeaders.filter((r) => r.leaders.status === 'aspirant').length
 			};
 		})

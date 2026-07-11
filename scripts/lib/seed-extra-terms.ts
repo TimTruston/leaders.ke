@@ -12,7 +12,7 @@ type ExtraTerm = {
 	name: string;
 	title: string;
 	region: string;
-	status: 'former' | 'incumbent' | 'aspirant';
+	status: 'former' | 'current' | 'aspirant';
 	startYear: number;
 	endYear: number | null;
 	note?: string;

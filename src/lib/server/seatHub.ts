@@ -50,7 +50,7 @@ export async function loadSeatHub(position: string, region: string) {
 		};
 	};
 
-	const incumbentRow = rows.find((r) => r.leaders.status === 'incumbent');
+	const currentRow = rows.find((r) => r.leaders.status === 'current');
 	const dbContestants = rows.filter((r) => r.leaders.status === 'aspirant').map(toCard);
 
 	// History: every recorded term for this seat, most recent first. Aspirants
@@ -106,7 +106,7 @@ export async function loadSeatHub(position: string, region: string) {
 		regionLabel,
 		boundary,
 		breadcrumb,
-		incumbent: incumbentRow ? toCard(incumbentRow) : null,
+		current: currentRow ? toCard(currentRow) : null,
 		contestants: dbContestants,
 		history,
 		cycle: ACTIVE_CYCLE,

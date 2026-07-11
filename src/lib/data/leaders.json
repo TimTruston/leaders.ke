@@ -4,7 +4,7 @@
     "party": "United Democratic Alliance",
     "title": "President",
     "region": "Kenya",
-    "status": "incumbent",
+    "status": "current",
     "education": [
       {
         "title": "Bachelor of Science in Botany and Zoology",
@@ -428,7 +428,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Mombasa",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Abdullswamad Sherrif Nassir is a Kenyan politician serving as the second Governor of Mombasa County. Born in Majengo, Mombasa, he previously represented Mvita Constituency as Member of Parliament. Affiliated with the Orange Democratic Movement (ODM), he emphasizes coastal economic development, enhanced security, and preservation of cultural heritage.",
     "education": [
       {
@@ -472,14 +472,14 @@
     "name": "Mohammed Faki",
     "title": "Senator",
     "region": "Mombasa",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Fatuma Achani",
     "party": "UDA",
     "title": "Governor",
     "region": "Kwale",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Fatuma Achani is a Kenyan politician who made history as the first female governor in the Coast region, winning the Kwale gubernatorial election as a member of the United Democratic Alliance (UDA) party.",
     "professional": [
       {
@@ -506,7 +506,7 @@
     "name": "Issa Juma Boy",
     "title": "Senator",
     "region": "Kwale",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Senator for Kwale County.",
     "education": [
       {
@@ -543,7 +543,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Kilifi",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Gideon Mung'aro is a Kenyan politician who has served as Governor of Kilifi County since August 2022. He previously represented Kilifi North Constituency in the National Assembly following the 2013 election, and is a former Mayor of Malindi, having also represented Malindi Constituency in parliament before it was split.",
     "professional": [
       {
@@ -595,7 +595,7 @@
     "name": "Stewart Madzayo",
     "title": "Senator",
     "region": "Kilifi",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Stewart Madzayo is a Kenyan politician born in Chonyi, Bahari Constituency, Kilifi County. He is the Senator for Kilifi County and a member of the Orange Democratic Movement.",
     "professional": [
       {
@@ -617,13 +617,13 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Tana River",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Danson Mungatana",
     "title": "Senator",
     "region": "Tana River",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Danson Mungatana is a Kenyan lawyer and politician serving as Senator for Tana River County, born on 9 August 1970. He has served in various roles, including Member of Parliament for Garsen Constituency.",
     "education": [
       {
@@ -681,51 +681,51 @@
     "party": "ANC",
     "title": "Governor",
     "region": "Lamu",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Joseph Githuku",
     "title": "Senator",
     "region": "Lamu",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Andrew Mwadime",
     "title": "Governor",
     "region": "Taita Taveta",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Johnes Mwaruma",
     "title": "Senator",
     "region": "Taita Taveta",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Nadhif Jama",
     "party": "ODM",
     "title": "Governor",
     "region": "Garissa",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Abdulkadir Haji",
     "title": "Senator",
     "region": "Garissa",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Ahmed Abdullahi Jiir",
     "party": "ODM",
     "title": "Governor",
     "region": "Wajir",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Abass Sheikh Mohammed",
     "title": "Senator",
     "region": "Wajir",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Abass Sheikh Mohamed is a Kenyan politician serving as Senator for Wajir County. He previously served in the 11th Parliament of Kenya and has held various roles, including CEO of the Kenya Livestock Marketing Council.",
     "education": [
       {
@@ -783,7 +783,7 @@
     "party": "UDM",
     "title": "Governor",
     "region": "Mandera",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Mohamed Adan Khalif is the governor-elect of Mandera County, having previously served as speaker of the Mandera County Assembly. He won the election with 53,185 votes.",
     "professional": [
       {
@@ -812,20 +812,20 @@
     "name": "Capt. Ali Roba",
     "title": "Senator",
     "region": "Mandera",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Mohamed Muhammad Ali",
     "party": "ODM",
     "title": "Governor",
     "region": "Marsabit",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Mohamed Said Chute",
     "title": "Senator",
     "region": "Marsabit",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Chute Mohamed Said is a Kenyan politician serving as Senator for Marsabit County, elected in the August 2022 general election under the UDA banner. He chairs the Standing Committee on National Cohesion, Equal Opportunity and Regional Integration.",
     "education": [
       {
@@ -875,25 +875,25 @@
     "party": "Jubilee Party",
     "title": "Governor",
     "region": "Isiolo",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Fatuma Dullo",
     "title": "Senator",
     "region": "Isiolo",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Kawira Mwangaza",
     "title": "Governor",
     "region": "Meru",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Kathuri Murungi",
     "title": "Senator",
     "region": "Meru",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Kathuri Murungi is a Kenyan politician and Member of Parliament for South Imenti Constituency in Meru County. He has served on several parliamentary departmental committees and declared his interest in the Senatorial seat ahead of the 2022 general election.",
     "education": [
       {
@@ -987,13 +987,13 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Tharaka-Nithi",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Gataya Mwenda",
     "title": "Senator",
     "region": "Tharaka-Nithi",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Gataya Mwenda is the current Senator for Tharaka Nithi County, elected in August 2022 on the United Democratic Alliance ticket. He served as Member of the County Assembly for Tharaka Nithi from 2013 to 2022, with a professional background in the civil service from 1990 to 2007.",
     "education": [
       {
@@ -1046,7 +1046,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Embu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Cecily Mutitu Mbarire is the Governor of Embu County and Chairperson of the UDA Party, having served in various roles including Member of Parliament and Deputy Minister for Tourism and Transport.",
     "education": [
       {
@@ -1119,7 +1119,7 @@
     "name": "Alexander Mundigi",
     "title": "Senator",
     "region": "Embu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Alexander Mundigi Munyi is the Senator for Embu County, elected in 2022 on a Democratic Party ticket, having defied the odds to win the seat against candidates from more dominant political parties.",
     "education": [
       {
@@ -1165,13 +1165,13 @@
     "party": "Wiper Patriotic Front",
     "title": "Governor",
     "region": "Kitui",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Enock Kiio Wambua",
     "title": "Senator",
     "region": "Kitui",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Enoch Wambua Kiio is a Kenyan politician and Senator for Kitui County, born on 31 October 1972, with a background in journalism and education from Moi University and other institutions.",
     "education": [
       {
@@ -1239,13 +1239,13 @@
     "party": "Wiper Patriotic Front",
     "title": "Governor",
     "region": "Machakos",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Agnes Kavindu",
     "title": "Senator",
     "region": "Machakos",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Agnes Kavindu is a Kenyan politician and the current Senator for Machakos County. Born in Ngonda Village, Matungulu, Machakos County, in the early 1960s, she began her education at Ngonda Primary School before joining a local secondary school in Machakos.",
     "education": [
       {
@@ -1297,20 +1297,20 @@
     "party": "Wiper Patriotic Front",
     "title": "Governor",
     "region": "Makueni",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Dan Maanzo",
     "title": "Senator",
     "region": "Makueni",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Moses Badilisha Kiarie",
     "party": "UDA",
     "title": "Governor",
     "region": "Nyandarua",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Dr. Moses Ndirangu Kiarie Badilisha is the Governor of Nyandarua County, elected in August 2022 on a United Democratic Alliance ticket. Born in Munyeki village, he has a background in engineering and energy development.",
     "professional": [
       {
@@ -1338,7 +1338,7 @@
     "name": "John Methu",
     "title": "Senator",
     "region": "Nyandarua",
-    "status": "incumbent",
+    "status": "current",
     "bio": "John Methu Muhia is a Kenyan politician and the current Senator of Nyandarua County. Born on 14 February 1991 in Kinangop Constituency and raised by his grandmother, he pursued a bachelor's degree in Political Science from Pwani University and developed a strong interest in governance, leadership, and public policy.",
     "education": [
       {
@@ -1367,26 +1367,26 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Nyeri",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Wahome Wamatinga",
     "title": "Senator",
     "region": "Nyeri",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Anne Waiguru",
     "party": "UDA",
     "title": "Governor",
     "region": "Kirinyaga",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "James Murango",
     "title": "Senator",
     "region": "Kirinyaga",
-    "status": "incumbent",
+    "status": "current",
     "bio": "James Kamau Murango is the Senator for Kirinyaga County, elected in 2022, and chairs the Senate's Agriculture, Livestock and Fisheries Committee.",
     "education": [
       {
@@ -1446,7 +1446,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Murang'a",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Irungu Kang'ata is the Governor of Murang'a County, born in 1980 in Murang'a town. He previously served as Murang'a County Senator and Majority Chief Whip for the Jubilee party in the Kenya Senate.",
     "professional": [
       {
@@ -1485,7 +1485,7 @@
     "name": "Joe Nyutu",
     "title": "Senator",
     "region": "Murang'a",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Joe Nyutu is a Kenyan politician and the current Senator for Murang'a County under the United Democratic Alliance (UDA) party. Born in 1965 in Murang'a County, he has a background in education.",
     "education": [
       {
@@ -1546,7 +1546,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Kiambu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Paul Kimani Wamatangi is a Kenyan politician serving as Governor of Kiambu County.",
     "education": [
       {
@@ -1610,7 +1610,7 @@
     "name": "Karungo wa Thang'wa",
     "title": "Senator",
     "region": "Kiambu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Paul Karungo Wa Thang'wa is a Kenyan politician serving as Senator of Kiambu County. Born into a family of thirteen siblings, he began his education at Mitahato Primary School before graduating from the University of Nairobi with a bachelor's degree in development communication. His political career began in 2013 when he was elected MCA for Ngewa Ward.",
     "education": [
       {
@@ -1673,7 +1673,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Turkana",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Jeremiah Ekamais Lomorukai is the Governor of Turkana County, elected in 2022, having previously served two terms as Member of Parliament for Loima Constituency.",
     "professional": [
       {
@@ -1700,20 +1700,20 @@
     "name": "James Lomenen Ekomwa",
     "title": "Senator",
     "region": "Turkana",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Simon Kachapin",
     "party": "UDA",
     "title": "Governor",
     "region": "West Pokot",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Julius Murgor",
     "title": "Senator",
     "region": "West Pokot",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Recha Julius Murgor is a Kenyan politician and the current Senator for West Pokot County. Born into the Pokot community, he founded the Pokot Outreach Ministry with his wife Rachel, entered formal politics in 2007, and has since focused on development, peace-building, and social welfare initiatives.",
     "education": [
       {
@@ -1765,7 +1765,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Samburu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Jonathan Lelelit Lati is the Governor of Samburu County, elected in 2022. He previously served two terms as Member of Parliament for Samburu West Constituency, from 2013 to 2022.",
     "education": [
       {
@@ -1810,14 +1810,14 @@
     "name": "Lelegwe Ltumbesi",
     "title": "Senator",
     "region": "Samburu",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "George Natembeya",
     "party": "DAP-K",
     "title": "Governor",
     "region": "Trans Nzoia",
-    "status": "incumbent",
+    "status": "current",
     "bio": "George Natembeya is the Governor of Trans Nzoia County, having assumed office in October 2022. With a background in public service, he has also expressed interest in a future presidential bid.",
     "education": [
       {
@@ -1883,7 +1883,7 @@
     "name": "Allan Chesang",
     "title": "Senator",
     "region": "Trans Nzoia",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Allan Kiprotich Chesang is a Kenyan businessman and politician serving as the current Senator of Trans Nzoia County.",
     "education": [
       {
@@ -1952,7 +1952,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Uasin Gishu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Jonathan Bii is the Governor of Uasin Gishu County and a member of the United Democratic Alliance (UDA) party, elected in 2022. He has a background in education and community development.",
     "education": [
       {
@@ -1988,7 +1988,7 @@
     "name": "Jackson Mandago",
     "title": "Senator",
     "region": "Uasin Gishu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Jackson Kiplagat Arap Mandago is a Kenyan politician who has served as Governor of Uasin Gishu and is currently the county's Senator. Born and raised in Uasin Gishu, he was educated at Kenyatta University and the Catholic University of Eastern Africa.",
     "education": [
       {
@@ -2022,7 +2022,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Elgeyo/Marakwet",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Wisley Rotich is the second Governor of Elgeyo Marakwet County, having previously served as Deputy Governor from 2017 to 2022. He holds a master's and bachelor's degree in Economics from Moi University and has worked at the Kenya Wildlife Service and Equity Bank.",
     "education": [
       {
@@ -2058,46 +2058,46 @@
     "name": "William Kisang",
     "title": "Senator",
     "region": "Elgeyo/Marakwet",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Stephen Sang",
     "party": "UDA",
     "title": "Governor",
     "region": "Nandi",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Samson Cherargei",
     "title": "Senator",
     "region": "Nandi",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Benjamin Cheboi",
     "party": "UDA",
     "title": "Governor",
     "region": "Baringo",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "William Cheptumo Kipkorir",
     "title": "Senator",
     "region": "Baringo",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Joshua Irungu",
     "party": "UDA",
     "title": "Governor",
     "region": "Laikipia",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "John Kinyua",
     "title": "Senator",
     "region": "Laikipia",
-    "status": "incumbent",
+    "status": "current",
     "bio": "John Kinyua Nderitu is a Kenyan politician serving as Senator for Laikipia County, with a background in pharmaceuticals and business. He has been actively involved in politics since 2007.",
     "education": [
       {
@@ -2149,20 +2149,20 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Nakuru",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Tabitha Keroche",
     "title": "Senator",
     "region": "Nakuru",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Patrick Ole Ntutu",
     "party": "UDA",
     "title": "Governor",
     "region": "Narok",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Patrick Keturet Ole Ntutu is the Governor of Narok County, elected in 2022, following a long career in public service.",
     "education": [
       {
@@ -2196,27 +2196,27 @@
     "name": "Ledama Ole Kina",
     "title": "Senator",
     "region": "Narok",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Joseph Ole Lenku",
     "party": "ODM",
     "title": "Governor",
     "region": "Kajiado",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Samuel Kanar Seki",
     "title": "Senator",
     "region": "Kajiado",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Erick Mutai",
     "party": "UDA",
     "title": "Governor",
     "region": "Kericho",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Erick Kipkoech Mutai is a Kenyan academic and politician serving as Governor of Kericho County. Born on 28 December 1983, he worked as a university lecturer before entering politics.",
     "education": [
       {
@@ -2249,7 +2249,7 @@
     "name": "Aaron Cheruiyot",
     "title": "Senator",
     "region": "Kericho",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Aaron Cheruiyot is a Kenyan politician born on 23 February 1986 in Kapchebet, Kabianga. Elected Senator for Kericho County, he served as Majority Leader of the Senate from 2022. He is married to Linah Chesang Cheruiyot and has one child.",
     "education": [
       {
@@ -2310,13 +2310,13 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Bomet",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Hillary Sigei",
     "title": "Senator",
     "region": "Bomet",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Hillary Kiprotich Sigei is a senatorial aspirant in Bomet County.",
     "education": [
       {
@@ -2367,7 +2367,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Kakamega",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Fernandes Barasa is the Governor of Kakamega, having won the gubernatorial seat in the 2022 election. A member of the Orange Democratic Movement (ODM), he has a background in accounting and corporate leadership.",
     "education": [
       {
@@ -2401,7 +2401,7 @@
     "name": "Boni Khalwale",
     "title": "Senator",
     "region": "Kakamega",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Boni Khalwale is a Kenyan politician and the current Senator of Kakamega, elected on a UDA party ticket, known as a chief critic of the Ruto administration.",
     "education": [
       {
@@ -2433,13 +2433,13 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Vihiga",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Godfrey Osotsi",
     "title": "Senator",
     "region": "Vihiga",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Godfrey Atieno Osotsi is a Kenyan politician serving as Senator for Vihiga County, elected in August 2022. He previously served as a nominated Member of the National Assembly of Kenya from 2017 to 2022.",
     "education": [
       {
@@ -2532,33 +2532,33 @@
     "party": "Forum for Restoration of Democracy- Kenya",
     "title": "Governor",
     "region": "Bungoma",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Moses Wetangula",
     "title": "Senator",
     "region": "Bungoma",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Paul Otuoma",
     "party": "ODM",
     "title": "Governor",
     "region": "Busia",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Okiya Omtata",
     "title": "Senator",
     "region": "Busia",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "James Orengo",
     "party": "ODM",
     "title": "Governor",
     "region": "Siaya",
-    "status": "incumbent",
+    "status": "current",
     "bio": "James Aggrey Bob Orengo is a Kenyan lawyer, human rights activist, and politician who is the current Governor of Siaya County. Born in 1951 in Kasipul Kabondo, Homa Bay County, he has held several government positions, including Senator of Siaya County and Minister for Lands.",
     "education": [
       {
@@ -2609,20 +2609,20 @@
     "name": "Oburu Oginga",
     "title": "Senator",
     "region": "Siaya",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Prof Anyang' Nyong'o",
     "party": "ODM",
     "title": "Governor",
     "region": "Kisumu",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Tom Ojienda",
     "title": "Senator",
     "region": "Kisumu",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Tom Ojienda is a Senior Counsel and politician from Kisumu who won the Orange Democratic Movement (ODM) Senate ticket for Kisumu."
   },
   {
@@ -2630,7 +2630,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Homa Bay",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Gladys Atieno Wanga is a Kenyan politician and the current Governor of Homa Bay County. A member of the Orange Democratic Movement (ODM), she served as Member of Parliament for Homa Bay Woman Representative from 2017 to 2022.",
     "education": [
       {
@@ -2658,20 +2658,20 @@
     "name": "Moses Kajwang",
     "title": "Senator",
     "region": "Homa Bay",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Ochillo Ayacko",
     "party": "ODM",
     "title": "Governor",
     "region": "Migori",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Eddy Oketch",
     "title": "Senator",
     "region": "Migori",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Eddy Oketch Gicheru is a Kenyan politician and Senator for Migori County, born on 12 August 1991 and elected on an Orange Democratic Movement (ODM) ticket. He has a background in education and social entrepreneurship and has led initiatives promoting youth empowerment and environmental sustainability.",
     "education": [
       {
@@ -2739,7 +2739,7 @@
     "party": "ODM",
     "title": "Governor",
     "region": "Kisii",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Paul Simba Arati is a Kenyan politician and the current Governor of Kisii County, elected in 2022. A member of the Orange Democratic Movement, he previously served as Member of Parliament for Dagoretti North Constituency.",
     "education": [
       {
@@ -2794,20 +2794,20 @@
     "name": "Richard Onyonka",
     "title": "Senator",
     "region": "Kisii",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Amos Nyaribo",
     "party": "UPA",
     "title": "Governor",
     "region": "Nyamira",
-    "status": "incumbent"
+    "status": "current"
   },
   {
     "name": "Erick Okong'o Omogeni",
     "title": "Senator",
     "region": "Nyamira",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Erick Okong'o Omogeni is a Kenyan politician who served as Nyamira County Senator from 2017 to 2022. Born in 1970 in Nyamira division, he holds a Bachelor of Law degree from the University of Nairobi.",
     "education": [
       {
@@ -2868,7 +2868,7 @@
     "party": "UDA",
     "title": "Governor",
     "region": "Nairobi",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Johnson Sakaja is the current Governor of Nairobi City County, born on 2 February 1985. He previously served as Nairobi Senator and a nominated MP, and is a member of the United Democratic Alliance (UDA) party.",
     "education": [
       {
@@ -2905,7 +2905,7 @@
     "title": "Senator",
     "region": "Nairobi",
     "party": "ODM",
-    "status": "incumbent",
+    "status": "current",
     "bio": "Senator for Nairobi County focused on devolution oversight, affordable housing accountability and youth employment programs across all 17 sub-counties.",
     "pillars": [
       {

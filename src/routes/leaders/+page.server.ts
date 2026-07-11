@@ -1,17 +1,17 @@
-import { and, count, eq, inArray, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
-// Real leader profiles for the directory.
+// Real leader profiles for the directory. Only verified profiles are public here.
 export const load: PageServerLoad = async () => {
 	const rows = await db
 		.select()
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(isNull(leaders.deletedAt));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
 
 	const leaderIds = rows.map((r) => r.leaders.id);
 

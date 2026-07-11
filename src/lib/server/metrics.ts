@@ -1,13 +1,13 @@
 // Public leader metrics shared by /ranks, /compare and dashboards.
 // The engagement score is deliberately transparent: citizens can recompute it.
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	campaigns,
-	endorsements,
 	followers,
 	leaders,
 	pillars,
+	pledges,
 	positions,
 	posts,
 	users
@@ -42,13 +42,14 @@ export function engagementScore(m: {
 	return m.followers + 5 * m.pledges + 10 * m.postCount + 100 * m.delivered;
 }
 
+// Public metrics: only verified profiles are listed, per the same rule as /leaders and /search.
 export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
 	const rows = await db
 		.select()
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(isNull(leaders.deletedAt));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
 
 	const dbMetrics = await Promise.all(
 		rows.map(async (r) => {
@@ -64,16 +65,12 @@ export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
 							isNull(followers.deletedAt)
 						)
 					),
+				// Live vote pledges across all of the leader's campaigns
 				db
 					.select({ n: count() })
-					.from(endorsements)
-					.where(
-						and(
-							eq(endorsements.leaderId, leaderId),
-							eq(endorsements.kind, 'pledge'),
-							isNull(endorsements.deletedAt)
-						)
-					),
+					.from(pledges)
+					.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
+					.where(and(eq(campaigns.leaderId, leaderId), isNull(pledges.deletedAt))),
 				db
 					.select({ n: count() })
 					.from(posts)

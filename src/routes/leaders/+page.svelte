@@ -32,7 +32,7 @@
 	let position = $state('President');
 	let region = $state('');
 	let party = $state('');
-	let verifiedOnly = $state(false);
+	let status = $state<'' | 'current' | 'aspirant'>('');
 	let query = $state('');
 	let page = $state(1);
 
@@ -50,7 +50,7 @@
 					(!region || l.countyLabel === region) &&
 					(!position || l.positionTitle === position) &&
 					(!party || l.party === party) &&
-					(!verifiedOnly || l.verified) &&
+					(!status || l.status === status) &&
 					(!query || l.name.toLowerCase().includes(query.toLowerCase()))
 			)
 			.toSorted((a, b) => Number(b.verified) - Number(a.verified) || b.followers - a.followers)
@@ -68,12 +68,12 @@
 		region = '';
 		position = 'President';
 		party = '';
-		verifiedOnly = false;
+		status = '';
 		query = '';
 	}
 
 	const hasFilters = $derived(
-		!!(region || position !== 'President' || party || verifiedOnly || query)
+		!!(region || position !== 'President' || party || status || query)
 	);
 </script>
 
@@ -136,7 +136,7 @@
 				{parties}
 				bind:region
 				bind:party
-				bind:verifiedOnly
+				bind:status
 				{hasFilters}
 				onClear={clearFilters}
 			/>

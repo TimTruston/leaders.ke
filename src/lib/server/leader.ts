@@ -3,7 +3,7 @@
 // /<slug> (+ /<slug>/<year> for their active campaign workspace). Seat-level
 // pages stay position-first: /<position>/<region> (or just /<position> for
 // single-region national seats like President).
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
 
@@ -165,14 +165,37 @@ export async function findLeaderBySlug(slug: string) {
 	return row ?? null;
 }
 
-/** All leaders (joined to person + seat) for one position/region pair. */
+/** The seat a /[leader] page (and its /[year] campaign workspace) leads with:
+ * whichever term has a live campaign (not 'former'), else the most recent past
+ * term. Shared so both routes resolve the identical leader row for one slug —
+ * a person can hold several `leaders` rows, and picking different ones per
+ * route was a real bug (reviews/verification diverging between the two pages). */
+export async function resolveCurrentTerm(slug: string) {
+	const row = await findLeaderBySlug(slug);
+	if (!row) return null;
+
+	const terms = await db
+		.select()
+		.from(leaders)
+		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.where(and(eq(leaders.userId, row.users.id), isNull(leaders.deletedAt)));
+
+	const currentTerm =
+		terms.find((t) => t.leaders.status !== 'former') ??
+		terms.toSorted((a, b) => b.leaders.from.getTime() - a.leaders.from.getTime())[0];
+
+	return { row, terms, currentTerm };
+}
+
+/** All verified leaders (joined to person + seat) for one position/region pair —
+ * public seat-hub pages only ever show verified profiles. */
 export async function listLeadersForSeat(position: string, region: string) {
 	const rows = await db
 		.select()
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(isNull(leaders.deletedAt));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
 
 	return rows.filter(
 		(r) => slugify(r.positions.title) === position && slugify(r.positions.region) === region

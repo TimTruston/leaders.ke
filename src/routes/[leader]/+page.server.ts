@@ -1,35 +1,46 @@
 import { error } from '@sveltejs/kit';
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, experience, followers, leaders, pillars, positions, posts, tags } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, campaignPath, findLeaderBySlug, fullName, slugify } from '$lib/server/leader';
-import type { PageServerLoad } from './$types';
+import { campaigns, contacts, experience, followers, pillars, posts, tags } from '$lib/server/db/schema';
+import { ACTIVE_CYCLE, campaignPath, fullName, getDomainUser, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import {
+	getFlaggedReviewCounts,
+	getMyReview,
+	handleDeleteReviewAction,
+	handleReviewAction,
+	listApprovedReviews,
+	listReviewPillarOptions
+} from '$lib/server/reviews';
+import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]: the permanent leader record — bio, verified track record across
 // every seat they've held or are vying for, education/professional experience,
 // and a pointer to the active campaign workspace at /[leader]/[year].
-export const load: PageServerLoad = async ({ params }) => {
-	const row = await findLeaderBySlug(params.leader);
+export const load: PageServerLoad = async ({ params, locals }) => {
+	const resolved = await resolveCurrentTerm(params.leader);
 
-	if (!row) error(404, 'Leader not found');
+	if (!resolved) error(404, 'Leader not found');
+	const { row, terms, currentTerm } = resolved;
 
-	const terms = await db
-		.select()
-		.from(leaders)
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(leaders.userId, row.users.id), isNull(leaders.deletedAt)));
+	// Only verified profiles are public; unverified ones stay dashboard-only until IEBC-verified.
+	if (!currentTerm.leaders.verifiedAt) error(404, 'Leader not found');
 
-	// The seat this page leads with: whichever term has a live campaign (not
-	// 'former'), else their most recent past term. Track Record below still
-	// lists every seat regardless.
-	const currentTerm =
-		terms.find((t) => t.leaders.status !== 'former') ??
-		terms.toSorted((a, b) => b.leaders.from.getTime() - a.leaders.from.getTime())[0];
 	const leaderId = currentTerm.leaders.id;
 	const allLeaderIds = terms.map((t) => t.leaders.id);
+	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 
-	const [[pillarRow], [followerRow], latestPost, pillarStatusRows, mentionRows, experienceRows, contactRows] =
-		await Promise.all([
+	const [
+		[pillarRow],
+		[followerRow],
+		latestPost,
+		pillarStatusRows,
+		mentionRows,
+		experienceRows,
+		contactRows,
+		reviewRows,
+		reviewPillarOptions,
+		flaggedReviewCounts
+	] = await Promise.all([
 			db
 				.select({ n: count() })
 				.from(pillars)
@@ -70,8 +81,15 @@ export const load: PageServerLoad = async ({ params }) => {
 			db
 				.select({ channel: contacts.channel, value: contacts.value, verifiedAt: contacts.verifiedAt })
 				.from(contacts)
-				.where(and(eq(contacts.userId, row.users.id), isNull(contacts.deletedAt)))
+				.where(and(eq(contacts.userId, row.users.id), isNull(contacts.deletedAt))),
+			// Citizen reviews of this person (follows them across every seat), plus
+			// this campaign's pillar options for the review form.
+			listApprovedReviews(row.users.id, viewer?.id),
+			listReviewPillarOptions(leaderId),
+			getFlaggedReviewCounts(row.users.id)
 		]);
+
+	const myReview = viewer ? await getMyReview(row.users.id, viewer.id) : null;
 
 	const deliveredCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'delivered').length;
 	const inProgressCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'in_progress').length;
@@ -127,6 +145,12 @@ export const load: PageServerLoad = async ({ params }) => {
 			delivered: deliveredCount,
 			inProgress: inProgressCount
 		},
+		reviews: reviewRows,
+		reviewPillarOptions,
+		flaggedReviewCounts,
+		myReview,
+		viewerName: viewer ? fullName(viewer) : null,
+		signedIn: !!locals.user,
 		news: mentionRows.map((m) => ({
 			id: m.id,
 			title: m.title,
@@ -163,4 +187,22 @@ export const load: PageServerLoad = async ({ params }) => {
 			seatCyclePath: `/${slugify(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`
 		}
 	};
+};
+
+export const actions: Actions = {
+	review: async (event) => {
+		const resolved = await resolveCurrentTerm(event.params.leader);
+		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
+			error(404, 'Leader not found');
+		}
+		return await handleReviewAction(event, resolved.row.users.id, resolved.currentTerm.leaders.id);
+	},
+
+	deleteReview: async (event) => {
+		const resolved = await resolveCurrentTerm(event.params.leader);
+		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
+			error(404, 'Leader not found');
+		}
+		return await handleDeleteReviewAction(event, resolved.row.users.id);
+	}
 };

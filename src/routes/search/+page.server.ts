@@ -1,4 +1,4 @@
-import { and, eq, inArray, ilike, isNull, or } from 'drizzle-orm';
+import { and, eq, inArray, ilike, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { alliances, experience, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(leaders.deletedAt),
+				isNotNull(leaders.verifiedAt),
 				or(
 					ilike(users.firstName, like),
 					ilike(users.otherNames, like),
@@ -93,6 +94,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(experience.deletedAt),
+				isNotNull(leaders.verifiedAt),
 				or(ilike(experience.title, like), ilike(experience.institution, like))
 			)
 		)

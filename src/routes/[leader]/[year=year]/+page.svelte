@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Reviews from '$lib/components/Reviews.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -28,7 +29,7 @@
 	<title>{leader.name} for {leader.positionTitle} {data.year}, {leader.regionLabel} | leaders.ke</title>
 	<meta
 		name="description"
-		content="{leader.name}'s {data.year} campaign for {leader.positionTitle} of {leader.regionLabel}: manifesto, delivery tracker, endorsements, fundraising and updates."
+		content="{leader.name}'s {data.year} campaign for {leader.positionTitle} of {leader.regionLabel}: manifesto, delivery tracker, citizen reviews, fundraising and updates."
 	/>
 </svelte:head>
 
@@ -146,25 +147,6 @@
 				{/if}
 			</div>
 
-			<!-- Endorsements wall -->
-			{#if data.endorsements.length > 0 || data.testimonials.length > 0}
-				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-					<h2 class="text-xl font-bold text-heading">Endorsements & testimonials</h2>
-					<div class="mt-5 grid gap-4 sm:grid-cols-2">
-						{#each [...data.endorsements, ...data.testimonials] as e (e.id)}
-							<figure class="rounded-2xl bg-surface-2 p-4">
-								{#if e.message}
-									<blockquote class="text-sm leading-relaxed">"{e.message}"</blockquote>
-								{/if}
-								<figcaption class="mt-2 text-xs font-semibold text-heading">
-									{e.authorName}{#if e.authorRole}<span class="font-normal text-muted"> · {e.authorRole}</span>{/if}{#if e.ward}<span class="font-normal text-muted"> · {e.ward}</span>{/if}
-								</figcaption>
-							</figure>
-						{/each}
-					</div>
-				</div>
-			{/if}
-
 			<!-- Updates: the campaign's public channel feed -->
 			<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
 				<h2 class="text-xl font-bold text-heading">Updates</h2>
@@ -187,48 +169,18 @@
 				{/if}
 			</div>
 
-			<!-- Share your story: citizen testimonial submissions (pending team approval) -->
-			<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-				<h2 class="text-xl font-bold text-heading">Share your story</h2>
-				<p class="mt-1 text-sm text-muted">
-					Has {leader.name.split(' ')[0]}'s work touched your community? Your story appears after
-					the team reviews it.
-				</p>
-				{#if form?.endorsed}
-					<div class="mt-4 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-						Asante! Your story is with the campaign team for review.
-					</div>
-				{:else}
-					<form method="post" action="?/endorse" class="mt-4 grid gap-3 sm:grid-cols-2" use:enhance>
-						<input
-							type="text"
-							name="authorName"
-							required
-							placeholder="Your name"
-							class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-						/>
-						<input
-							type="text"
-							name="authorRole"
-							placeholder="Role or group (optional)"
-							class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-						/>
-						<textarea
-							name="message"
-							rows="3"
-							required
-							placeholder="Your story or endorsement"
-							class="sm:col-span-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-						></textarea>
-						<button
-							type="submit"
-							class="w-fit rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-						>
-							Submit
-						</button>
-					</form>
-				{/if}
-			</div>
+			<!-- Citizen reviews -->
+			<Reviews
+				leaderName={leader.name}
+				positionTitle={leader.positionTitle}
+				reviews={data.reviews}
+				pillarOptions={data.reviewPillarOptions}
+				signedIn={data.signedIn}
+				flaggedReviewCounts={data.flaggedReviewCounts}
+				myReview={data.myReview}
+				viewerName={data.viewerName}
+				{form}
+			/>
 		</div>
 
 		<!-- Sidebar -->
@@ -339,42 +291,6 @@
 						{asking ? 'Thinking…' : 'Ask'}
 					</button>
 				</form>
-			</div>
-
-			<!-- Pledge -->
-			<div class="rounded-3xl border border-border bg-surface p-6">
-				<h2 class="text-lg font-bold text-heading">Pledge your vote</h2>
-				<p class="mt-1 text-sm">
-					<span class="text-2xl font-extrabold tabular-nums text-primary">{fmt.format(data.pledgeCount)}</span>
-					<span class="text-muted"> citizens have pledged</span>
-				</p>
-				{#if form?.pledged}
-					<div class="mt-3 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-						Pledge counted. Tell your neighbours!
-					</div>
-				{:else}
-					<form method="post" action="?/pledge" class="mt-3 space-y-2" use:enhance>
-						<input
-							type="text"
-							name="name"
-							required
-							placeholder="Your name"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-						/>
-						<input
-							type="text"
-							name="ward"
-							placeholder="Your ward (optional)"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-						/>
-						<button
-							type="submit"
-							class="w-full rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary-soft"
-						>
-							Pledge my vote
-						</button>
-					</form>
-				{/if}
 			</div>
 
 			<!-- Fundraising -->

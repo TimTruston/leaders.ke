@@ -1,4 +1,4 @@
-// Seeds one main campaign per incumbent/aspirant leader from src/lib/data/campaigns.json.
+// Seeds one main campaign per current/aspirant leader from src/lib/data/campaigns.json.
 // Mirrors the `campaigns` table. Runs after 'leaders'/'mcas' (needs the leader to
 // already exist) — each row resolves its leader by name + position title/region.
 // Idempotent: skips a leader who already has a live main campaign (matches the

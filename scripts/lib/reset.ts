@@ -37,7 +37,8 @@ const SEED_MANAGED_TABLES = [
 	'devices',
 	'conversations',
 	'messages',
-	'endorsements',
+	'reviews',
+	'pledges',
 	'donations',
 	'ballot_simulations'
 ];

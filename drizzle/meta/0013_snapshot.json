@@ -2202,8 +2202,8 @@
         }
       },
       "indexes": {
-        "one_incumbent_per_position": {
-          "name": "one_incumbent_per_position",
+        "one_current_per_position": {
+          "name": "one_current_per_position",
           "columns": [
             {
               "expression": "position_id",
@@ -2213,7 +2213,7 @@
             }
           ],
           "isUnique": true,
-          "where": "\"leaders\".\"status\" = 'incumbent' and \"leaders\".\"deleted_at\" is null",
+          "where": "\"leaders\".\"status\" = 'current' and \"leaders\".\"deleted_at\" is null",
           "concurrently": false,
           "method": "btree",
           "with": {}

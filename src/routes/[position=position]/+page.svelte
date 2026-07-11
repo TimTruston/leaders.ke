@@ -35,7 +35,7 @@
 			{data.positionTitle}
 		</h1>
 		<p class="mt-3  text-base leading-relaxed">
-			Every region electing a {data.positionTitle} in 2027. Open a region to see the incumbent, the
+			Every region electing a {data.positionTitle} in 2027. Open a region to see the current, the
 			contestants and the seat's history.
 		</p>
 
@@ -52,10 +52,10 @@
 						</span>
 					</div>
 					<p class="mt-3 text-sm">
-						{#if region.incumbentName}
-							Incumbent: <span class="font-medium text-heading">{region.incumbentName}</span>
+						{#if region.currentName}
+							Current: <span class="font-medium text-heading">{region.currentName}</span>
 						{:else}
-							<span class="text-muted">No incumbent on record yet</span>
+							<span class="text-muted">No current on record yet</span>
 						{/if}
 					</p>
 					<p class="mt-1 text-xs text-muted">

@@ -7,7 +7,7 @@
 		parties,
 		region = $bindable(''),
 		party = $bindable(''),
-		verifiedOnly = $bindable(false),
+		status = $bindable(''),
 		hasFilters,
 		onClear
 	}: {
@@ -16,7 +16,9 @@
 		parties: string[];
 		region?: string;
 		party?: string;
-		verifiedOnly?: boolean;
+		// '' means both; every listed leader is already verified, so the only
+		// remaining status split worth filtering on is current vs. aspirant.
+		status?: '' | 'current' | 'aspirant';
 		hasFilters: boolean;
 		onClear: () => void;
 	} = $props();
@@ -82,16 +84,20 @@
 	{/each}
 </select>
 
-<button
-	type="button"
-	aria-pressed={verifiedOnly}
-	onclick={() => (verifiedOnly = !verifiedOnly)}
-	class="rounded-full border px-4 py-2 text-sm font-semibold transition {verifiedOnly
-		? 'border-primary bg-primary text-on-primary'
-		: 'border-border bg-surface text-heading hover:bg-surface-2'}"
->
-	Verified only
-</button>
+<div class="flex items-center gap-1 rounded-full border border-border bg-surface-2 p-1" role="group" aria-label="Status">
+	{#each (['current', 'aspirant'] as const) as s (s)}
+		<button
+			type="button"
+			aria-pressed={status === s}
+			onclick={() => (status = status === s ? '' : s)}
+			class="rounded-full px-4 py-1.5 text-sm font-semibold capitalize transition {status === s
+				? 'bg-primary text-on-primary'
+				: 'text-muted hover:text-heading'}"
+		>
+			{s}
+		</button>
+	{/each}
+</div>
 
 {#if hasFilters}
 	<button

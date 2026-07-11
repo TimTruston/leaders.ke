@@ -153,7 +153,7 @@
 		<div class="mt-10 rounded-2xl border border-dashed border-border p-10 text-center">
 			<p class="font-semibold text-heading">Pick two leaders to compare</p>
 			<p class="mx-auto mt-2 max-w-md text-sm text-muted">
-				Try a governor against a neighbouring governor, or an incumbent against their challenger.
+				Try a governor against a neighbouring governor, or an current against their challenger.
 			</p>
 		</div>
 	{/if}

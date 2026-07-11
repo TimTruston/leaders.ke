@@ -74,7 +74,7 @@ export const leaders = pgTable('leaders', {
   positionId: integer('position_id').references(() => positions.id).notNull(),
   faq: jsonb('faq').default([]),
   contacts: jsonb('contacts').default({}),
-  status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'incumbent' | 'former'
+  status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'current' | 'former'
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
   fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES; campaign goal (leader == main campaign in v1)
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
@@ -84,10 +84,10 @@ export const leaders = pgTable('leaders', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  // At most one live 'incumbent' leader per position (partial unique index)
-  uniqueIndex('one_incumbent_per_position')
+  // At most one live 'current' leader per position (partial unique index)
+  uniqueIndex('one_current_per_position')
     .on(t.positionId)
-    .where(sql`${t.status} = 'incumbent' and ${t.deletedAt} is null`),
+    .where(sql`${t.status} = 'current' and ${t.deletedAt} is null`),
 ]);
 
 // 3.1 EXPERIENCE (education, professional and leadership history on a leader's profile)
@@ -563,30 +563,77 @@ export const messages = pgTable('messages', {
   sender: chatSenderEnum('sender').notNull(), // follower | ai | leader | manager | ambassador
   senderId: integer('sender_id').references(() => users.id), // null for ai replies and anonymous visitors
   target: chatTargetEnum('target'), // from an "L:"/"M:"/"A:" prefix — which human the follower is addressing; null routes to the AI
+  reviewId: integer('review_id').references((): any => reviews.id, { onDelete: 'set null' }), // set when the thread responds to a citizen review
   body: text('body').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
   index('messages_conversation_idx').on(t.conversationId),
 ]);
 
-// 21. ENDORSEMENTS (Phase 4 social proof: endorsements, testimonials and vote pledges.
-// Account-less like followers; approvedAt gates what shows publicly.)
-export const endorsementKindEnum = pgEnum('endorsement_kind', ['endorsement', 'testimonial', 'pledge']);
-
-// Public social proof for a leader: an endorsement, a testimonial, or a vote pledge.
-export const endorsements = pgTable('endorsements', {
+// 21. PLEDGES (a citizen pledging their vote to a campaign, created by the
+// /vote/2027 ballot simulator. Signed-in voters pledge by userId; anonymous
+// voters by anonId, a long-lived device cookie. Insert code enforces that at
+// least one of the two is present.)
+// One citizen's live vote pledge to a campaign.
+export const pledges = pgTable('pledges', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
-  kind: endorsementKindEnum('kind').notNull(),
-  authorName: varchar('author_name', { length: 100 }).notNull(),
-  authorRole: varchar('author_role', { length: 100 }), // e.g. "Chair, Boda SACCO" — sells the endorsement
-  message: text('message'), // pledges may carry no message
-  ward: varchar('ward', { length: 50 }),
-  approvedAt: timestamp('approved_at', { withTimezone: true }), // null = pending team review
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }), // null for anonymous pledges
+  anonId: varchar('anon_id', { length: 32 }), // anonymous device id from the 'anon_id' cookie
+  campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
+  simulationId: integer('simulation_id').references((): any => ballotSimulations.id, { onDelete: 'set null' }), // the ballot simulation that created this pledge
+  ip: varchar('ip', { length: 45 }), // abuse-detection metadata only, never identity; 45 chars covers IPv6
+  userAgent: varchar('user_agent', { length: 255 }),
+  // Contact capture, copied from the ballot form only when the citizen consented
+  // to be contacted about candidates in their area; null otherwise.
+  name: varchar('name', { length: 100 }),
+  sms: varchar('sms', { length: 20 }), // SMS number
+  whatsapp: varchar('whatsapp', { length: 20 }), // WhatsApp number
+  email: varchar('email', { length: 100 }),
+  constituency: varchar('constituency', { length: 100 }),
+  ward: varchar('ward', { length: 100 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  index('endorsements_leader_idx').on(t.leaderId, t.kind),
+  // One live pledge per campaign per signed-in user, and per anonymous device
+  uniqueIndex('one_pledge_per_user_campaign')
+    .on(t.campaignId, t.userId)
+    .where(sql`${t.deletedAt} is null and ${t.userId} is not null`),
+  uniqueIndex('one_pledge_per_anon_campaign')
+    .on(t.campaignId, t.anonId)
+    .where(sql`${t.deletedAt} is null and ${t.anonId} is not null`),
+]);
+
+// 21.1 REVIEWS (citizen reviews of a leader: a 1-5 star rating plus a message,
+// optionally aimed at one manifesto pillar. Public by default; a flagReason
+// hides it from public view pending the leader/manager's response, but never
+// deletes it outright — flagging is reversible, unlike a reject.)
+export const reviewFlagReasonEnum = pgEnum('review_flag_reason', [
+  'spam',
+  'insult',
+  'incitement',
+  'hate_speech',
+  'misinformation',
+  'other',
+]);
+
+// One citizen's review of a leader.
+export const reviews = pgTable('reviews', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(), // the reviewer
+  // The person being reviewed, on `users` not `leaders`: a review of conduct as senator
+  // must stay attached to them when they're later vying for president (or any other seat).
+  subjectId: integer('subject_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  public: boolean('public').default(false).notNull(), // show the reviewer's name; the review itself still displays anonymously when false
+  pillarId: integer('pillar_id').references(() => pillars.id, { onDelete: 'set null' }), // the manifesto pillar the review targets, if any
+  rating: integer('rating').notNull(), // 1-5 stars, validated server-side
+  likes: integer('likes').default(0).notNull(),
+  message: text('message').notNull(),
+  flagReason: reviewFlagReasonEnum('flag_reason'), // null = visible publicly; set = hidden pending review
+  flaggedAt: timestamp('flagged_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('reviews_subject_idx').on(t.subjectId),
 ]);
 
 // 22. DONATIONS (Phase 4 fundraising ledger. M-Pesa STK push replaces the manual

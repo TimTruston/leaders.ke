@@ -506,7 +506,7 @@ CREATE UNIQUE INDEX "one_device_per_user" ON "devices" USING btree ("user_id","f
 CREATE INDEX "files_leader_idx" ON "files" USING btree ("leader_id");--> statement-breakpoint
 CREATE INDEX "files_campaign_idx" ON "files" USING btree ("campaign_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "one_follow_per_target" ON "followers" USING btree ("user_id","digest",coalesce("digest_id", 0)) WHERE "followers"."deleted_at" is null;--> statement-breakpoint
-CREATE UNIQUE INDEX "one_incumbent_per_position" ON "leaders" USING btree ("position_id") WHERE "leaders"."status" = 'incumbent' and "leaders"."deleted_at" is null;--> statement-breakpoint
+CREATE UNIQUE INDEX "one_current_per_position" ON "leaders" USING btree ("position_id") WHERE "leaders"."status" = 'current' and "leaders"."deleted_at" is null;--> statement-breakpoint
 CREATE INDEX "messages_conversation_idx" ON "messages" USING btree ("conversation_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "one_current_rate" ON "pricing" USING btree ("band","tier","billing_cycle") WHERE "pricing"."active_to" is null;--> statement-breakpoint
 CREATE UNIQUE INDEX "one_live_subscription_per_campaign" ON "subscriptions" USING btree ("campaign_id") WHERE "subscriptions"."status" in ('active', 'pending');--> statement-breakpoint

@@ -11,7 +11,7 @@
 	<title>{data.positionTitle}, {data.regionLabel} — leaders.ke</title>
 	<meta
 		name="description"
-		content="{data.positionTitle} of {data.regionLabel}: the incumbent, the {data.cycle} contestants and the seat's history."
+		content="{data.positionTitle} of {data.regionLabel}: the current, the {data.cycle} contestants and the seat's history."
 	/>
 </svelte:head>
 
@@ -53,24 +53,24 @@
 		</div>
 	</div>
 
-	<!-- Incumbent and Salary-->
+	<!-- Current and Salary-->
 	<div class="mt-6 lg:mt-8 flex flex-col gap-6 lg:gap-8 lg:flex-row">
 		<div class="flex-1">
-			<h2 class="text-xl font-bold text-heading">Incumbent</h2>
-			{#if data.incumbent}
+			<h2 class="text-xl font-bold text-heading">Current</h2>
+			{#if data.current}
 				<a
-					href={data.incumbent.path}
+					href={data.current.path}
 					class="group mt-4 rounded-2xl border border-border bg-surface p-5 flex items-center gap-4 transition hover:border-primary hover:shadow-sm"
 				>
 					<span
 						class="grid size-14 shrink-0 place-items-center rounded-full bg-primary-soft text-xl font-bold text-on-primary"
 					>
-						{data.incumbent.initials}
+						{data.current.initials}
 					</span>
 					<div class="min-w-0">
 						<p class="flex items-center gap-1 font-semibold text-heading group-hover:text-primary">
-							{data.incumbent.name}
-							{#if data.incumbent.verified}
+							{data.current.name}
+							{#if data.current.verified}
 								<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary" aria-label="Verified">
 									<path
 										fill-rule="evenodd"
@@ -81,12 +81,12 @@
 							{/if}
 						</p>
 						<p class="text-sm text-muted">
-							Serving {data.positionTitle}{data.incumbent.party ? ` · ${data.incumbent.party}` : ''}
+							Serving {data.positionTitle}{data.current.party ? ` · ${data.current.party}` : ''}
 						</p>
 					</div>
 				</a>
 			{:else}
-				<p class="mt-3 text-sm text-muted">No incumbent on record for this seat yet.</p>
+				<p class="mt-3 text-sm text-muted">No current on record for this seat yet.</p>
 			{/if}
 		</div>
 
@@ -148,7 +148,7 @@
 				{#each data.history as term (term.path + term.startYear)}
 					<li class="relative pb-8 last:pb-0">
 						<span
-							class="absolute -left-7.75 top-1 size-3 rounded-full {term.status === 'incumbent'
+							class="absolute -left-7.75 top-1 size-3 rounded-full {term.status === 'current'
 								? 'bg-primary'
 								: 'bg-border'}"
 						></span>
@@ -158,9 +158,9 @@
 						<a href={term.path} class="mt-1 inline-block font-semibold text-heading hover:text-primary">
 							{term.name}
 						</a>
-						{#if term.status === 'incumbent'}
+						{#if term.status === 'current'}
 							<span class="ml-2 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">
-								Incumbent
+								Current
 							</span>
 						{/if}
 					</li>

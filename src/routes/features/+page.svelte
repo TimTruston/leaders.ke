@@ -105,16 +105,16 @@
 			blurb: 'Social proof and receipts: show citizens why you, and show it publicly.',
 			features: [
 				{
-					name: 'Endorsements & pledges',
+					name: 'Citizen reviews',
 					description:
-						'A wall of notable supporters and a live pledge counter on your profile.',
+						'Citizens rate and review your leadership publicly, pillar by pillar.',
 					tier: 'Aspirant',
 					live: false
 				},
 				{
-					name: 'Testimonials & case studies',
+					name: 'Review responses',
 					description:
-						'Collect testimonials from constituents and publish case studies of delivered work.',
+						'Respond to citizen reviews directly and publish case studies of delivered work.',
 					tier: 'Aspirant',
 					live: false
 				},
@@ -146,9 +146,9 @@
 					live: false
 				},
 				{
-					name: 'Pledges',
+					name: 'Vote pledges',
 					description:
-						'Let supporters pledge votes and contributions you can follow up before election day.',
+						'Citizens pledge their vote to your campaign from the ballot simulator, counted live.',
 					tier: 'Aspirant',
 					live: false
 				}
@@ -243,7 +243,7 @@
 	<title>Features — leaders.ke</title>
 	<meta
 		name="description"
-		content="Everything a 2027 campaign needs: verified profiles, followers and broadcasts, endorsements, fundraising, PR management, AI chat and competitor analytics."
+		content="Everything a 2027 campaign needs: verified profiles, followers and broadcasts, citizen reviews, vote pledges, fundraising, PR management, AI chat and competitor analytics."
 	/>
 </svelte:head>
 

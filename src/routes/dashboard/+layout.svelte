@@ -11,10 +11,10 @@
 		{ href: '/dashboard/profile', label: 'Profile', enabled: true },
 		{ href: '/dashboard/manifesto', label: 'Manifesto', enabled: !!data.leaderContext },
 		{ href: '/dashboard/posts', label: 'Posts', enabled: !!data.leaderContext },
+		{ href: '/dashboard/reviews', label: 'Reviews', enabled: !!data.leaderContext },
 		{ href: '/dashboard/team', label: 'Team', enabled: !!data.leaderContext },
 		{ href: '/dashboard/followers', label: 'Followers', enabled: !!data.leaderContext },
 		{ href: '/dashboard/broadcasts', label: 'Broadcasts', enabled: !!data.leaderContext },
-		{ href: '/dashboard/endorsements', label: 'Endorsements', enabled: !!data.leaderContext },
 		{ href: '/dashboard/fundraising', label: 'Fundraising', enabled: !!data.leaderContext },
 		{ href: '/dashboard/pr', label: 'PR desk', enabled: !!data.leaderContext },
 		{ href: '/dashboard/competitors', label: 'Competitors', enabled: !!data.leaderContext }
