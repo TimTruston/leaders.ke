@@ -149,7 +149,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		reviewPillarOptions,
 		flaggedReviewCounts,
 		myReview,
-		viewerName: viewer ? fullName(viewer) : null,
 		signedIn: !!locals.user,
 		news: mentionRows.map((m) => ({
 			id: m.id,

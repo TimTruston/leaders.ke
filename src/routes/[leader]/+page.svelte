@@ -189,7 +189,6 @@
 				signedIn={data.signedIn}
 				flaggedReviewCounts={data.flaggedReviewCounts}
 				myReview={data.myReview}
-				viewerName={data.viewerName}
 				{form}
 			/>
 		</div>

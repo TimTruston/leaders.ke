@@ -9,7 +9,8 @@
 		message: string;
 		pillarTitle: string | null;
 		likes: number;
-		authorName: string | null; // null renders as "Anonymous"
+		authorName: string; // always the real name; `public` drives the "(Private)" tag
+		public: boolean;
 		createdAt: string;
 		response: { body: string; createdAt: string } | null;
 		// Only ever populated on the viewer's own review; other people's flagged
@@ -48,9 +49,6 @@
 		signedIn: boolean;
 		flaggedReviewCounts: { total: number; byReason: Partial<Record<string, number>> };
 		myReview: MyReview | null;
-		// The signed-in viewer's own name, to label their own private review
-		// instead of showing them "Anonymous" for a review that's theirs.
-		viewerName: string | null;
 		// The page's form action result, for success/error feedback
 		form?: { reviewed?: boolean; updated?: boolean; deleted?: boolean; reviewError?: string } | null;
 	};
@@ -63,7 +61,6 @@
 		signedIn,
 		flaggedReviewCounts,
 		myReview,
-		viewerName,
 		form
 	}: Props = $props();
 
@@ -121,34 +118,128 @@
 		</div>
 		<div class="mt-5 space-y-5">
 			{#each filteredReviews as review (review.id)}
+				{@const isMine = myReview !== null && myReview.id === review.id}
+				{@const isEditingThis = isMine && editing}
 				<article class="border-b border-border pb-5 last:border-b-0 last:pb-0">
-					<div class="flex flex-wrap items-baseline justify-between gap-2">
-						<span class="flex gap-1 text-sm tracking-widest text-primary">
-							<span aria-label="Author's name">
-								{review.authorName ??
-									(myReview && myReview.id === review.id ? `${viewerName} (Private)` : 'Anonymous')}
-							</span>
-							<span aria-label="{review.rating} out of 5 stars">
-								{stars(review.rating)}
-							</span>
-						</span>
-						<span class="flex gap-1 font-normal text-xs text-muted">
-							{#if review.pillarTitle}
-								<span aria-label="Pillar title">{review.pillarTitle}</span>
+					{#if isEditingThis}
+						<form
+							method="post"
+							action="?/review"
+							class="space-y-3 flex flex-col"
+							use:enhance={() => {
+								submitting = true;
+								return async ({ update }) => {
+									submitting = false;
+									editing = false;
+									await update();
+								};
+							}}
+						>
+							{#if form?.reviewError}
+								<div class="mb-2 rounded-2xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
+									{form.reviewError}
+								</div>
 							{/if}
-							{#if review.likes > 0}
-								<span aria-label="{review.likes} likes">{fmt.format(review.likes)} like{review.likes === 1 ? '' : 's'}</span>
-							{/if}
-							<span aria-label="Created at">{dateFmt.format(new Date(review.createdAt))}</span>
-						</span>
-					</div>
-					{#if editing && myReview && myReview.id === review.id}
-						{@render reviewForm()}
+							<!-- Same row the display view uses: name, public toggle, and star rating
+							editable in place instead of as separate widgets below the message. -->
+							<div class="flex flex-wrap items-center justify-between gap-2">
+								<span class="flex items-center gap-2 text-sm tracking-widest text-primary">
+									<span aria-label="Author's name">{review.authorName}</span>
+									<label class="flex items-center gap-1 text-xs font-normal text-muted">
+										<input
+											type="checkbox"
+											name="public"
+											bind:checked={publicChecked}
+											class="size-3.5 rounded border-border text-primary focus:ring-2 focus:ring-ring"
+										/>
+										Public
+									</label>
+									<span class="flex items-center gap-0.5" role="radiogroup" aria-label="Star rating">
+										{#each [1, 2, 3, 4, 5] as star (star)}
+											<button
+												type="button"
+												role="radio"
+												aria-checked={rating === star}
+												aria-label="{star} star{star === 1 ? '' : 's'}"
+												onclick={() => (rating = star)}
+												onmouseenter={() => (hovered = star)}
+												onmouseleave={() => (hovered = 0)}
+												class="leading-none transition {star <= (hovered || rating)
+													? 'text-primary'
+													: 'text-muted'}"
+											>
+												{star <= (hovered || rating) ? '★' : '☆'}
+											</button>
+										{/each}
+									</span>
+									<input type="hidden" name="rating" value={rating || ''} required />
+								</span>
+								<span class="flex items-center gap-1 font-normal text-xs text-muted">
+									<select
+										name="pillarId"
+										bind:value={pillarId}
+										class="rounded-full border border-border bg-surface px-2 py-0.5 text-xs text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									>
+										<option value="">General</option>
+										{#each pillarOptions as pillar (pillar.id)}
+											<option value={pillar.id}>{pillar.title}</option>
+										{/each}
+									</select>
+								</span>
+							</div>
+							<textarea
+								name="message"
+								rows="3"
+								required
+								maxlength={MESSAGE_MAX_LENGTH}
+								bind:value={message}
+								placeholder="Leave a review"
+								class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							></textarea>
+							<span class="text-xs text-muted relative -top-5 ml-auto mb-0 mr-2">{message.length}/{MESSAGE_MAX_LENGTH}</span>
+							<div class="flex flex-wrap gap-3">
+								<button
+									type="submit"
+									disabled={submitting || rating === 0}
+									class="rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+								>
+									{submitting ? 'Saving…' : 'Save changes'}
+								</button>
+								<button
+									type="button"
+									onclick={() => (editing = false)}
+									class="text-sm font-medium text-muted transition hover:text-heading"
+								>
+									Cancel
+								</button>
+							</div>
+						</form>
 					{:else}
+						<div class="flex flex-wrap items-baseline justify-between gap-2">
+							<span class="flex gap-1 text-sm tracking-widest text-primary">
+								<span aria-label="Author's name">
+									{review.authorName}
+								</span>
+								{#if !review.public}
+									<span aria-label="Is private">(Private)</span>
+								{/if}
+								<span aria-label="{review.rating} out of 5 stars">
+									{stars(review.rating)}
+								</span>
+							</span>
+							<span class="flex gap-1 font-normal text-xs text-muted">
+								{#if review.pillarTitle}
+									<span aria-label="Pillar title">{review.pillarTitle}</span>
+								{/if}
+								{#if review.likes > 0}
+									<span aria-label="{review.likes} likes">{fmt.format(review.likes)} like{review.likes === 1 ? '' : 's'}</span>
+								{/if}
+								<span aria-label="Created at">{dateFmt.format(new Date(review.createdAt))}</span>
+							</span>
+						</div>
 						<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{review.message}</p>
 						<div class="mt-2 flex *:flex-wrap items-center justify-between gap-2">
-							
-							{#if myReview && myReview.id === review.id}
+							{#if isMine}
 								{#if review.flagReason}
 									<span class="w-fit rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted">
 										Flagged as {flagLabel(review.flagReason)}
@@ -220,7 +311,7 @@
 		<form
 			method="post"
 			action="?/review"
-			class="mt-2 space-y-3"
+			class="mt-2 space-y-3 flex flex-col"
 			use:enhance={() => {
 				submitting = true;
 				return async ({ update }) => {
@@ -237,70 +328,79 @@
 				maxlength={MESSAGE_MAX_LENGTH}
 				bind:value={message}
 				placeholder="Leave a review"
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
 			></textarea>
-			<p class="text-right text-xs text-muted">{message.length}/{MESSAGE_MAX_LENGTH}</p>
+			<span class="text-xs text-muted relative -top-5 ml-auto mb-0 mr-2">{message.length}/{MESSAGE_MAX_LENGTH}</span>
 
-			<!-- Pillar (optional) next to the required star rating; stacks on phones -->
-			<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-				<select
-					name="pillarId"
-					bind:value={pillarId}
-					class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none sm:max-w-60"
-				>
-					<option value="">General</option>
-					{#each pillarOptions as pillar (pillar.id)}
-						<option value={pillar.id}>{pillar.title}</option>
-					{/each}
-				</select>
-				<div class="flex items-center gap-1" role="radiogroup" aria-label="Star rating">
-					{#each [1, 2, 3, 4, 5] as star (star)}
+			<div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+				<div class="flex flex-wrap items-center gap-3">
+					<!-- Pillar (optional) next to the required star rating; stacks on phones -->
+					<select
+						name="pillarId"
+						bind:value={pillarId}
+						class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none sm:max-w-60"
+					>
+						<option value="">General</option>
+						{#each pillarOptions as pillar (pillar.id)}
+							<option value={pillar.id}>{pillar.title}</option>
+						{/each}
+					</select>
+
+					<!-- Public checkbox next to the submit button; stacks on phones -->
+					<label class="flex items-center gap-2 text-sm text-heading">
+						<input
+							type="checkbox"
+							name="public"
+							bind:checked={publicChecked}
+							class="size-4 rounded border-border text-primary focus:ring-2 focus:ring-ring"
+						/>
+						Public (with your name)
+					</label>
+				</div>
+
+				<div class="flex flex-wrap items-center gap-3">
+					<!-- star rating -->
+					<div class="flex items-center gap-1" role="radiogroup" aria-label="Star rating">
+						{#each [1, 2, 3, 4, 5] as star (star)}
+							<button
+								type="button"
+								role="radio"
+								aria-checked={rating === star}
+								aria-label="{star} star{star === 1 ? '' : 's'}"
+								onclick={() => (rating = star)}
+								onmouseenter={() => (hovered = star)}
+								onmouseleave={() => (hovered = 0)}
+								class="text-2xl leading-none transition {star <= (hovered || rating)
+									? 'text-primary'
+									: 'text-muted'}"
+							>
+								{star <= (hovered || rating) ? '★' : '☆'}
+							</button>
+						{/each}
+					</div>
+					<input type="hidden" name="rating" value={rating || ''} required />
+
+					<button
+						type="submit"
+						disabled={submitting || rating === 0}
+						class="w-fit rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+					>
+						{submitting ? 'Posting…' : myReview ? 'Save changes' : 'Leave a Review'}
+					</button>
+					{#if myReview}
 						<button
 							type="button"
-							role="radio"
-							aria-checked={rating === star}
-							aria-label="{star} star{star === 1 ? '' : 's'}"
-							onclick={() => (rating = star)}
-							onmouseenter={() => (hovered = star)}
-							onmouseleave={() => (hovered = 0)}
-							class="text-2xl leading-none transition {star <= (hovered || rating)
-								? 'text-primary'
-								: 'text-muted'}"
+							onclick={() => (editing = false)}
+							class="text-sm font-medium text-muted transition hover:text-heading"
 						>
-							{star <= (hovered || rating) ? '★' : '☆'}
+							Cancel
 						</button>
-					{/each}
+					{/if}
 				</div>
-				<input type="hidden" name="rating" value={rating || ''} required />
 			</div>
 
-			<!-- Public checkbox next to the submit button; stacks on phones -->
+			
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-				<label class="flex items-center gap-2 text-sm text-heading">
-					<input
-						type="checkbox"
-						name="public"
-						bind:checked={publicChecked}
-						class="size-4 rounded border-border text-primary focus:ring-2 focus:ring-ring"
-					/>
-					Public (with your name)
-				</label>
-				<button
-					type="submit"
-					disabled={submitting || rating === 0}
-					class="w-fit rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
-				>
-					{submitting ? 'Posting…' : myReview ? 'Save changes' : 'Leave a Review'}
-				</button>
-				{#if myReview}
-					<button
-						type="button"
-						onclick={() => (editing = false)}
-						class="text-sm font-medium text-muted transition hover:text-heading"
-					>
-						Cancel
-					</button>
-				{/if}
 			</div>
 		</form>
 	{/snippet}
@@ -316,11 +416,12 @@
 					<a href="/login" class="font-semibold text-primary hover:underline">Sign in</a>
 					to leave a review.
 				</p>
-			{:else if form?.deleted}
-				<div class="rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-					Your review has been deleted.
-				</div>
 			{:else}
+				{#if form?.deleted}
+					<div class="rounded-2xl bg-primary-soft px-4 py-2 mb-2 text-sm font-medium text-on-primary">
+						Your review has been deleted.
+					</div>
+				{/if}
 				<h3 class="font-semibold text-heading">Review {positionTitle} {leaderName}</h3>
 				{@render reviewForm()}
 			{/if}

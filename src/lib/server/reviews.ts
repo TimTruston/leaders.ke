@@ -27,7 +27,8 @@ export type ReviewItem = {
 	message: string;
 	pillarTitle: string | null;
 	likes: number;
-	authorName: string | null; // null when the reviewer kept their name private
+	authorName: string; // always the real name; `public` (below) drives the "(Private)" tag
+	public: boolean;
 	createdAt: string;
 	response: { body: string; createdAt: string } | null;
 	// Only ever set on the viewer's own review — everyone else's flagged
@@ -127,7 +128,10 @@ export async function listApprovedReviews(
 			message: r.message,
 			pillarTitle: r.pillarTitle,
 			likes: r.likes,
-			authorName: r.public ? fullName({ firstName: r.firstName, otherNames: r.otherNames }) : null,
+			// Every row that reaches here is either public, or the viewer's own —
+			// there's no third "someone else's private review" case to anonymize.
+			authorName: fullName({ firstName: r.firstName, otherNames: r.otherNames }),
+			public: r.public,
 			createdAt: r.createdAt.toISOString(),
 			response: response ? { body: response.body, createdAt: response.createdAt.toISOString() } : null,
 			flagReason: r.flagReason

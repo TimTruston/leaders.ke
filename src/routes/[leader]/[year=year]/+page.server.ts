@@ -132,7 +132,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		reviewPillarOptions,
 		flaggedReviewCounts,
 		myReview,
-		viewerName: viewer ? fullName(viewer) : null,
 		signedIn: !!locals.user,
 		pledgeCount: pledgeRow.n,
 		fundraising: {
