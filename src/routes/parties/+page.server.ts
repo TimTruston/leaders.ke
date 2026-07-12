@@ -10,7 +10,7 @@ export const load: PageServerLoad = async () => {
 	const memberCounts = await db
 		.select({ partyId: partyMemberships.partyId, n: count() })
 		.from(partyMemberships)
-		.where(and(isNull(partyMemberships.deletedAt), isNull(partyMemberships.to)))
+		.where(and(isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 		.groupBy(partyMemberships.partyId);
 	const countByPartyId = new Map(memberCounts.map((m) => [m.partyId, m.n]));
 

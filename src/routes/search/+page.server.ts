@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ url }) => {
 					and(
 						inArray(partyMemberships.leaderId, matchedLeaderIds),
 						isNull(partyMemberships.deletedAt),
-						isNull(partyMemberships.to)
+						isNull(partyMemberships.endAt)
 					)
 				)
 		: [];

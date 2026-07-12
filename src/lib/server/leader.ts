@@ -182,7 +182,7 @@ export async function resolveCurrentTerm(slug: string) {
 
 	const currentTerm =
 		terms.find((t) => t.leaders.status !== 'former') ??
-		terms.toSorted((a, b) => b.leaders.from.getTime() - a.leaders.from.getTime())[0];
+		terms.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0];
 
 	return { row, terms, currentTerm };
 }

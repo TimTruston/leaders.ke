@@ -78,8 +78,8 @@ export const leaders = pgTable('leaders', {
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
   fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES; campaign goal (leader == main campaign in v1)
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
-  from: timestamp('from', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
-  to: timestamp('to', { withTimezone: true }),
+  startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
+  endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -101,8 +101,8 @@ export const experience = pgTable('experience', {
   positionId: integer('position_id').references(() => positions.id), // set when type = 'leadership'
   title: varchar('title', { length: 255 }).notNull(),
   institution: varchar('institution', { length: 255 }).notNull(),
-  from: timestamp('from', { withTimezone: true }), // null when the source only gave a free-text/unparseable range
-  to: timestamp('to', { withTimezone: true }),
+  startAt: timestamp('start_at', { withTimezone: true }), // null when the source only gave a free-text/unparseable range
+  endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -184,8 +184,8 @@ export const events = pgTable('events', {
   title: varchar('title', { length: 255 }).notNull(),
   agenda: text('agenda').notNull(),
   venue: varchar('venue', { length: 255 }).notNull(),
-  from: timestamp('from', { withTimezone: true }).notNull(),
-  to: timestamp('to', { withTimezone: true }).notNull(),
+  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
+  endAt: timestamp('end_at', { withTimezone: true }).notNull(),
   attendants: jsonb('attendants').default(['public']).notNull(), // 'public' | 'ambassadors' | 'managers' | 'leaders'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -369,8 +369,8 @@ export const partyMemberships = pgTable('party_memberships', {
   partyId: integer('party_id').references(() => parties.id, { onDelete: 'cascade' }).notNull(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
   role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
-  from: timestamp('from', { withTimezone: true }).notNull(),
-  to: timestamp('to', { withTimezone: true }),
+  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
+  endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -394,8 +394,8 @@ export const allianceMemberships = pgTable('alliance_memberships', {
   allianceId: integer('alliance_id').references(() => alliances.id, { onDelete: 'cascade' }).notNull(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
   role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
-  from: timestamp('from', { withTimezone: true }).notNull(),
-  to: timestamp('to', { withTimezone: true }),
+  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
+  endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),

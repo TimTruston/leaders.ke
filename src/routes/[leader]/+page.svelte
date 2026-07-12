@@ -105,35 +105,30 @@
 				</div>
 			{/if}
 
-			<!-- Leadership -->
-			{#if data.trackRecord.length > 0}
-				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-					<h2 class="text-xl font-bold text-heading">Leadership</h2>
-					
-						<ul class="mt-4 space-y-3">
-							{#each data.trackRecord as term (term.seatPath + term.startYear)}
-								<ExperienceBlock
-									title="{term.positionTitle}, {term.regionLabel}"
-									href={term.seatPath}
-									description={term.note}
-									dateLabel={term.status === 'aspirant'
-										? `Vying · from ${term.startYear}`
-										: `${term.startYear} to ${term.endYear ?? 'present'}`}
-									badge={term.status}
-									badgeClass={term.status === 'current'
-										? 'bg-primary-soft text-on-primary'
-										: 'bg-surface text-muted'}
-								/>
-							{/each}
-						</ul>
-					
-				</div>
-			{/if}
-
 			<!-- Education + professional experience -->
 			{#if data.experience.education.length > 0 || data.experience.professional.length > 0}
 				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
 					<h2 class="text-xl font-bold text-heading">Experience</h2>
+					{#if data.experience.professional.length > 0}
+						<h3 class="mt-5 text-xs font-semibold tracking-wide text-muted uppercase">Professional</h3>
+						<ul class="mt-4 space-y-3">
+							{#each data.experience.professional as item, i (i)}
+								<ExperienceBlock
+									title={item.title}
+									subtitle={item.institution}
+									href={item.href}
+									description={item.description}
+									dateLabel={item.badge === 'aspirant'
+										? `Vying · from ${item.from}`
+										: item.from
+											? `${item.from}${item.to ? `–${item.to}` : ' – present'}`
+											: ''}
+									badge={item.badge}
+									badgeClass={item.badge === 'current' ? 'bg-primary-soft text-on-primary' : 'bg-surface text-muted'}
+								/>
+							{/each}
+						</ul>
+					{/if}
 					{#if data.experience.education.length > 0}
 						<h3 class="mt-4 text-xs font-semibold tracking-wide text-muted uppercase">Education</h3>
 						<ul class="mt-3 space-y-3">
@@ -146,18 +141,7 @@
 							{/each}
 						</ul>
 					{/if}
-					{#if data.experience.professional.length > 0}
-						<h3 class="mt-5 text-xs font-semibold tracking-wide text-muted uppercase">Professional</h3>
-						<ul class="mt-3 space-y-3">
-							{#each data.experience.professional as item, i (i)}
-								<ExperienceBlock
-									title={item.title}
-									subtitle={item.institution}
-									dateLabel={item.from ? `${item.from}${item.to ? `–${item.to}` : ' – present'}` : ''}
-								/>
-							{/each}
-						</ul>
-					{/if}
+
 				</div>
 			{/if}
 

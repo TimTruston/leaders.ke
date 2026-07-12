@@ -10,7 +10,11 @@ import { campaigns, contacts, experience, leaders, parties, partyMemberships, pi
 import { user as authUsers } from '../../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName, type AnyDb } from './names';
 
-export type ExperienceRow = { title: string; institution: string; time: string | null };
+export type ExperienceRow = { title: string; institution: string; startAt: string | null; endAt: string | null };
+// A prior/current elective or nominated term nested on a person's leaders.json row (e.g. an
+// ex-MP seat before their current one) — seeded as its own `leaders` row, not `experience`,
+// since it's the same "held/holds a position" fact the top-level row represents.
+export type LeadershipRow = { title: string; region: string; description?: string; startAt: string | null; endAt: string | null };
 export type ContactRow = { title: string; value: string };
 export type SocialRow = { title: string; value: string; href?: string };
 export type PillarRow = { title: string; summary: string; deliveryStatus?: 'promised' | 'in_progress' | 'delivered'; evidence?: string };
@@ -24,25 +28,23 @@ export type PersonRow = {
 	bio?: string;
 	education?: ExperienceRow[];
 	professional?: ExperienceRow[];
+	leadership?: LeadershipRow[];
 	contacts?: ContactRow[];
 	social?: SocialRow[];
 	pillars?: PillarRow[];
 };
 
-/** "2017-2022" / "1981–Present." / null -> a from/to date pair, using each range's first two years. */
-function parseTimeRange(time: string | null | undefined): { from: Date | null; to: Date | null } {
-	const years = time?.match(/\d{4}/g);
-	if (!years) return { from: null, to: null };
-	return {
-		from: new Date(`${years[0]}-01-01T00:00:00+03:00`),
-		to: years.length > 1 ? new Date(`${years[1]}-01-01T00:00:00+03:00`) : null
-	};
+/** "1997-01-01" | null -> a Date | null, as stored on education/professional/leadership rows. */
+function toDate(iso: string | null | undefined): Date | null {
+	return iso ? new Date(`${iso}T00:00:00+03:00`) : null;
 }
 
-/** Writes a candidate profile's scraped bio/education/professional/contacts/social onto an
- * already-created leader + domain user. Shared by the fresh-insert and already-seeded-backfill
- * paths below, and safe to re-run (contacts dedupe on the channel+value unique index). */
-async function applyProfile(db: AnyDb, userId: number, leaderId: number, row: PersonRow) {
+/** Writes a candidate profile's scraped bio/education/professional/leadership/contacts/social
+ * onto an already-created leader + domain user. Shared by the fresh-insert and already-seeded-
+ * backfill paths below, and safe to re-run (contacts dedupe on the channel+value unique index).
+ * `ownPositionId` is the position this leaderId row itself already represents, so a
+ * `leadership[]` entry for that same seat doesn't get double-inserted as a second row. */
+async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPositionId: number, row: PersonRow) {
 	const office = row.contacts?.find((c) => c.title.trim().toLowerCase() === 'office');
 	if (row.bio || office) {
 		await db
@@ -81,9 +83,46 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, row: Pe
 					)
 				);
 			if (existing) continue;
-			const { from, to } = parseTimeRange(expRow.time);
-			await db.insert(experience).values({ leaderId, type, title: expRow.title, institution: expRow.institution, from, to });
+			await db.insert(experience).values({
+				leaderId,
+				type,
+				title: expRow.title,
+				institution: expRow.institution,
+				startAt: toDate(expRow.startAt),
+				endAt: toDate(expRow.endAt)
+			});
 		}
+	}
+
+	// Prior/other elective or nominated terms: each becomes its own `leaders` row (Track
+	// Record), not an `experience` row — same model the top-level leaders.json row uses.
+	for (const term of row.leadership ?? []) {
+		const [position] = await db
+			.select({ id: positions.id })
+			.from(positions)
+			.where(and(eq(positions.title, term.title), eq(positions.region, term.region), isNull(positions.deletedAt)));
+		if (!position) {
+			console.warn(`no ${term.title} position found for region "${term.region}" (leadership term for ${row.name}), skipping`);
+			continue;
+		}
+		if (position.id === ownPositionId) continue; // same seat as this row's own position — already represented
+
+		const [existing] = await db
+			.select({ id: leaders.id })
+			.from(leaders)
+			.where(and(eq(leaders.userId, userId), eq(leaders.positionId, position.id), isNull(leaders.deletedAt)));
+		if (existing) continue;
+
+		const startAt = toDate(term.startAt) ?? INCUMBENT_START; // schema requires a start; same fallback as the main insert below
+		await db.insert(leaders).values({
+			userId,
+			positionId: position.id,
+			status: 'former', // a leadership[] entry is always a prior/other term, never this row's own current/aspirant seat
+			description: term.description,
+			startAt,
+			endAt: toDate(term.endAt),
+			verifiedAt: new Date()
+		});
 	}
 
 	if (row.pillars?.length) {
@@ -183,11 +222,11 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 							and(eq(partyMemberships.leaderId, existingLeader.id), eq(partyMemberships.partyId, partyId), isNull(partyMemberships.deletedAt))
 						);
 					if (!existingMembership) {
-						const from = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
-						await db.insert(partyMemberships).values({ partyId, leaderId: existingLeader.id, role: 'Member', from });
+						const startAt = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
+						await db.insert(partyMemberships).values({ partyId, leaderId: existingLeader.id, role: 'Member', startAt });
 					}
 				}
-				await applyProfile(db, existingLeader.userId, existingLeader.id, row);
+				await applyProfile(db, existingLeader.userId, existingLeader.id, position.id, row);
 				skipped++;
 				continue;
 			}
@@ -234,23 +273,23 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				}
 			}
 
-			const from = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
+			const startAt = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
 			const [leader] = await tx
 				.insert(leaders)
 				.values({
 					userId: domainUserId,
 					positionId: position.id,
 					status: row.status,
-					from,
+					startAt,
 					verifiedAt: new Date() // required to surface on the /vote/2027 ballot (verified-only)
 				})
 				.returning({ id: leaders.id });
 
 			if (partyId) {
-				await tx.insert(partyMemberships).values({ partyId, leaderId: leader.id, role: 'Member', from });
+				await tx.insert(partyMemberships).values({ partyId, leaderId: leader.id, role: 'Member', startAt });
 			}
 
-			await applyProfile(tx, domainUserId, leader.id, row);
+			await applyProfile(tx, domainUserId, leader.id, position.id, row);
 		});
 
 		seeded++;

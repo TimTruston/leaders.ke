@@ -8,9 +8,10 @@
 //   bun run db:seed -- --parties --leaders
 //   bun run db:seed -- --pillars
 //
-// Dependency order: positions -> parties -> leaders -> mcas -> extra-terms -> campaigns -> pillars -> issues -> news
-// (leaders/mcas look up parties by title; extra-terms adds a 2nd leaders row for
-// someone leaders/mcas already seeded; campaigns/pillars look up leaders; issues only needs positions.)
+// Dependency order: positions -> parties -> leaders -> mcas -> campaigns -> pillars -> issues -> news
+// (leaders/mcas look up parties by title and seed each person's `leadership[]` terms
+// as extra `leaders` rows in the same pass; campaigns/pillars look up leaders; issues
+// only needs positions.)
 import { parseArgs } from 'node:util';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -19,7 +20,6 @@ import { seedPositions } from './lib/seed-positions';
 import { seedParties } from './lib/seed-parties';
 import { seedLeaders } from './lib/seed-leaders';
 import { seedMcas } from './lib/seed-mcas';
-import { seedExtraTerms } from './lib/seed-extra-terms';
 import { seedCampaigns } from './lib/seed-campaigns';
 import { seedPillars } from './lib/seed-pillars';
 import { seedIssues } from './lib/seed-issues';
@@ -35,7 +35,6 @@ const { values } = parseArgs({
 		parties: { type: 'boolean', default: false },
 		leaders: { type: 'boolean', default: false },
 		mcas: { type: 'boolean', default: false },
-		'extra-terms': { type: 'boolean', default: false },
 		campaigns: { type: 'boolean', default: false },
 		pillars: { type: 'boolean', default: false },
 		issues: { type: 'boolean', default: false },
@@ -54,7 +53,6 @@ if (runAll || values.positions) await seedPositions(db);
 if (runAll || values.parties) await seedParties(db);
 if (runAll || values.leaders) await seedLeaders(db);
 if (runAll || values.mcas) await seedMcas(db);
-if (runAll || values['extra-terms']) await seedExtraTerms(db);
 if (runAll || values.campaigns) await seedCampaigns(db);
 if (runAll || values.pillars) await seedPillars(db);
 if (runAll || values.issues) await seedIssues(db);

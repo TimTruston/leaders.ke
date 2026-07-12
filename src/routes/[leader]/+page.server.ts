@@ -73,10 +73,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Education + professional history spans every term (attached to whichever
 			// leaderId existed when it was seeded, not necessarily the current one).
 			db
-				.select({ type: experience.type, title: experience.title, institution: experience.institution, from: experience.from, to: experience.to })
+				.select({ type: experience.type, title: experience.title, institution: experience.institution, from: experience.startAt, to: experience.endAt })
 				.from(experience)
 				.where(and(inArray(experience.leaderId, allLeaderIds), isNull(experience.deletedAt)))
-				.orderBy(desc(experience.from)),
+				.orderBy(desc(experience.startAt)),
 			// Public contact channels (email/sms), verified ones surface first.
 			db
 				.select({ channel: contacts.channel, value: contacts.value, verifiedAt: contacts.verifiedAt })
@@ -96,6 +96,21 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const name = fullName(row.users);
 	const isVying = currentTerm.leaders.status !== 'former';
+
+	// Vying (a future-dated aspirant term) isn't a track record yet — only seats
+	// whose term actually started belong here. Folded into `experience.professional`
+	// below rather than shown as its own block.
+	const trackRecordItems = terms
+		.filter((t) => t.leaders.startAt.getTime() <= Date.now())
+		.map((t) => ({
+			positionTitle: t.positions.title,
+			regionLabel: t.positions.region,
+			seatPath: `/${slugify(t.positions.title)}/${slugify(t.positions.region)}`,
+			status: t.leaders.status,
+			note: t.leaders.description,
+			startYear: t.leaders.startAt.getFullYear(),
+			endYear: t.leaders.endAt?.getFullYear() ?? null
+		}));
 
 	return {
 		leader: {
@@ -125,9 +140,32 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			education: experienceRows
 				.filter((e) => e.type === 'education')
 				.map((e) => ({ title: e.title, institution: e.institution, from: e.from?.getFullYear() ?? null, to: e.to?.getFullYear() ?? null })),
-			professional: experienceRows
-				.filter((e) => e.type === 'professional')
-				.map((e) => ({ title: e.title, institution: e.institution, from: e.from?.getFullYear() ?? null, to: e.to?.getFullYear() ?? null }))
+			// Prior/current elective or nominated seats (Track Record rows) and plain career
+			// history (Cabinet posts, jobs, etc.) read oddly split into two blocks — a
+			// Vice President or Minister sits right alongside a President or MP in real
+			// bios. One combined list, newest first (undated entries sort last).
+			professional: [
+				...trackRecordItems.map((t) => ({
+					title: `${t.positionTitle}, ${t.regionLabel}`,
+					institution: undefined as string | undefined,
+					href: t.seatPath as string | undefined,
+					description: t.note,
+					badge: t.status as string | undefined,
+					from: t.startYear,
+					to: t.endYear
+				})),
+				...experienceRows
+					.filter((e) => e.type === 'professional')
+					.map((e) => ({
+						title: e.title,
+						institution: e.institution as string | undefined,
+						href: undefined as string | undefined,
+						description: null as string | null,
+						badge: undefined as string | undefined,
+						from: e.from?.getFullYear() ?? null,
+						to: e.to?.getFullYear() ?? null
+					}))
+			].sort((a, b) => (b.from ?? -Infinity) - (a.from ?? -Infinity))
 		},
 		// Former officeholders have no live campaign; aspirants and incumbents (re-election) do.
 		campaign: isVying
@@ -156,20 +194,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			summary: m.summary ?? m.body.slice(0, 160),
 			createdAt: m.createdAt.toISOString()
 		})),
-		// Vying (a future-dated aspirant term) isn't a track record yet — only seats
-		// whose term actually started belong here.
-		trackRecord: terms
-			.filter((t) => t.leaders.from.getTime() <= Date.now())
-			.map((t) => ({
-				positionTitle: t.positions.title,
-				regionLabel: t.positions.region,
-				seatPath: `/${slugify(t.positions.title)}/${slugify(t.positions.region)}`,
-				status: t.leaders.status,
-				note: t.leaders.description,
-				startYear: t.leaders.from.getFullYear(),
-				endYear: t.leaders.to?.getFullYear() ?? null
-			}))
-			.sort((a, b) => b.startYear - a.startYear),
 		// The breadcrumb's seat: current campaign's seat if vying, else the most recent past seat.
 		// positionPath is always just /[position] (the position-level page); seatPath is the
 		// canonical hub link (collapses to positionPath for single-region seats like President);

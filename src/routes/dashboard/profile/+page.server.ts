@@ -25,16 +25,16 @@ export const load: PageServerLoad = async (event) => {
 	const [existingExperience, otherLeadershipRows] = ctx
 		? await Promise.all([
 				db
-					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, from: experience.from, to: experience.to })
+					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, from: experience.startAt, to: experience.endAt })
 					.from(experience)
 					.where(and(eq(experience.leaderId, ctx.leader.id), isNull(experience.deletedAt)))
-					.orderBy(experience.from),
+					.orderBy(experience.startAt),
 				db
-					.select({ id: leaders.id, positionTitle: positions.title, region: positions.region, description: leaders.description, from: leaders.from, to: leaders.to })
+					.select({ id: leaders.id, positionTitle: positions.title, region: positions.region, description: leaders.description, from: leaders.startAt, to: leaders.endAt })
 					.from(leaders)
 					.innerJoin(positions, eq(leaders.positionId, positions.id))
 					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader.id), isNull(leaders.deletedAt)))
-					.orderBy(leaders.from)
+					.orderBy(leaders.startAt)
 			])
 		: [[], []];
 
@@ -180,7 +180,7 @@ export const actions: Actions = {
 					userId: domainUser.id,
 					positionId,
 					status: 'aspirant',
-					from: ELECTION_DAY
+					startAt: ELECTION_DAY
 				})
 				.returning({ id: leaders.id });
 			leaderId = created.id;
@@ -192,8 +192,8 @@ export const actions: Actions = {
 				type: e.type,
 				title: e.title.trim(),
 				institution: e.institution.trim(),
-				from: new Date(`${e.from}T00:00:00+03:00`),
-				to: e.to ? new Date(`${e.to}T00:00:00+03:00`) : null
+				startAt: new Date(`${e.from}T00:00:00+03:00`),
+				endAt: e.to ? new Date(`${e.to}T00:00:00+03:00`) : null
 			});
 		}
 
@@ -203,8 +203,8 @@ export const actions: Actions = {
 				positionId: l.positionId,
 				status: 'former',
 				description: l.description?.trim() || null,
-				from: new Date(`${l.from}T00:00:00+03:00`),
-				to: l.to ? new Date(`${l.to}T00:00:00+03:00`) : null
+				startAt: new Date(`${l.from}T00:00:00+03:00`),
+				endAt: l.to ? new Date(`${l.to}T00:00:00+03:00`) : null
 			});
 		}
 

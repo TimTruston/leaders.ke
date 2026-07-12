@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const isActiveCycle = year === ACTIVE_CYCLE;
 	const relevant = isActiveCycle
 		? rows.filter((r) => r.leaders.status === 'aspirant')
-		: rows.filter((r) => r.leaders.status !== 'aspirant' && r.leaders.from.getFullYear() === year);
+		: rows.filter((r) => r.leaders.status !== 'aspirant' && r.leaders.startAt.getFullYear() === year);
 
 	const dbCandidates = await Promise.all(
 		relevant.map(async (r) => {

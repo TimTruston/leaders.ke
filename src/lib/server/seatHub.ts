@@ -26,7 +26,7 @@ export async function loadSeatHub(position: string, region: string) {
 				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
 				.from(partyMemberships)
 				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.to)))
+				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 		: [];
 	const partyByLeaderId = new Map(partyRows.map((p) => [p.leaderId, p.partyName]));
 
@@ -62,8 +62,8 @@ export async function loadSeatHub(position: string, region: string) {
 			path: leaderPath(r.users),
 			status: r.leaders.status,
 			verified: !!r.leaders.verifiedAt,
-			startYear: r.leaders.from.getFullYear(),
-			endYear: r.leaders.to?.getFullYear() ?? null
+			startYear: r.leaders.startAt.getFullYear(),
+			endYear: r.leaders.endAt?.getFullYear() ?? null
 		}))
 		.sort((a, b) => b.startYear - a.startYear);
 

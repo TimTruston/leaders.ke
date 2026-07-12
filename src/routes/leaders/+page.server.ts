@@ -31,7 +31,7 @@ export const load: PageServerLoad = async () => {
 				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
 				.from(partyMemberships)
 				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.to)))
+				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 		: [];
 	const partyByLeaderId = new Map(memberships.map((m) => [m.leaderId, m.partyName]));
 

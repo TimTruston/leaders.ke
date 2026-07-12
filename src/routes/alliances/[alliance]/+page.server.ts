@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			and(
 				eq(allianceMemberships.allianceId, alliance.id),
 				isNull(allianceMemberships.deletedAt),
-				isNull(allianceMemberships.to),
+				isNull(allianceMemberships.endAt),
 				isNull(leaders.deletedAt)
 			)
 		);
