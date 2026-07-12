@@ -2,11 +2,55 @@
 	import { enhance } from '$app/forms';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
+	import ContactIcon from '$lib/components/contact/ContactIcon.svelte';
+	import { PLATFORMS, stripPrefix, socialsToLinks, type SocialLink } from '$lib/components/contact/socials';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
 	let saving = $state(false);
+	let activeTab = $state<'profile' | 'contact'>('profile');
+
+	// Contact tab fields — same deferred-save model as the rest of the form (nothing
+	// hits the server until "Save profile").
+	let address = $state(data.form.address);
+	let phone = $state(data.form.phone);
+	let email = $state(data.form.email);
+	let website = $state(data.form.website);
+	let socialLinks = $state<SocialLink[]>(socialsToLinks(data.form.socials));
+	let socialErrors = $state<Record<string, string>>({});
+
+	const isSocialActive = (kind: string) => socialLinks.some((s) => s.kind === kind);
+	function toggleSocial(kind: string) {
+		socialLinks = isSocialActive(kind) ? socialLinks.filter((s) => s.kind !== kind) : [...socialLinks, { kind, value: '' }];
+	}
+	function removeSocial(i: number) {
+		const removed = socialLinks[i]?.kind;
+		socialLinks = socialLinks.filter((_, idx) => idx !== i);
+		if (removed) delete socialErrors[removed];
+	}
+	function handleSocialInput(e: Event, kind: string, i: number) {
+		const input = e.target as HTMLInputElement;
+		const v = input.value.replace(/\s+/g, ''); // handles never contain spaces
+		if (v !== input.value) {
+			socialLinks[i].value = v;
+			input.value = v;
+		}
+		const looksLikeUrl = /^https?:\/\//i.test(v) || /^(www\.)?[\w-]+\.\w{2,}(\/|$)/i.test(v);
+		if (!looksLikeUrl) {
+			delete socialErrors[kind];
+			return;
+		}
+		const stripped = stripPrefix(kind, v);
+		if (stripped !== v) {
+			socialLinks[i].value = stripped;
+			delete socialErrors[kind];
+		} else {
+			const p = PLATFORMS.find((pl) => pl.kind === kind);
+			socialErrors[kind] = `"${v}" is not a ${p?.prefix ?? ''} URL`;
+			socialLinks[i].value = '';
+		}
+	}
 
 	let adding = $state<'leadership' | 'professional' | 'education' | null>(null);
 	function toggleAdding(type: 'leadership' | 'professional' | 'education') {
@@ -130,6 +174,27 @@
 		</div>
 	{/if}
 
+	<div class="mt-6 flex gap-2 border-b border-border">
+		<button
+			type="button"
+			onclick={() => (activeTab = 'profile')}
+			class="border-b-2 px-1 pb-3 text-sm font-semibold transition {activeTab === 'profile'
+				? 'border-primary text-heading'
+				: 'border-transparent text-muted hover:text-heading'}"
+		>
+			Profile
+		</button>
+		<button
+			type="button"
+			onclick={() => (activeTab = 'contact')}
+			class="border-b-2 px-1 pb-3 text-sm font-semibold transition {activeTab === 'contact'
+				? 'border-primary text-heading'
+				: 'border-transparent text-muted hover:text-heading'}"
+		>
+			Contact
+		</button>
+	</div>
+
 	<form
 		method="post"
 		action="?/save"
@@ -152,7 +217,9 @@
 		<input type="hidden" name="leadershipEntries" value={JSON.stringify(pendingLeadership)} />
 		<input type="hidden" name="removedExperienceIds" value={JSON.stringify(removedExperienceIds)} />
 		<input type="hidden" name="removedLeadershipIds" value={JSON.stringify(removedLeadershipIds)} />
+		<input type="hidden" name="socialEntries" value={JSON.stringify(socialLinks)} />
 
+		<div class="space-y-5 {activeTab === 'profile' ? '' : 'hidden'}">
 		<div class="grid gap-5 sm:grid-cols-2">
 			<label class="block">
 				<span class="text-sm font-medium text-heading">First name</span>
@@ -298,7 +365,7 @@
 							? 'border-primary bg-primary text-on-primary'
 							: 'border-border bg-surface text-heading hover:bg-surface-2'}"
 					>
-						+ Leadership
+						+ Elected
 					</button>
 					<button
 						type="button"
@@ -332,12 +399,12 @@
 								bind:value={leadPositionId}
 							/>
 							<label class="block">
-								<span class="text-sm font-medium text-heading">Note</span>
+								<span class="text-sm font-medium text-heading">Description</span>
 								<input
 									type="text"
 									bind:value={leadDescription}
 									maxlength="255"
-									placeholder="Optional short description"
+									placeholder="Optional"
 									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
 								/>
 							</label>
@@ -369,7 +436,7 @@
 								disabled={!leadPositionId || !leadFrom || leadDateInvalid}
 								class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
 							>
-								Add leadership role
+								Add elected role
 							</button>
 						</div>
 					{/key}
@@ -431,6 +498,112 @@
 				</p>
 			</div>
 		{/if}
+		</div>
+
+		<div class="space-y-5 {activeTab === 'contact' ? '' : 'hidden'}">
+			<label class="block">
+				<span class="text-sm font-medium text-heading">Office / address</span>
+				<input
+					type="text"
+					name="address"
+					bind:value={address}
+					placeholder="Nairobi, Kenya"
+					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				/>
+			</label>
+
+			<div class="grid gap-5 sm:grid-cols-2">
+				<label class="block">
+					<span class="text-sm font-medium text-heading">Phone</span>
+					<input
+						type="tel"
+						name="phone"
+						bind:value={phone}
+						placeholder="0712345678"
+						class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					/>
+					<p class="mt-1 text-xs text-muted">Used for the WhatsApp link on your public page.</p>
+				</label>
+				<label class="block">
+					<span class="text-sm font-medium text-heading">Email</span>
+					<input
+						type="email"
+						name="email"
+						bind:value={email}
+						placeholder="you@example.com"
+						class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					/>
+				</label>
+			</div>
+
+			<label class="block">
+				<span class="text-sm font-medium text-heading">Website</span>
+				<div class="relative mt-1.5">
+					<span class="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted">
+						<ContactIcon kind="website" size={18} />
+					</span>
+					<input
+						type="text"
+						name="website"
+						bind:value={website}
+						placeholder="yourcampaign.ke"
+						class="w-full rounded-xl border border-border bg-surface py-2.5 pr-4 pl-11 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					/>
+				</div>
+			</label>
+
+			<div>
+				<span class="text-sm font-medium text-heading">Social links</span>
+				<div class="mt-2 flex flex-wrap gap-3">
+					{#each PLATFORMS as p (p.kind)}
+						<button
+							type="button"
+							onclick={() => toggleSocial(p.kind)}
+							aria-pressed={isSocialActive(p.kind)}
+							aria-label={p.label}
+							title={p.label}
+							class="grid h-10 w-10 place-items-center rounded-xl border transition-colors {isSocialActive(p.kind)
+								? 'border-primary bg-primary-soft text-on-primary'
+								: 'border-border bg-surface text-muted hover:text-heading'}"
+						>
+							<ContactIcon kind={p.kind} size={18} />
+						</button>
+					{/each}
+				</div>
+				{#if socialLinks.length > 0}
+					<div class="mt-3 flex flex-col gap-2">
+						{#each socialLinks as link, i (link.kind)}
+							{@const platform = PLATFORMS.find((p) => p.kind === link.kind)}
+							<div class="flex items-stretch overflow-hidden rounded-xl border border-border bg-surface focus-within:border-primary">
+								<span class="grid select-none grid-flow-col place-items-center gap-1.5 border-r border-border px-2.5 text-muted">
+									<ContactIcon kind={link.kind} size={14} />
+									<span class="text-xs">{platform?.prefix ?? ''}</span>
+								</span>
+								<input
+									type="text"
+									value={link.value}
+									aria-label={platform?.label ?? link.kind}
+									placeholder={platform?.placeholder ?? 'handle'}
+									oninput={(e) => handleSocialInput(e, link.kind, i)}
+									class="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-heading placeholder:text-muted focus:outline-none"
+								/>
+								<button
+									type="button"
+									onclick={() => removeSocial(i)}
+									aria-label="Remove {platform?.label ?? link.kind}"
+									class="grid h-full w-10 shrink-0 place-items-center border-l border-border text-muted transition-colors hover:text-heading"
+								>
+									✕
+								</button>
+							</div>
+							{#if socialErrors[link.kind]}
+								<p class="text-xs text-heading">{socialErrors[link.kind]}</p>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+			</div>
+		</div>
 
 		<button
 			type="submit"

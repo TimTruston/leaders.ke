@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import Reviews from '$lib/components/Reviews.svelte';
+	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -8,6 +9,11 @@
 
 	const fmt = new Intl.NumberFormat('en-KE');
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
+
+	// ContactLinks wants a bare phone number (for the wa.me link) and a plain email
+	// address; data.contacts carries them as verifiable channel rows instead.
+	const contactPhone = $derived(data.contacts.find((c) => c.channel === 'sms' || c.channel === 'whatsapp')?.value ?? null);
+	const contactEmail = $derived(data.contacts.find((c) => c.channel === 'email')?.value ?? null);
 </script>
 
 <svelte:head>
@@ -205,27 +211,14 @@
 			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
 				<div class="rounded-3xl border border-border bg-surface-2 p-6">
 					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
-					<ul class="mt-3 space-y-2 text-sm">
-						{#each data.contacts as c (c.channel + c.value)}
-							<li class="flex items-center gap-1.5">
-								<span class="capitalize">{c.channel}:</span>
-								<span class="text-heading">{c.value}</span>
-								{#if c.verified}
-									<span class="text-xs text-primary">✓</span>
-								{/if}
-							</li>
-						{/each}
-						{#if leader.address}
-							<li>{leader.address}</li>
-						{/if}
-						{#each Object.entries(leader.socials) as [platform, href] (platform)}
-							<li>
-								<a href={href} target="_blank" rel="noopener noreferrer" class="capitalize text-heading hover:text-primary">
-									{platform} ↗
-								</a>
-							</li>
-						{/each}
-					</ul>
+					<div class="mt-4">
+						<ContactLinks phone={contactPhone} email={contactEmail} socials={leader.socials} share shareTitle={leader.name} />
+					</div>
+					{#if leader.address}
+						<p class="mt-3 space-y-2 text-sm">
+							{leader.address}
+						</p>
+					{/if}
 				</div>
 			{/if}
 

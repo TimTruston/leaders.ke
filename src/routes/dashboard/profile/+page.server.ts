@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { experience, leaders, positions, users } from '$lib/server/db/schema';
+import { contacts, experience, leaders, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, slugify } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
 	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
 	const subject = ctx?.profileUser ?? domainUser;
 
-	const [existingExperience, otherLeadershipRows] = ctx
+	const [existingExperience, otherLeadershipRows, contactRows] = ctx
 		? await Promise.all([
 				db
 					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, from: experience.startAt, to: experience.endAt })
@@ -34,9 +34,16 @@ export const load: PageServerLoad = async (event) => {
 					.from(leaders)
 					.innerJoin(positions, eq(leaders.positionId, positions.id))
 					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader.id), isNull(leaders.deletedAt)))
-					.orderBy(leaders.startAt)
+					.orderBy(leaders.startAt),
+				db
+					.select({ channel: contacts.channel, value: contacts.value })
+					.from(contacts)
+					.where(and(eq(contacts.userId, subject.id), isNull(contacts.deletedAt)))
 			])
-		: [[], []];
+		: [[], [], []];
+
+	const socials = (subject.socials ?? {}) as Record<string, string>;
+	const { website, ...otherSocials } = socials;
 
 	return {
 		positions: positionRows.map((p) => ({
@@ -67,7 +74,12 @@ export const load: PageServerLoad = async (event) => {
 			positionId: ctx?.leader.positionId ?? null,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
-			verified: !!ctx?.leader.verifiedAt
+			verified: !!ctx?.leader.verifiedAt,
+			address: subject.address ?? '',
+			phone: contactRows.find((c) => c.channel === 'sms' || c.channel === 'whatsapp')?.value ?? '',
+			email: contactRows.find((c) => c.channel === 'email')?.value ?? '',
+			website: website ?? '',
+			socials: otherSocials
 		}
 	};
 };
@@ -86,16 +98,22 @@ export const actions: Actions = {
 		const bio = String(form.get('bio') ?? '').trim();
 		const positionId = Number(form.get('positionId') ?? 0);
 		const slugInput = slugify(String(form.get('slug') ?? '').trim());
+		const address = String(form.get('address') ?? '').trim();
+		const phone = String(form.get('phone') ?? '').trim();
+		const email = String(form.get('email') ?? '').trim();
+		const website = String(form.get('website') ?? '').trim();
 
 		let pendingExperience: PendingExperience[] = [];
 		let pendingLeadership: PendingLeadership[] = [];
 		let removedExperienceIds: number[] = [];
 		let removedLeadershipIds: number[] = [];
+		let socialEntries: { kind: string; value: string }[] = [];
 		try {
 			pendingExperience = JSON.parse(String(form.get('experienceEntries') ?? '[]'));
 			pendingLeadership = JSON.parse(String(form.get('leadershipEntries') ?? '[]'));
 			removedExperienceIds = JSON.parse(String(form.get('removedExperienceIds') ?? '[]'));
 			removedLeadershipIds = JSON.parse(String(form.get('removedLeadershipIds') ?? '[]'));
+			socialEntries = JSON.parse(String(form.get('socialEntries') ?? '[]'));
 		} catch {
 			return fail(400, { error: 'Could not read the added experience entries.' });
 		}
@@ -143,10 +161,33 @@ export const actions: Actions = {
 
 		// The person the profile is about: the leader's user when managing, else yourself.
 		const subjectId = ctx?.profileUser.id ?? domainUser.id;
+		const socials: Record<string, string> = {};
+		for (const s of socialEntries) if (s.value?.trim()) socials[s.kind] = s.value.trim();
+		if (website) socials.website = website;
+
 		await db
 			.update(users)
-			.set({ firstName, otherNames, bio })
+			.set({ firstName, otherNames, bio, address: address || null, socials })
 			.where(eq(users.id, subjectId));
+
+		// One contact row per channel: replace on change so the (channel, value) unique
+		// index (scoped to live rows) never collides with the number/address just left behind.
+		for (const [channel, value] of [
+			['sms', phone],
+			['email', email]
+		] as const) {
+			const [existingContact] = await db
+				.select({ id: contacts.id, value: contacts.value })
+				.from(contacts)
+				.where(and(eq(contacts.userId, subjectId), eq(contacts.channel, channel), isNull(contacts.deletedAt)));
+			if (existingContact?.value === value) continue; // unchanged - keep verifiedAt intact
+			if (existingContact) {
+				await db.update(contacts).set({ deletedAt: new Date() }).where(eq(contacts.id, existingContact.id));
+			}
+			if (value) {
+				await db.insert(contacts).values({ userId: subjectId, channel, value, isPrimary: true }).onConflictDoNothing();
+			}
+		}
 
 		let leaderId = ctx?.leader.id;
 
