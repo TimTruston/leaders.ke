@@ -17,7 +17,7 @@
 // person's `leadership[]` terms as extra `leaders` rows in the same pass;
 // campaigns/pillars look up leaders; issues only needs positions and the system user
 // as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
-// the lowest/first user id — it's also the DEV_LOGIN_EMAIL/PASSWORD account. pillar-templates
+// the lowest/first user id — it's also the ADMIN_EMAIL/PASSWORD account. pillar-templates
 // has no dependency, runs any time.)
 import { parseArgs } from 'node:util';
 import { createInterface } from 'node:readline/promises';
@@ -69,7 +69,7 @@ if (willWipe && !yes) {
 	console.log(`\nThis will permanently wipe ${new URL(process.env.DATABASE_URL).pathname.slice(1)}:`);
 	console.log('  - every seed-managed table (positions, leaders, campaigns, pillars, reviews, ...)');
 	console.log('  - every account, including your own dev login and any manual signups');
-	console.log('The system/dev-admin account (DEV_LOGIN_EMAIL) is recreated fresh afterward — everything else is gone for good.\n');
+	console.log('The system/dev-admin account (ADMIN_EMAIL) is recreated fresh afterward — everything else is gone for good.\n');
 
 	const rl = createInterface({ input: process.stdin, output: process.stdout });
 	const answer = await rl.question('Type "yes" to continue: ');

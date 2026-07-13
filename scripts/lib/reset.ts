@@ -2,7 +2,7 @@
 // everything) so a full `bun run db:seed` / `--clear` reseeds from a genuinely
 // clean slate. TRUNCATE ... CASCADE on the auth `user` table takes `account`,
 // `session`, and the domain `users` row with it via FK cascade — the system/dev-admin
-// account (DEV_LOGIN_EMAIL) is recreated fresh by the seed pipeline's first phase.
+// account (ADMIN_EMAIL) is recreated fresh by the seed pipeline's first phase.
 import { sql } from 'drizzle-orm';
 import type { AnyDb } from './names';
 

@@ -347,16 +347,18 @@ export async function findFirstLeader(db: AnyDb): Promise<{ id: number } | null>
 /**
  * Domain user id for the one fixed system/dev-admin account — creatorId for content
  * with no natural author (e.g. aggregated civic issues), and also a real, loginable
- * account (DEV_LOGIN_EMAIL/DEV_LOGIN_PASSWORD from .env) so a developer can sign in
- * locally as a platform admin. Always the first thing seeded, so on a fresh DB its
- * id is the lowest/first user id.
+ * account (ADMIN_NAME/ADMIN_EMAIL/ADMIN_PASSWORD from .env) so a developer can sign
+ * in locally as a platform admin. Always the first thing seeded, so on a fresh DB
+ * its id is the lowest/first user id.
  */
 export async function getOrCreateSystemUser(db: AnyDb): Promise<number> {
-	const email = process.env.DEV_LOGIN_EMAIL;
-	const password = process.env.DEV_LOGIN_PASSWORD;
-	if (!email || !password) {
-		throw new Error('DEV_LOGIN_EMAIL and DEV_LOGIN_PASSWORD must be set (see .env) to seed the system user.');
+	const name = process.env.ADMIN_NAME;
+	const email = process.env.ADMIN_EMAIL;
+	const password = process.env.ADMIN_PASSWORD;
+	if (!name || !email || !password) {
+		throw new Error('ADMIN_NAME, ADMIN_EMAIL, and ADMIN_PASSWORD must be set (see .env) to seed the system user.');
 	}
+	const { firstName, otherNames } = splitName(name);
 
 	const [existingAuth] = await db.select({ id: authUsers.id }).from(authUsers).where(eq(authUsers.email, email));
 	if (existingAuth) {
@@ -371,7 +373,7 @@ export async function getOrCreateSystemUser(db: AnyDb): Promise<number> {
 	}
 
 	const authId = randomUUID();
-	await db.insert(authUsers).values({ id: authId, name: 'System Admin', email, emailVerified: true });
+	await db.insert(authUsers).values({ id: authId, name, email, emailVerified: true });
 	// providerId/accountId match better-auth's own email+password signup convention
 	// (accountId = the auth user's own id) so this account logs in exactly like any other.
 	await db.insert(account).values({
@@ -383,7 +385,7 @@ export async function getOrCreateSystemUser(db: AnyDb): Promise<number> {
 	});
 	const [domainUser] = await db
 		.insert(users)
-		.values({ authUserId: authId, firstName: 'System', otherNames: 'Admin', adminAt: new Date() })
+		.values({ authUserId: authId, firstName, otherNames, adminAt: new Date() })
 		.returning({ id: users.id });
 	console.log(`[system-user] seeded ${email} (user id ${domainUser.id}, platform admin)`);
 	return domainUser.id;

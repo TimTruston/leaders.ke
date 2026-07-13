@@ -27,7 +27,7 @@ export const load: PageServerLoad = async (event) => {
 	}
 
 	return dev
-		? { devEmail: env.DEV_LOGIN_EMAIL ?? '', devPassword: env.DEV_LOGIN_PASSWORD ?? '', next, inviteBanner }
+		? { devEmail: env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner }
 		: { devEmail: '', devPassword: '', next, inviteBanner };
 };
 
