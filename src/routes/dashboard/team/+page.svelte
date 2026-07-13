@@ -7,6 +7,21 @@
 
 <svelte:head><title>Team — leaders.ke</title></svelte:head>
 
+{#if data.noProfile}
+	<div class="rounded-2xl border border-dashed border-border p-8 text-center">
+		<p class="font-semibold text-heading">Save your profile first</p>
+		<p class="mx-auto mt-2 max-w-md text-sm text-muted">
+			Your team is tied to your campaign profile — fill in the Leader's Profile tab, then come
+			back here to invite people.
+		</p>
+		<a
+			href="/dashboard/profile"
+			class="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+		>
+			Go to Leader's Profile
+		</a>
+	</div>
+{:else}
 {#if form?.error}
 	<div class="mb-6 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 		{form.error}
@@ -183,3 +198,4 @@
 		</ul>
 	</div>
 </div>
+{/if}

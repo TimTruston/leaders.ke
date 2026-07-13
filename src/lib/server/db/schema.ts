@@ -89,6 +89,12 @@ export const leaders = pgTable('leaders', {
   status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'current' | 'former'
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
   fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES; campaign goal (leader == main campaign in v1)
+  // Campaign-application documents (Documentation tab). Local-disk URLs for now
+  // (see $lib/server/storage.ts); swap for S3 URLs later without touching these columns.
+  photoUrl: text('photo_url'),
+  idFrontUrl: text('id_front_url'),
+  idBackUrl: text('id_back_url'),
+  iebcCertificateUrl: text('iebc_certificate_url'),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
   endAt: timestamp('end_at', { withTimezone: true }),

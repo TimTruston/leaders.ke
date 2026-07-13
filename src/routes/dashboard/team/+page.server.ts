@@ -3,13 +3,17 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ambassadors, invites, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { isCampaignAdmin, requireLeader } from '$lib/server/dashboard';
+import { isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites, revokeInvite } from '$lib/server/invites';
-import { fullName } from '$lib/server/leader';
+import { fullName, getLeaderContext } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	const { domainUser, ctx } = await requireLeader(event);
+	const { domainUser } = await requireDashboardUser(event);
+	const ctx = await getLeaderContext(domainUser.id);
+	// Reachable before a profile is saved (applying), just with nothing to show yet —
+	// unlike the rest of this page's actions, which still require ctx (requireLeader).
+	if (!ctx) return { noProfile: true as const };
 
 	const [managerRows, ambassadorRows, openInvites, isAdmin] = await Promise.all([
 		db
@@ -29,6 +33,7 @@ export const load: PageServerLoad = async (event) => {
 	]);
 
 	return {
+		noProfile: false as const,
 		isAdmin,
 		managers: managerRows.map((r) => ({
 			id: r.managers.id,
