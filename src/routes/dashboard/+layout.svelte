@@ -19,22 +19,6 @@
 	let submittingApplication = $state(false);
 	let applicationError = $state('');
 
-	// Unverified-email nudge: shown on every dashboard page/mode, not just citizen —
-	// an invited manager/ambassador who just accepted needs this too. A resend link
-	// only makes sense once the last email is old enough that it's reasonable to
-	// assume it didn't arrive; ticks locally so the countdown counts down live.
-	const RESEND_COOLDOWN_MS = 10 * 60 * 1000;
-	let sentAt = $state(data.verificationEmailSentAt ? new Date(data.verificationEmailSentAt).getTime() : null);
-	let now = $state(Date.now());
-	$effect(() => {
-		const interval = setInterval(() => (now = Date.now()), 30_000);
-		return () => clearInterval(interval);
-	});
-	const minsRemaining = $derived(
-		sentAt !== null ? Math.max(0, Math.ceil((sentAt + RESEND_COOLDOWN_MS - now) / 60_000)) : 0
-	);
-	let resendError = $state('');
-
 	// Which mode the current URL/state belongs to. The section nav below shows only
 	// this mode's tabs, so switching modes actually changes what's available — not
 	// just which tab is open. Profile/Contacts/Team/Documentation are shared routes
@@ -282,32 +266,5 @@
 	<div class="mt-8">
 		{@render children()}
 	</div>
-
-	{#if !data.emailVerified}
-		<div class="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-			<span>Check your inbox at {data.email} to verify your email.</span>
-			{#if minsRemaining > 0}
-				<span class="shrink-0 text-on-primary/70">Resend after {minsRemaining} mins</span>
-			{:else}
-				<form
-					method="post"
-					action="/dashboard/citizen?/resend"
-					use:enhance={() => {
-						resendError = '';
-						return async ({ result, update }) => {
-							if (result.type === 'success') sentAt = Date.now();
-							else if (result.type === 'failure') resendError = (result.data?.error as string) ?? 'Could not resend.';
-							await update();
-						};
-					}}
-				>
-					<button type="submit" class="shrink-0 font-semibold underline hover:no-underline">Resend</button>
-				</form>
-			{/if}
-		</div>
-		{#if resendError}
-			<p class="-mt-2 mb-4 text-sm text-red-500">{resendError}</p>
-		{/if}
-	{/if}
 
 </section>

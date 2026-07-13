@@ -56,8 +56,8 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		// The unverified-email nudge lives in the dashboard layout now (shows on every
-		// mode/page for as long as the account is unverified), so this is just `next`.
-		return redirect(302, next);
+		// New accounts land on /verify first to confirm email + phone; it forwards to
+		// `next` once both are done (or immediately if they already are).
+		return redirect(302, `/verify?next=${encodeURIComponent(next)}`);
 	}
 };

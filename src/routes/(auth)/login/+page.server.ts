@@ -1,7 +1,10 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import { auth } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema';
 import { getInviteByToken } from '$lib/server/invites';
 import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
@@ -38,12 +41,18 @@ export const actions: Actions = {
 		const password = form.get('password')?.toString() ?? '';
 		const next = safeNext(event.url.searchParams.get('next'));
 
+		let authUser;
 		try {
-			await auth.api.signInEmail({ body: { email, password }, headers: event.request.headers });
+			({ user: authUser } = await auth.api.signInEmail({ body: { email, password }, headers: event.request.headers }));
 		} catch (error) {
 			if (error instanceof APIError) return fail(400, { message: error.message || 'Sign in failed' });
 			return fail(500, { message: 'Unexpected error' });
 		}
+
+		if (!authUser.emailVerified) return redirect(302, `/verify?next=${encodeURIComponent(next)}`);
+
+		const [domainUser] = await db.select({ verified: users.verified }).from(users).where(eq(users.authUserId, authUser.id));
+		if (!domainUser?.verified.sms) return redirect(302, `/verify?next=${encodeURIComponent(next)}`);
 
 		return redirect(302, next);
 	}

@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public'; // PUBLIC_-prefixed vars live here, not in private
 import { betterAuth } from 'better-auth/minimal';
@@ -25,18 +24,16 @@ export const auth = betterAuth({
 		}
 	},
 	// No requireEmailVerification, so signup stays frictionless (you're signed in
-	// immediately) — sendOnSignUp just fires the email so there's something to click.
-	// Also powers the resend action on the dashboard's unverified-email banner.
+	// immediately). Verification itself happens on /verify via OTP (see
+	// $lib/server/otp.ts), not this link — no sendOnSignUp, so that's the only email sent.
 	emailVerification: {
-		sendOnSignUp: true,
+		sendOnSignUp: false,
 		sendVerificationEmail: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
 				subject: 'Verify your leaders.ke email',
 				text: `Hi ${user.name || 'there'},\n\nVerify your email with this link:\n${url}\n\nDidn't sign up? Ignore this email.`
 			});
-			// Stamped so the UI can gate a "Resend" link on enough time having passed.
-			await db.update(users).set({ verificationEmailSentAt: new Date() }).where(eq(users.authUserId, user.id));
 		}
 	},
 	user: {

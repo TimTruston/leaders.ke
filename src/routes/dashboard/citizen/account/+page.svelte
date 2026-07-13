@@ -34,7 +34,7 @@
 
 <svelte:head><title>Account — leaders.ke</title></svelte:head>
 
-<div class="max-w-2xl">
+<div class="">
 	<h1 class="text-xl font-bold text-heading">Account</h1>
 	<p class="mt-1 text-sm text-muted">Your details and how leaders.ke reaches you.</p>
 

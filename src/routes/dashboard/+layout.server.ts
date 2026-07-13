@@ -1,3 +1,4 @@
+import { redirect } from '@sveltejs/kit';
 import { and, count, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, managers } from '$lib/server/db/schema';
@@ -9,7 +10,13 @@ import type { LayoutServerLoad } from './$types';
 
 // Guards every /dashboard page and shares the leader context + role switcher data.
 export const load: LayoutServerLoad = async (event) => {
-	const { authUser, domainUser } = await requireDashboardUser(event);
+	const { domainUser } = await requireDashboardUser(event);
+
+	// No dashboard access until both email and phone are verified.
+	if (!domainUser.verified.email || !domainUser.verified.sms) {
+		redirect(302, `/verify?next=${encodeURIComponent(event.url.pathname)}`);
+	}
+
 	const ctx = await getLeaderContext(domainUser.id);
 	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
 
@@ -48,9 +55,6 @@ export const load: LayoutServerLoad = async (event) => {
 
 	return {
 		firstName: domainUser.firstName,
-		email: authUser.email,
-		emailVerified: authUser.emailVerified,
-		verificationEmailSentAt: domainUser.verificationEmailSentAt?.toISOString() ?? null,
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,

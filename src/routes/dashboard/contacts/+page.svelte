@@ -60,9 +60,9 @@
 	}
 </script>
 
-<svelte:head><title>Contacts — leaders.ke</title></svelte:head>
+<svelte:head><title>Contacts | leaders.ke</title></svelte:head>
 
-<div class="max-w-2xl">
+<div class="">
 	<h1 class="text-xl font-bold text-heading">Contacts</h1>
 	<p class="mt-1 text-sm text-muted">How we and your citizens can reach you.</p>
 

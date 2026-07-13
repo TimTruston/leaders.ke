@@ -39,13 +39,15 @@ export const users = pgTable('users', {
   // Lives here (not on leaders) because it's the PERSON's URL: one user can have several
   // leaders rows (Track Record spanning multiple seats/terms) sharing this one slug.
   slug: varchar('slug', { length: 120 }),
-  verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  // Per-channel verification flags — set once each contact channel's OTP succeeds.
+  // Denormalized here (alongside the matching `contacts.verifiedAt` timestamp) so
+  // dashboard/login gating reads it for free off the `users` row
+  // `requireDashboardUser` already loads, no extra `contacts` query.
+  verified: jsonb('verified')
+    .$type<{ email: boolean; sms: boolean; whatsapp: boolean }>()
+    .default({ email: false, sms: false, whatsapp: false })
+    .notNull(),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
-  // Stamped every time better-auth sends an email-verification link (signup or
-  // resend) — lets the UI gate a "Resend" link on enough time having passed,
-  // without needing a persisted verification-token row (this project's better-auth
-  // config uses stateless JWT tokens, not the `verification` table).
-  verificationEmailSentAt: timestamp('verification_email_sent_at', { withTimezone: true }),
   // Channel-level opt-in for platform notifications (new posts from followed leaders,
   // invite alerts, etc.) — simple on/off per channel, not per notification category.
   notificationPrefs: jsonb('notification_prefs')
@@ -59,6 +61,15 @@ export const users = pgTable('users', {
 ]);
 
 // 2.1 CONTACTS (per-channel reachable addresses; each verified independently via the otps table)
+// A real table here (not a jsonb column on users) buys three things a blob can't:
+// - Cardinality: a channel's value can change over time (old phone replaced, etc.)
+//   without losing the ability to tell "the live one" from history — soft-deleted
+//   rows keep that history instead of being overwritten in place.
+// - Uniqueness: `one_value_per_channel` below is a real, database-enforced
+//   constraint spanning every user, not just one row's own data — it's what makes
+//   "you can't verify a number someone else already verified" actually race-safe.
+// - Channel extensibility: adding whatsapp alongside sms/email was a new enum
+//   value, not a new column (and a new unique index, and new app-level filtering).
 export const contactChannelEnum = pgEnum('contact_channel', ['sms', 'whatsapp', 'email']);
 
 // A user's contacts, one row per channel.
@@ -605,6 +616,7 @@ export const creditTransactions = pgTable('credit_transactions', {
 // 18. OTPS & DEVICES (fix 7 — Safaricom OTP + fingerprinting to block single-phone farming)
 // Named `otps`, not `verifications`, to avoid colliding with better-auth's own
 // internal `verification` table in auth.schema.ts (unrelated email-link tokens).
+// Offers same benefits listed above contacts table
 export const otpChannelEnum = pgEnum('otp_channel', ['sms', 'whatsapp', 'email']);
 
 // A one-time passcode sent to verify a phone number or email.
@@ -614,12 +626,16 @@ export const otps = pgTable('otps', {
   channel: otpChannelEnum('channel').notNull(),
   destination: varchar('destination', { length: 100 }).notNull(), // phone/email the code was sent to
   codeHash: varchar('code_hash', { length: 255 }).notNull(), // hashed OTP, never plaintext
+  // Short click-through alternative to typing the code (email channel only) — a
+  // 32-char random token, stored raw (like invites.token) since it's never user-typed.
+  linkToken: varchar('link_token', { length: 32 }),
   attempts: integer('attempts').default(0).notNull(),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   consumedAt: timestamp('consumed_at', { withTimezone: true }), // set once verified, prevents replay
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
   index('otps_destination_idx').on(t.destination),
+  index('otps_link_token_idx').on(t.linkToken),
 ]);
 
 // A device fingerprint seen for a user, used to detect single-phone farming.

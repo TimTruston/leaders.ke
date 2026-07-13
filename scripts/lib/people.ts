@@ -261,7 +261,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				const slug = await generateLeaderSlug(tx, row.name);
 				const [domainUser] = await tx
 					.insert(users)
-					.values({ authUserId: authId, firstName, otherNames, slug, verifiedAt: new Date() })
+					.values({ authUserId: authId, firstName, otherNames, slug })
 					.returning({ id: users.id });
 				domainUserId = domainUser.id;
 			} else {
