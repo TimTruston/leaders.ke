@@ -32,19 +32,16 @@
 		return 'campaign';
 	});
 
-	// The modes this account can switch between right now. Campaign is always
-	// present: either you run one, or the entry is "Launch a campaign".
+	// The modes this account can switch between right now. 
 	const modes = $derived(
 		[
 			{
 				key: 'campaign',
 				href: '/dashboard',
-				label: data.leaderContext
-					? data.leaderContext.role === 'manager'
-						? `Managing ${data.leaderContext.leaderName}`
-						: data.leaderContext.leaderName
-					: 'Launch a campaign',
-				available: true
+				label: data.leaderContext?.role === 'manager'
+					? `Managing ${data.leaderContext.leaderName}`
+					: (data.leaderContext?.leaderName ?? ''),
+				available: !!data.leaderContext
 			},
 			{ key: 'citizen', href: '/dashboard/citizen', label: 'Citizen', available: true },
 			{ key: 'ambassador', href: '/dashboard/ambassador', label: 'Ambassador', available: data.isAmbassador },
