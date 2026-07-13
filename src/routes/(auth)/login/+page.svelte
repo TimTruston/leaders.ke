@@ -12,7 +12,11 @@
 	{#if data.inviteBanner}
 		<p class="mb-4 rounded-xl bg-primary-soft p-3 text-sm text-on-primary">
 			You've been invited by {data.inviteBanner.leaderName} to join as
-			{data.inviteBanner.role === 'manager' ? 'a manager' : 'an ambassador'}. Sign in to accept the invite.
+			{data.inviteBanner.role === 'manager'
+				? 'a manager'
+				: data.inviteBanner.role === 'ambassador'
+					? 'an ambassador'
+					: 'a follower'}. Sign in to accept the invite.
 		</p>
 	{/if}
 	<form method="post" use:enhance class="space-y-4">

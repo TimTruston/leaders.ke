@@ -68,7 +68,11 @@
 			{ href: '/dashboard/pr', label: 'PR desk', enabled: !!data.leaderContext },
 			{ href: '/dashboard/competitors', label: 'Competitors', enabled: !!data.leaderContext }
 		],
-		citizen: [{ href: '/dashboard/citizen', label: 'My leaders.ke', enabled: true }],
+		citizen: [
+			{ href: '/dashboard/citizen', label: 'Overview', enabled: true },
+			{ href: '/dashboard/citizen/invites', label: 'Invites', enabled: true },
+			{ href: '/dashboard/citizen/account', label: 'Account', enabled: true }
+		],
 		ambassador: [{ href: '/dashboard/ambassador', label: 'My campaigns', enabled: true }],
 		admin: [
 			{ href: '/dashboard/admin/candidates', label: 'Candidates', enabled: true },
@@ -83,8 +87,12 @@
 	});
 	const sections = $derived(sectionsByMode[mode].filter((s) => s.enabled));
 
+	// Exact match for any tab that's a URL-prefix of a sibling tab (e.g. Overview at
+	// /dashboard/citizen vs. /dashboard/citizen/account) — otherwise both would light up.
 	const isActive = (href: string) =>
-		href === '/dashboard' ? page.url.pathname === href : page.url.pathname.startsWith(href);
+		sections.some((s) => s.href !== href && s.href.startsWith(href))
+			? page.url.pathname === href
+			: page.url.pathname.startsWith(href);
 
 	// The <details> dropdown doesn't auto-close on navigation since this layout
 	// persists across route changes — close it explicitly when a mode is picked.
@@ -92,65 +100,66 @@
 </script>
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-	<!-- Role switcher: pick which dashboard context you're in. Each mode has its own
-	tab set below, so switching genuinely changes what's available. -->
-	{#if modes.length > 1}
-		<details class="group relative w-fit" bind:open={switcherOpen}>
-			<summary
-				class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
-			>
-				{currentMode.label}
-				<span class="text-muted transition group-open:rotate-180">⌄</span>
-			</summary>
-			<div class="absolute z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
-				{#each modes as m (m.key)}
-					<a
-						href={m.href}
-						onclick={() => (switcherOpen = false)}
-						class="block truncate rounded-xl px-3 py-2 text-sm transition hover:bg-surface-2 {m.key === currentMode.key
-							? 'bg-surface-2 font-semibold text-heading'
-							: 'text-muted'}"
+	<!-- Headers -->
+
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<div>
+			{#if mode === 'campaign' && data.leaderContext}
+				<h1 class="text-2xl font-bold text-heading">
+					{#if data.leaderContext.role === 'manager'}
+						<span
+							class="ml-1 align-middle rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted"
+						>
+							Managing
+						</span>
+					{/if}
+					{data.leaderContext.leaderName}
+				</h1>
+				<p class="mt-1 text-sm text-muted">
+					{data.leaderContext.positionTitle}, {data.leaderContext.region}
+					· <span class="capitalize">{data.leaderContext.status}</span>
+				</p>
+			{:else}
+				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
+				<p class="mt-1 text-sm text-muted uppercase">{mode}</p>
+			{/if}
+		</div>
+
+		<div class="flex items-center gap-2">
+			<!-- Role switcher: pick which dashboard context you're in. Each mode has its own
+			tab set below, so switching genuinely changes what's available. -->
+			{#if modes.length > 1}
+				<details class="group relative w-fit" bind:open={switcherOpen}>
+					<summary
+						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
 					>
-						{m.label}
-					</a>
-				{/each}
-			</div>
-		</details>
-	{/if}
-
-	<!-- Campaign identity header: only in campaign mode; other modes' pages own their headers. -->
-	{#if mode === 'campaign'}
-		<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-			<div>
-				{#if data.leaderContext}
-					<h1 class="text-2xl font-bold text-heading">
-						{data.leaderContext.leaderName}
-						{#if data.leaderContext.role === 'manager'}
-							<span
-								class="ml-1 align-middle rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted"
+						{currentMode.label}
+						<span class="text-muted transition group-open:rotate-180">⌄</span>
+					</summary>
+					<div class="absolute z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
+						{#each modes as m (m.key)}
+							<a
+								href={m.href}
+								onclick={() => (switcherOpen = false)}
+								class="block truncate rounded-xl px-3 py-2 text-sm transition hover:bg-surface-2 {m.key === currentMode.key
+									? 'bg-surface-2 font-semibold text-heading'
+									: 'text-muted'}"
 							>
-								Managing
-							</span>
-						{/if}
-					</h1>
-					<p class="mt-1 text-sm text-muted">
-						{data.leaderContext.positionTitle}, {data.leaderContext.region}
-						· <span class="capitalize">{data.leaderContext.status}</span>
-					</p>
-				{:else}
-					<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
-					<p class="mt-1 text-sm text-muted">Set up your leader profile to unlock the campaign HQ.</p>
-				{/if}
-			</div>
-
-			<div class="flex items-center gap-2">
+								{m.label}
+							</a>
+						{/each}
+					</div>
+				</details>
+			{/if}
+			{#if mode === 'campaign'}
 				{#if data.leaderContext}
 					{#if data.leaderContext.verified}
-						<span
-							class="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-sm font-semibold text-on-primary"
+						<a
+							href={data.leaderContext.publicPath}
+							class="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
 						>
-							✓ Verified
-						</span>
+							View public page
+						</a>
 					{:else}
 						<span
 							class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-sm font-semibold text-muted"
@@ -158,16 +167,10 @@
 							Pending verification
 						</span>
 					{/if}
-					<a
-						href={data.leaderContext.publicPath}
-						class="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
-					>
-						View public page
-					</a>
 				{/if}
-			</div>
+			{/if}
 		</div>
-	{/if}
+	</div>
 
 	<!-- Section nav: only when the mode has more than one tab. -->
 	{#if sections.length > 1}

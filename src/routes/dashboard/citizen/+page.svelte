@@ -6,12 +6,41 @@
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
 </script>
 
-<svelte:head><title>My leaders.ke</title></svelte:head>
+<svelte:head><title>Overview — leaders.ke</title></svelte:head>
 
 <div class="flex min-h-[70vh] flex-col">
 <div class="grid gap-8 lg:grid-cols-2">
 	<div>
-		<h1 class="text-xl font-bold text-heading">News feed</h1>
+		<h1 class="text-xl font-bold text-heading">My Choice</h1>
+		<p class="mt-1 text-sm text-muted">Candidates you've pledged to vote for.</p>
+
+		{#if data.pledges.length > 0}
+			<ul class="mt-4 space-y-3">
+				{#each data.pledges as pledge (pledge.path)}
+					<li class="rounded-2xl border border-border bg-surface p-4">
+						<a href={pledge.path} class="font-semibold text-heading hover:text-primary">
+							{pledge.leaderName}
+						</a>
+						<p class="text-sm text-muted">{pledge.positionTitle}, {pledge.region}</p>
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<div class="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
+				<p class="font-semibold text-heading">Simulate your vote</p>
+				<p class="mx-auto mt-2 max-w-md text-sm text-muted">You haven't simulated your 2027 ballot yet.</p>
+				<a
+					href="/vote/2027"
+					class="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+				>
+					Hit the ballot
+				</a>
+			</div>
+		{/if}
+	</div>
+
+	<div>
+		<h2 class="text-lg font-semibold text-heading">News</h2>
 		<p class="mt-1 text-sm text-muted">Updates from the {data.followedLeaders.length} leaders you follow.</p>
 
 		{#if data.feed.length > 0}
@@ -45,38 +74,6 @@
 				</a>
 			</div>
 		{/if}
-	</div>
-
-	<div class="space-y-8">
-		<!-- My 2027 vote -->
-		<div>
-			<h2 class="text-lg font-semibold text-heading">2027 Choice</h2>
-			<p class="mt-1 text-sm text-muted">Candidates you've pledged to vote for.</p>
-
-			{#if data.pledges.length > 0}
-				<ul class="mt-4 space-y-3">
-					{#each data.pledges as pledge (pledge.path)}
-						<li class="rounded-2xl border border-border bg-surface p-4">
-							<a href={pledge.path} class="font-semibold text-heading hover:text-primary">
-								{pledge.leaderName}
-							</a>
-							<p class="text-sm text-muted">{pledge.positionTitle}, {pledge.region}</p>
-						</li>
-					{/each}
-				</ul>
-			{:else}
-				<div class="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
-					<p class="font-semibold text-heading">Simulate your vote</p>
-					<p class="mx-auto mt-2 max-w-md text-sm text-muted">You haven't simulated your 2027 ballot yet.</p>
-					<a
-						href="/vote/2027"
-						class="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-					>
-						Hit the ballot
-					</a>
-				</div>
-			{/if}
-		</div>
 	</div>
 </div>
 

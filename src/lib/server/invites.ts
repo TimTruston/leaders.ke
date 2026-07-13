@@ -1,16 +1,19 @@
-// onboarding.md: how a worker joins a campaign. A manager/ambassador is invited by
-// email; the link is single-use and expires once accepted. Re-inviting the same
-// email/role revokes whatever link was open before, so there's only ever one live.
+// onboarding.md: how a worker joins a campaign. A manager/ambassador/follower is
+// invited by email; the link is single-use and expires once accepted. Re-inviting
+// the same email/role revokes whatever link was open before, so there's only ever
+// one live.
 import { randomBytes } from 'node:crypto';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, invites, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { ambassadors, followers, invites, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { fullName } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
 
 const INVITE_TTL_DAYS = 7;
 
-export type InviteRole = 'manager' | 'ambassador';
+export type InviteRole = 'manager' | 'ambassador' | 'follower';
+
+export const ROLE_LABEL: Record<InviteRole, string> = { manager: 'a manager', ambassador: 'an ambassador', follower: 'a follower' };
 
 export type OpenInvite = {
 	id: number;
@@ -68,7 +71,7 @@ export async function createInvite(
 	await sendEmail({
 		to: normalizedEmail,
 		subject: `You're invited to join ${leaderName}'s campaign`,
-		text: `You've been invited to join ${leaderName}'s campaign as ${role === 'manager' ? 'a manager' : 'an ambassador'} on leaders.ke.\n\nAccept the invite: ${link}\n\nThis link expires in ${INVITE_TTL_DAYS} days and can only be used once.`
+		text: `You've been invited to join ${leaderName}'s campaign as ${ROLE_LABEL[role]} on leaders.ke.\n\nAccept the invite: ${link}\n\nThis link expires in ${INVITE_TTL_DAYS} days and can only be used once.`
 	});
 
 	return { token };
@@ -91,6 +94,53 @@ export async function listOpenInvites(leaderId: number): Promise<OpenInvite[]> {
 			role: r.role,
 			createdAt: r.createdAt.toISOString(),
 			expiresAt: r.expiresAt ? r.expiresAt.toISOString() : null
+		}));
+}
+
+export type ReceivedInvite = {
+	token: string;
+	role: InviteRole;
+	leaderName: string;
+	leaderPath: string;
+	positionTitle: string;
+	region: string;
+	createdAt: string;
+};
+
+/** Every invite (any leader, any role) addressed to this email that's still open —
+ * powers the citizen dashboard's Invites tab. */
+export async function listInvitesForEmail(email: string): Promise<ReceivedInvite[]> {
+	const normalizedEmail = email.trim().toLowerCase();
+	const rows = await db
+		.select({
+			token: invites.token,
+			role: invites.role,
+			expiresAt: invites.expiresAt,
+			createdAt: invites.createdAt,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			slug: users.slug,
+			positionTitle: positions.title,
+			region: positions.region
+		})
+		.from(invites)
+		.innerJoin(leaders, eq(invites.leaderId, leaders.id))
+		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.where(and(eq(invites.email, normalizedEmail), isNull(invites.deletedAt), isNull(invites.usedBy)))
+		.orderBy(desc(invites.createdAt));
+
+	const now = Date.now();
+	return rows
+		.filter((r) => !r.expiresAt || r.expiresAt.getTime() > now)
+		.map((r) => ({
+			token: r.token,
+			role: r.role,
+			leaderName: fullName(r),
+			leaderPath: r.slug ? `/${r.slug}` : '/leaders',
+			positionTitle: r.positionTitle,
+			region: r.region,
+			createdAt: r.createdAt.toISOString()
 		}));
 }
 
@@ -134,9 +184,9 @@ export async function getInviteByToken(token: string): Promise<InviteDetails | n
 	};
 }
 
-/** Accepts an invite: creates the active managers/ambassadors row and marks the
- * token used (single-use). Requires the signed-in email to match who it was sent
- * to — the link itself isn't the only secret, the invite is bound to a person. */
+/** Accepts an invite: creates the active managers/ambassadors/followers row and
+ * marks the token used (single-use). Requires the signed-in email to match who it
+ * was sent to — the link itself isn't the only secret, the invite is bound to a person. */
 export async function acceptInvite(token: string, userId: number, signedInEmail: string) {
 	const [invite] = await db.select().from(invites).where(eq(invites.token, token));
 	if (!invite || invite.usedBy || invite.deletedAt) {
@@ -157,7 +207,7 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 		if (!existing) {
 			await db.insert(managers).values({ userId, leaderId: invite.leaderId, roles: {} });
 		}
-	} else {
+	} else if (invite.role === 'ambassador') {
 		const [existing] = await db
 			.select({ id: ambassadors.id })
 			.from(ambassadors)
@@ -166,6 +216,21 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 			);
 		if (!existing) {
 			await db.insert(ambassadors).values({ userId, leaderId: invite.leaderId, roles: {} });
+		}
+	} else {
+		const [existing] = await db
+			.select({ id: followers.id })
+			.from(followers)
+			.where(
+				and(
+					eq(followers.userId, userId),
+					eq(followers.digest, 'leader'),
+					eq(followers.digestId, invite.leaderId),
+					isNull(followers.deletedAt)
+				)
+			);
+		if (!existing) {
+			await db.insert(followers).values({ userId, digest: 'leader', digestId: invite.leaderId, email: true });
 		}
 	}
 

@@ -46,6 +46,12 @@ export const users = pgTable('users', {
   // without needing a persisted verification-token row (this project's better-auth
   // config uses stateless JWT tokens, not the `verification` table).
   verificationEmailSentAt: timestamp('verification_email_sent_at', { withTimezone: true }),
+  // Channel-level opt-in for platform notifications (new posts from followed leaders,
+  // invite alerts, etc.) — simple on/off per channel, not per notification category.
+  notificationPrefs: jsonb('notification_prefs')
+    .$type<{ email: boolean; sms: boolean; whatsapp: boolean }>()
+    .default({ email: true, sms: true, whatsapp: true })
+    .notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
@@ -200,7 +206,7 @@ export const ambassadors = pgTable('ambassadors', {
 
 // 6.1 INVITES (onboarding.md: how a worker joins a campaign as manager or ambassador.
 // Single-use token; accepting creates the managers/ambassadors row directly.)
-export const inviteRoleEnum = pgEnum('invite_role', ['manager', 'ambassador']);
+export const inviteRoleEnum = pgEnum('invite_role', ['manager', 'ambassador', 'follower']);
 
 // A one-time invite link a leader/manager sends to bring someone onto the team.
 export const invites = pgTable('invites', {

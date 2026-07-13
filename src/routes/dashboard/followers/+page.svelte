@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import type { PageProps } from './$types';
 
-	let { data }: PageProps = $props();
+	let { data, form }: PageProps = $props();
 
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
 	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
@@ -20,7 +21,42 @@
 
 <svelte:head><title>Followers — leaders.ke</title></svelte:head>
 
-<div class="flex flex-wrap items-end justify-between gap-4">
+{#if form?.invited}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		Invite sent to {form.invited.email}
+	</div>
+{:else if form?.error}
+	<div class="mb-6 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
+		{form.error}
+	</div>
+{/if}
+
+<!-- Invite someone to follow directly, not just via the public page. -->
+<form method="post" action="?/inviteFollower" class="flex flex-wrap gap-2" use:enhance>
+	<input
+		type="email"
+		name="email"
+		required
+		placeholder="Invite someone to follow, by email"
+		class="min-w-0 flex-1 rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+	/>
+	<button
+		type="submit"
+		class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+	>
+		Send invite
+	</button>
+</form>
+
+{#if data.followerInvites.length > 0}
+	<ul class="mt-3 space-y-2">
+		{#each data.followerInvites as invite (invite.id)}
+			<li class="rounded-xl bg-surface-2 px-4 py-2.5 text-sm text-muted">Invited: {invite.email}</li>
+		{/each}
+	</ul>
+{/if}
+
+<div class="mt-6 flex flex-wrap items-end justify-between gap-4">
 	<div>
 		<h2 class="text-lg font-semibold text-heading">
 			Followers <span class="text-sm font-normal text-muted">({data.total})</span>

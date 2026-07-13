@@ -1,8 +1,10 @@
+import { fail } from '@sveltejs/kit';
 import { and, desc, eq, gte, isNull, count } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { followers } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
-import type { PageServerLoad } from './$types';
+import { createInvite, listOpenInvites } from '$lib/server/invites';
+import type { Actions, PageServerLoad } from './$types';
 
 const PAGE_SIZE = 50;
 
@@ -23,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-	const [rows, [weekRow], [totalRow], wardRows] = await Promise.all([
+	const [rows, [weekRow], [totalRow], wardRows, openInvites] = await Promise.all([
 		db
 			.select()
 			.from(followers)
@@ -33,7 +35,8 @@ export const load: PageServerLoad = async (event) => {
 			.offset((page - 1) * PAGE_SIZE),
 		db.select({ n: count() }).from(followers).where(and(target, gte(followers.createdAt, weekAgo))),
 		db.select({ n: count() }).from(followers).where(filtered),
-		db.selectDistinct({ ward: followers.ward }).from(followers).where(target)
+		db.selectDistinct({ ward: followers.ward }).from(followers).where(target),
+		listOpenInvites(ctx.leader.id)
 	]);
 
 	return {
@@ -54,6 +57,19 @@ export const load: PageServerLoad = async (event) => {
 		page,
 		pageSize: PAGE_SIZE,
 		ward,
-		wards: wardRows.map((w) => w.ward).filter((w): w is string => !!w).sort()
+		wards: wardRows.map((w) => w.ward).filter((w): w is string => !!w).sort(),
+		followerInvites: openInvites.filter((i) => i.role === 'follower')
 	};
+};
+
+export const actions: Actions = {
+	inviteFollower: async (event) => {
+		const { domainUser, ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const email = String(form.get('email') ?? '').trim();
+		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
+
+		await createInvite(ctx.leader.id, 'follower', domainUser.id, email, event.url.origin);
+		return { invited: { email } };
+	}
 };

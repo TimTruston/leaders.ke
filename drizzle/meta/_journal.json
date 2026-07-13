@@ -211,6 +211,13 @@
       "when": 1783928780646,
       "tag": "0029_blushing_sasquatch",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1783931540764,
+      "tag": "0030_groovy_red_skull",
+      "breakpoints": true
     }
   ]
 }

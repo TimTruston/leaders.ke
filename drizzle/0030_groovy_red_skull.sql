@@ -1,0 +1,2 @@
+ALTER TYPE "public"."invite_role" ADD VALUE 'follower';--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "notification_prefs" jsonb DEFAULT '{"email":true,"sms":true,"whatsapp":true}'::jsonb NOT NULL;

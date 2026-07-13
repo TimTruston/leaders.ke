@@ -11,10 +11,12 @@
 	{#if form?.accepted}
 		<h1 class="text-2xl font-bold text-heading">You're in!</h1>
 		<p class="mt-2 text-sm text-muted">
-			You're now {form.role === 'manager' ? 'a manager' : 'an ambassador'} on this campaign.
+			You're now
+			{form.role === 'manager' ? 'a manager' : form.role === 'ambassador' ? 'an ambassador' : 'a follower'}
+			on this campaign.
 		</p>
 		<a
-			href="/dashboard"
+			href={form.role === 'manager' ? '/dashboard' : form.role === 'ambassador' ? '/dashboard/ambassador' : '/dashboard/citizen'}
 			class="mt-6 inline-block rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
 		>
 			Go to dashboard
@@ -29,7 +31,7 @@
 		<p class="mt-2 text-sm leading-relaxed text-muted">
 			You've been invited to join <strong class="text-heading">{data.invite.leaderName}</strong>'s
 			campaign ({data.invite.positionTitle}, {data.invite.region}) as
-			{data.invite.role === 'manager' ? 'a manager' : 'an ambassador'}.
+			{data.invite.role === 'manager' ? 'a manager' : data.invite.role === 'ambassador' ? 'an ambassador' : 'a follower'}.
 		</p>
 
 		{#if form?.error}
