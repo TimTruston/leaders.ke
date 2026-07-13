@@ -98,7 +98,7 @@
 
 <!-- Quick account actions -->
 <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-	{#each [{ href: '/verify-email', label: data.emailVerified ? 'Email verified ✓' : 'Verify email' }, { href: '/change-password', label: 'Change password' }, { href: '/change-email', label: 'Change email' }, { href: '/delete-account', label: 'Delete account' }] as action (action.href)}
+	{#each [{ href: '/change-password', label: 'Change password' }, { href: '/change-email', label: 'Change email' }, { href: '/delete-account', label: 'Delete account' }] as action (action.href)}
 		<a
 			href={action.href}
 			class="rounded-2xl border border-border bg-surface p-4 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"

@@ -41,6 +41,11 @@ export const users = pgTable('users', {
   slug: varchar('slug', { length: 120 }),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
+  // Stamped every time better-auth sends an email-verification link (signup or
+  // resend) — lets the UI gate a "Resend" link on enough time having passed,
+  // without needing a persisted verification-token row (this project's better-auth
+  // config uses stateless JWT tokens, not the `verification` table).
+  verificationEmailSentAt: timestamp('verification_email_sent_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [

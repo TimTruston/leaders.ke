@@ -7,9 +7,10 @@ import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
 // Only ever redirect to a same-origin relative path — never follow ?next
-// anywhere else, that's an open-redirect vector.
+// anywhere else, that's an open-redirect vector. Citizen is the default landing
+// mode; a manager/ambassador/admin switches into their other mode(s) from there.
 function safeNext(next: string | null): string {
-	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
+	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard/citizen';
 }
 
 export const load: PageServerLoad = async (event) => {

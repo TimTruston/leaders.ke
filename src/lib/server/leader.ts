@@ -44,8 +44,7 @@ const RESERVED_SLUGS = [
 	'change-password',
 	'delete-account',
 	'forgot-password',
-	'reset-password',
-	'verify-email'
+	'reset-password'
 ];
 
 /** Whether a candidate slug is free to take: not a reserved route, and not already

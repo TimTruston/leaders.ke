@@ -8,9 +8,10 @@ import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
 // Only ever redirect to a same-origin relative path — never follow ?next
-// anywhere else, that's an open-redirect vector.
+// anywhere else, that's an open-redirect vector. Citizen is the default landing
+// mode — signup doesn't push straight into "launch a campaign".
 function safeNext(next: string | null): string {
-	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
+	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard/citizen';
 }
 
 export const load: PageServerLoad = async (event) => {
@@ -55,6 +56,8 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
+		// The unverified-email nudge lives in the dashboard layout now (shows on every
+		// mode/page for as long as the account is unverified), so this is just `next`.
 		return redirect(302, next);
 	}
 };

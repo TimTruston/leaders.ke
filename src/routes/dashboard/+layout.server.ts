@@ -13,6 +13,7 @@ export const load: LayoutServerLoad = async (event) => {
 		firstName: domainUser.firstName,
 		email: authUser.email,
 		emailVerified: authUser.emailVerified,
+		verificationEmailSentAt: domainUser.verificationEmailSentAt?.toISOString() ?? null,
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
 		leaderContext: ctx
