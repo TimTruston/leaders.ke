@@ -1,21 +1,30 @@
 // Single seeding entry point. Each phase mirrors one data file to one DB table
 // (or table pair), named to match: src/lib/data/<name>.json -> --<name>.
-// No flags wipes every seed-managed table (users/auth accounts survive — see
-// ./lib/reset.ts) and reseeds every phase from scratch, in dependency order:
+// No flags wipes every seed-managed table AND every account, dev logins included
+// (see ./lib/reset.ts), and reseeds every phase from scratch, in dependency order:
 //   bun run db:seed
 // Passing specific phases skips the reset and just runs those, idempotently
 // (existing rows are left alone/backfilled, nothing is dropped):
 //   bun run db:seed -- --parties --leaders
 //   bun run db:seed -- --pillars
+// --clear forces the wipe even alongside specific phases (e.g. wipe everything but
+// only reseed leaders). It's a TRUNCATE ... RESTART IDENTITY, so serial ids restart
+// at 1 same as a drop+recreate would, without having to re-run migrations after:
+//   bun run db:seed -- --clear --leaders
 //
-// Dependency order: positions -> parties -> leaders -> mcas -> campaigns -> pillars -> issues -> news
-// (leaders/mcas look up parties by title and seed each person's `leadership[]` terms
-// as extra `leaders` rows in the same pass; campaigns/pillars look up leaders; issues
-// only needs positions. pillar-templates has no dependency, runs any time.)
+// Dependency order: system-user -> positions -> parties -> leaders -> mcas -> campaigns
+// -> pillars -> issues -> news (leaders/mcas look up parties by title and seed each
+// person's `leadership[]` terms as extra `leaders` rows in the same pass;
+// campaigns/pillars look up leaders; issues only needs positions and the system user
+// as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
+// the lowest/first user id — it's also the DEV_LOGIN_EMAIL/PASSWORD account. pillar-templates
+// has no dependency, runs any time.)
 import { parseArgs } from 'node:util';
+import { createInterface } from 'node:readline/promises';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { resetSeedData } from './lib/reset';
+import { getOrCreateSystemUser } from './lib/people';
 import { seedPositions } from './lib/seed-positions';
 import { seedParties } from './lib/seed-parties';
 import { seedLeaders } from './lib/seed-leaders';
@@ -32,6 +41,9 @@ const db = drizzle(client);
 
 const { values } = parseArgs({
 	options: {
+		clear: { type: 'boolean', default: false },
+		yes: { type: 'boolean', default: false, short: 'y' },
+		'system-user': { type: 'boolean', default: false },
 		positions: { type: 'boolean', default: false },
 		parties: { type: 'boolean', default: false },
 		leaders: { type: 'boolean', default: false },
@@ -45,12 +57,33 @@ const { values } = parseArgs({
 	strict: true
 });
 
-// No flags at all -> full clean reseed: wipe every seed-managed table (users/auth
-// accounts survive), then run every phase in dependency order.
-const runAll = !Object.values(values).some(Boolean);
+// No phase flags at all -> full clean reseed: run every phase in dependency order.
+// `clear`/`yes` don't count as phase flags, so `--clear` alone still means "wipe +
+// reseed everything" (same as no args), while `--clear --leaders` means "wipe, then
+// reseed only leaders" — clear is a modifier on top of whichever phases were requested.
+const { clear, yes, ...phaseFlags } = values;
+const runAll = !Object.values(phaseFlags).some(Boolean);
+const willWipe = clear || runAll;
 
-if (runAll) await resetSeedData(db);
+if (willWipe && !yes) {
+	console.log(`\nThis will permanently wipe ${new URL(process.env.DATABASE_URL).pathname.slice(1)}:`);
+	console.log('  - every seed-managed table (positions, leaders, campaigns, pillars, reviews, ...)');
+	console.log('  - every account, including your own dev login and any manual signups');
+	console.log('The system/dev-admin account (DEV_LOGIN_EMAIL) is recreated fresh afterward — everything else is gone for good.\n');
 
+	const rl = createInterface({ input: process.stdin, output: process.stdout });
+	const answer = await rl.question('Type "yes" to continue: ');
+	rl.close();
+	if (answer.trim().toLowerCase() !== 'yes') {
+		console.log('Aborted, nothing was touched.');
+		await client.end();
+		process.exit(1);
+	}
+}
+
+if (willWipe) await resetSeedData(db);
+
+if (runAll || values['system-user']) await getOrCreateSystemUser(db);
 if (runAll || values.positions) await seedPositions(db);
 if (runAll || values.parties) await seedParties(db);
 if (runAll || values.leaders) await seedLeaders(db);

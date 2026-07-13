@@ -1,8 +1,8 @@
-// Wipes every seed-managed table so a full `bun run db:seed` reseeds from a
-// clean slate. Deliberately leaves the domain `users` table and better-auth's
-// own tables (user/account/session/verification) untouched — login identities
-// survive a reseed; seedPeople reattaches a fresh `leaders` row to the
-// existing domain user instead of recreating the account.
+// Wipes every seed-managed table plus all accounts (dev logins, manual signups,
+// everything) so a full `bun run db:seed` / `--clear` reseeds from a genuinely
+// clean slate. TRUNCATE ... CASCADE on the auth `user` table takes `account`,
+// `session`, and the domain `users` row with it via FK cascade — the system/dev-admin
+// account (DEV_LOGIN_EMAIL) is recreated fresh by the seed pipeline's first phase.
 import { sql } from 'drizzle-orm';
 import type { AnyDb } from './names';
 
@@ -16,6 +16,9 @@ const SEED_MANAGED_TABLES = [
 	'campaigns',
 	'managers',
 	'ambassadors',
+	'invites',
+	'verifications',
+	'profile_claims',
 	'events',
 	'posts',
 	'featured',
@@ -41,11 +44,16 @@ const SEED_MANAGED_TABLES = [
 	'reviews',
 	'pledges',
 	'donations',
-	'ballot_simulations'
+	'ballot_simulations',
+	'users',
+	'user',
+	'account',
+	'session',
+	'verification'
 ];
 
 export async function resetSeedData(db: AnyDb) {
 	const tableList = SEED_MANAGED_TABLES.map((t) => `"${t}"`).join(', ');
 	await db.execute(sql.raw(`TRUNCATE TABLE ${tableList} RESTART IDENTITY CASCADE;`));
-	console.log(`[reset] truncated ${SEED_MANAGED_TABLES.length} tables (users/auth accounts kept)`);
+	console.log(`[reset] truncated ${SEED_MANAGED_TABLES.length} tables (all accounts included — fresh slate)`);
 }

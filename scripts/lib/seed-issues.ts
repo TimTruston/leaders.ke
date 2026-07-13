@@ -24,7 +24,7 @@ export async function seedIssues(db: AnyDb) {
 		return;
 	}
 
-	const creatorId = await getOrCreateSystemUser(db, 'Civic Desk');
+	const creatorId = await getOrCreateSystemUser(db);
 
 	let seeded = 0;
 	let skipped = 0;

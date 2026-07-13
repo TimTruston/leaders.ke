@@ -6,8 +6,9 @@
 // rows, so seeding order matters: parties, then leaders/mcas.
 import { randomUUID } from 'node:crypto';
 import { and, eq, isNull, or } from 'drizzle-orm';
+import { hashPassword } from 'better-auth/crypto';
 import { campaigns, contacts, experience, leaders, parties, partyMemberships, pillars, positions, users } from '../../src/lib/server/db/schema';
-import { user as authUsers } from '../../src/lib/server/db/auth.schema';
+import { user as authUsers, account } from '../../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName, type AnyDb } from './names';
 
 export type ExperienceRow = { title: string; institution: string; startAt: string | null; endAt: string | null };
@@ -343,23 +344,47 @@ export async function findFirstLeader(db: AnyDb): Promise<{ id: number } | null>
 	return row ?? null;
 }
 
-/** Domain user id for a fixed system seed account (creatorId for content with no natural author). */
-export async function getOrCreateSystemUser(db: AnyDb, label: string): Promise<number> {
-	const email = `${slugify(label)}@seed.leaders.ke`;
+/**
+ * Domain user id for the one fixed system/dev-admin account — creatorId for content
+ * with no natural author (e.g. aggregated civic issues), and also a real, loginable
+ * account (DEV_LOGIN_EMAIL/DEV_LOGIN_PASSWORD from .env) so a developer can sign in
+ * locally as a platform admin. Always the first thing seeded, so on a fresh DB its
+ * id is the lowest/first user id.
+ */
+export async function getOrCreateSystemUser(db: AnyDb): Promise<number> {
+	const email = process.env.DEV_LOGIN_EMAIL;
+	const password = process.env.DEV_LOGIN_PASSWORD;
+	if (!email || !password) {
+		throw new Error('DEV_LOGIN_EMAIL and DEV_LOGIN_PASSWORD must be set (see .env) to seed the system user.');
+	}
+
 	const [existingAuth] = await db.select({ id: authUsers.id }).from(authUsers).where(eq(authUsers.email, email));
 	if (existingAuth) {
 		const [existingUser] = await db
 			.select({ id: users.id })
 			.from(users)
 			.where(eq(users.authUserId, existingAuth.id));
-		if (existingUser) return existingUser.id;
+		if (existingUser) {
+			console.log(`[system-user] ${email} already exists (user id ${existingUser.id}), skipping`);
+			return existingUser.id;
+		}
 	}
 
 	const authId = randomUUID();
-	await db.insert(authUsers).values({ id: authId, name: label, email, emailVerified: false });
+	await db.insert(authUsers).values({ id: authId, name: 'System Admin', email, emailVerified: true });
+	// providerId/accountId match better-auth's own email+password signup convention
+	// (accountId = the auth user's own id) so this account logs in exactly like any other.
+	await db.insert(account).values({
+		id: randomUUID(),
+		accountId: authId,
+		providerId: 'credential',
+		userId: authId,
+		password: await hashPassword(password)
+	});
 	const [domainUser] = await db
 		.insert(users)
-		.values({ authUserId: authId, firstName: label.split(/\s+/)[0], otherNames: label.split(/\s+/).slice(1).join(' ') || label })
+		.values({ authUserId: authId, firstName: 'System', otherNames: 'Admin', adminAt: new Date() })
 		.returning({ id: users.id });
+	console.log(`[system-user] seeded ${email} (user id ${domainUser.id}, platform admin)`);
 	return domainUser.id;
 }
