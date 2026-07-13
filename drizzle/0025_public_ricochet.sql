@@ -1,0 +1,1 @@
+ALTER TABLE "invites" ADD COLUMN "email" varchar(255) NOT NULL;

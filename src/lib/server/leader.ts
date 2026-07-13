@@ -32,6 +32,8 @@ const RESERVED_SLUGS = [
 	'search',
 	'parties',
 	'alliances',
+	'invite',
+	'claim',
 	'dashboard',
 	'features',
 	'demo',

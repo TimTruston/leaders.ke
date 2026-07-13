@@ -9,6 +9,12 @@
 </script>
 
 <AuthCard title="Welcome back" subtitle="Sign in to your leaders.ke account">
+	{#if data.inviteBanner}
+		<p class="mb-4 rounded-xl bg-primary-soft p-3 text-sm text-on-primary">
+			You've been invited by {data.inviteBanner.leaderName} to join as
+			{data.inviteBanner.role === 'manager' ? 'a manager' : 'an ambassador'}. Sign in to accept the invite.
+		</p>
+	{/if}
 	<form method="post" use:enhance class="space-y-4">
 		<Field label="Email" name="email" type="email" autocomplete="email" required value={data.devEmail} />
 		<Field
@@ -31,6 +37,12 @@
 	</form>
 
 	{#snippet footer()}
-		New here? <a href="/signup" class="font-semibold text-primary hover:underline">Create an account</a>
+		New here?
+		<a
+			href="/signup?next={encodeURIComponent(data.next)}"
+			class="font-semibold text-primary hover:underline"
+		>
+			Create an account
+		</a>
 	{/snippet}
 </AuthCard>

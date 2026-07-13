@@ -3,12 +3,28 @@ import { eq } from 'drizzle-orm';
 import { auth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
+import { getInviteByToken } from '$lib/server/invites';
 import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = (event) => {
-	if (event.locals.user) redirect(302, '/dashboard');
-	return {};
+// Only ever redirect to a same-origin relative path — never follow ?next
+// anywhere else, that's an open-redirect vector.
+function safeNext(next: string | null): string {
+	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
+}
+
+export const load: PageServerLoad = async (event) => {
+	const next = safeNext(event.url.searchParams.get('next'));
+	if (event.locals.user) redirect(302, next);
+
+	let inviteBanner: { leaderName: string; role: string } | null = null;
+	const inviteMatch = next.match(/^\/invite\/([^/]+)$/);
+	if (inviteMatch) {
+		const invite = await getInviteByToken(inviteMatch[1]);
+		if (invite) inviteBanner = { leaderName: invite.leaderName, role: invite.role };
+	}
+
+	return { next, inviteBanner };
 };
 
 export const actions: Actions = {
@@ -18,6 +34,7 @@ export const actions: Actions = {
 		const otherNames = form.get('otherNames')?.toString().trim() ?? '';
 		const email = form.get('email')?.toString() ?? '';
 		const password = form.get('password')?.toString() ?? '';
+		const next = safeNext(event.url.searchParams.get('next'));
 
 		// First name is a single token; multi-word surnames belong in otherNames.
 		if (/\s/.test(firstName)) {
@@ -38,6 +55,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		return redirect(302, '/dashboard');
+		return redirect(302, next);
 	}
 };

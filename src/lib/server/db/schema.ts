@@ -40,6 +40,7 @@ export const users = pgTable('users', {
   // leaders rows (Track Record spanning multiple seats/terms) sharing this one slug.
   slug: varchar('slug', { length: 120 }),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
@@ -123,10 +124,27 @@ export const pillars = pgTable('pillars', {
   summary: text('summary').notNull(),
   deliveryStatus: deliveryStatusEnum('delivery_status').default('promised').notNull(),
   evidence: text('evidence'), // public proof of delivery, e.g. "7 of 10 dispensaries built: <link>"
+  sortOrder: integer('sort_order').default(0).notNull(), // manager-controlled display order (drag-and-drop), not creation order
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
+
+// 4.1 PILLAR TEMPLATES (admin-curated manifesto starting points, one catalog per
+// office level, e.g. "President"). A candidate picks one on /dashboard/manifesto
+// to prefill their own pillar's title/summary, or writes a custom one instead —
+// picking a template never links back to it, it's just a starting draft.
+export const pillarTemplates = pgTable('pillar_templates', {
+  id: serial('id').primaryKey(),
+  positionTitle: varchar('position_title', { length: 50 }).notNull(), // matches positions.title, e.g. "Governor"
+  title: varchar('title', { length: 255 }).notNull(),
+  summary: text('summary').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('pillar_templates_position_idx').on(t.positionTitle),
+]);
 
 // 5. CAMPAIGNS (Nested Campaign Architectures)
 // A leader's push for office, or a mission nested under one.
@@ -174,6 +192,71 @@ export const ambassadors = pgTable('ambassadors', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
+
+// 6.1 INVITES (onboarding.md: how a worker joins a campaign as manager or ambassador.
+// Single-use token; accepting creates the managers/ambassadors row directly.)
+export const inviteRoleEnum = pgEnum('invite_role', ['manager', 'ambassador']);
+
+// A one-time invite link a leader/manager sends to bring someone onto the team.
+export const invites = pgTable('invites', {
+  id: serial('id').primaryKey(),
+  token: varchar('token', { length: 64 }).notNull().unique(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  role: inviteRoleEnum('role').notNull(),
+  email: varchar('email', { length: 255 }).notNull(), // who it was sent to; only they can accept it
+  createdBy: integer('created_by').references(() => users.id).notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
+  usedBy: integer('used_by').references(() => users.id), // set once accepted; null = still open
+  usedAt: timestamp('used_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }), // revoked before use
+});
+
+// 6.2 VERIFICATIONS (onboarding.md: pay-after-approval. A leader submits evidence,
+// an admin reviews it; approval is what sets leaders.verifiedAt and makes the
+// profile public. One pending (outcome null) request per leader at a time.)
+export const verificationOutcomeEnum = pgEnum('verification_outcome', ['approved', 'rejected']);
+
+// One leader's request to be verified, with the admin's decision once reviewed.
+export const verifications = pgTable('verifications', {
+  id: serial('id').primaryKey(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  requestedBy: integer('requested_by').references(() => users.id).notNull(),
+  evidence: jsonb('evidence').default({}).notNull(), // IEBC clearance doc reference / national ID, etc.
+  requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
+  reviewedBy: integer('reviewed_by').references(() => users.id),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  outcome: verificationOutcomeEnum('outcome'), // null = pending
+  notes: text('notes'), // admin's reason, shown back to the leader on rejection
+}, (t) => [
+  uniqueIndex('one_pending_verification_per_leader').on(t.leaderId).where(sql`${t.outcome} is null`),
+]);
+
+// 6.3 PROFILE CLAIMS (onboarding.md option A: "Claim this Profile" on an existing
+// leader page. Deliberately does NOT reassign leaders.userId — that would mean
+// merging two people rows and everything hanging off them, real data-integrity
+// risk for a rare case. Approval instead makes the claimant an admin manager of
+// the existing profile, reusing the managers table's access-control exactly like
+// an accepted team invite. The original seeded owner row is left alone; it never
+// logs in, so it never matters.)
+export const claimOutcomeEnum = pgEnum('claim_outcome', ['approved', 'rejected']);
+
+// One signed-in user's claim to be the real person behind an existing leader profile.
+export const profileClaims = pgTable('profile_claims', {
+  id: serial('id').primaryKey(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  claimedBy: integer('claimed_by').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  evidence: jsonb('evidence').default({}).notNull(), // national ID + a note on why it's them
+  requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
+  reviewedBy: integer('reviewed_by').references(() => users.id),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  outcome: claimOutcomeEnum('outcome'), // null = pending
+  notes: text('notes'),
+}, (t) => [
+  uniqueIndex('one_pending_claim_per_leader_per_user')
+    .on(t.leaderId, t.claimedBy)
+    .where(sql`${t.outcome} is null`),
+]);
 
 // 7. EVENTS
 // A physical or scheduled gathering tied to a campaign.

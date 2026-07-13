@@ -174,6 +174,43 @@
 		</div>
 	{/if}
 
+	<!-- Verification: pay-after-approval per onboarding.md — submit ID/evidence first,
+	an admin reviews it, payment comes after approval, not before. -->
+	{#if data.form.hasLeader && !data.form.verified}
+		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4">
+			{#if form?.requestedVerification}
+				<p class="text-sm font-medium text-heading">Verification request submitted.</p>
+				<p class="mt-1 text-sm text-muted">An admin will review it; your page stays private until approved.</p>
+			{:else if data.pendingVerification}
+				<p class="text-sm font-medium text-heading">Verification pending review.</p>
+				<p class="mt-1 text-sm text-muted">You'll see your public page go live once an admin approves it.</p>
+			{:else}
+				<p class="text-sm font-medium text-heading">Get verified</p>
+				<p class="mt-1 text-sm text-muted">
+					Submit your ID for review. Your profile stays dashboard-only until an admin approves it.
+				</p>
+				{#if form?.verificationError}
+					<p class="mt-2 text-sm font-medium text-heading">{form.verificationError}</p>
+				{/if}
+				<form method="post" action="?/requestVerification" class="mt-3 flex flex-wrap gap-2">
+					<input
+						type="text"
+						name="nationalId"
+						placeholder="National ID number"
+						required
+						class="rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					/>
+					<button
+						type="submit"
+						class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+					>
+						Submit for verification
+					</button>
+				</form>
+			{/if}
+		</div>
+	{/if}
+
 	<div class="mt-6 flex gap-2 border-b border-border">
 		<button
 			type="button"

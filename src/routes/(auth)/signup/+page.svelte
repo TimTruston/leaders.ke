@@ -3,12 +3,18 @@
 	import AuthCard from '$lib/components/auth/AuthCard.svelte';
 	import Field from '$lib/components/auth/Field.svelte';
 	import Submit from '$lib/components/auth/Submit.svelte';
-	import type { ActionData } from './$types';
+	import type { PageProps } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+	let { data, form }: PageProps = $props();
 </script>
 
 <AuthCard title="Create your account" subtitle="Join leaders.ke and start engaging citizens">
+	{#if data.inviteBanner}
+		<p class="mb-4 rounded-xl bg-primary-soft p-3 text-sm text-on-primary">
+			You've been invited by {data.inviteBanner.leaderName} to join as
+			{data.inviteBanner.role === 'manager' ? 'a manager' : 'an ambassador'}. Create an account to accept the invite.
+		</p>
+	{/if}
 	<form method="post" use:enhance class="space-y-4">
 		<div class="grid grid-cols-2 gap-3">
 			<Field label="First name" name="firstName" autocomplete="given-name" required placeholder="Jane" />
@@ -35,8 +41,9 @@
 	</form>
 
 	{#snippet footer()}
-		Already have an account? <a href="/login" class="font-semibold text-primary hover:underline"
-			>Sign in</a
-		>
+		Already have an account?
+		<a href="/login?next={encodeURIComponent(data.next)}" class="font-semibold text-primary hover:underline">
+			Sign in
+		</a>
 	{/snippet}
 </AuthCard>

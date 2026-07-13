@@ -8,13 +8,21 @@
 <svelte:head><title>Team — leaders.ke</title></svelte:head>
 
 {#if form?.error}
-	<div class="mb-6  rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
+	<div class="mb-6 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 		{form.error}
 	</div>
 {/if}
-{#if form?.saved}
-	<div class="mb-6  rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-		Team updated.
+{#if form?.invited}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		Invite sent to {form.invited.email}
+	</div>
+{:else if form?.removed}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		Successfully removed {form.removed.email}
+	</div>
+{:else if form?.revoked}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		Invite revoked.
 	</div>
 {/if}
 
@@ -25,43 +33,73 @@
 			Campaign managers <span class="text-sm font-normal text-muted">({data.managers.length})</span>
 		</h2>
 		<p class="mt-1 text-sm text-muted">
-			Managers run this dashboard with you: profile, manifesto, posts and broadcasts.
+			Managers run this dashboard with you: profile, manifesto, posts and broadcasts. Only an
+			admin manager can invite or remove other managers.
 		</p>
 
-		<form method="post" action="?/inviteManager" class="mt-4 flex flex-wrap gap-2" use:enhance>
-			<input
-				type="email"
-				name="email"
-				required
-				placeholder="manager@email.com"
-				class="min-w-0 flex-1 rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
-			/>
-			<button
-				type="submit"
-				class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-			>
-				Invite
-			</button>
-		</form>
-		<p class="mt-2 text-xs text-muted">Invitees need a leaders.ke account with this email.</p>
+		{#if data.isAdmin}
+			<form method="post" action="?/inviteManager" class="mt-4 flex flex-wrap gap-2" use:enhance>
+				<input
+					type="email"
+					name="email"
+					required
+					placeholder="manager@email.com"
+					class="min-w-0 flex-1 rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				/>
+				<button
+					type="submit"
+					class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+				>
+					Send invite
+				</button>
+			</form>
+		{/if}
+
+
+		{#if data.invites.length > 0}
+			<ul class="mt-4 space-y-2">
+				{#each data.invites as invite (invite.id)}
+					<li class="flex items-center justify-between gap-2 rounded-xl bg-surface-2 px-4 py-2.5 text-sm">
+						<span class="truncate text-muted">Invited: {invite.email}</span>
+						<form method="post" action="?/revokeInvite" use:enhance>
+							<input type="hidden" name="inviteId" value={invite.id} />
+							<input type="hidden" name="role" value="manager" />
+							<button type="submit" class="shrink-0 text-xs font-medium text-muted transition hover:text-heading">
+								Revoke
+							</button>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+		
 
 		<ul class="mt-4 space-y-3">
 			{#each data.managers as member (member.id)}
 				<li class="flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-4">
 					<div class="min-w-0">
-						<p class="truncate font-medium text-heading">{member.name}</p>
+						<p class="truncate font-medium text-heading">
+							{member.name}
+							{#if member.admin}
+								<span class="ml-1 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">
+									Admin
+								</span>
+							{/if}
+						</p>
 						<p class="truncate text-xs text-muted">{member.email}</p>
 					</div>
 					{#if member.active}
-						<form method="post" action="?/removeManager" use:enhance>
-							<input type="hidden" name="memberId" value={member.id} />
-							<button
-								type="submit"
-								class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
-							>
-								Remove
-							</button>
-						</form>
+						{#if data.isAdmin}
+							<form method="post" action="?/removeManager" use:enhance>
+								<input type="hidden" name="memberId" value={member.id} />
+								<button
+									type="submit"
+									class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
+								>
+									Remove
+								</button>
+							</form>
+						{/if}
 					{:else}
 						<span class="shrink-0 text-xs text-muted">Inactive</span>
 					{/if}
@@ -95,10 +133,26 @@
 				type="submit"
 				class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
 			>
-				Invite
+				Send invite
 			</button>
 		</form>
-		<p class="mt-2 text-xs text-muted">Invitees need a leaders.ke account with this email.</p>
+
+		{#if data.ambassadorInvites.length > 0}
+			<ul class="mt-4 space-y-2">
+				{#each data.ambassadorInvites as invite (invite.id)}
+					<li class="flex items-center justify-between gap-2 rounded-xl bg-surface-2 px-4 py-2.5 text-sm">
+						<span class="truncate text-muted">Invited: {invite.email}</span>
+						<form method="post" action="?/revokeInvite" use:enhance>
+							<input type="hidden" name="inviteId" value={invite.id} />
+							<input type="hidden" name="role" value="ambassador" />
+							<button type="submit" class="shrink-0 text-xs font-medium text-muted transition hover:text-heading">
+								Revoke
+							</button>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		{/if}
 
 		<ul class="mt-4 space-y-3">
 			{#each data.ambassadors as member (member.id)}

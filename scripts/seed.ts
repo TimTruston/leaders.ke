@@ -11,7 +11,7 @@
 // Dependency order: positions -> parties -> leaders -> mcas -> campaigns -> pillars -> issues -> news
 // (leaders/mcas look up parties by title and seed each person's `leadership[]` terms
 // as extra `leaders` rows in the same pass; campaigns/pillars look up leaders; issues
-// only needs positions.)
+// only needs positions. pillar-templates has no dependency, runs any time.)
 import { parseArgs } from 'node:util';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -22,6 +22,7 @@ import { seedLeaders } from './lib/seed-leaders';
 import { seedMcas } from './lib/seed-mcas';
 import { seedCampaigns } from './lib/seed-campaigns';
 import { seedPillars } from './lib/seed-pillars';
+import { seedPillarTemplates } from './lib/seed-pillar-templates';
 import { seedIssues } from './lib/seed-issues';
 import { seedNews } from './lib/seed-news';
 
@@ -37,6 +38,7 @@ const { values } = parseArgs({
 		mcas: { type: 'boolean', default: false },
 		campaigns: { type: 'boolean', default: false },
 		pillars: { type: 'boolean', default: false },
+		'pillar-templates': { type: 'boolean', default: false },
 		issues: { type: 'boolean', default: false },
 		news: { type: 'boolean', default: false }
 	},
@@ -55,6 +57,7 @@ if (runAll || values.leaders) await seedLeaders(db);
 if (runAll || values.mcas) await seedMcas(db);
 if (runAll || values.campaigns) await seedCampaigns(db);
 if (runAll || values.pillars) await seedPillars(db);
+if (runAll || values['pillar-templates']) await seedPillarTemplates(db);
 if (runAll || values.issues) await seedIssues(db);
 if (runAll || values.news) await seedNews(db);
 

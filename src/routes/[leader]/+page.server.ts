@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, experience, followers, pillars, posts, tags } from '$lib/server/db/schema';
+import { campaigns, contacts, experience, followers, managers, pillars, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, getDomainUser, resolveCurrentTerm, slugify } from '$lib/server/leader';
 import {
 	getFlaggedReviewCounts,
@@ -91,6 +91,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const myReview = viewer ? await getMyReview(row.users.id, viewer.id) : null;
 
+	// "Claim this profile" only makes sense if the viewer isn't already a manager here.
+	const viewerIsManager = viewer
+		? !!(
+				await db
+					.select({ id: managers.id })
+					.from(managers)
+					.where(and(eq(managers.userId, viewer.id), eq(managers.leaderId, leaderId), isNull(managers.deletedAt)))
+			)[0]
+		: false;
+
 	const deliveredCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'delivered').length;
 	const inProgressCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'in_progress').length;
 
@@ -115,6 +125,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	return {
 		leader: {
 			name,
+			slug: row.users.slug,
 			initials: name
 				.split(/\s+/)
 				.map((w) => w[0])
@@ -187,6 +198,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		reviewPillarOptions,
 		flaggedReviewCounts,
 		myReview,
+		canClaim: !viewerIsManager,
 		signedIn: !!locals.user,
 		news: mentionRows.map((m) => ({
 			id: m.id,

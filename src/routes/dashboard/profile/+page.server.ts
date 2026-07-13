@@ -1,9 +1,10 @@
 import { fail } from '@sveltejs/kit';
 import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, experience, leaders, positions, users } from '$lib/server/db/schema';
+import { contacts, experience, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, slugify } from '$lib/server/leader';
+import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
@@ -80,7 +81,8 @@ export const load: PageServerLoad = async (event) => {
 			email: contactRows.find((c) => c.channel === 'email')?.value ?? '',
 			website: website ?? '',
 			socials: otherSocials
-		}
+		},
+		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
 	};
 };
 
@@ -225,6 +227,16 @@ export const actions: Actions = {
 				})
 				.returning({ id: leaders.id });
 			leaderId = created.id;
+
+			// onboarding.md: the creator is the campaign's first manager, with admin
+			// permissions (invite/remove team, fundraising, delete campaign) — "leader"
+			// isn't a separate permission tier, just the first admin manager.
+			await db.insert(managers).values({
+				userId: domainUser.id,
+				leaderId,
+				roles: { admin: true },
+				verifiedAt: new Date()
+			});
 		}
 
 		for (const e of pendingExperience) {
@@ -264,5 +276,22 @@ export const actions: Actions = {
 		}
 
 		return { saved: true };
+	},
+
+	requestVerification: async (event) => {
+		const { domainUser } = await requireDashboardUser(event);
+		const ctx = await getLeaderContext(domainUser.id);
+		if (!ctx) return fail(400, { verificationError: 'Save your profile before requesting verification.' });
+		if (ctx.leader.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
+
+		const form = await event.request.formData();
+		const nationalId = String(form.get('nationalId') ?? '').trim();
+		const notes = String(form.get('notes') ?? '').trim();
+		if (!nationalId) return fail(400, { verificationError: 'Your national ID number is required.' });
+
+		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId, notes });
+		if (!result.ok) return fail(400, { verificationError: result.error });
+
+		return { requestedVerification: true };
 	}
 };

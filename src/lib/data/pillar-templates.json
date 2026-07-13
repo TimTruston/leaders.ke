@@ -1,0 +1,207 @@
+[
+	{
+		"positionTitle": "President",
+		"title": "Cost of Living & Jobs",
+		"summary": "I will create 1 million new formal jobs and cap the retail price of maize flour and cooking gas by December 2029."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Business Support",
+		"summary": "I will extend affordable, low-interest loans to 500,000 small businesses through the government business fund by 2030."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Farming & Food Security",
+		"summary": "I will cut the cost of fertilizer and certified seed by 30% for 2 million registered farmers by the 2029 planting season."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Healthcare for All",
+		"summary": "I will enroll 10 million more households in the national health insurance scheme and cap out-of-pocket hospital bills by 2031."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Schools & Colleges",
+		"summary": "I will hire 20,000 new teachers and clear the university capitation funding backlog by 2029."
+	},
+	{
+		"positionTitle": "President",
+		"title": "National Security",
+		"summary": "I will recruit 10,000 additional police officers and complete security fencing on 3 priority border routes by 2030."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Foreign Affairs & Trade",
+		"summary": "I will place 200,000 Kenyans in verified overseas jobs and open 5 new export markets for local goods by 2031."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Roads & Transport",
+		"summary": "I will complete 5,000km of priority national highways and cap public transport fare increases by 2032."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Electricity & Water",
+		"summary": "I will connect 3 million new households to the national grid and complete 2 major dam projects by 2032."
+	},
+	{
+		"positionTitle": "President",
+		"title": "Technology & Internet",
+		"summary": "I will extend fiber-optic internet coverage to 500 sub-counties by 2030."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Local Hospitals",
+		"summary": "I will fully stock and staff every level 4 and 5 hospital in the county with essential medicine and equipment by 2029."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Village Roads",
+		"summary": "I will grade and gravel 500km of rural access roads linking farms to market centers by 2030."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Clean Water Access",
+		"summary": "I will pipe clean water to 100,000 additional households and rehabilitate the main town sewer lines by 2031."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Better Markets",
+		"summary": "I will construct or renovate 20 modern market centers with roofing, water, and toilets by 2029."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Crop & Livestock Markets",
+		"summary": "I will build 3 milk and produce cold-storage or processing facilities by 2030."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Youth & Women Funds",
+		"summary": "I will disburse low-interest county grants to 10,000 youth and women groups by 2029."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "Physical Planning",
+		"summary": "I will issue digitized building permits within 14 days and clear drainage in every major town by 2028."
+	},
+	{
+		"positionTitle": "Governor",
+		"title": "County Licenses",
+		"summary": "I will cut the number of licenses required to open a retail shop from 5 to 2 by 2028."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "School Fees Assistance",
+		"summary": "I will issue NG-CDF bursaries to 5,000 needy secondary and tertiary students a year, published on a public ward list, starting 2028."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "School Buildings",
+		"summary": "I will construct 50 new classrooms and 5 science labs across the constituency by 2030."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "Local Police Posts",
+		"summary": "I will build 5 new police posts and 3 chiefs' offices by 2029."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "Youth Talents & Sports",
+		"summary": "I will level and equip 10 community sports grounds by 2029."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "National Laws",
+		"summary": "I will sponsor or co-sponsor 2 bills protecting citizens from unfair taxation or business rules by 2029."
+	},
+	{
+		"positionTitle": "MP",
+		"title": "Vulnerable Group Support",
+		"summary": "I will register 2,000 widows, orphans, and persons with disabilities for direct state support by 2028."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "School Fees Assistance",
+		"summary": "I will issue NGAAF bursaries to 5,000 needy secondary and tertiary students a year, published on a public ward list, starting 2028."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "School Buildings",
+		"summary": "I will construct 50 new classrooms and 5 science labs across the county by 2030."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "Local Police Posts",
+		"summary": "I will build 5 new police posts and 3 chiefs' offices by 2029."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "Youth Talents & Sports",
+		"summary": "I will level and equip 10 community sports grounds by 2029."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "National Laws",
+		"summary": "I will sponsor or co-sponsor 2 bills protecting citizens from unfair taxation or business rules by 2029."
+	},
+	{
+		"positionTitle": "Woman Rep",
+		"title": "Vulnerable Group Support",
+		"summary": "I will register 2,000 widows, orphans, and persons with disabilities for direct state support by 2028."
+	},
+	{
+		"positionTitle": "Senator",
+		"title": "More Money to Counties",
+		"summary": "I will push the equitable share of national revenue to counties above 35% by the 2029/30 budget cycle."
+	},
+	{
+		"positionTitle": "Senator",
+		"title": "County Money Auditing",
+		"summary": "I will publish a quarterly county spending scorecard flagging any budget variance over 5% starting 2028."
+	},
+	{
+		"positionTitle": "Senator",
+		"title": "Protecting Devolved Services",
+		"summary": "I will block every bill that transfers health or county-roads functions back to the national government, and report on it annually through 2032."
+	},
+	{
+		"positionTitle": "Senator",
+		"title": "Resolving County Borders",
+		"summary": "I will mediate and resolve 3 outstanding county boundary disputes by 2030."
+	},
+	{
+		"positionTitle": "Senator",
+		"title": "Inter-County Trade",
+		"summary": "I will pass legislation capping cross-county trade licenses to one by 2029."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Ward Bursaries",
+		"summary": "I will secure bursary allocations for 1,000 ward students a year, published publicly, starting 2028."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Neighborhood Paths",
+		"summary": "I will fix 20km of footpaths, footbridges, and trenches using the Ward Development Fund by 2029."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Street Lights",
+		"summary": "I will install security lights at 15 shopping centers and bodaboda stages by 2029."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Bodaboda Sheds",
+		"summary": "I will construct 10 shaded waiting bays for bodaboda riders and taxi operators by 2029."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Ward Representation",
+		"summary": "I will table at least 4 ward resident petitions a year at the County Assembly floor, 20 cumulatively by 2032."
+	},
+	{
+		"positionTitle": "MCA",
+		"title": "Community Volunteers",
+		"summary": "I will fund stipends and kits for 50 Community Health Promoters by 2028."
+	}
+]

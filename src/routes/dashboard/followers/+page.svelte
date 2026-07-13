@@ -1,22 +1,21 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
-	// Client-side geo filter over the loaded roster (server pagination comes with scale).
-	let wardFilter = $state('');
-	const wards = $derived(
-		[...new Set(data.followers.map((f) => f.ward).filter(Boolean))].sort() as string[]
-	);
-	const filtered = $derived(
-		data.followers.filter((f) => !wardFilter || f.ward === wardFilter)
-	);
-
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
+	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 
 	// The public profile URL is where followers sign up; surfaced here for sharing.
 	const publicPath = $derived(page.data.leaderContext?.publicPath ?? '/leaders');
+
+	function onWardChange(event: Event) {
+		const ward = (event.target as HTMLSelectElement).value;
+		goto(ward ? `?ward=${encodeURIComponent(ward)}` : '?', { keepFocus: true });
+	}
 </script>
 
 <svelte:head><title>Followers — leaders.ke</title></svelte:head>
@@ -24,26 +23,27 @@
 <div class="flex flex-wrap items-end justify-between gap-4">
 	<div>
 		<h2 class="text-lg font-semibold text-heading">
-			Followers <span class="text-sm font-normal text-muted">({data.followers.length})</span>
+			Followers <span class="text-sm font-normal text-muted">({data.total})</span>
 		</h2>
 		<p class="mt-1 text-sm text-muted">{data.newThisWeek} joined this week.</p>
 	</div>
 
-	{#if wards.length > 0}
+	{#if data.wards.length > 0}
 		<select
-			bind:value={wardFilter}
+			value={data.ward ?? ''}
+			onchange={onWardChange}
 			aria-label="Filter by ward"
 			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
 		>
 			<option value="">All wards</option>
-			{#each wards as w (w)}
+			{#each data.wards as w (w)}
 				<option value={w}>{w}</option>
 			{/each}
 		</select>
 	{/if}
 </div>
 
-{#if data.followers.length === 0}
+{#if data.total === 0}
 	<div class="mt-6 rounded-2xl border border-dashed border-border p-8 text-center">
 		<p class="font-semibold text-heading">No followers yet</p>
 		<p class="mx-auto mt-2 max-w-md text-sm text-muted">
@@ -57,6 +57,8 @@
 			Open your public page
 		</a>
 	</div>
+{:else if data.followers.length === 0}
+	<p class="mt-6 text-sm text-muted">No followers match "{data.ward}".</p>
 {:else}
 	<div class="mt-6 overflow-x-auto rounded-2xl border border-border">
 		<table class="w-full min-w-140 border-collapse text-left">
@@ -70,7 +72,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each filtered as follower (follower.id)}
+				{#each data.followers as follower (follower.id)}
 					<tr class="border-t border-border">
 						<td class="px-4 py-3 text-sm font-medium text-heading">{follower.name}</td>
 						<td class="px-4 py-3 text-sm">
@@ -94,4 +96,11 @@
 			</tbody>
 		</table>
 	</div>
+	<Pagination
+		page={data.page}
+		{totalPages}
+		total={data.total}
+		itemLabel="followers"
+		href={(p) => (data.ward ? `?ward=${encodeURIComponent(data.ward)}&page=${p}` : `?page=${p}`)}
+	/>
 {/if}

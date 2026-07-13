@@ -1,9 +1,10 @@
 import { fail } from '@sveltejs/kit';
-import { and, asc, eq, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, pillars } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { fullName, getOrCreateMainCampaign } from '$lib/server/leader';
+import { listTemplatesForLevel } from '$lib/server/adminPillars';
 import type { Actions, PageServerLoad } from './$types';
 
 async function getMainCampaign(leaderId: number) {
@@ -24,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 				.select()
 				.from(pillars)
 				.where(and(eq(pillars.campaignId, campaign.id), isNull(pillars.deletedAt)))
-				.orderBy(asc(pillars.id))
+				.orderBy(asc(pillars.sortOrder), asc(pillars.id))
 		: [];
 
 	return {
@@ -34,7 +35,8 @@ export const load: PageServerLoad = async (event) => {
 			summary: p.summary,
 			deliveryStatus: p.deliveryStatus,
 			evidence: p.evidence ?? ''
-		}))
+		})),
+		templates: await listTemplatesForLevel(ctx.position.title)
 	};
 };
 
@@ -50,7 +52,15 @@ export const actions: Actions = {
 		if (!title || !summary) return fail(400, { error: 'A pillar needs both a title and a summary.' });
 
 		const campaign = await getOrCreateMainCampaign(ctx.leader.id, domainUser.id, fullName(ctx.profileUser));
-		await db.insert(pillars).values({ campaignId: campaign.id, title, summary });
+
+		const [last] = await db
+			.select({ sortOrder: pillars.sortOrder })
+			.from(pillars)
+			.where(and(eq(pillars.campaignId, campaign.id), isNull(pillars.deletedAt)))
+			.orderBy(desc(pillars.sortOrder))
+			.limit(1);
+
+		await db.insert(pillars).values({ campaignId: campaign.id, title, summary, sortOrder: (last?.sortOrder ?? -1) + 1 });
 		return { saved: true };
 	},
 
@@ -90,6 +100,36 @@ export const actions: Actions = {
 			.update(pillars)
 			.set({ deletedAt: new Date() })
 			.where(and(eq(pillars.id, pillarId), eq(pillars.campaignId, campaign.id)));
+		return { saved: true };
+	},
+
+	reorder: async (event) => {
+		const { ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const orderedIds = String(form.get('order') ?? '')
+			.split(',')
+			.map(Number)
+			.filter((n) => Number.isFinite(n) && n > 0);
+		if (orderedIds.length === 0) return fail(400, { error: 'Invalid order.' });
+
+		const campaign = await getMainCampaign(ctx.leader.id);
+		if (!campaign) return fail(404, { error: 'No campaign yet.' });
+
+		// Scoped to this campaign's own pillar ids, so a crafted id list from another
+		// campaign can't smuggle in a sortOrder write here.
+		const ownPillars = await db
+			.select({ id: pillars.id })
+			.from(pillars)
+			.where(and(eq(pillars.campaignId, campaign.id), inArray(pillars.id, orderedIds), isNull(pillars.deletedAt)));
+		const ownIds = new Set(ownPillars.map((p) => p.id));
+
+		await Promise.all(
+			orderedIds
+				.filter((id) => ownIds.has(id))
+				.map((id, sortOrder) =>
+					db.update(pillars).set({ sortOrder }).where(and(eq(pillars.id, id), eq(pillars.campaignId, campaign.id)))
+				)
+		);
 		return { saved: true };
 	}
 };

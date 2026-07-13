@@ -12,6 +12,7 @@ const SEED_MANAGED_TABLES = [
 	'leaders',
 	'experience',
 	'pillars',
+	'pillar_templates',
 	'campaigns',
 	'managers',
 	'ambassadors',
