@@ -42,7 +42,7 @@
 
 			{#if user}
 				<a
-					href="/dashboard"
+					href="/dashboard/citizen"
 					class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-medium text-heading transition hover:bg-surface-2"
 				>
 					<span
@@ -52,14 +52,6 @@
 					</span>
 					<span class="hidden max-w-40 truncate sm:block">{user.name}</span>
 				</a>
-				<form method="post" action="/logout" use:enhance>
-					<button
-						type="submit"
-						class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2 focus:ring-2 focus:ring-ring focus:outline-none"
-					>
-						Log out
-					</button>
-				</form>
 			{:else}
 				<a
 					href="/login"

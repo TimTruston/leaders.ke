@@ -119,7 +119,8 @@
 				Change password
 			</a>
 			<a
-				href="/logout" 
+				href="/logout"
+				data-sveltekit-preload-data="off"
 				class="w-full rounded-xl border border-border bg-surface px-4 py-2 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"
 			>
 				Log out
