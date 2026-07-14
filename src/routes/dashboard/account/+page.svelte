@@ -86,7 +86,7 @@
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div>
-				<PhoneInput bind:value={smsPhone} label="SMS number" field="sms" verified={verified.sms}/>
+				<PhoneInput bind:value={smsPhone} label="Phone number" field="sms" verified={verified.sms}/>
 				<input type="hidden" name="smsPhone" value={smsPhone} />
 			</div>
 			<div>

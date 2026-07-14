@@ -56,11 +56,13 @@
 		{:else if value && verified && value === original}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-primary rounded-r-xl text-nowrap" >✓ Verified</span>
 		{:else if value}
-			<a href={verifyHref} data-sveltekit-preload-data="off" class="grid place-items-center pl-4 py-0.5 text-sm text-primary">Verify</a>
-			{#if value !== original}
-				<span class="grid place-items-center px-2 py-0.5 text-sm text-primary" >·</span>
-				<button type="button" onclick={() => value = original} class="grid place-items-center pr-4 py-0.5 text-sm text-primary rounded-r-xl">Reset</button>
-			{/if}
+			<span class="flex items-center gap-2 px-4 py-0.5 text-sm text-primary text-nowrap rounded-r-xl">
+				<a href={verifyHref} data-sveltekit-preload-data="off" class="">Verify</a>
+				{#if value !== original}
+					<span class="" >·</span>
+					<button type="button" onclick={() => value = original} class="rounded-r-xl">Reset</button>
+				{/if}
+			</span>
 		{/if}
 	</div>
 </label>

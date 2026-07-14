@@ -93,7 +93,7 @@
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div class="rounded-xl {missing.has('sms') ? 'ring-1 ring-red-500' : ''}">
-				<PhoneInput bind:value={sms} label="SMS number" />
+				<PhoneInput bind:value={sms} label="Phone number" />
 				<input type="hidden" name="sms" value={sms} />
 			</div>
 			<div>
