@@ -116,9 +116,7 @@
 		{data.form.hasLeader ? 'Leader profile' : 'Create your leader profile'}
 	</h2>
 	<p class="mt-1 text-sm text-muted">
-		{data.form.hasLeader
-			? 'This is what citizens see on your public page.'
-			: 'Pick your seat and introduce yourself; this unlocks the rest of the campaign HQ.'}
+		This is what citizens see on your public leader's profile/page.
 	</p>
 
 	{#if form?.error}

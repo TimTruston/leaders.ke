@@ -34,9 +34,11 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		noProfile: false as const,
+		id: domainUser.id,
 		isAdmin,
 		managers: managerRows.map((r) => ({
 			id: r.managers.id,
+			userId: r.managers.userId,
 			name: fullName(r.users),
 			email: r.user.email,
 			active: r.managers.isActive,
@@ -121,18 +123,33 @@ export const actions: Actions = {
 		const memberId = Number(form.get('memberId') ?? 0);
 
 		const [member] = await db
-			.select({ email: authUsers.email })
+			.select({ email: authUsers.email, roles: managers.roles })
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
 			.where(and(eq(managers.id, memberId), eq(managers.leaderId, ctx.leader.id)));
+		if (!member) return fail(404, { error: 'Manager not found.' });
+
+		// Only admins reduce the admin count — removing a plain manager never needs this check.
+		const targetIsAdmin = !!(member.roles as { admin?: boolean } | null)?.admin;
+		if (targetIsAdmin) {
+			// roles is jsonb (no direct SQL predicate on it here) — filter in JS.
+			const activeRows = await db
+				.select({ roles: managers.roles })
+				.from(managers)
+				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+			const activeAdminCount = activeRows.filter((r) => (r.roles as { admin?: boolean } | null)?.admin).length;
+			if (activeAdminCount < 2) {
+				return fail(403, { error: 'Add another admin manager before removing yourself.' });
+			}
+		}
 
 		// Blueprint rule: removing a manager leaves their ambassadors attached to the campaign.
 		await db
 			.update(managers)
 			.set({ isActive: false, deletedAt: new Date() })
 			.where(and(eq(managers.id, memberId), eq(managers.leaderId, ctx.leader.id)));
-		return { removed: { email: member?.email ?? '' } };
+		return { removed: { email: member.email } };
 	},
 
 	removeAmbassador: async (event) => {

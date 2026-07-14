@@ -117,7 +117,7 @@
 									type="submit"
 									class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
 								>
-									Remove
+									{data.id == member.userId ? 'Leave' : 'Remove'}
 								</button>
 							</form>
 						{/if}
