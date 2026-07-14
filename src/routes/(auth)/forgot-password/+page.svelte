@@ -16,6 +16,9 @@
 	{:else}
 		<form method="post" use:enhance class="space-y-4">
 			<Field label="Email" name="email" type="email" autocomplete="email" required />
+			{#if form?.message}
+				<p class="text-sm text-red-500">{form.message}</p>
+			{/if}
 			<Submit>Send reset link</Submit>
 		</form>
 	{/if}

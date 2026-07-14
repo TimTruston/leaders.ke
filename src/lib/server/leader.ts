@@ -3,9 +3,26 @@
 // /<slug> (+ /<slug>/<year> for their active campaign workspace). Seat-level
 // pages stay position-first: /<position>/<region> (or just /<position> for
 // single-region national seats like President).
+import { randomUUID } from 'node:crypto';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
+
+/**
+ * Creates the leader's own `users` row, separate from whichever citizen account
+ * is creating it — so editing the leader's profile/contacts never touches the
+ * creator's own login identity. Backed by a placeholder auth-user row (never
+ * used for login, same convention as seeded candidates' `{slug}@seed.leaders.ke`).
+ */
+export async function createPhantomUser(firstName: string, otherNames: string) {
+	const authId = randomUUID();
+	const placeholderEmail = `leader-${authId}@phantom.leaders.ke`;
+	await db.insert(authUsers).values({ id: authId, name: `${firstName} ${otherNames}`.trim(), email: placeholderEmail, emailVerified: false });
+
+	const [profile] = await db.insert(users).values({ authUserId: authId, firstName, otherNames }).returning();
+	return profile;
+}
 
 /** kebab-cases a label for URL segments: "Woman Rep" -> "woman-rep", "Murang'a" -> "muranga" */
 export function slugify(input: string): string {

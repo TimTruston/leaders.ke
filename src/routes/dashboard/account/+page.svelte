@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 	import PhoneInput from '$lib/components/contact/PhoneInput.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+
+	const emailChanged = $derived(page.url.searchParams.get('emailChanged'));
 
 	// PhoneInput only exposes `value` (bindable), no `name` — a hidden input carries
 	// the bound value into the form's native submission.
@@ -38,6 +41,12 @@
 	<h1 class="text-xl font-bold text-heading">Account</h1>
 	<p class="mt-1 text-sm text-muted">Your details and how leaders.ke reaches you.</p>
 
+	{#if emailChanged}
+		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+			Email {emailChanged} verified successfully.
+		</div>
+	{/if}
+
 	{#if form?.error}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 			{form.error}
@@ -46,7 +55,16 @@
 		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">Saved.</div>
 	{/if}
 
-	<form method="post" action="?/save" class="mt-6 space-y-4" use:enhance>
+	<form
+		method="post"
+		action="?/save"
+		class="mt-6 space-y-4"
+		use:enhance={() => {
+			return async ({ update }) => {
+				await update({ reset: false });
+			};
+		}}
+	>
 		<div class="grid gap-3 sm:grid-cols-2">
 			<label class="block">
 				<span class="text-xs font-medium text-muted">First name</span>
@@ -121,6 +139,7 @@
 			<a
 				href="/logout"
 				data-sveltekit-preload-data="off"
+				data-sveltekit-reload
 				class="w-full rounded-xl border border-border bg-surface px-4 py-2 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"
 			>
 				Log out

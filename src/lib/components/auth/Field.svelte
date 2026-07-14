@@ -8,6 +8,7 @@
 		type?: 'text' | 'email' | 'password';
 		value?: string;
 		required?: boolean;
+		readonly?: boolean;
 		autocomplete?: HTMLInputAttributes['autocomplete'];
 		placeholder?: string;
 	}
@@ -18,6 +19,7 @@
 		type = 'text',
 		value = $bindable(''),
 		required = false,
+		readonly = false,
 		autocomplete,
 		placeholder
 	}: Props = $props();
@@ -29,9 +31,12 @@
 		{name}
 		{type}
 		{required}
+		{readonly}
 		{autocomplete}
 		{placeholder}
 		bind:value
-		class="w-full rounded-lg border border-border bg-surface px-3 py-2 text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+		class="w-full rounded-lg border border-border bg-surface px-3 py-2 text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none {readonly
+			? 'cursor-not-allowed opacity-70'
+			: ''}"
 	/>
 </label>

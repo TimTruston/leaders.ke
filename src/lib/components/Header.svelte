@@ -42,7 +42,7 @@
 
 			{#if user}
 				<a
-					href="/dashboard/citizen"
+					href="/dashboard"
 					class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-medium text-heading transition hover:bg-surface-2"
 				>
 					<span

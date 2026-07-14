@@ -87,7 +87,7 @@
 						return async ({ update }) => {
 							sendingCode = false;
 							phoneCooldown = 60;
-							await update();
+							await update({ reset: false });
 						};
 					}}
 				>

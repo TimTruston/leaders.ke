@@ -30,7 +30,15 @@
 				placeholder="Mumbi Mwangi"
 			/>
 		</div>
-		<Field label="Email" name="email" type="email" autocomplete="email" required />
+		<Field
+			label="Email"
+			name="email"
+			type="email"
+			autocomplete="email"
+			required
+			readonly={!!data.lockedEmail}
+			value={data.lockedEmail ?? ''}
+		/>
 		<Field
 			label="Password"
 			name="password"

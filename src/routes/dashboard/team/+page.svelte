@@ -27,7 +27,11 @@
 		{form.error}
 	</div>
 {/if}
-{#if form?.invited}
+{#if form?.granted}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		{form.granted.email} will see the {form.granted.role} role when they visit the dashboard.
+	</div>
+{:else if form?.invited}
 	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
 		Invite sent to {form.invited.email}
 	</div>
@@ -79,9 +83,11 @@
 						<form method="post" action="?/revokeInvite" use:enhance>
 							<input type="hidden" name="inviteId" value={invite.id} />
 							<input type="hidden" name="role" value="manager" />
+							{#if data.isAdmin}
 							<button type="submit" class="shrink-0 text-xs font-medium text-muted transition hover:text-heading">
 								Revoke
 							</button>
+							{/if}
 						</form>
 					</li>
 				{/each}

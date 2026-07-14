@@ -37,17 +37,10 @@ export const auth = betterAuth({
 		}
 	},
 	user: {
-		changeEmail: {
-			enabled: true,
-			// Confirmation goes to the CURRENT address so the account owner approves the change. Powers /change-email.
-			sendChangeEmailVerification: async ({ user, newEmail, url }) => {
-				await sendEmail({
-					to: user.email,
-					subject: 'Confirm your leaders.ke email change',
-					text: `Hi ${user.name || 'there'},\n\nApprove changing your email to ${newEmail} with this link:\n${url}\n\nDidn't request it? Ignore this email — nothing changes.`
-				});
-			}
-		},
+		// No changeEmail block: /change-email runs entirely on our own OTP flow
+		// ($lib/server/otp.ts) instead of better-auth's built-in one — its JWT
+		// links were long, and confirming triggered a second, unrelated
+		// "verify your email" email via better-auth's own auto-reverification.
 		// No sendDeleteAccountVerification, so deleteUser deletes immediately after the password check. Powers /delete-account.
 		deleteUser: { enabled: true }
 	},

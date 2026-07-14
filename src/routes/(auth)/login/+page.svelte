@@ -20,7 +20,15 @@
 		</p>
 	{/if}
 	<form method="post" use:enhance class="space-y-4">
-		<Field label="Email" name="email" type="email" autocomplete="email" required value={data.devEmail} />
+		<Field
+			label="Email"
+			name="email"
+			type="email"
+			autocomplete="email"
+			required
+			readonly={!!data.lockedEmail}
+			value={data.devEmail}
+		/>
 		<Field
 			label="Password"
 			name="password"

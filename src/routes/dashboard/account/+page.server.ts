@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
 import type { Actions, PageServerLoad } from './$types';
@@ -45,7 +46,7 @@ async function replaceContact(userId: number, channel: 'sms' | 'whatsapp', value
 
 export const actions: Actions = {
 	save: async (event) => {
-		const { domainUser } = await requireDashboardUser(event);
+		const { domainUser, authUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
 		const firstName = String(form.get('firstName') ?? '').trim();
 		const otherNames = String(form.get('otherNames') ?? '').trim();
@@ -68,6 +69,9 @@ export const actions: Actions = {
 		if (whatsappPhoneInput && !whatsappPhone) return fail(400, { error: 'Enter a valid Kenyan number for WhatsApp.' });
 
 		await db.update(users).set({ firstName, otherNames, notificationPrefs }).where(eq(users.id, domainUser.id));
+		// better-auth keeps its own `name` (shown in the global header) separate from
+		// our firstName/otherNames — sync it here so the two never drift apart again.
+		await db.update(authUsers).set({ name: `${firstName} ${otherNames}`.trim() }).where(eq(authUsers.id, authUser.id));
 		await replaceContact(domainUser.id, 'sms', smsPhone);
 		await replaceContact(domainUser.id, 'whatsapp', whatsappPhone);
 

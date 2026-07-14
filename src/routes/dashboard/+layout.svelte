@@ -1,20 +1,9 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
-
-	// Child pages (Profile/Contacts) call this after a successful autosave so the
-	// "Changes saved" indicator up here shows, regardless of which tab triggered it.
-	let savedVisible = $state(false);
-	let savedTimeout: ReturnType<typeof setTimeout> | undefined;
-	setContext('markSaved', () => {
-		savedVisible = true;
-		clearTimeout(savedTimeout);
-		savedTimeout = setTimeout(() => (savedVisible = false), 2000);
-	});
 
 	let submittingApplication = $state(false);
 	let applicationError = $state('');
@@ -29,22 +18,20 @@
 		const p = page.url.pathname;
 		if (p.startsWith('/dashboard/admin')) return 'admin';
 		if (p.startsWith('/dashboard/ambassador')) return 'ambassador';
-		if (p.startsWith('/dashboard/citizen')) return 'citizen';
+		if (p == '/dashboard' || p == '/dashboard/account' || p== '/dashboard/invites') return 'citizen';
 		return data.leaderContext?.verified ? 'campaign' : 'apply';
 	});
 
 	// The modes this account can switch between right now. 
 	const modes = $derived(
 		[
+			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
 			{
 				key: 'campaign',
-				href: '/dashboard',
-				label: data.leaderContext?.role === 'manager'
-					? `Managing ${data.leaderContext.leaderName}`
-					: (data.leaderContext?.leaderName ?? ''),
+				href: '/dashboard/profile',
+				label: (data.leaderContext?.role === 'manager' ? 'Managing ' : 'Ambassador: ') + data.leaderContext?.leaderName,
 				available: !!data.leaderContext
 			},
-			{ key: 'citizen', href: '/dashboard/citizen', label: 'Citizen', available: true },
 			{ key: 'ambassador', href: '/dashboard/ambassador', label: 'Ambassador', available: data.isAmbassador },
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
 		].filter((m) => m.available)
@@ -53,8 +40,22 @@
 
 	// Tabs per mode. Only pages that actually exist are listed (no dead links).
 	const sectionsByMode = $derived({
-		campaign: [
+		citizen: [
 			{ href: '/dashboard', label: 'Overview', enabled: true },
+			{ href: '/dashboard/invites', label: 'Invites', enabled: true },
+			{ href: '/dashboard/account', label: 'Account', enabled: true }
+		],
+		// Campaign-application flow, reached via "Launch a Campaign" — no Overview,
+		// Team requires 2+ managers before the application can be submitted.
+		// All four reachable from the start — Team/Documentation show a "save your
+		// profile first" prompt of their own until a leader row exists.
+		apply: [
+			{ href: '/dashboard/profile', label: "Leader's Profile", enabled: true },
+			{ href: '/dashboard/contacts', label: 'Contacts', enabled: true },
+			{ href: '/dashboard/team', label: 'Team', enabled: true },
+			{ href: '/dashboard/documentation', label: 'Documentation', enabled: true }
+		],
+		campaign: [
 			{ href: '/dashboard/profile', label: 'Profile', enabled: true },
 			{ href: '/dashboard/contacts', label: 'Contacts', enabled: !!data.leaderContext },
 			{ href: '/dashboard/manifesto', label: 'Manifesto', enabled: !!data.leaderContext },
@@ -67,11 +68,6 @@
 			{ href: '/dashboard/pr', label: 'PR desk', enabled: !!data.leaderContext },
 			{ href: '/dashboard/competitors', label: 'Competitors', enabled: !!data.leaderContext }
 		],
-		citizen: [
-			{ href: '/dashboard/citizen', label: 'Overview', enabled: true },
-			{ href: '/dashboard/citizen/invites', label: 'Invites', enabled: true },
-			{ href: '/dashboard/citizen/account', label: 'Account', enabled: true }
-		],
 		ambassador: [{ href: '/dashboard/ambassador', label: 'My campaigns', enabled: true }],
 		admin: [
 			{ href: '/dashboard/admin/candidates', label: 'Candidates', enabled: true },
@@ -81,23 +77,14 @@
 			{ href: '/dashboard/admin/claims', label: 'Claims', enabled: true },
 			{ href: '/dashboard/admin/moderation', label: 'Moderation', enabled: true },
 			{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue', enabled: true },
-			{ href: '/dashboard/admin/packages', label: 'Packages', enabled: true }
+			{ href: '/dashboard/admin/packages', label: 'Packages', enabled: true },
+			{ href: '/dashboard/admin/settings', label: 'Settings', enabled: true }
 		],
-		// Campaign-application flow, reached via "Launch a Campaign" — no Overview,
-		// Team requires 2+ managers before the application can be submitted.
-		// All four reachable from the start — Team/Documentation show a "save your
-		// profile first" prompt of their own until a leader row exists.
-		apply: [
-			{ href: '/dashboard/profile', label: "Leader's Profile", enabled: true },
-			{ href: '/dashboard/contacts', label: 'Contacts', enabled: true },
-			{ href: '/dashboard/team', label: 'Team', enabled: true },
-			{ href: '/dashboard/documentation', label: 'Documentation', enabled: true }
-		]
 	});
 	const sections = $derived(sectionsByMode[mode].filter((s) => s.enabled));
 
 	// Exact match for any tab that's a URL-prefix of a sibling tab (e.g. Overview at
-	// /dashboard/citizen vs. /dashboard/citizen/account) — otherwise both would light up.
+	// /dashboard vs. /dashboard/account) — otherwise both would light up.
 	const isActive = (href: string) =>
 		sections.some((s) => s.href !== href && s.href.startsWith(href))
 			? page.url.pathname === href
@@ -115,6 +102,7 @@
 		<div class="flex items-center justify-between gap-2 w-full">
 			{#if mode === 'campaign' && data.leaderContext}
 				<h1 class="text-2xl font-bold text-heading">
+					{data.leaderContext.leaderName}
 					{#if data.leaderContext.role === 'manager'}
 						<span
 							class="ml-1 align-middle rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted"
@@ -122,7 +110,6 @@
 							Managing
 						</span>
 					{/if}
-					{data.leaderContext.leaderName}
 				</h1>
 			{:else if mode === 'apply'}
 				<h1 class="text-2xl font-bold text-heading">Get your campaign live</h1>
@@ -154,41 +141,13 @@
 					</div>
 				</details>
 			{/if}
-			{#if mode === 'campaign'}
-				{#if data.leaderContext}
-					{#if data.leaderContext.verified}
-						<a
-							href={data.leaderContext.publicPath}
-							class="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
-						>
-							View public page
-						</a>
-					{:else}
-						<span
-							class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-sm font-semibold text-muted"
-						>
-							Pending verification
-						</span>
-					{/if}
-				{/if}
-			{/if}
 		</div>
 
 		<div class="flex flex-wrap justify-between gap-2 w-full">
-			{#if mode === 'campaign' && data.leaderContext}
-				
-				<p class="text-sm text-muted">
-					{data.leaderContext.positionTitle}, {data.leaderContext.region}
-					· <span class="capitalize">{data.leaderContext.status}</span>
-				</p>
-			{:else if mode === 'apply'}
-				<p class="text-sm text-muted">A few steps to a public leader page ahead of 10 August 2027.</p>
-			{:else}
-				<p class="text-sm text-muted uppercase">{mode}</p>
-			{/if}
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
-			{#if mode === 'apply' && data.leaderContext}
+			{#if mode === 'apply'}
+				<p class="text-sm text-muted">A few steps to a public leader page ahead of 10 August 2027.</p>
 				{#if data.pendingVerification}
 					<span
 						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-semibold text-muted"
@@ -212,11 +171,6 @@
 							};
 						}}
 					>
-						<!-- Autosave feedback: any tab in this layout can trigger it via the "markSaved" context. -->
-						{#if savedVisible}
-							<span class="text-xs font-medium text-muted">Changes saved</span>
-						{/if}
-
 						<input
 							type="text"
 							name="nationalId"
@@ -234,7 +188,29 @@
 						</button>
 					</form>
 				{/if}
+			{:else if mode === 'campaign' && data.leaderContext}
+				<p class="text-sm text-muted">
+					{data.leaderContext.positionTitle}, {data.leaderContext.region}
+					· <span class="capitalize">{data.leaderContext.status}</span>
+				</p>
+				{#if data.leaderContext.verified}
+					<a
+						href={data.leaderContext.publicPath}
+						class="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-on-primary transition bg-primary hover:bg-surface-2"
+					>
+						View public page
+					</a>
+				{:else}
+					<span
+						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-sm font-semibold text-muted"
+					>
+						Pending verification
+					</span>
+				{/if}
+			{:else}
+				<p class="text-sm text-muted uppercase">{mode}</p>
 			{/if}
+			
 		</div>
 
 	</div>

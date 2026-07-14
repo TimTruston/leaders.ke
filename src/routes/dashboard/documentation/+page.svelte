@@ -19,6 +19,8 @@
 					}
 				] as const)
 	);
+
+	let uploading = $state(false);
 </script>
 
 <svelte:head><title>Documentation — leaders.ke</title></svelte:head>
@@ -52,7 +54,19 @@
 		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">Uploaded.</div>
 	{/if}
 
-	<div class="mt-6 space-y-4">
+	<form
+		method="post"
+		action="?/upload"
+		enctype="multipart/form-data"
+		class="mt-6 space-y-4"
+		use:enhance={() => {
+			uploading = true;
+			return async ({ update }) => {
+				uploading = false;
+				await update();
+			};
+		}}
+	>
 		{#each docs as doc (doc.kind)}
 			<div class="rounded-2xl border border-border bg-surface p-5">
 				<div class="flex flex-wrap items-center justify-between gap-3">
@@ -66,31 +80,23 @@
 							<p class="text-sm text-muted">Not uploaded yet.</p>
 						{/if}
 					</div>
-					<form
-						method="post"
-						action="?/upload"
-						enctype="multipart/form-data"
-						class="flex items-center gap-2"
-						use:enhance
-					>
-						<input type="hidden" name="kind" value={doc.kind} />
-						<input
-							type="file"
-							name="file"
-							accept={doc.accept}
-							required
-							class="max-w-60 text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-surface-2 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-heading"
-						/>
-						<button
-							type="submit"
-							class="shrink-0 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
-						>
-							{doc.url ? 'Replace' : 'Upload'}
-						</button>
-					</form>
+					<input
+						type="file"
+						name={doc.kind}
+						accept={doc.accept}
+						class="max-w-60 text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-surface-2 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-heading"
+					/>
 				</div>
 			</div>
 		{/each}
-	</div>
+
+		<button
+			type="submit"
+			disabled={uploading}
+			class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+		>
+			{uploading ? 'Uploading…' : 'Upload/Update files'}
+		</button>
+	</form>
 </div>
 {/if}

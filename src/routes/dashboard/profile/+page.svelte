@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import { enhance } from '$app/forms';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
@@ -7,19 +6,9 @@
 
 	let { data, form }: PageProps = $props();
 
-	const markSaved = getContext<() => void>('markSaved');
-
-	let formEl: HTMLFormElement;
-	let saveTimer: ReturnType<typeof setTimeout>;
-
-	// Autosave: any input/change anywhere in the form debounces a real submit
-	// (native requestSubmit, so it reuses the exact same ?/save action) — no
-	// separate save button. Explicit calls (scheduleSave) cover changes made via
-	// JS state instead of a native form control (the experience/leadership add buttons).
-	function scheduleSave() {
-		clearTimeout(saveTimer);
-		saveTimer = setTimeout(() => formEl?.requestSubmit(), 1000);
-	}
+	let saving = $state(false);
+	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
+	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
 
 	let adding = $state<'leadership' | 'professional' | 'education' | null>(null);
 	function toggleAdding(type: 'leadership' | 'professional' | 'education') {
@@ -87,7 +76,6 @@
 		});
 		expTitle = expInstitution = expFrom = expTo = '';
 		adding = null;
-		scheduleSave();
 	}
 
 	function addLeadership() {
@@ -105,24 +93,19 @@
 		leadDescription = leadFrom = leadTo = '';
 		leadResetKey++;
 		adding = null;
-		scheduleSave();
 	}
 
 	function removeExperience(i: number) {
 		pendingExperience.splice(i, 1);
-		scheduleSave();
 	}
 	function removeLeadership(i: number) {
 		pendingLeadership.splice(i, 1);
-		scheduleSave();
 	}
 	function removeExistingExperience(id: number) {
 		removedExperienceIds.push(id);
-		scheduleSave();
 	}
 	function removeExistingLeadership(id: number) {
 		removedLeadershipIds.push(id);
-		scheduleSave();
 	}
 </script>
 
@@ -148,23 +131,19 @@
 	this page, so it can't live inside a single tab. -->
 
 	<form
-		bind:this={formEl}
 		method="post"
 		action="?/save"
 		class="mt-6 space-y-5"
-		oninput={scheduleSave}
-		onchange={scheduleSave}
 		use:enhance={() => {
+			saving = true;
 			return async ({ result, update }) => {
+				saving = false;
 				if (result.type === 'success') {
 					pendingExperience = [];
 					pendingLeadership = [];
 					removedExperienceIds = [];
 					removedLeadershipIds = [];
-					markSaved();
 				}
-				// Default enhance behavior calls form.reset() on success, wiping every
-				// field back to blank — this form re-renders from `data`, so skip that.
 				await update({ reset: false });
 			};
 		}}
@@ -182,7 +161,7 @@
 					name="firstName"
 					required
 					value={data.form.firstName}
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-2 focus:outline-none {errorClass('firstName')}"
 				/>
 			</label>
 			<label class="block">
@@ -192,10 +171,13 @@
 					name="otherNames"
 					required
 					value={data.form.otherNames}
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-2 focus:outline-none {errorClass('otherNames')}"
 				/>
 			</label>
 		</div>
+		{#if missing.has('firstName') || missing.has('otherNames')}
+			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+		{/if}
 
 		{#if data.form.verified}
 			<label class="block">
@@ -216,11 +198,16 @@
 			</label>
 		{/if}
 
-		<PositionSelector
-			positions={data.positions}
-			verified={data.form.verified}
-			initialPositionId={data.form.positionId}
-		/>
+		<div class="rounded-xl {missing.has('positionId') ? 'ring-2 ring-red-500' : ''}">
+			<PositionSelector
+				positions={data.positions}
+				verified={data.form.verified}
+				initialPositionId={data.form.positionId}
+			/>
+		</div>
+		{#if missing.has('positionId')}
+			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+		{/if}
 
 		<label class="block">
 			<span class="text-sm font-medium text-heading">Bio</span>
@@ -228,10 +215,13 @@
 				name="bio"
 				rows="5"
 				placeholder="Who you are, what you have done, and why you are running."
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-2 focus:outline-none {errorClass('bio')}"
 				>{data.form.bio}</textarea
 			>
 		</label>
+		{#if missing.has('bio')}
+			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+		{/if}
 
 		{#if data.form.hasLeader}
 			<div class="border-t border-border pt-6">
@@ -448,9 +438,17 @@
 						</button>
 					</div>
 				{/if}
-
-				<p class="mt-3 text-xs text-muted">Added entries above save automatically.</p>
 			</div>
 		{/if}
+
+		<div class="border-t border-border pt-6">
+			<button
+				type="submit"
+				disabled={saving}
+				class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+			>
+				{saving ? 'Saving…' : 'Save changes'}
+			</button>
+		</div>
 	</form>
 </div>

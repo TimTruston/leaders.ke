@@ -34,24 +34,25 @@ export const actions: Actions = {
 	upload: async (event) => {
 		const { ctx } = await requireLeader(event);
 		const form = await event.request.formData();
-		const kind = String(form.get('kind') ?? '') as UploadKind;
-		const file = form.get('file');
 
-		if (!(kind in COLUMN_BY_KIND)) return fail(400, { error: 'Invalid document type.' });
-		if (!(file instanceof File) || file.size === 0) return fail(400, { error: 'Choose a file first.' });
-
-		let url: string;
-		try {
-			url = await saveLeaderDocument(ctx.leader.id, kind, file);
-		} catch (err) {
-			return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+		const updates: Partial<Record<(typeof COLUMN_BY_KIND)[UploadKind], string>> = {};
+		for (const kind of Object.keys(COLUMN_BY_KIND) as UploadKind[]) {
+			const file = form.get(kind);
+			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
+			try {
+				updates[COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind, file);
+			} catch (err) {
+				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+			}
 		}
+
+		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose at least one file to upload.' });
 
 		await db
 			.update(leaders)
-			.set({ [COLUMN_BY_KIND[kind]]: url, updatedAt: new Date() })
+			.set({ ...updates, updatedAt: new Date() })
 			.where(eq(leaders.id, ctx.leader.id));
 
-		return { uploaded: kind };
+		return { uploaded: true };
 	}
 };

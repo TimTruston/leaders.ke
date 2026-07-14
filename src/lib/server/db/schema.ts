@@ -792,5 +792,36 @@ export const ballotSimulations = pgTable('ballot_simulations', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// 24. PLATFORM SETTINGS (single-row config an admin can tune without a deploy —
+// OTP/invite anti-abuse thresholds today, room to grow. Always id=1.)
+export const platformSettings = pgTable('platform_settings', {
+  id: integer('id').primaryKey().default(1),
+  // Shared by every OTP send (sms/whatsapp/email) and by re-inviting the same
+  // (leader, role, email): seconds between sends, and max sends/24h.
+  otpCooldownSeconds: integer('otp_cooldown_seconds').default(60).notNull(),
+  otpDailyCap: integer('otp_daily_cap').default(3).notNull(),
+  // Lifetime (not per-day) invite cap per campaign, by subscription tier — mass
+  // mobilization (many unique invitees) is intentionally uncapped day-to-day;
+  // this only bounds total invites ever sent, scaled to what they paid for.
+  inviteLimits: jsonb('invite_limits')
+    .$type<{ aspirant: number; influencer: number; mobilizer: number }>()
+    .default({ aspirant: 10, influencer: 50, mobilizer: 200 })
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// 25. PASSWORD RESET REQUESTS (rate-limit tracking only — better-auth owns the
+// actual reset token/link via emailAndPassword.sendResetPassword in auth.ts;
+// this just records "a reset was requested for X at T" against the same
+// cooldown/daily-cap settings used everywhere else, so the form can't be
+// used to spam arbitrary inboxes with reset emails.)
+export const passwordResetRequests = pgTable('password_reset_requests', {
+  id: serial('id').primaryKey(),
+  destination: varchar('destination', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('password_reset_requests_destination_idx').on(t.destination),
+]);
+
 // Better-auth generated tables (run: bun run auth:schema)
 export * from './auth.schema';

@@ -9,7 +9,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 // Only ever redirect to a same-origin relative path — never follow ?next anywhere else.
 function safeNext(next: string | null): string {
-	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard/citizen';
+	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
 }
 
 async function getSmsContact(userId: number) {
@@ -42,16 +42,17 @@ export const load: PageServerLoad = async (event) => {
 	const next = safeNext(event.url.searchParams.get('next'));
 
 	const linkToken = event.url.searchParams.get('linkToken');
-	if (linkToken && !authUser.emailVerified) {
-		const verifiedUserId = await verifyOtpLinkToken(linkToken);
-		if (verifiedUserId === domainUser.id) {
+	if (linkToken && !domainUser.verified.email) {
+		const result = await verifyOtpLinkToken(linkToken);
+		if (result?.userId === domainUser.id) {
 			await markContactVerified(domainUser, 'email', authUser.id);
 			redirect(302, `/verify?next=${encodeURIComponent(next)}`);
 		}
 	}
 
 	const phoneVerified = domainUser.verified.sms;
-	if (authUser.emailVerified && phoneVerified) redirect(302, next);
+	const emailVerified = domainUser.verified.email;
+	if (emailVerified && phoneVerified) redirect(302, next);
 
 	const sms = await getSmsContact(domainUser.id);
 	const [emailCooldown, phoneCooldown] = await Promise.all([
@@ -62,7 +63,7 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		next,
 		email: authUser.email,
-		emailVerified: authUser.emailVerified,
+		emailVerified,
 		emailCooldown,
 		phone: sms?.value ?? '',
 		phoneVerified,

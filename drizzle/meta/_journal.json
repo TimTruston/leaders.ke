@@ -246,6 +246,20 @@
       "when": 1783973321486,
       "tag": "0034_users_verified_jsonb",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1784012736647,
+      "tag": "0035_nice_medusa",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1784013230365,
+      "tag": "0036_cuddly_corsair",
+      "breakpoints": true
     }
   ]
 }

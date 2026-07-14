@@ -3,11 +3,68 @@
 // the same email/role revokes whatever link was open before, so there's only ever
 // one live.
 import { randomBytes } from 'node:crypto';
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, gte, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, followers, invites, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { ambassadors, campaigns, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { fullName } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
+import { getPlatformSettings } from '$lib/server/settings';
+
+/** This campaign's current paid tier, defaulting to the free/lowest tier
+ * ('aspirant') if it has no live campaign row or active subscription yet. */
+async function getCampaignTier(leaderId: number): Promise<'aspirant' | 'influencer' | 'mobilizer'> {
+	const [row] = await db
+		.select({ tier: subscriptions.tier })
+		.from(campaigns)
+		.innerJoin(subscriptions, eq(subscriptions.campaignId, campaigns.id))
+		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt), eq(subscriptions.status, 'active')))
+		.orderBy(desc(subscriptions.startAt))
+		.limit(1);
+	return row?.tier ?? 'aspirant';
+}
+
+/** Whether an auth account already exists for this email — decides whether an
+ * invited email should land on /login or /signup, both with the email locked in. */
+export async function emailHasAccount(email: string): Promise<boolean> {
+	const [row] = await db.select({ id: authUsers.id }).from(authUsers).where(eq(authUsers.email, email.trim().toLowerCase()));
+	return !!row;
+}
+
+/**
+ * If this email already belongs to an active manager OR ambassador of this same
+ * leader, grant the new role directly (no invite/email) — they're already a
+ * known, trusted member of the team, just missing this one role. Returns null if
+ * they're not an existing team member here (caller should fall back to a normal
+ * emailed invite).
+ */
+export async function tryDirectGrant(leaderId: number, role: 'manager' | 'ambassador', email: string): Promise<{ userId: number } | null> {
+	const normalizedEmail = email.trim().toLowerCase();
+
+	const [account] = await db
+		.select({ userId: users.id })
+		.from(authUsers)
+		.innerJoin(users, eq(users.authUserId, authUsers.id))
+		.where(eq(authUsers.email, normalizedEmail));
+	if (!account) return null;
+
+	const [isManager] = await db
+		.select({ id: managers.id })
+		.from(managers)
+		.where(and(eq(managers.userId, account.userId), eq(managers.leaderId, leaderId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+	const [isAmbassador] = await db
+		.select({ id: ambassadors.id })
+		.from(ambassadors)
+		.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.leaderId, leaderId), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)));
+	if (!isManager && !isAmbassador) return null;
+
+	if (role === 'manager' && !isManager) {
+		await db.insert(managers).values({ userId: account.userId, leaderId, roles: {} });
+	} else if (role === 'ambassador' && !isAmbassador) {
+		await db.insert(ambassadors).values({ userId: account.userId, leaderId, roles: {} });
+	}
+	return { userId: account.userId };
+}
 
 const INVITE_TTL_DAYS = 7;
 
@@ -33,7 +90,10 @@ export type InviteDetails = {
 
 /** Creates a fresh invite for this email, revoking any invite still open for the
  * same (leader, role, email) first — one live link per person — and emails it
- * (dev: sendEmail logs the link to the console when no Postmark token is set). */
+ * (dev: sendEmail logs the link to the console when no Postmark token is set).
+ * Throws if: re-inviting the same (leader, role, email) too soon/too often (spam
+ * guard — mass mobilization to *unique* emails is never rate-limited), or the
+ * campaign has hit its lifetime invite cap for its subscription tier. */
 export async function createInvite(
 	leaderId: number,
 	role: InviteRole,
@@ -42,6 +102,43 @@ export async function createInvite(
 	origin: string
 ): Promise<{ token: string }> {
 	const normalizedEmail = email.trim().toLowerCase();
+	const settings = await getPlatformSettings();
+
+	const [recent] = await db
+		.select({ createdAt: invites.createdAt })
+		.from(invites)
+		.where(and(eq(invites.leaderId, leaderId), eq(invites.role, role), eq(invites.email, normalizedEmail)))
+		.orderBy(desc(invites.createdAt))
+		.limit(1);
+	if (recent) {
+		const cooldownMs = settings.otpCooldownSeconds * 1000;
+		const elapsed = Date.now() - recent.createdAt.getTime();
+		if (elapsed < cooldownMs) {
+			throw new Error(`Wait ${Math.ceil((cooldownMs - elapsed) / 1000)}s before re-inviting this email.`);
+		}
+	}
+
+	const [{ sentToday }] = await db
+		.select({ sentToday: count() })
+		.from(invites)
+		.where(
+			and(
+				eq(invites.leaderId, leaderId),
+				eq(invites.role, role),
+				eq(invites.email, normalizedEmail),
+				gte(invites.createdAt, new Date(Date.now() - 24 * 60 * 60 * 1000))
+			)
+		);
+	if (sentToday >= settings.otpDailyCap) {
+		throw new Error('Too many invites sent to this email today. Try again tomorrow.');
+	}
+
+	const [{ lifetimeCount }] = await db.select({ lifetimeCount: count() }).from(invites).where(eq(invites.leaderId, leaderId));
+	const tier = await getCampaignTier(leaderId);
+	const limit = settings.inviteLimits[tier];
+	if (lifetimeCount >= limit) {
+		throw new Error(`This campaign has reached its lifetime invite limit (${limit}) for the ${tier} package.`);
+	}
 
 	await db
 		.update(invites)

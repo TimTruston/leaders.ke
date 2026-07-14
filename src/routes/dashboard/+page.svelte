@@ -3,107 +3,91 @@
 
 	let { data }: PageProps = $props();
 
-	// Checklist driven by real campaign state; each step links to where it gets done.
-	const steps = $derived([
-		{
-			title: 'Create your leader profile',
-			description: 'Pick the seat you are vying for and add your bio.',
-			href: '/dashboard/profile',
-			cta: data.checklist.hasProfile ? 'Edit profile' : 'Create profile',
-			done: data.checklist.hasProfile
-		},
-		{
-			title: 'Publish your manifesto',
-			description: 'Add the pillars citizens will hold you to.',
-			href: '/dashboard/manifesto',
-			cta: 'Edit manifesto',
-			done: data.checklist.pillarCount > 0
-		},
-		{
-			title: 'Post your first update',
-			description: 'Updates appear on your public page and feed your followers.',
-			href: '/dashboard/posts',
-			cta: 'Write a post',
-			done: data.checklist.postCount > 0
-		},
-		{
-			title: 'Invite your team',
-			description: 'Managers run the dashboard with you; ambassadors mobilize on the ground.',
-			href: '/dashboard/team',
-			cta: 'Invite team',
-			done: data.checklist.teamCount > 0
-		},
-		{
-			title: 'Choose a subscription',
-			description: 'Pick the package for your race to unlock verification and go public.',
-			href: '/pricing',
-			cta: 'View pricing',
-			done: false
-		}
-	]);
-
-	const fmt = new Intl.NumberFormat('en-KE');
+	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
 </script>
 
-<svelte:head><title>Dashboard — leaders.ke</title></svelte:head>
+<svelte:head><title>Overview — leaders.ke</title></svelte:head>
 
-{#if data.stats}
-	<!-- Live campaign stats -->
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-		{#each [{ value: data.stats.followerCount, label: 'Followers', href: '/dashboard/followers' }, { value: data.stats.postCount, label: 'Posts', href: '/dashboard/posts' }, { value: data.stats.pillarCount, label: 'Manifesto pillars', href: '/dashboard/manifesto' }, { value: data.stats.teamCount, label: 'Team members', href: '/dashboard/team' }] as stat (stat.label)}
-			<a
-				href={stat.href}
-				class="rounded-2xl border border-border bg-surface p-5 transition hover:border-primary"
-			>
-				<p class="text-3xl font-extrabold tabular-nums text-heading">{fmt.format(stat.value)}</p>
-				<p class="mt-1 text-sm text-muted">{stat.label}</p>
-			</a>
-		{/each}
-	</div>
-{/if}
+<div class="flex min-h-[70vh] flex-col">
+<div class="grid gap-8 lg:grid-cols-2">
+	<div>
+		<h1 class="text-xl font-bold text-heading">My Choice</h1>
+		<p class="mt-1 text-sm text-muted">Candidates you've pledged to vote for.</p>
 
-<!-- Onboarding checklist -->
-<div class="mt-8 rounded-2xl border border-border bg-surface p-6">
-	<h2 class="text-lg font-semibold text-heading">Get your campaign live</h2>
-	<p class="mt-1 text-sm text-muted">
-		Five steps to a public leader page ahead of 10 August 2027.
-	</p>
-
-	<ol class="mt-6 space-y-4">
-		{#each steps as step, i (step.title)}
-			<li class="flex gap-4">
-				<span
-					class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-sm font-bold {step.done
-						? 'bg-primary text-on-primary'
-						: 'bg-surface-2 text-heading'}"
+		{#if data.pledges.length > 0}
+			<ul class="mt-4 space-y-3">
+				{#each data.pledges as pledge (pledge.path)}
+					<li class="rounded-2xl border border-border bg-surface p-4">
+						<a href={pledge.path} class="font-semibold text-heading hover:text-primary">
+							{pledge.leaderName}
+						</a>
+						<p class="text-sm text-muted">{pledge.positionTitle}, {pledge.region}</p>
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<div class="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
+				<p class="font-semibold text-heading">Simulate your vote</p>
+				<p class="mx-auto mt-2 max-w-md text-sm text-muted">You haven't simulated your 2027 ballot yet.</p>
+				<a
+					href="/vote/2027"
+					class="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
 				>
-					{#if step.done}✓{:else}{i + 1}{/if}
-				</span>
-				<div class="flex flex-1 flex-wrap items-center justify-between gap-2">
-					<div class="min-w-0">
-						<p class="font-medium text-heading">{step.title}</p>
-						<p class="text-sm text-muted">{step.description}</p>
-					</div>
-					<a
-						href={step.href}
-						class="shrink-0 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-heading transition hover:bg-surface-2"
-					>
-						{step.cta}
-					</a>
-				</div>
-			</li>
-		{/each}
-	</ol>
+					Hit the ballot
+				</a>
+			</div>
+		{/if}
+	</div>
+
+	<div>
+		<h2 class="text-lg font-semibold text-heading">News</h2>
+		<p class="mt-1 text-sm text-muted">Updates from the {data.followedLeaders.length} leaders you follow.</p>
+
+		{#if data.feed.length > 0}
+			<div class="mt-4 space-y-4">
+				{#each data.feed as post (post.id)}
+					<article class="rounded-2xl border border-border bg-surface p-5">
+						<div class="flex flex-wrap items-baseline justify-between gap-2">
+							<a href={post.leaderPath} class="text-sm font-semibold text-heading hover:text-primary">
+								{post.leaderName}
+							</a>
+							<span class="text-xs text-muted">{dateFmt.format(new Date(post.createdAt))}</span>
+						</div>
+						<p class="mt-2 font-medium text-heading">{post.title}</p>
+						<p class="mt-1 text-sm leading-relaxed text-muted">{post.body}</p>
+					</article>
+				{/each}
+			</div>
+		{:else}
+			<div class="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
+				<p class="font-semibold text-heading">No updates yet</p>
+				<p class="mx-auto mt-2 max-w-md text-sm text-muted">
+					{data.followedLeaders.length > 0
+						? "The leaders you follow haven't posted anything yet."
+						: 'Follow a leader from their public page to see their updates here.'}
+				</p>
+				<a
+					href="/leaders"
+					class="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+				>
+					Browse leaders
+				</a>
+			</div>
+		{/if}
+	</div>
 </div>
 
-<!-- Quick account actions -->
-<div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-	{#each [{ href: '/change-password', label: 'Change password' }, { href: '/change-email', label: 'Change email' }, { href: '/delete-account', label: 'Delete account' }] as action (action.href)}
-		<a
-			href={action.href}
-			class="rounded-2xl border border-border bg-surface p-4 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"
-		>
-			{action.label}
-		</a>
-	{/each}
+<!-- Claim your profile: pinned to the bottom of the page even when there's little content above. -->
+<div class="mt-8 lg:mt-auto pt-8 rounded-3xl bg-primary p-6 text-center text-on-primary">
+	<h2 class="text-lg font-bold text-on-primary">Running for office?</h2>
+	<p class="mt-2 text-sm text-on-primary/80">
+		Launch a campaign profile, or claim your existing seat's page if one's already listed.
+	</p>
+	<a
+		href="/dashboard/profile"
+		class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
+	>
+		Launch a campaign
+	</a>
+</div>
 </div>

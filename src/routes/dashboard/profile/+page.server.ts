@@ -3,7 +3,7 @@ import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, slugify } from '$lib/server/leader';
+import { createPhantomUser, fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -103,16 +103,17 @@ export const actions: Actions = {
 		}
 
 		if (!firstName || /\s/.test(firstName)) {
-			return fail(400, { error: 'First name is required and must be a single word.' });
+			return fail(400, { error: 'First name is required and must be a single word.', missingFields: ['firstName'] });
 		}
-		if (!otherNames) return fail(400, { error: 'Other names are required.' });
-		if (!positionId) return fail(400, { error: 'Pick the position you are vying for.' });
+		if (!otherNames) return fail(400, { error: 'Other names are required.', missingFields: ['otherNames'] });
+		if (!bio) return fail(400, { error: 'Add a short bio.', missingFields: ['bio'] });
+		if (!positionId) return fail(400, { error: 'Pick the position you are vying for.', missingFields: ['positionId'] });
 
 		const [position] = await db
 			.select()
 			.from(positions)
 			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
-		if (!position) return fail(400, { error: 'That position does not exist.' });
+		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
 
 		for (const e of pendingExperience) {
 			if (e.type !== 'education' && e.type !== 'professional') {
@@ -143,14 +144,15 @@ export const actions: Actions = {
 			}
 		}
 
-		// The person the profile is about: the leader's user when managing, else yourself.
-		const subjectId = ctx?.profileUser.id ?? domainUser.id;
-
-		await db.update(users).set({ firstName, otherNames, bio }).where(eq(users.id, subjectId));
-
+		let subjectId: number;
 		let leaderId = ctx?.leader.id;
 
 		if (ctx) {
+			// The person the profile is about: the leader's own (phantom) user row —
+			// separate from whichever citizen account is editing it.
+			subjectId = ctx.profileUser.id;
+			await db.update(users).set({ firstName, otherNames, bio }).where(eq(users.id, subjectId));
+
 			// Verified profiles keep their seat locked; unverified ones may switch races.
 			if (ctx.leader.positionId !== positionId && !ctx.leader.verifiedAt) {
 				await db
@@ -168,6 +170,12 @@ export const actions: Actions = {
 				await db.update(users).set({ slug: slugInput }).where(eq(users.id, subjectId));
 			}
 		} else {
+			// New leader: a fresh users row for the leader identity itself, never the
+			// creating citizen's own — so editing this profile never touches their login account.
+			const phantom = await createPhantomUser(firstName, otherNames);
+			subjectId = phantom.id;
+			await db.update(users).set({ bio }).where(eq(users.id, subjectId));
+
 			let slug = slugInput || slugify(fullName({ firstName, otherNames }));
 			if (!(await isSlugAvailable(slug, subjectId))) {
 				if (slugInput) return fail(400, { error: `The URL "/${slugInput}" is already taken.` });
@@ -177,7 +185,7 @@ export const actions: Actions = {
 			const [created] = await db
 				.insert(leaders)
 				.values({
-					userId: domainUser.id,
+					userId: subjectId,
 					positionId,
 					status: 'aspirant',
 					startAt: ELECTION_DAY

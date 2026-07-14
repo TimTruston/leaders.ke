@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { ambassadors, invites, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { createInvite, listOpenInvites, revokeInvite } from '$lib/server/invites';
+import { createInvite, listOpenInvites, revokeInvite, tryDirectGrant } from '$lib/server/invites';
 import { fullName, getLeaderContext } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -63,7 +63,14 @@ export const actions: Actions = {
 		const email = String(form.get('email') ?? '').trim();
 		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
 
-		await createInvite(ctx.leader.id, 'manager', domainUser.id, email, event.url.origin);
+		const granted = await tryDirectGrant(ctx.leader.id, 'manager', email);
+		if (granted) return { granted: { email, role: 'Manager' } };
+
+		try {
+			await createInvite(ctx.leader.id, 'manager', domainUser.id, email, event.url.origin);
+		} catch (error) {
+			return fail(400, { error: error instanceof Error ? error.message : 'Could not send invite.' });
+		}
 		return { invited: { email } };
 	},
 
@@ -73,7 +80,14 @@ export const actions: Actions = {
 		const email = String(form.get('email') ?? '').trim();
 		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
 
-		await createInvite(ctx.leader.id, 'ambassador', domainUser.id, email, event.url.origin);
+		const granted = await tryDirectGrant(ctx.leader.id, 'ambassador', email);
+		if (granted) return { granted: { email, role: 'Ambassador' } };
+
+		try {
+			await createInvite(ctx.leader.id, 'ambassador', domainUser.id, email, event.url.origin);
+		} catch (error) {
+			return fail(400, { error: error instanceof Error ? error.message : 'Could not send invite.' });
+		}
 		return { invited: { email } };
 	},
 

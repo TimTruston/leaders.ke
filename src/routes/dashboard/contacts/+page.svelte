@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import { enhance } from '$app/forms';
 	import ContactIcon from '$lib/components/contact/ContactIcon.svelte';
 	import { PLATFORMS, stripPrefix, socialsToLinks, type SocialLink } from '$lib/components/contact/socials';
@@ -8,8 +7,6 @@
 
 	let { data, form }: PageProps = $props();
 
-	const markSaved = getContext<() => void>('markSaved');
-
 	let address = $state(data.address);
 	let sms = $state(data.sms);
 	let whatsapp = $state(data.whatsapp);
@@ -17,24 +14,19 @@
 	let website = $state(data.website);
 	let socialLinks = $state<SocialLink[]>(socialsToLinks(data.socials));
 	let socialErrors = $state<Record<string, string>>({});
+	let saving = $state(false);
 
-	let formEl: HTMLFormElement;
-	let saveTimer: ReturnType<typeof setTimeout>;
-	function scheduleSave() {
-		clearTimeout(saveTimer);
-		saveTimer = setTimeout(() => formEl?.requestSubmit(), 1000);
-	}
+	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
+	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
 
 	const isSocialActive = (kind: string) => socialLinks.some((s) => s.kind === kind);
 	function toggleSocial(kind: string) {
 		socialLinks = isSocialActive(kind) ? socialLinks.filter((s) => s.kind !== kind) : [...socialLinks, { kind, value: '' }];
-		scheduleSave();
 	}
 	function removeSocial(i: number) {
 		const removed = socialLinks[i]?.kind;
 		socialLinks = socialLinks.filter((_, idx) => idx !== i);
 		if (removed) delete socialErrors[removed];
-		scheduleSave();
 	}
 	function handleSocialInput(e: Event, kind: string, i: number) {
 		const input = e.target as HTMLInputElement;
@@ -58,6 +50,15 @@
 			socialLinks[i].value = '';
 		}
 	}
+
+	let emailCooldown = $state(data.emailCooldown);
+	let sendingEmailCode = $state(false);
+	let verifyingEmailCode = $state(false);
+	$effect(() => {
+		if (emailCooldown <= 0) return;
+		const t = setInterval(() => (emailCooldown = Math.max(0, emailCooldown - 1)), 1000);
+		return () => clearInterval(t);
+	});
 </script>
 
 <svelte:head><title>Contacts | leaders.ke</title></svelte:head>
@@ -73,15 +74,13 @@
 	{/if}
 
 	<form
-		bind:this={formEl}
 		method="post"
 		action="?/save"
 		class="mt-6 space-y-5"
-		oninput={scheduleSave}
-		onchange={scheduleSave}
 		use:enhance={() => {
-			return async ({ result, update }) => {
-				if (result.type === 'success') markSaved();
+			saving = true;
+			return async ({ update }) => {
+				saving = false;
 				await update({ reset: false });
 			};
 		}}
@@ -95,32 +94,18 @@
 				name="address"
 				bind:value={address}
 				placeholder="Nairobi, Kenya"
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-2 focus:outline-none {errorClass('address')}"
 			/>
 		</label>
 
-		<label class="block">
-			<span class="text-xs font-medium text-muted">Email</span>
-			<span class="mt-1 flex items-stretch overflow-hidden">
-				<input
-					type="email"
-					disabled
-					value={email}
-					placeholder="you@example.com"
-					class="w-full cursor-not-allowed rounded-l-xl border border-border bg-surface-2 px-4 py-2.5 text-sm text-muted"
-				/>
-				<a href="/change-email" class="grid place-items-center px-2 py-0.5 bg-surface-3 text-sm text-primary rounded-r-xl">Change</a>
-			</span>
-		</label>
-
 		<div class="grid gap-3 sm:grid-cols-2">
-			<div>
+			<div class="rounded-xl {missing.has('sms') ? 'ring-2 ring-red-500' : ''}">
 				<PhoneInput bind:value={sms} label="SMS number" />
-				<input type="hidden" name="sms number" value={sms} />
+				<input type="hidden" name="sms" value={sms} />
 			</div>
 			<div>
 				<PhoneInput bind:value={whatsapp} label="WhatsApp number" />
-				<input type="hidden" name="whatsapp number" value={whatsapp} />
+				<input type="hidden" name="whatsapp" value={whatsapp} />
 			</div>
 		</div>
 
@@ -191,5 +176,99 @@
 				</div>
 			{/if}
 		</div>
+
+		<div class="border-t border-border pt-6">
+			<button
+				type="submit"
+				disabled={saving}
+				class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+			>
+				{saving ? 'Saving…' : 'Save changes'}
+			</button>
+		</div>
 	</form>
+
+	<!-- Email is its own send-code/verify-code flow (not the autosave form above) — it's
+	this leader's own public contact address, separate from the citizen login email. -->
+	<div class="mt-8 border-t border-border pt-6">
+		<div class="flex items-center justify-between">
+			<span class="text-sm font-medium text-heading">Email</span>
+			{#if data.emailVerified}
+				<span class="text-sm font-medium text-primary">Verified ✓</span>
+			{/if}
+		</div>
+
+		<form
+			method="post"
+			action="?/sendEmailCode"
+			class="mt-2 flex items-end gap-2"
+			use:enhance={() => {
+				sendingEmailCode = true;
+				return async ({ update }) => {
+					sendingEmailCode = false;
+					emailCooldown = 60;
+					await update({ reset: false });
+				};
+			}}
+		>
+			<label class="block flex-1">
+				<span class="text-xs font-medium text-muted">Email address</span>
+				<input
+					type="email"
+					name="email"
+					bind:value={email}
+					disabled={emailCooldown > 0}
+					placeholder="you@example.com"
+					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+				/>
+			</label>
+			<button
+				type="submit"
+				disabled={sendingEmailCode || emailCooldown > 0 || !email}
+				class="shrink-0 rounded-full bg-surface-2 px-3.5 py-2.5 text-xs font-semibold text-heading transition hover:brightness-95 disabled:opacity-50"
+			>
+				{emailCooldown > 0 ? `Resend in ${emailCooldown}s` : data.emailVerified ? 'Change & resend' : email === data.email ? 'Resend code' : 'Send code'}
+			</button>
+		</form>
+		{#if form?.emailError}
+			<p class="mt-1 text-sm text-red-500">{form.emailError}</p>
+		{:else if form?.emailSent}
+			<p class="mt-1 text-sm text-primary">Code sent.</p>
+		{/if}
+
+		<form
+			method="post"
+			action="?/verifyEmailCode"
+			class="mt-3 flex items-end gap-2"
+			use:enhance={() => {
+				verifyingEmailCode = true;
+				return async ({ update }) => {
+					verifyingEmailCode = false;
+					await update();
+				};
+			}}
+		>
+			<label class="block flex-1">
+				<span class="text-xs font-medium text-muted">Verification code</span>
+				<input
+					type="text"
+					name="code"
+					inputmode="numeric"
+					maxlength="6"
+					placeholder="123456"
+					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				/>
+			</label>
+			<button
+				type="submit"
+				disabled={verifyingEmailCode}
+				class="shrink-0 rounded-full bg-primary px-3.5 py-2.5 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-50"
+			>
+				Verify
+			</button>
+		</form>
+		{#if form?.codeError}
+			<p class="mt-1 text-sm text-red-500">{form.codeError}</p>
+		{/if}
+	</div>
 </div>
