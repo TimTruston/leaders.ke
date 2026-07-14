@@ -93,6 +93,18 @@
 	// The <details> dropdown doesn't auto-close on navigation since this layout
 	// persists across route changes — close it explicitly when a mode is picked.
 	let switcherOpen = $state(false);
+	let switcherEl: HTMLDetailsElement | undefined = $state();
+
+	// <details> has no native "close on outside click" behavior — only clicking
+	// its own <summary> toggles it. Close on any click that lands outside it.
+	$effect(() => {
+		if (!switcherOpen) return;
+		const onClick = (e: MouseEvent) => {
+			if (switcherEl && !switcherEl.contains(e.target as Node)) switcherOpen = false;
+		};
+		document.addEventListener('click', onClick);
+		return () => document.removeEventListener('click', onClick);
+	});
 </script>
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -119,25 +131,33 @@
 			<!-- Role switcher: pick which dashboard context you're in. Each mode has its own
 			tab set below, so switching genuinely changes what's available. -->
 			{#if modes.length > 1}
-				<details class="group relative w-fit" bind:open={switcherOpen}>
+				<details class="group relative w-fit" bind:open={switcherOpen} bind:this={switcherEl}>
 					<summary
 						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
 					>
 						{currentMode.label}
-						<span class="text-muted transition group-open:rotate-180">⌄</span>
+						<span class="text-muted transition group-open:rotate-180 leading-none h-2">^</span>
 					</summary>
-					<div class="absolute z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
+					<div class="absolute right-0 z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
 						{#each modes as m (m.key)}
 							<a
 								href={m.href}
 								onclick={() => (switcherOpen = false)}
-								class="block truncate rounded-xl px-3 py-2 text-sm transition hover:bg-surface-2 {m.key === currentMode.key
+								class="block truncate rounded-xl px-3 py-1.5 text-sm transition hover:bg-primary hover:text-on-primary {m.key === currentMode.key
 									? 'bg-surface-2 font-semibold text-heading'
 									: 'text-muted'}"
 							>
 								{m.label}
 							</a>
 						{/each}
+						<a
+							href="/logout"
+							data-sveltekit-preload-data="off"
+							data-sveltekit-reload
+							class="block truncate rounded-xl px-3 py-1.5 text-sm text-muted transition hover:bg-primary hover:text-on-primary"
+						>
+							Log out
+						</a>
 					</div>
 				</details>
 			{/if}
