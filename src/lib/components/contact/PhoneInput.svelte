@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { normalizeKenyanPhone } from '$lib/utils/phone';
 
 	let {
@@ -25,7 +26,11 @@
 	const normalized = $derived(normalizeKenyanPhone(value));
 	const invalid = $derived(value.length > 0 && normalized === null);
 	// The verify routes read different param names: /verify/sms?phone= vs /verify/whatsapp?number=.
-	const verifyHref = $derived(`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}`);
+	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
+	// creation on /dashboard/contacts) instead of the default /dashboard/account.
+	const verifyHref = $derived(
+		`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}&next=${encodeURIComponent(page.url.pathname)}`
+	);
 </script>
 
 <label class="block">

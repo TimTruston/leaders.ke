@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
+
 	// Email counterpart to PhoneInput: an email field with an inline verified badge.
 	// Unchanged + verified shows "✓ Verified"; any edit swaps to a Verify link (which
 	// carries the typed value to /verify/email) plus a Reset back to the saved value.
@@ -17,7 +19,11 @@
 
 	let original = $state(value);
 
-	const verifyHref = $derived(`/verify/email?email=${encodeURIComponent(value)}`);
+	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
+	// creation on /dashboard/contacts) instead of the default /dashboard/account.
+	const verifyHref = $derived(
+		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}`
+	);
 </script>
 
 <label class="block">
