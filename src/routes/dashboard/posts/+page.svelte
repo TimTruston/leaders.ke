@@ -29,14 +29,14 @@
 				name="title"
 				required
 				placeholder="Post title"
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			/>
 			<textarea
 				name="body"
 				rows="7"
 				required
 				placeholder="Your update: news, a promise, an event announcement…"
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			></textarea>
 			<label class="flex items-center gap-2 text-sm text-heading">
 				<input type="checkbox" name="publish" checked class="rounded border-border text-primary focus:ring-ring" />

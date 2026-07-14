@@ -12,9 +12,9 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 
-	// No dashboard access until both email and phone are verified.
-	if (!domainUser.verified.email || !domainUser.verified.sms) {
-		redirect(302, `/verify?next=${encodeURIComponent(event.url.pathname)}`);
+	// No dashboard access until email is verified.
+	if (!domainUser.verified.email) {
+		redirect(302, `/verify/email?next=${encodeURIComponent(event.url.pathname)}`);
 	}
 
 	const ctx = await getLeaderContext(domainUser.id);

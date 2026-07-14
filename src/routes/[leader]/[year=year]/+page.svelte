@@ -218,25 +218,25 @@
 							name="name"
 							required
 							placeholder="Your name"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<input
 							type="text"
 							name="contact"
 							required
 							placeholder="Phone or email"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<input
 							type="text"
 							name="ward"
 							placeholder="Your ward (optional)"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<button
 							type="submit"
 							disabled={following}
-							class="w-full rounded-full bg-primary px-4 py-2.5 font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-60"
+							class="w-full rounded-full bg-primary px-4 py-2.5 font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
 						>
 							{following ? 'Following…' : 'Follow'}
 						</button>
@@ -280,7 +280,7 @@
 						rows="2"
 						required
 						placeholder="e.g. What is the plan for water in my ward?"
-						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					></textarea>
 					<button
 						type="submit"
@@ -321,14 +321,14 @@
 							name="donorName"
 							required
 							placeholder="Your name"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<div class="flex gap-2">
 							<input
 								type="text"
 								name="phone"
 								placeholder="M-Pesa phone (optional)"
-								class="min-w-0 flex-1 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="min-w-0 flex-1 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							/>
 							<input
 								type="number"
@@ -336,7 +336,7 @@
 								required
 								min="10"
 								placeholder="KES"
-								class="w-24 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="w-24 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							/>
 						</div>
 						<button

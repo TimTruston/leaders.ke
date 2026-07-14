@@ -38,7 +38,7 @@
 		name="email"
 		required
 		placeholder="Invite someone to follow, by email"
-		class="min-w-0 flex-1 rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+		class="min-w-0 flex-1 rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 	/>
 	<button
 		type="submit"
@@ -69,7 +69,7 @@
 			value={data.ward ?? ''}
 			onchange={onWardChange}
 			aria-label="Filter by ward"
-			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 		>
 			<option value="">All wards</option>
 			{#each data.wards as w (w)}

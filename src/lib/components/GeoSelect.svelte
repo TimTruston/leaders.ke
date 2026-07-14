@@ -47,7 +47,7 @@
 		value={county}
 		onchange={(e) => pickCounty(e.currentTarget.value)}
 		aria-label="County"
-		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 	>
 		<option value="">Select county</option>
 		{#each counties as c (c.code)}
@@ -60,7 +60,7 @@
 		onchange={(e) => pickConstituency(e.currentTarget.value)}
 		disabled={!selectedCounty}
 		aria-label="Constituency"
-		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-50"
+		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-50"
 	>
 		<option value="">Select constituency</option>
 		{#each constituencies as c (c.code)}
@@ -73,7 +73,7 @@
 		onchange={(e) => pickWard(e.currentTarget.value)}
 		disabled={!selectedConstituency}
 		aria-label="Ward"
-		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-50"
+		class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-50"
 	>
 		<option value="">Select ward</option>
 		{#each wards as w (w.seatName)}

@@ -16,35 +16,31 @@ export const load: PageServerLoad = async (event) => {
 		.select({ channel: contacts.channel, value: contacts.value })
 		.from(contacts)
 		.where(and(eq(contacts.userId, domainUser.id), isNull(contacts.deletedAt)));
-
 	return {
 		email: authUser.email,
 		firstName: domainUser.firstName,
 		otherNames: domainUser.otherNames,
 		smsPhone: contactRows.find((c) => c.channel === 'sms')?.value ?? '',
 		whatsappPhone: contactRows.find((c) => c.channel === 'whatsapp')?.value ?? '',
-		notificationPrefs: domainUser.notificationPrefs as NotificationPrefs
+		notificationPrefs: domainUser.notificationPrefs as NotificationPrefs,
+		verified: domainUser.verified
 	};
 };
 
-/** Replaces this user's contact row for one channel, only touching the DB when the
- * value actually changed — keeps verifiedAt intact on a no-op save. */
-async function replaceContact(userId: number, channel: 'sms' | 'whatsapp', value: string | null) {
+/** The account's currently-stored value for a contact channel (or '' if none). */
+async function storedContact(userId: number, channel: 'sms' | 'whatsapp'): Promise<string> {
 	const [existing] = await db
-		.select({ id: contacts.id, value: contacts.value })
+		.select({ value: contacts.value })
 		.from(contacts)
 		.where(and(eq(contacts.userId, userId), eq(contacts.channel, channel), isNull(contacts.deletedAt)));
-	if (existing?.value === value) return;
-
-	if (existing) {
-		await db.update(contacts).set({ deletedAt: new Date() }).where(eq(contacts.id, existing.id));
-	}
-	if (value) {
-		await db.insert(contacts).values({ userId, channel, value, isPrimary: true }).onConflictDoNothing();
-	}
+	return existing?.value ?? '';
 }
 
 export const actions: Actions = {
+	// Contact channels (email/sms/whatsapp) are never written here — a new value only
+	// takes effect after a code is confirmed on /verify/[channel]. This save only
+	// touches fields that don't need verifying, and refuses to proceed if the user
+	// typed a new (unverified) number without going through Verify first.
 	save: async (event) => {
 		const { domainUser, authUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
@@ -63,17 +59,24 @@ export const actions: Actions = {
 		}
 		if (!otherNames) return fail(400, { error: 'Other names are required.' });
 
-		const smsPhone = smsPhoneInput ? normalizeKenyanPhone(smsPhoneInput) : null;
+		// Compare the submitted numbers against what's on file (normalized both ways).
+		// A changed value means they edited but didn't verify — block until they do.
+		const smsPhone = smsPhoneInput ? normalizeKenyanPhone(smsPhoneInput) : '';
 		if (smsPhoneInput && !smsPhone) return fail(400, { error: 'Enter a valid Kenyan number for SMS.' });
-		const whatsappPhone = whatsappPhoneInput ? normalizeKenyanPhone(whatsappPhoneInput) : null;
+		const whatsappPhone = whatsappPhoneInput ? normalizeKenyanPhone(whatsappPhoneInput) : '';
 		if (whatsappPhoneInput && !whatsappPhone) return fail(400, { error: 'Enter a valid Kenyan number for WhatsApp.' });
+
+		if ((smsPhone || '') !== (await storedContact(domainUser.id, 'sms'))) {
+			return fail(400, { error: 'Verify your new SMS number (tap Verify) before saving.' });
+		}
+		if ((whatsappPhone || '') !== (await storedContact(domainUser.id, 'whatsapp'))) {
+			return fail(400, { error: 'Verify your new WhatsApp number (tap Verify) before saving.' });
+		}
 
 		await db.update(users).set({ firstName, otherNames, notificationPrefs }).where(eq(users.id, domainUser.id));
 		// better-auth keeps its own `name` (shown in the global header) separate from
 		// our firstName/otherNames — sync it here so the two never drift apart again.
 		await db.update(authUsers).set({ name: `${firstName} ${otherNames}`.trim() }).where(eq(authUsers.id, authUser.id));
-		await replaceContact(domainUser.id, 'sms', smsPhone);
-		await replaceContact(domainUser.id, 'whatsapp', whatsappPhone);
 
 		return { saved: true };
 	}

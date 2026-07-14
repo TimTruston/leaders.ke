@@ -55,7 +55,7 @@
 			<select
 				name="a"
 				bind:value={a}
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			>
 				<option value="" disabled>Select a leader</option>
 				{#each data.options as option (option.path)}
@@ -68,7 +68,7 @@
 			<select
 				name="b"
 				bind:value={b}
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			>
 				<option value="" disabled>Select a leader</option>
 				{#each data.options as option (option.path)}

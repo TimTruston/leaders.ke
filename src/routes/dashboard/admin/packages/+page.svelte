@@ -58,7 +58,7 @@
 											name="amount"
 											min="1"
 											placeholder={current ? String(current.amount) : 'KES'}
-											class="w-28 rounded-full border border-border bg-surface px-3 py-1 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+											class="w-28 rounded-full border border-border bg-surface px-3 py-1 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 										/>
 										<button
 											type="submit"

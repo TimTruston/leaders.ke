@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { page } from '$app/state';
 	import PhoneInput from '$lib/components/contact/PhoneInput.svelte';
+	import EmailInput from '$lib/components/contact/EmailInput.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
-	const emailChanged = $derived(page.url.searchParams.get('emailChanged'));
-
 	// PhoneInput only exposes `value` (bindable), no `name` — a hidden input carries
 	// the bound value into the form's native submission.
+	let email = $state(data.email);
 	let smsPhone = $state(data.smsPhone);
 	let whatsappPhone = $state(data.whatsappPhone);
+	let verified = $state(data.verified);
 
 	const notifyChannels = [
 		{
@@ -41,12 +41,6 @@
 	<h1 class="text-xl font-bold text-heading">Account</h1>
 	<p class="mt-1 text-sm text-muted">Your details and how leaders.ke reaches you.</p>
 
-	{#if emailChanged}
-		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-			Email {emailChanged} verified successfully.
-		</div>
-	{/if}
-
 	{#if form?.error}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 			{form.error}
@@ -73,7 +67,7 @@
 					name="firstName"
 					required
 					value={data.firstName}
-					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:outline-none"
 				/>
 			</label>
 			<label class="block">
@@ -83,31 +77,20 @@
 					name="otherNames"
 					required
 					value={data.otherNames}
-					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:outline-none"
 				/>
 			</label>
 		</div>
 
-		<label class="block">
-			<span class="text-xs font-medium text-muted">Email</span>
-			<span class="mt-1 flex items-stretch overflow-hidden">
-				<input
-					type="email"
-					disabled
-					value={data.email}
-					class="w-full cursor-not-allowed rounded-l-xl border border-border bg-surface-2 px-4 py-2.5 text-sm text-muted"
-				/>
-				<a href="/change-email" class="grid place-items-center px-2 py-0.5 bg-surface-3 text-sm text-primary rounded-r-xl">Change</a>
-			</span>
-		</label>
+		<EmailInput bind:value={email} verified={verified.email} />
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div>
-				<PhoneInput bind:value={smsPhone} label="SMS number" />
+				<PhoneInput bind:value={smsPhone} label="SMS number" field="sms" verified={verified.sms}/>
 				<input type="hidden" name="smsPhone" value={smsPhone} />
 			</div>
 			<div>
-				<PhoneInput bind:value={whatsappPhone} label="WhatsApp number" />
+				<PhoneInput bind:value={whatsappPhone} label="WhatsApp number" field="whatsapp" verified={verified.whatsapp}/>
 				<input type="hidden" name="whatsappPhone" value={whatsappPhone} />
 			</div>
 		</div>

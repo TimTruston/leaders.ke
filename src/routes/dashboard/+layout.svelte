@@ -8,6 +8,20 @@
 	let submittingApplication = $state(false);
 	let applicationError = $state('');
 
+	// Set by /invite/[token] right after accepting — a one-time "you're in" banner.
+	const joinedRole = $derived(page.url.searchParams.get('joined'));
+	const joinedLeaderName = $derived(page.url.searchParams.get('leaderName'));
+	const joinedMessage = $derived.by(() => {
+		if (joinedRole === 'manager') return `You're now a manager of ${joinedLeaderName}`;
+		if (joinedRole === 'ambassador') return `You're now an ambassador for ${joinedLeaderName}`;
+		if (joinedRole === 'follower') return `You're now following ${joinedLeaderName}`;
+		return null;
+	});
+
+	// Generic one-off banner (e.g. "Your email is already verified.") set via
+	// ?notice= by whichever route redirected here.
+	const notice = $derived(page.url.searchParams.get('notice'));
+
 	// Which mode the current URL/state belongs to. The section nav below shows only
 	// this mode's tabs, so switching modes actually changes what's available — not
 	// just which tab is open. Profile/Contacts/Team/Documentation are shared routes
@@ -108,6 +122,12 @@
 </script>
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+	{#if joinedMessage}
+		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{joinedMessage}</div>
+	{:else if notice}
+		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{notice}</div>
+	{/if}
+
 	<!-- Headers -->
 
 	<div class="flex flex-wrap items-center justify-between gap-2">
@@ -196,7 +216,7 @@
 							name="nationalId"
 							required
 							placeholder="National ID number"
-							class="w-36 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-36 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<button
 							type="submit"

@@ -47,7 +47,7 @@ Applies everywhere a code/link is sent
 						name="otpCooldownSeconds"
 						min="1"
 						value={data.settings.otpCooldownSeconds}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
 				</label>
 				<label class="block">
@@ -57,7 +57,7 @@ Applies everywhere a code/link is sent
 						name="otpDailyCap"
 						min="1"
 						value={data.settings.otpDailyCap}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
 				</label>
 			</div>
@@ -77,7 +77,7 @@ Applies everywhere a code/link is sent
 						name="aspirant"
 						min="1"
 						value={data.settings.inviteLimits.aspirant}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
 				</label>
 				<label class="block">
@@ -87,7 +87,7 @@ Applies everywhere a code/link is sent
 						name="influencer"
 						min="1"
 						value={data.settings.inviteLimits.influencer}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
 				</label>
 				<label class="block">
@@ -97,7 +97,7 @@ Applies everywhere a code/link is sent
 						name="mobilizer"
 						min="1"
 						value={data.settings.inviteLimits.mobilizer}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
 				</label>
 			</div>

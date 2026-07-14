@@ -150,7 +150,7 @@
 											type="checkbox"
 											name="public"
 											bind:checked={publicChecked}
-											class="size-3.5 rounded border-border text-primary focus:ring-2 focus:ring-ring"
+											class="size-3.5 rounded border-border text-primary focus:ring-0 focus:ring-ring"
 										/>
 										Public
 									</label>
@@ -178,7 +178,7 @@
 									<select
 										name="pillarId"
 										bind:value={pillarId}
-										class="rounded-full border border-border bg-surface px-2 py-0.5 text-xs text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+										class="rounded-full border border-border bg-surface px-2 py-0.5 text-xs text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 									>
 										<option value="">General</option>
 										{#each pillarOptions as pillar (pillar.id)}
@@ -194,7 +194,7 @@
 								maxlength={MESSAGE_MAX_LENGTH}
 								bind:value={message}
 								placeholder="Leave a review"
-								class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							></textarea>
 							<span class="text-xs text-muted relative -top-5 ml-auto mb-0 mr-2">{message.length}/{MESSAGE_MAX_LENGTH}</span>
 							<div class="flex flex-wrap gap-3">
@@ -328,7 +328,7 @@
 				maxlength={MESSAGE_MAX_LENGTH}
 				bind:value={message}
 				placeholder="Leave a review"
-				class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mb-0 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			></textarea>
 			<span class="text-xs text-muted relative -top-5 ml-auto mb-0 mr-2">{message.length}/{MESSAGE_MAX_LENGTH}</span>
 
@@ -338,7 +338,7 @@
 					<select
 						name="pillarId"
 						bind:value={pillarId}
-						class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none sm:max-w-60"
+						class="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none sm:max-w-60"
 					>
 						<option value="">General</option>
 						{#each pillarOptions as pillar (pillar.id)}
@@ -352,7 +352,7 @@
 							type="checkbox"
 							name="public"
 							bind:checked={publicChecked}
-							class="size-4 rounded border-border text-primary focus:ring-2 focus:ring-ring"
+							class="size-4 rounded border-border text-primary focus:ring-0 focus:ring-ring"
 						/>
 						Public (with your name)
 					</label>

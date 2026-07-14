@@ -45,7 +45,7 @@
 			bind:value={positionFilter}
 			onchange={onFilterChange}
 			aria-label="Filter by position"
-			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 		>
 			<option value="">All positions</option>
 			{#each positionTitles as t (t)}

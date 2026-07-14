@@ -124,7 +124,7 @@
 								<select
 									name="reason"
 									required
-									class="rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								>
 									<option value="" disabled selected>Reason</option>
 									{#each data.flagReasons as reason (reason)}
@@ -191,7 +191,7 @@
 								required
 								placeholder="Write your response"
 								value={review.response?.body ?? ''}
-								class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							></textarea>
 							<div class="flex gap-2">
 								<button

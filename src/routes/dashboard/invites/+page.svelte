@@ -20,12 +20,6 @@
 			{form.error}
 		</div>
 	{/if}
-	{#if form?.accepted}
-		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-			You're now {form.role === 'manager' ? 'a manager' : form.role === 'ambassador' ? 'an ambassador' : 'a follower'}.
-		</div>
-	{/if}
-
 	{#if data.invites.length > 0}
 		<ul class="mt-6 space-y-3">
 			{#each data.invites as invite (invite.token)}

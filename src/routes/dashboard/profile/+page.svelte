@@ -159,7 +159,7 @@
 					name="firstName"
 					required
 					value={data.form.firstName}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-2 focus:outline-none {errorClass('firstName')}"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass('firstName')}"
 				/>
 			</label>
 			<label class="block">
@@ -169,7 +169,7 @@
 					name="otherNames"
 					required
 					value={data.form.otherNames}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-2 focus:outline-none {errorClass('otherNames')}"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass('otherNames')}"
 				/>
 			</label>
 		</div>
@@ -213,7 +213,7 @@
 				name="bio"
 				rows="5"
 				placeholder="Who you are, what you have done, and why you are running."
-				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-2 focus:outline-none {errorClass('bio')}"
+				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass('bio')}"
 				>{data.form.bio}</textarea
 			>
 		</label>
@@ -349,7 +349,7 @@
 									bind:value={leadDescription}
 									maxlength="255"
 									placeholder="Optional"
-									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								/>
 							</label>
 							<div class="grid grid-cols-2 gap-3">
@@ -358,7 +358,7 @@
 									<input
 										type="date"
 										bind:value={leadFrom}
-										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 									/>
 								</label>
 								<label class="block">
@@ -367,7 +367,7 @@
 										type="date"
 										bind:value={leadTo}
 										min={leadFrom || undefined}
-										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 									/>
 								</label>
 							</div>
@@ -392,7 +392,7 @@
 								type="text"
 								bind:value={expTitle}
 								placeholder={adding === 'education' ? 'Bachelor of Laws (LL.B.)' : 'Minister for Agriculture'}
-								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							/>
 						</label>
 						<label class="block">
@@ -401,7 +401,7 @@
 								type="text"
 								bind:value={expInstitution}
 								placeholder={adding === 'education' ? 'University of Nairobi' : 'Government of Kenya'}
-								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							/>
 						</label>
 						<div class="grid grid-cols-2 gap-3">
@@ -410,7 +410,7 @@
 								<input
 									type="date"
 									bind:value={expFrom}
-									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								/>
 							</label>
 							<label class="block">
@@ -419,7 +419,7 @@
 									type="date"
 									bind:value={expTo}
 									min={expFrom || undefined}
-									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								/>
 							</label>
 						</div>

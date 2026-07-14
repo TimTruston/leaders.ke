@@ -24,7 +24,7 @@ export const auth = betterAuth({
 		}
 	},
 	// No requireEmailVerification, so signup stays frictionless (you're signed in
-	// immediately). Verification itself happens on /verify via OTP (see
+	// immediately). Verification itself happens on /verify/email via OTP (see
 	// $lib/server/otp.ts), not this link — no sendOnSignUp, so that's the only email sent.
 	emailVerification: {
 		sendOnSignUp: false,
@@ -37,9 +37,8 @@ export const auth = betterAuth({
 		}
 	},
 	user: {
-		// No changeEmail block: /change-email runs entirely on our own OTP flow
-		// ($lib/server/otp.ts) instead of better-auth's built-in one — its JWT
-		// links were long, and confirming triggered a second, unrelated
+		// No change-email route. Email verification is done inline using our own OTP flow ($lib/server/otp.ts)
+		// better-auth's built-in one had too long JWT links, and confirming triggered a second, unrelated
 		// "verify your email" email via better-auth's own auto-reverification.
 		// No sendDeleteAccountVerification, so deleteUser deletes immediately after the password check. Powers /delete-account.
 		deleteUser: { enabled: true }
@@ -62,13 +61,23 @@ export const auth = betterAuth({
 						.returning();
 
 					if (authUser.email) {
-						await db.insert(contacts).values({
-							userId: profile.id,
-							channel: 'email',
-							value: authUser.email,
-							isPrimary: true,
-							verifiedAt: authUser.emailVerified ? new Date() : null
-						});
+						// onConflictDoNothing: the same email can already be live as some other
+						// user's contacts row (e.g. a leader profile's own public contact
+						// address) — that's a separate concern from this account's login email,
+						// so just skip the redundant contacts row rather than failing signup
+						// over the shared unique index. This citizen still gets a working
+						// login; their own email-verified state is tracked on `users.verified`
+						// and better-auth's `user.emailVerified`, not this row.
+						await db
+							.insert(contacts)
+							.values({
+								userId: profile.id,
+								channel: 'email',
+								value: authUser.email,
+								isPrimary: true,
+								verifiedAt: authUser.emailVerified ? new Date() : null
+							})
+							.onConflictDoNothing();
 					}
 				}
 			}

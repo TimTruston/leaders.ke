@@ -179,7 +179,7 @@
 					href="/signup"
 					tabindex={active === t ? 0 : -1}
 					aria-hidden={active === t ? undefined : 'true'}
-					class="mt-6 rounded-full bg-primary px-4 py-2.5 text-center font-semibold text-on-primary transition-all duration-300 hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none {active ===
+					class="mt-6 rounded-full bg-primary px-4 py-2.5 text-center font-semibold text-on-primary transition-all duration-300 hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none {active ===
 					t
 						? 'translate-y-0 opacity-100'
 						: 'pointer-events-none translate-y-1 opacity-0'}"
@@ -297,7 +297,7 @@
 						<select
 								bind:value={office}
 								aria-label="Office"
-								class="rounded-full border border-border bg-surface-1 pl-4 pr-8 py-2 text-sm font-semibold text-on-primary focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+								class="rounded-full border border-border bg-surface-1 pl-4 pr-8 py-2 text-sm font-semibold text-on-primary focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							>
 							{#each priceMatrix as row, o (row.office)}
 								<option value={o}>Vying for {row.office}</option>
@@ -308,7 +308,7 @@
 						<td class="px-4 py-3">
 							<a
 								href="/signup"
-								class="inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-2 focus:ring-ring focus:outline-none"
+								class="inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none"
 							>
 								Get started
 							</a>

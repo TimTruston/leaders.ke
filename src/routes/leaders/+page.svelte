@@ -127,7 +127,7 @@
 			onkeydown={(e) => {
 				if (e.key === 'Enter' && query.trim()) goto(`/search?q=${encodeURIComponent(query.trim())}`);
 			}}
-			class="w-full rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none sm:w-64"
+			class="w-full rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none sm:w-64"
 		/>
 		{#key position}
 			<SearchFilter

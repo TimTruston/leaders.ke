@@ -199,14 +199,14 @@
 					bind:value={voterName}
 					name="voterName"
 					placeholder="Name (optional)"
-					class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 				/>
 				<input
 					type="text"
 					bind:value={voterContact}
 					name="voterContact"
 					placeholder="Phone or email (optional)"
-					class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+					class="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 				/>
 			</div>
 			<label class="mt-3 flex items-start gap-2 text-sm">
@@ -224,7 +224,7 @@
 				bind:value={pollingStation}
 				name="pollingStation"
 				placeholder="Polling station (optional — not yet published by IEBC for 2027)"
-				class="mt-4 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="mt-4 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			/>
 
 			{#if form?.message}

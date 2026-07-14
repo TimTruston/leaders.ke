@@ -107,13 +107,13 @@
 							name="title"
 							required
 							value={pillar.title}
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>
 						<textarea
 							name="summary"
 							rows="3"
 							required
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							>{pillar.summary}</textarea
 						>
 						<!-- Public delivery tracker: status + verifiable evidence -->
@@ -123,7 +123,7 @@
 								<select
 									name="deliveryStatus"
 									value={pillar.deliveryStatus}
-									class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								>
 									<option value="promised">Promised</option>
 									<option value="in_progress">In progress</option>
@@ -137,7 +137,7 @@
 									name="evidence"
 									value={pillar.evidence}
 									placeholder="e.g. 7 of 10 dispensaries built"
-									class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+									class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 								/>
 							</label>
 						</div>
@@ -245,7 +245,7 @@
 					<select
 						bind:value={selectedTemplateId}
 						onchange={onTemplateChange}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					>
 						<option value="">Write your own</option>
 						{#each data.templates as template (template.id)}
@@ -260,7 +260,7 @@
 				required
 				bind:value={newTitle}
 				placeholder="Pillar title, e.g. Water for all"
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			/>
 			<textarea
 				name="summary"
@@ -268,7 +268,7 @@
 				required
 				bind:value={newSummary}
 				placeholder="What you will do, stated so a citizen can verify it later."
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
+				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			></textarea>
 			<button
 				type="submit"

@@ -4,7 +4,7 @@
 // pages stay position-first: /<position>/<region> (or just /<position> for
 // single-region national seats like President).
 import { randomUUID } from 'node:crypto';
-import { and, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -122,6 +122,8 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 		return { leader: own.leaders, position: own.positions, profileUser: own.users, role: 'leader' };
 	}
 
+	// Most recently joined first — someone managing several campaigns should land
+	// on the one they just accepted an invite for, not an arbitrary older one.
 	const [managed] = await db
 		.select()
 		.from(managers)
@@ -136,6 +138,7 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 				isNull(leaders.deletedAt)
 			)
 		)
+		.orderBy(desc(managers.id))
 		.limit(1);
 	if (managed) {
 		return {

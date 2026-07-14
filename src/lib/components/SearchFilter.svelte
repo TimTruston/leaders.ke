@@ -24,7 +24,7 @@
 	} = $props();
 
 	const pillSelect =
-		'rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none';
+		'rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none';
 
 	// MCA seats are wards (1,450 of them) — too many to pick directly, so drill
 	// down constituency -> ward instead of one flat region list.

@@ -1,12 +1,15 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { getLeaderContext } from '$lib/server/leader';
-import { otpCooldownRemaining, sendOtp, verifyOtp, verifyOtpLinkToken } from '$lib/server/otp';
+import { normalizeKenyanPhone } from '$lib/utils/phone';
 import type { Actions, PageServerLoad } from './$types';
 
+// The subject is the leader profile being edited — a distinct (phantom) user from
+// the signed-in account (see createPhantomUser in $lib/server/leader.ts), so this
+// is the campaign's PUBLIC contact info, not the citizen's own login identity.
 async function getSubject(event: Parameters<typeof requireDashboardUser>[0]) {
 	const { domainUser } = await requireDashboardUser(event);
 	const ctx = await getLeaderContext(domainUser.id);
@@ -15,18 +18,6 @@ async function getSubject(event: Parameters<typeof requireDashboardUser>[0]) {
 
 export const load: PageServerLoad = async (event) => {
 	const subject = await getSubject(event);
-
-	const linkToken = event.url.searchParams.get('linkToken');
-	if (linkToken) {
-		const result = await verifyOtpLinkToken(linkToken);
-		if (result?.userId === subject.id) {
-			await db
-				.update(contacts)
-				.set({ verifiedAt: new Date() })
-				.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
-			redirect(302, '/dashboard/contacts');
-		}
-	}
 
 	const contactRows = await db
 		.select({ channel: contacts.channel, value: contacts.value, verifiedAt: contacts.verifiedAt })
@@ -43,7 +34,6 @@ export const load: PageServerLoad = async (event) => {
 		whatsapp: contactRows.find((c) => c.channel === 'whatsapp')?.value ?? '',
 		email: email?.value ?? '',
 		emailVerified: !!email?.verifiedAt,
-		emailCooldown: email?.value ? await otpCooldownRemaining('email', email.value) : 0,
 		website: website ?? '',
 		socials: otherSocials
 	};
@@ -78,10 +68,14 @@ export const actions: Actions = {
 
 		await db.update(users).set({ address: address || null, socials }).where(eq(users.id, subject.id));
 
-		// Email is handled by its own send-code/verify-code actions below, not here —
-		// silently overwriting it on every autosave is what wiped it out last time.
+		// A campaign's public phone lines (the leader profile, not a login) — saved
+		// directly on change. Replace-on-change so the (channel, value) unique index
+		// never collides with the number just left behind.
 		for (const channel of ['sms', 'whatsapp'] as const) {
-			const value = String(form.get(channel) ?? '').trim();
+			const raw = String(form.get(channel) ?? '').trim();
+			// PhoneInput submits the local part (712345678); store the canonical 254… form.
+			const value = raw ? (normalizeKenyanPhone(raw) ?? '') : '';
+			if (raw && !value) return fail(400, { error: `Enter a valid Kenyan ${channel === 'sms' ? 'SMS' : 'WhatsApp'} number.` });
 			const [existingContact] = await db
 				.select({ id: contacts.id, value: contacts.value })
 				.from(contacts)
@@ -96,47 +90,5 @@ export const actions: Actions = {
 		}
 
 		return { saved: true };
-	},
-
-	sendEmailCode: async (event) => {
-		const subject = await getSubject(event);
-		const form = await event.request.formData();
-		const email = String(form.get('email') ?? '').trim();
-		if (!email) return fail(400, { emailError: 'Enter an email address.' });
-
-		const [existing] = await db
-			.select({ id: contacts.id, value: contacts.value })
-			.from(contacts)
-			.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
-		if (existing && existing.value !== email) {
-			await db.update(contacts).set({ deletedAt: new Date() }).where(eq(contacts.id, existing.id));
-		}
-		if (!existing || existing.value !== email) {
-			await db.insert(contacts).values({ userId: subject.id, channel: 'email', value: email, isPrimary: true }).onConflictDoNothing();
-		}
-
-		try {
-			await sendOtp(subject.id, 'email', email, subject.firstName, '/dashboard/contacts');
-		} catch (error) {
-			return fail(400, { emailError: error instanceof Error ? error.message : 'Could not send code' });
-		}
-		return { emailSent: true };
-	},
-
-	verifyEmailCode: async (event) => {
-		const subject = await getSubject(event);
-		const form = await event.request.formData();
-		const code = String(form.get('code') ?? '').trim();
-		if (!code) return fail(400, { codeError: 'Enter the code you received.' });
-
-		const ok = await verifyOtp(subject.id, 'email', code);
-		if (!ok) return fail(400, { codeError: 'That code is invalid or expired.' });
-
-		await db
-			.update(contacts)
-			.set({ verifiedAt: new Date() })
-			.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
-
-		return { emailVerified: true };
 	}
 };

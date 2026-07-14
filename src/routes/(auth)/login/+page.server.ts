@@ -79,8 +79,8 @@ export const actions: Actions = {
 				.where(and(eq(contacts.userId, domainUser.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
 		}
 
-		if (!domainUser?.verified.email || !domainUser?.verified.sms) {
-			return redirect(302, `/verify?next=${encodeURIComponent(next)}`);
+		if (!domainUser?.verified.email) {
+			return redirect(302, `/verify/email?email=${email}&next=${encodeURIComponent(next)}`);
 		}
 
 		return redirect(302, next);

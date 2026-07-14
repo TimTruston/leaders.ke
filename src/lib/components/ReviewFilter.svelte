@@ -14,7 +14,7 @@
 	} = $props();
 
 	const selectClass =
-		'rounded-full border border-border bg-surface pl-4 pr-6 py-2 text-xs font-medium text-muted focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none';
+		'rounded-full border border-border bg-surface pl-4 pr-6 py-2 text-xs font-medium text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none';
 </script>
 
 <div class="flex flex-wrap items-center gap-2">

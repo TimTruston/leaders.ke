@@ -332,5 +332,26 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 	}
 
 	await db.update(invites).set({ usedBy: userId, usedAt: new Date() }).where(eq(invites.id, invite.id));
-	return { ok: true as const, role: invite.role };
+
+	const [leader] = await db
+		.select({ firstName: users.firstName, otherNames: users.otherNames })
+		.from(leaders)
+		.innerJoin(users, eq(leaders.userId, users.id))
+		.where(eq(leaders.id, invite.leaderId));
+
+	return { ok: true as const, role: invite.role, leaderName: fullName(leader) };
+}
+
+/** Where each accepted role actually lands: bare /dashboard is always citizen mode
+ * (see dashboard/+layout.svelte's mode detection), so managers/ambassadors need a
+ * route that's unambiguously campaign-mode instead of bouncing to the citizen view. */
+export function inviteDestination(role: InviteRole): string {
+	if (role === 'manager') return '/dashboard/profile';
+	if (role === 'ambassador') return '/dashboard/ambassador';
+	return '/dashboard';
+}
+
+/** Query string for the shared dashboard layout's "you're in" banner. */
+export function joinedBannerQuery(role: InviteRole, leaderName: string): string {
+	return `joined=${role}&leaderName=${encodeURIComponent(leaderName)}`;
 }

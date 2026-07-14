@@ -1,6 +1,6 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { acceptInvite, listInvitesForEmail } from '$lib/server/invites';
+import { acceptInvite, inviteDestination, joinedBannerQuery, listInvitesForEmail } from '$lib/server/invites';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -18,6 +18,6 @@ export const actions: Actions = {
 		const result = await acceptInvite(token, domainUser.id, authUser.email);
 		if (!result.ok) return fail(400, { error: result.error });
 
-		return { accepted: true, role: result.role };
+		redirect(302, `${inviteDestination(result.role)}?${joinedBannerQuery(result.role, result.leaderName)}`);
 	}
 };

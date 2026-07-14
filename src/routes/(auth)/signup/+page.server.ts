@@ -84,8 +84,7 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		// New accounts land on /verify first to confirm email + phone; it forwards to
-		// `next` once both are done (or immediately if they already are).
-		return redirect(302, `/verify?next=${encodeURIComponent(next)}`);
+		// New accounts land on /verify/email first to confirm email
+		return redirect(302, `/verify/email?email=${email}&next=${encodeURIComponent(next)}`);
 	}
 };

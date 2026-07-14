@@ -1,16 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { getDomainUser } from '$lib/server/leader';
-import { acceptInvite, emailHasAccount, getInviteByToken } from '$lib/server/invites';
+import { acceptInvite, emailHasAccount, getInviteByToken, inviteDestination, joinedBannerQuery } from '$lib/server/invites';
 import type { PageServerLoad } from './$types';
-
-// Where each accepted role actually lands: bare /dashboard is always citizen mode
-// (see dashboard/+layout.svelte's mode detection), so managers/ambassadors need a
-// route that's unambiguously campaign-mode instead of bouncing to the citizen view.
-function destinationFor(role: 'manager' | 'ambassador' | 'follower'): string {
-	if (role === 'manager') return '/dashboard/profile';
-	if (role === 'ambassador') return '/dashboard/ambassador';
-	return '/dashboard';
-}
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const invite = await getInviteByToken(params.token);
@@ -38,5 +29,5 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await acceptInvite(params.token, domainUser.id, locals.user.email);
 	if (!result.ok) return { error: result.error };
 
-	redirect(302, destinationFor(result.role));
+	redirect(302, `${inviteDestination(result.role)}?${joinedBannerQuery(result.role, result.leaderName)}`);
 };

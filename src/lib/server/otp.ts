@@ -48,8 +48,8 @@ export async function otpCooldownRemaining(channel: OtpChannel, destination: str
  * Seconds remaining before this user may request another code on this channel,
  * regardless of destination — keyed on userId (unlike otpCooldownRemaining, which
  * is keyed on destination) so someone can't dodge the per-destination cooldown by
- * simply typing a different address/number on every request (e.g. change-email
- * spamming arbitrary inboxes with confirmation emails).
+ * simply typing a different address/number on every request
+ * e.g. changing email and spamming arbitrary inboxes with confirmation emails.
  */
 export async function otpCooldownRemainingForUser(userId: number, channel: OtpChannel): Promise<number> {
 	const [latest, settings] = await Promise.all([
@@ -69,7 +69,7 @@ export async function otpCooldownRemainingForUser(userId: number, channel: OtpCh
 }
 
 /** Issues a fresh code (and, for email, a click-through link); throws if within the resend cooldown or the 24h send cap. */
-export async function sendOtp(userId: number, channel: OtpChannel, destination: string, name?: string, linkPath: string = '/verify') {
+export async function sendOtp(userId: number, channel: OtpChannel, destination: string, name?: string, linkPath: string = '/verify/email') {
 	const remaining = Math.max(await otpCooldownRemaining(channel, destination), await otpCooldownRemainingForUser(userId, channel));
 	if (remaining > 0) throw new Error(`Wait ${remaining}s before requesting another code.`);
 
@@ -111,13 +111,25 @@ export async function sendOtp(userId: number, channel: OtpChannel, destination: 
 	}
 }
 
+/** True if a still-valid (unconsumed, unexpired) code was already sent to this
+ * destination — lets the verify pages auto-send only when none is outstanding, so
+ * a refresh doesn't fire a duplicate. */
+export async function hasPendingOtp(channel: OtpChannel, destination: string): Promise<boolean> {
+	const [row] = await db
+		.select({ id: otps.id })
+		.from(otps)
+		.where(and(eq(otps.channel, channel), eq(otps.destination, destination), isNull(otps.consumedAt), gt(otps.expiresAt, new Date())))
+		.limit(1);
+	return !!row;
+}
+
 /** Verifies the latest unconsumed code for this user/channel. */
 export async function verifyOtp(userId: number, channel: OtpChannel, code: string): Promise<boolean> {
 	return (await verifyOtpWithDestination(userId, channel, code)).ok;
 }
 
-/** Same as verifyOtp, but also returns the destination the code was sent to (e.g.
- * to learn the new email being confirmed for a change-email flow). */
+/** Same as verifyOtp, but also returns the destination the code was sent to
+ * e.g. to learn the new email being confirmed after changing. */
 export async function verifyOtpWithDestination(
 	userId: number,
 	channel: OtpChannel,

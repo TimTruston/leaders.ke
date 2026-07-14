@@ -23,7 +23,7 @@
 	onclick={toggle}
 	aria-label="Toggle dark mode"
 	aria-pressed={dark}
-	class="grid size-9 place-items-center rounded-full border border-border bg-surface-2 text-heading transition hover:bg-surface-3 focus:ring-2 focus:ring-ring focus:outline-none"
+	class="grid size-9 place-items-center rounded-full border border-border bg-surface-2 text-heading transition hover:bg-surface-3 focus:ring-0 focus:ring-ring focus:outline-none"
 >
 	{#if dark}
 		<!-- sun -->
