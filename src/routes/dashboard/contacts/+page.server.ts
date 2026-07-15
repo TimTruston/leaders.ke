@@ -89,6 +89,24 @@ export const actions: Actions = {
 			}
 		}
 
+		// The public contact email — like the phone lines, saved directly and left
+		// UNVERIFIED (verifiedAt null); verifying via /verify/email is optional. An
+		// unchanged value is skipped so an already-verified email keeps its verifiedAt.
+		const email = String(form.get('email') ?? '').trim().toLowerCase();
+		if (email && !email.includes('@')) return fail(400, { error: 'Enter a valid email address.' });
+		const [existingEmail] = await db
+			.select({ id: contacts.id, value: contacts.value })
+			.from(contacts)
+			.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
+		if (existingEmail?.value !== email) {
+			if (existingEmail) {
+				await db.update(contacts).set({ deletedAt: new Date() }).where(eq(contacts.id, existingEmail.id));
+			}
+			if (email) {
+				await db.insert(contacts).values({ userId: subject.id, channel: 'email', value: email, isPrimary: true }).onConflictDoNothing();
+			}
+		}
+
 		return { saved: true };
 	}
 };

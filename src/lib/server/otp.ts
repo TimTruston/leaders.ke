@@ -102,7 +102,7 @@ export async function sendOtp(userId: number, channel: OtpChannel, destination: 
 	if (channel === 'sms' || channel === 'whatsapp') {
 		await sendSms(destination, `Your leaders.ke verification code is ${code}. It expires in 10 minutes.`);
 	} else if (channel === 'email') {
-		const link = `${publicEnv.PUBLIC_BASE_URL}${linkPath}?linkToken=${linkToken}`;
+		const link = `${publicEnv.PUBLIC_BASE_URL}${linkPath}${linkPath.includes('?') ? '&' : '?'}linkToken=${linkToken}`;
 		await sendEmail({
 			to: destination,
 			subject: 'Your leaders.ke verification',

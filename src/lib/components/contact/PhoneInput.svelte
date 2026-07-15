@@ -7,7 +7,10 @@
 		field = 'sms',
 		label = 'Phone number',
 		bg = 'bg-surface',
-		verified = false
+		verified = false,
+		required = false,
+		filled = false,
+		scope = 'account'
 	}: {
 		value?: string;
 		field?: string; // sms | whatsapp
@@ -15,6 +18,12 @@
 		/** Tailwind bg class for the wrapper (matches the surrounding surface). */
 		bg?: string;
 		verified?: boolean;
+		/** Show a `*` next to the label when this contact is required. */
+		required?: boolean;
+		/** Mutes the required `*` once this contact is saved. */
+		filled?: boolean;
+		/** Who the verification attaches to: 'account' (citizen) or 'profile' (leader). */
+		scope?: string;
 	} = $props();
 	// Stored numbers are normalized to 254XXXXXXXXX; the field sits after a "+254"
 	// prefix, so show just the local part (712345678) rather than "+254 254…".
@@ -29,12 +38,14 @@
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
 	// creation on /dashboard/contacts) instead of the default /dashboard/account.
 	const verifyHref = $derived(
-		`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}&next=${encodeURIComponent(page.url.pathname)}`
+		`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}`
 	);
 </script>
 
 <label class="block">
-	<span class="text-xs font-medium text-ink-secondary">{label}</span>
+	<span class="text-xs font-medium text-ink-secondary">{label}{#if required}<span
+				class={filled ? 'text-muted' : 'text-red-500'}> *</span
+			>{/if}</span>
 	<div
 		class="mt-1 flex items-stretch rounded-xl overflow-hidden transition-colors {bg}
 		border {invalid ? 'border-red-500/60' : 'border-border'}
@@ -49,7 +60,7 @@
 			bind:value
 			autocomplete="tel"
 			placeholder="712 345 678"
-			class="w-full bg-transparent px-4 py-2.5 text-ink-primary placeholder:text-ink-secondary/60 outline-hidden focus:outline-none focus:ring-0 border-0"
+			class="w-full bg-transparent px-4 py-2.5 text-ink-primary placeholder:text-muted outline-hidden focus:outline-none focus:ring-0 border-0"
 		/>
 		{#if invalid}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-red-400 rounded-r-xl text-nowrap" >Invalid</span>

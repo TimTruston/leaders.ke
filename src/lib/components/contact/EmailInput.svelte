@@ -8,13 +8,22 @@
 		value = $bindable(''),
 		label = 'Email',
 		bg = 'bg-surface',
-		verified = false
+		verified = false,
+		required = false,
+		filled = false,
+		scope = 'account'
 	}: {
 		value?: string;
 		label?: string;
 		/** Tailwind bg class for the wrapper (matches the surrounding surface). */
 		bg?: string;
 		verified?: boolean;
+		/** Show a `*` next to the label when this contact is required. */
+		required?: boolean;
+		/** Mutes the required `*` once this contact is saved. */
+		filled?: boolean;
+		/** Who the verification attaches to: 'account' (citizen) or 'profile' (leader). */
+		scope?: string;
 	} = $props();
 
 	let original = $state(value);
@@ -22,12 +31,14 @@
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
 	// creation on /dashboard/contacts) instead of the default /dashboard/account.
 	const verifyHref = $derived(
-		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}`
+		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}`
 	);
 </script>
 
 <label class="block">
-	<span class="text-xs font-medium text-ink-secondary">{label}</span>
+	<span class="text-xs font-medium text-ink-secondary">{label}{#if required}<span
+				class={filled ? 'text-muted' : 'text-red-500'}> *</span
+			>{/if}</span>
 	<div
 		class="mt-1 flex items-stretch rounded-xl overflow-hidden transition-colors {bg}
 		border border-border focus-within:border-primary focus:ring-0 focus:ring-ring outline-hidden focus:outline-none"
@@ -37,7 +48,7 @@
 			bind:value
 			autocomplete="email"
 			placeholder="example@email.com"
-			class="w-full bg-transparent px-4 py-2.5 text-ink-primary placeholder:text-ink-secondary/60 outline-hidden focus:outline-none focus:ring-0 border-0"
+			class="w-full bg-transparent px-4 py-2.5 text-ink-primary placeholder:text-muted outline-hidden focus:outline-none focus:ring-0 border-0"
 		/>
 		{#if value && verified && value === original}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-primary rounded-r-xl text-nowrap" >✓ Verified</span>

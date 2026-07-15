@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { and, eq, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, user, users } from '$lib/server/db/schema';
-import { requireDashboardUser, type DashboardUser } from '$lib/server/dashboard';
+import { parseScope, resolveVerifySubject, type DashboardUser } from '$lib/server/dashboard';
 import { hasPendingOtp, otpCooldownRemaining, sendOtp, verifyOtpWithDestination, verifyOtpLinkToken } from '$lib/server/otp';
 import { getPlatformSettings } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
@@ -37,73 +37,82 @@ async function verifiedByOther(userId: number, email: string): Promise<boolean> 
 // every place verification is tracked: the denormalized `users.verified` cache and
 // better-auth's own `user`. Handles both post-signup (email === current) and an
 // inline change (email differs — the login email moves to the new address).
-async function applyEmailVerified(domainUser: DashboardUser['domainUser'], authUserId: string, email: string) {
+async function applyEmailVerified(subject: DashboardUser['domainUser'], email: string, syncAuth: boolean) {
 	// Drop this user's prior live email row and any other account's *unverified* hold
 	// of the new value, so the (channel, value) unique index can't collide on insert.
 	await db
 		.update(contacts)
 		.set({ deletedAt: new Date() })
-		.where(and(eq(contacts.userId, domainUser.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
+		.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
 	await db
 		.update(contacts)
 		.set({ deletedAt: new Date() })
-		.where(and(eq(contacts.channel, 'email'), eq(contacts.value, email), isNull(contacts.deletedAt), ne(contacts.userId, domainUser.id)));
+		.where(and(eq(contacts.channel, 'email'), eq(contacts.value, email), isNull(contacts.deletedAt), ne(contacts.userId, subject.id)));
 
-	await db.insert(contacts).values({ userId: domainUser.id, channel: 'email', value: email, isPrimary: true, verifiedAt: new Date() });
-	await db.update(users).set({ verified: { ...domainUser.verified, email: true } }).where(eq(users.id, domainUser.id));
-	await db.update(user).set({ email, emailVerified: true }).where(eq(user.id, authUserId));
+	await db.insert(contacts).values({ userId: subject.id, channel: 'email', value: email, isPrimary: true, verifiedAt: new Date() });
+	await db.update(users).set({ verified: { ...subject.verified, email: true } }).where(eq(users.id, subject.id));
+	// Only the citizen's own account has a real login: a leader profile is a phantom
+	// user that never signs in, so its better-auth email stays the placeholder.
+	if (syncAuth) {
+		await db.update(user).set({ email, emailVerified: true }).where(eq(user.id, subject.authUserId));
+	}
 }
 
 export const load: PageServerLoad = async (event) => {
-	const { authUser, domainUser } = await requireDashboardUser(event);
+	const scope = parseScope(event.url.searchParams.get('scope'));
+	const { authUser, domainUser, subject } = await resolveVerifySubject(event, scope);
 	const next = safeNext(event.url.searchParams.get('next'));
 	const email = candidateEmail(event.url, authUser.email);
+	const isAccount = subject.id === domainUser.id;
 
-	// Click-through link from the email itself.
+	// Click-through link from the email itself (carries scope so it resolves the same subject).
 	const linkToken = event.url.searchParams.get('linkToken');
 	if (linkToken) {
 		const result = await verifyOtpLinkToken(linkToken);
-		if (result?.userId === domainUser.id) {
-			await applyEmailVerified(domainUser, authUser.id, result.destination);
+		if (result && result.userId === subject.id) {
+			await applyEmailVerified(subject, result.destination, isAccount);
 			redirect(302, withNotice(next, `${result.destination} verified.`));
 		}
 	}
 
-	// Verifying the current login email that's already verified — nothing to do.
-	if (email === authUser.email && domainUser.verified.email) {
-		redirect(302, withNotice(next, 'Your email address is already verified.'));
+	// Verifying the citizen's current login email that's already verified — nothing to do.
+	if (isAccount && email === authUser.email && domainUser.verified.email) {
+		redirect(302, withNotice(next, `${email} is already verified.`));
 	}
-	if (await verifiedByOther(domainUser.id, email)) {
-		redirect(302, withNotice('/dashboard/account', 'That email is already verified on another account.'));
+	if (await verifiedByOther(subject.id, email)) {
+		redirect(302, withNotice(next, `${email} is already verified on another account.`));
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
 	// address — so a page refresh reuses the code already sent instead of firing a
 	// new one. A later resend is a deliberate button click.
+	const linkPath = scope === 'profile' ? '/verify/email?scope=profile' : '/verify/email';
 	let emailCooldown = await otpCooldownRemaining('email', email);
 	if (!(await hasPendingOtp('email', email))) {
 		try {
-			await sendOtp(domainUser.id, 'email', email, domainUser.firstName);
+			await sendOtp(subject.id, 'email', email, subject.firstName, linkPath);
 			emailCooldown = (await getPlatformSettings()).otpCooldownSeconds;
 		} catch {
 			// Best-effort — the "Resend code" button still lets them retry manually.
 		}
 	}
 
-	return { next, email, emailCooldown };
+	return { next, scope, email, emailCooldown };
 };
 
 export const actions: Actions = {
 	sendEmailCode: async (event) => {
-		const { authUser, domainUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
+		const scope = parseScope(String(form.get('scope') ?? ''));
+		const { authUser, subject } = await resolveVerifySubject(event, scope);
 		const typed = String(form.get('email') ?? '').trim().toLowerCase();
 		const email = typed.includes('@') ? typed : authUser.email;
-		if (await verifiedByOther(domainUser.id, email)) {
+		if (await verifiedByOther(subject.id, email)) {
 			return fail(400, { emailError: 'That email is already verified on another account.' });
 		}
+		const linkPath = scope === 'profile' ? '/verify/email?scope=profile' : '/verify/email';
 		try {
-			await sendOtp(domainUser.id, 'email', email, domainUser.firstName);
+			await sendOtp(subject.id, 'email', email, subject.firstName, linkPath);
 		} catch (error) {
 			return fail(400, { emailError: error instanceof Error ? error.message : 'Could not send code' });
 		}
@@ -111,16 +120,16 @@ export const actions: Actions = {
 	},
 
 	verifyCode: async (event) => {
-		const { authUser, domainUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
+		const { domainUser, subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')));
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });
 
-		const result = await verifyOtpWithDestination(domainUser.id, 'email', code);
+		const result = await verifyOtpWithDestination(subject.id, 'email', code);
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
-		await applyEmailVerified(domainUser, authUser.id, result.destination);
+		await applyEmailVerified(subject, result.destination, subject.id === domainUser.id);
 		redirect(302, withNotice(next, `You have successfully verified ${result.destination}`));
 	}
 };

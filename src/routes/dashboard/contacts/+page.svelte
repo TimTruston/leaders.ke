@@ -20,6 +20,11 @@
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
 
+	// Application checklist (from the layout load): a required-field label still in this
+	// set is unfilled → its `*` stays red; once saved and out of the set, `*` goes muted.
+	const appMissing = $derived(new Set(data.application?.contacts.missing ?? []));
+	const starClass = (label: string) => (appMissing.has(label) ? 'text-red-500' : 'text-muted');
+
 	const isSocialActive = (kind: string) => socialLinks.some((s) => s.kind === kind);
 	function toggleSocial(kind: string) {
 		socialLinks = isSocialActive(kind) ? socialLinks.filter((s) => s.kind !== kind) : [...socialLinks, { kind, value: '' }];
@@ -81,7 +86,7 @@
 		<input type="hidden" name="socialEntries" value={JSON.stringify(socialLinks)} />
 
 		<label class="block">
-			<span class="text-sm font-medium text-heading">Office / address</span>
+			<span class="text-sm font-medium text-heading">Office / address <span class={starClass('Office / address')}>*</span></span>
 			<input
 				type="text"
 				name="address"
@@ -93,16 +98,17 @@
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div class="rounded-xl {missing.has('sms') ? 'ring-1 ring-red-500' : ''}">
-				<PhoneInput bind:value={sms} label="Phone number" />
+				<PhoneInput bind:value={sms} label="Phone number" scope="profile" required filled={!appMissing.has('Phone number')} />
 				<input type="hidden" name="sms" value={sms} />
 			</div>
 			<div>
-				<PhoneInput bind:value={whatsapp} label="WhatsApp number" />
+				<PhoneInput bind:value={whatsapp} label="WhatsApp number" field="whatsapp" scope="profile" />
 				<input type="hidden" name="whatsapp" value={whatsapp} />
 			</div>
 		</div>
 		
-		<EmailInput bind:value={email} verified={data.emailVerified} />
+		<EmailInput bind:value={email} verified={data.emailVerified} scope="profile" required filled={!appMissing.has('Email address')} />
+			<input type="hidden" name="email" value={email} />
 
 		<label class="block">
 			<span class="text-sm font-medium text-heading">Website</span>

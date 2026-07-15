@@ -35,6 +35,7 @@
 			}}
 		>
 			<input type="hidden" name="next" value={data.next} />
+			<input type="hidden" name="scope" value={data.scope} />
 			<label class="block flex-1">
 				<div class="text-xs font-medium text-muted mb-2">Enter the verification code</div>
 				<div class="flex items-stretch">
@@ -77,6 +78,7 @@
 			}}
 		>
 			<input type="hidden" name="email" value={data.email} />
+			<input type="hidden" name="scope" value={data.scope} />
 			<button
 				type="submit"
 				disabled={sendingEmail || emailCooldown > 0}

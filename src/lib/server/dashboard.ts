@@ -21,6 +21,31 @@ export async function requireDashboardUser(event: RequestEvent): Promise<Dashboa
 	return { authUser, domainUser };
 }
 
+/** Whose contacts a /verify/* flow writes to: the signed-in citizen's own login
+ * identity ('account', e.g. /dashboard/account), or the leader profile they edit
+ * on /dashboard/contacts ('profile' — a distinct phantom user, see createPhantomUser). */
+export type VerifyScope = 'account' | 'profile';
+
+export function parseScope(raw: string | null): VerifyScope {
+	return raw === 'profile' ? 'profile' : 'account';
+}
+
+/** Resolves the subject a verification applies to. For 'profile' scope that's the
+ * leader profile's (phantom) user; it falls back to the citizen when there's no
+ * leader context yet. `subject === domainUser` exactly when the scope is the
+ * citizen's own account — the only case where better-auth's login email is synced. */
+export async function resolveVerifySubject(
+	event: RequestEvent,
+	scope: VerifyScope
+): Promise<DashboardUser & { subject: typeof users.$inferSelect }> {
+	const base = await requireDashboardUser(event);
+	if (scope === 'profile') {
+		const ctx = await getLeaderContext(base.domainUser.id);
+		if (ctx) return { ...base, subject: ctx.profileUser };
+	}
+	return { ...base, subject: base.domainUser };
+}
+
 /** For pages that need a leader profile; sends new accounts to the profile step first. */
 export async function requireLeader(
 	event: RequestEvent
