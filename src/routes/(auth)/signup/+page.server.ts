@@ -31,7 +31,11 @@ export const load: PageServerLoad = async (event) => {
 	// discovering the invite mismatch after clicking Accept.
 	const lockedEmail = event.url.searchParams.get('email');
 
-	return { next, inviteBanner, lockedEmail };
+	// ?notice= explains why they landed here (e.g. "log in to claim a profile") —
+	// carried over from login so the intent survives switching forms.
+	const notice = event.url.searchParams.get('notice');
+
+	return { next, inviteBanner, lockedEmail, notice };
 };
 
 export const actions: Actions = {

@@ -22,21 +22,20 @@
 	// ?notice= by whichever route redirected here.
 	const notice = $derived(page.url.searchParams.get('notice'));
 
-	// Which mode the current URL/state belongs to. The section nav below shows only
-	// this mode's tabs, so switching modes actually changes what's available — not
-	// just which tab is open. Profile/Contacts/Team/Documentation are shared routes
-	// between "applying" and "an established campaign" — not yet verified (or no
-	// profile at all) means still applying, derived from data so it's correct on
-	// every load/refresh regardless of which of those shared routes you're on.
+	// Which mode the current URL/state belongs to. The section nav below shows only this
+	// mode's tabs, so switching modes changes what's available, not just the open tab.
+	// Profile/Contacts/Team/Documentation are shared between "applying" and "an
+	// established campaign": not yet verified (or no profile) means still applying,
+	// derived from data so it's correct on every load regardless of which route you're on.
 	const mode = $derived.by(() => {
 		const p = page.url.pathname;
 		if (p.startsWith('/dashboard/admin')) return 'admin';
 		if (p.startsWith('/dashboard/ambassador')) return 'ambassador';
-		if (p == '/dashboard' || p == '/dashboard/account' || p== '/dashboard/invites') return 'citizen';
+		if (p === '/dashboard' || p === '/dashboard/account' || p === '/dashboard/invites') return 'citizen';
 		return data.leaderContext?.verified ? 'campaign' : 'apply';
 	});
 
-	// The modes this account can switch between right now. 
+	// The modes this account can switch between right now.
 	const modes = $derived(
 		[
 			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
@@ -50,52 +49,56 @@
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
 		].filter((m) => m.available)
 	);
-	const currentMode = $derived(modes.find((m) => m.key === mode) ?? modes[0]);
+	// 'apply' is the pre-verification leader context, which shares the 'campaign' switcher
+	// entry — without this map the lookup misses and wrongly falls back to Citizen.
+	const currentMode = $derived(
+		modes.find((m) => m.key === (mode === 'apply' ? 'campaign' : mode)) ?? modes[0]
+	);
 
-	// Tabs per mode. Only pages that actually exist are listed (no dead links).
-	const sectionsByMode = $derived({
+	// Tabs per mode. Only pages that actually exist are listed (no dead links); every
+	// listed tab is always reachable, so no per-tab enable flag is needed.
+	const sectionsByMode = {
 		citizen: [
-			{ href: '/dashboard', label: 'Overview', enabled: true },
-			{ href: '/dashboard/invites', label: 'Invites', enabled: true },
-			{ href: '/dashboard/account', label: 'Account', enabled: true }
+			{ href: '/dashboard', label: 'Overview' },
+			{ href: '/dashboard/invites', label: 'Invites' },
+			{ href: '/dashboard/account', label: 'Account' }
 		],
-		// Campaign-application flow, reached via "Launch a Campaign" — no Overview,
-		// Team requires 2+ managers before the application can be submitted.
-		// All four reachable from the start — Team/Documentation show a "save your
-		// profile first" prompt of their own until a leader row exists.
+		// Campaign-application flow, reached via "Launch a Campaign": no Overview, and Team
+		// needs 2+ managers before the application can be submitted. Team/Documentation
+		// show their own "save your profile first" prompt until a leader row exists.
 		apply: [
-			{ href: '/dashboard/profile', label: "Leader's Profile", enabled: true },
-			{ href: '/dashboard/contacts', label: 'Contacts', enabled: true },
-			{ href: '/dashboard/team', label: 'Team', enabled: true },
-			{ href: '/dashboard/documentation', label: 'Documentation', enabled: true }
+			{ href: '/dashboard/profile', label: "Profile" },
+			{ href: '/dashboard/contacts', label: 'Contacts' },
+			{ href: '/dashboard/team', label: 'Team' },
+			{ href: '/dashboard/documentation', label: 'Documentation' }
 		],
 		campaign: [
-			{ href: '/dashboard/profile', label: 'Profile', enabled: true },
-			{ href: '/dashboard/contacts', label: 'Contacts', enabled: !!data.leaderContext },
-			{ href: '/dashboard/manifesto', label: 'Manifesto', enabled: !!data.leaderContext },
-			{ href: '/dashboard/posts', label: 'Posts', enabled: !!data.leaderContext },
-			{ href: '/dashboard/reviews', label: 'Reviews', enabled: !!data.leaderContext },
-			{ href: '/dashboard/team', label: 'Team', enabled: !!data.leaderContext },
-			{ href: '/dashboard/followers', label: 'Followers', enabled: !!data.leaderContext },
-			{ href: '/dashboard/broadcasts', label: 'Broadcasts', enabled: !!data.leaderContext },
-			{ href: '/dashboard/fundraising', label: 'Fundraising', enabled: !!data.leaderContext },
-			{ href: '/dashboard/pr', label: 'PR desk', enabled: !!data.leaderContext },
-			{ href: '/dashboard/competitors', label: 'Competitors', enabled: !!data.leaderContext }
+			{ href: '/dashboard/profile', label: 'Profile' },
+			{ href: '/dashboard/contacts', label: 'Contacts' },
+			{ href: '/dashboard/manifesto', label: 'Manifesto' },
+			{ href: '/dashboard/posts', label: 'Posts' },
+			{ href: '/dashboard/reviews', label: 'Reviews' },
+			{ href: '/dashboard/team', label: 'Team' },
+			{ href: '/dashboard/followers', label: 'Followers' },
+			{ href: '/dashboard/broadcasts', label: 'Broadcasts' },
+			{ href: '/dashboard/fundraising', label: 'Fundraising' },
+			{ href: '/dashboard/pr', label: 'PR desk' },
+			{ href: '/dashboard/competitors', label: 'Competitors' }
 		],
-		ambassador: [{ href: '/dashboard/ambassador', label: 'My campaigns', enabled: true }],
+		ambassador: [{ href: '/dashboard/ambassador', label: 'My campaigns' }],
 		admin: [
-			{ href: '/dashboard/admin/candidates', label: 'Candidates', enabled: true },
-			{ href: '/dashboard/admin/accounts', label: 'Accounts', enabled: true },
-			{ href: '/dashboard/admin/pillars', label: 'Pillars', enabled: true },
-			{ href: '/dashboard/admin/verifications', label: 'Verifications', enabled: true },
-			{ href: '/dashboard/admin/claims', label: 'Claims', enabled: true },
-			{ href: '/dashboard/admin/moderation', label: 'Moderation', enabled: true },
-			{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue', enabled: true },
-			{ href: '/dashboard/admin/packages', label: 'Packages', enabled: true },
-			{ href: '/dashboard/admin/settings', label: 'Settings', enabled: true }
-		],
-	});
-	const sections = $derived(sectionsByMode[mode].filter((s) => s.enabled));
+			{ href: '/dashboard/admin/candidates', label: 'Candidates' },
+			{ href: '/dashboard/admin/accounts', label: 'Accounts' },
+			{ href: '/dashboard/admin/pillars', label: 'Pillars' },
+			{ href: '/dashboard/admin/verifications', label: 'Verifications' },
+			{ href: '/dashboard/admin/claims', label: 'Claims' },
+			{ href: '/dashboard/admin/moderation', label: 'Moderation' },
+			{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue' },
+			{ href: '/dashboard/admin/packages', label: 'Packages' },
+			{ href: '/dashboard/admin/settings', label: 'Settings' }
+		]
+	};
+	const sections = $derived(sectionsByMode[mode]);
 
 	// Apply-flow tabs that still have missing required fields get a `*` on their title.
 	// Maps each tab's route to its checklist key; only meaningful while `application` is
@@ -171,7 +174,7 @@
 					{/if}
 				</h1>
 			{:else if mode === 'apply'}
-				<h1 class="text-2xl font-bold text-heading">Create a Leader Profile</h1>
+				<h1 class="text-2xl font-bold text-heading">{data.claimName ? `Claim Profile: ${data.claimName}` : 'Create a Leader Profile'}</h1>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
@@ -214,7 +217,11 @@
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
 			{#if mode === 'apply'}
-				<span class="flex items-center text-sm my-2 sm:my-0">A few steps to go public ahead of 10 August 2027.</span>
+				<span class="flex items-center text-sm my-2 sm:my-0">
+					{data.claimName
+					? 'Confirm the details below to claim this profile.'
+					: "A few steps to go public ahead of 10 August 2027."}
+				</span>
 				{#if data.pendingVerification}
 					<span
 						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-semibold text-muted"
@@ -336,7 +343,7 @@
 		</nav>
 	{/if}
 
-	<div class="mt-8">
+	<div class="mt-6">
 		{@render children()}
 	</div>
 

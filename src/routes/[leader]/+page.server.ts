@@ -135,6 +135,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			party: null as string | null,
 			regionLabel: currentTerm.positions.region,
 			positionTitle: currentTerm.positions.title,
+			positionId: currentTerm.positions.id,
 			status: currentTerm.leaders.status,
 			verified: !!currentTerm.leaders.verifiedAt,
 			followers: followerRow.n,

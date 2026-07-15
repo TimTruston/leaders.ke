@@ -117,12 +117,8 @@
 <svelte:head><title>Profile — leaders.ke</title></svelte:head>
 
 <div class="">
-	<h2 class="text-lg font-semibold text-heading">
-		{data.form.hasLeader ? 'Leader profile' : 'Create your leader profile'}
-	</h2>
-	<p class="mt-1 text-sm text-muted">
-		This is what citizens see on your public leader's profile/page.
-	</p>
+
+	<p class="text-sm text-muted">This is what citizens see on leader's  public profile/page.</p>
 
 	{#if form?.error}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
@@ -136,7 +132,7 @@
 	<form
 		method="post"
 		action="?/save"
-		class="mt-6 space-y-5"
+		class="mt-4 space-y-5"
 		use:enhance={() => {
 			saving = true;
 			return async ({ result, update }) => {
@@ -151,6 +147,10 @@
 			};
 		}}
 	>
+		{#if data.claimSlug}
+			<!-- Ties the application to the existing leader instead of a new phantom user. -->
+			<input type="hidden" name="claimLeader" value={data.claimSlug} />
+		{/if}
 		<input type="hidden" name="experienceEntries" value={JSON.stringify(pendingExperience)} />
 		<input type="hidden" name="leadershipEntries" value={JSON.stringify(pendingLeadership)} />
 		<input type="hidden" name="removedExperienceIds" value={JSON.stringify(removedExperienceIds)} />

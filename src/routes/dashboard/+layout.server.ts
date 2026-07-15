@@ -3,7 +3,7 @@ import { and, count, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, managers } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { getLeaderContext, leaderPath, fullName } from '$lib/server/leader';
+import { getLeaderContext, leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
 import type { LayoutServerLoad } from './$types';
@@ -20,6 +20,14 @@ export type ApplicationChecklist = {
 
 // Guards every /dashboard page and shares the leader context + role switcher data.
 export const load: LayoutServerLoad = async (event) => {
+	// A guest clicking "Claim this profile" lands on /dashboard/profile?leader=… —
+	// this must run before requireDashboardUser, whose plain /login redirect would
+	// otherwise win and drop both the notice and the way back to the claim form.
+	if (!event.locals.user && event.url.searchParams.get('leader')) {
+		const next = `${event.url.pathname}${event.url.search}`;
+		redirect(302, `/login?next=${encodeURIComponent(next)}&notice=${encodeURIComponent('You need to be logged in to claim a profile')}`);
+	}
+
 	const { domainUser } = await requireDashboardUser(event);
 
 	// No dashboard access until email is verified.
@@ -29,6 +37,15 @@ export const load: LayoutServerLoad = async (event) => {
 
 	const ctx = await getLeaderContext(domainUser.id);
 	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
+
+	// Claim mode (?leader=<slug>, see dashboard/profile): the apply-mode header
+	// reads "Manage <name>" instead of "Create a Leader Profile".
+	let claimName: string | null = null;
+	const claimSlug = event.url.searchParams.get('leader');
+	if (claimSlug) {
+		const resolved = await resolveCurrentTerm(claimSlug);
+		if (resolved?.currentTerm.leaders.verifiedAt) claimName = fullName(resolved.row.users);
+	}
 
 	// Submit Application (top-right, apply mode) is gated on every one of the 4 tabs
 	// being filled in — website/social links are the only optional Contacts fields.
@@ -95,6 +112,7 @@ export const load: LayoutServerLoad = async (event) => {
 
 	return {
 		firstName: domainUser.firstName,
+		claimName,
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,

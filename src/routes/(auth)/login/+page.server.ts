@@ -35,9 +35,12 @@ export const load: PageServerLoad = async (event) => {
 	// and only discovering the invite mismatch after clicking Accept.
 	const lockedEmail = event.url.searchParams.get('email');
 
+	// ?notice= explains why they landed here (e.g. "log in to claim a profile").
+	const notice = event.url.searchParams.get('notice');
+
 	return dev
-		? { devEmail: lockedEmail ?? env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner, lockedEmail }
-		: { devEmail: lockedEmail ?? '', devPassword: '', next, inviteBanner, lockedEmail };
+		? { devEmail: lockedEmail ?? env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner, lockedEmail, notice }
+		: { devEmail: lockedEmail ?? '', devPassword: '', next, inviteBanner, lockedEmail, notice };
 };
 
 export const actions: Actions = {

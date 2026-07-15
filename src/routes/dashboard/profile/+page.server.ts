@@ -1,18 +1,48 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { createPhantomUser, fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, slugify } from '$lib/server/leader';
+import { createPhantomUser, fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import { requestClaim } from '$lib/server/claims';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
 const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
 
+function withNotice(path: string, message: string): string {
+	return `${path}${path.includes('?') ? '&' : '?'}notice=${encodeURIComponent(message)}`;
+}
+
+/** Claim mode: ?position=..&leader=<slug> (the "Is this you?" link on a public
+ * leader page) prefills this form from the existing profile; saving files a
+ * claim on that leader instead of creating a new phantom user. Only verified
+ * (public) profiles are claimable — an unverified one belongs to the account
+ * still building it, so there's nothing to "claim". */
+async function resolveClaim(url: URL) {
+	const slug = url.searchParams.get('leader');
+	if (!slug) return null;
+	const resolved = await resolveCurrentTerm(slug);
+	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) return null;
+
+	const positionParam = Number(url.searchParams.get('position') ?? 0);
+	return {
+		slug,
+		leaderId: resolved.currentTerm.leaders.id,
+		firstName: resolved.row.users.firstName,
+		otherNames: resolved.row.users.otherNames,
+		bio: resolved.row.users.bio ?? '',
+		positionId: positionParam || resolved.currentTerm.positions.id
+	};
+}
+
+// The logged-out claimant redirect (login + notice) lives in dashboard/+layout.server.ts —
+// the layout guard runs alongside this load and its redirect wins, so it must be claim-aware there.
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 	const ctx = await getLeaderContext(domainUser.id);
+	const claim = await resolveClaim(event.url);
 
 	const positionRows = await db
 		.select()
@@ -61,15 +91,28 @@ export const load: PageServerLoad = async (event) => {
 			from: r.from.getFullYear(),
 			to: r.to?.getFullYear() ?? null
 		})),
-		form: {
-			firstName: subject.firstName,
-			otherNames: subject.otherNames,
-			bio: subject.bio ?? '',
-			positionId: ctx?.leader.positionId ?? null,
-			slug: subject.slug ?? null,
-			hasLeader: !!ctx,
-			verified: !!ctx?.leader.verifiedAt
-		},
+		// Claim mode prefills the claimed leader's identity; the form otherwise
+		// belongs to the viewer's own (or managed) profile.
+		form: claim
+			? {
+					firstName: claim.firstName,
+					otherNames: claim.otherNames,
+					bio: claim.bio,
+					positionId: claim.positionId,
+					slug: null,
+					hasLeader: false,
+					verified: false
+				}
+			: {
+					firstName: subject.firstName,
+					otherNames: subject.otherNames,
+					bio: subject.bio ?? '',
+					positionId: ctx?.leader.positionId ?? null,
+					slug: subject.slug ?? null,
+					hasLeader: !!ctx,
+					verified: !!ctx?.leader.verifiedAt
+				},
+		claimSlug: claim?.slug ?? null,
 		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
 	};
 };
@@ -114,6 +157,25 @@ export const actions: Actions = {
 			.from(positions)
 			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
 		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
+
+		// Claim mode: the hidden claimLeader slug ties this application to the
+		// existing (verified) leader instead of creating a new phantom user. Manager
+		// access is granted only when an admin approves the claim — never on save.
+		const claimSlug = String(form.get('claimLeader') ?? '').trim();
+		if (claimSlug) {
+			const resolved = await resolveCurrentTerm(claimSlug);
+			if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
+				return fail(404, { error: 'That leader profile does not exist.' });
+			}
+			const result = await requestClaim(resolved.currentTerm.leaders.id, domainUser.id, {
+				firstName,
+				otherNames,
+				positionId: String(positionId),
+				bio
+			});
+			if (!result.ok) return fail(400, { error: result.error });
+			redirect(302, withNotice('/dashboard', 'Claim submitted. An admin will review it and grant you manager access.'));
+		}
 
 		for (const e of pendingExperience) {
 			if (e.type !== 'education' && e.type !== 'professional') {

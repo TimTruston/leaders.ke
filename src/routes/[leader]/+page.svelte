@@ -239,7 +239,7 @@
 						Claim this profile and get manager access to run its campaign toolkit.
 					</p>
 					<a
-						href="/claim/{leader.slug}"
+						href="/dashboard/profile?position={leader.positionId}&leader={leader.slug}"
 						class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
 					>
 						Claim this profile

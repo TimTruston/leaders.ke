@@ -9,6 +9,9 @@
 </script>
 
 <AuthCard title="Welcome back" subtitle="Sign in to your leaders.ke account">
+	{#if data.notice}
+		<p class="mb-4 rounded-xl bg-primary-soft p-3 text-sm text-on-primary">{data.notice}</p>
+	{/if}
 	{#if data.inviteBanner}
 		<p class="mb-4 rounded-xl bg-primary-soft p-3 text-sm text-on-primary">
 			You've been invited by {data.inviteBanner.leaderName} to join as
@@ -51,7 +54,7 @@
 	{#snippet footer()}
 		New here?
 		<a
-			href="/signup?next={encodeURIComponent(data.next)}"
+			href="/signup?next={encodeURIComponent(data.next)}{data.notice ? `&notice=${encodeURIComponent(data.notice)}` : ''}"
 			class="font-semibold text-primary hover:underline"
 		>
 			Create an account
