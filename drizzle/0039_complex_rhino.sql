@@ -1,0 +1,2 @@
+ALTER TABLE "followers" ADD COLUMN "added_by" integer;--> statement-breakpoint
+ALTER TABLE "followers" ADD CONSTRAINT "followers_added_by_users_id_fk" FOREIGN KEY ("added_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;

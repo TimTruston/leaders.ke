@@ -418,6 +418,9 @@ export const followers = pgTable('followers', {
   email: boolean('email').default(false).notNull(),
   sms: boolean('sms').default(false).notNull(),
   whatsapp: boolean('whatsapp').default(false).notNull(),
+  // Who recruited this follower (ambassador/manager adding a citizen via the
+  // dashboard, blueprint funnel A); null for self-service follows.
+  addedBy: integer('added_by').references(() => users.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
