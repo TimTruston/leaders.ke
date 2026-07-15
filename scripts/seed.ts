@@ -18,7 +18,7 @@
 // campaigns/pillars look up leaders; issues only needs positions and the system user
 // as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
 // the lowest/first user id — it's also the ADMIN_EMAIL/PASSWORD account. pillar-templates
-// has no dependency, runs any time.)
+// and platform-settings have no dependency, run any time.)
 import { parseArgs } from 'node:util';
 import { createInterface } from 'node:readline/promises';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -34,6 +34,7 @@ import { seedPillars } from './lib/seed-pillars';
 import { seedPillarTemplates } from './lib/seed-pillar-templates';
 import { seedIssues } from './lib/seed-issues';
 import { seedNews } from './lib/seed-news';
+import { seedPlatformSettings } from './lib/seed-platform-settings';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(process.env.DATABASE_URL, { max: 1 });
@@ -52,7 +53,8 @@ const { values } = parseArgs({
 		pillars: { type: 'boolean', default: false },
 		'pillar-templates': { type: 'boolean', default: false },
 		issues: { type: 'boolean', default: false },
-		news: { type: 'boolean', default: false }
+		news: { type: 'boolean', default: false },
+		'platform-settings': { type: 'boolean', default: false }
 	},
 	strict: true
 });
@@ -83,6 +85,7 @@ if (willWipe && !yes) {
 
 if (willWipe) await resetSeedData(db);
 
+if (runAll || values['platform-settings']) await seedPlatformSettings(db);
 if (runAll || values['system-user']) await getOrCreateSystemUser(db);
 if (runAll || values.positions) await seedPositions(db);
 if (runAll || values.parties) await seedParties(db);

@@ -32,12 +32,24 @@ export const actions: Actions = {
 			if (!Number.isInteger(value) || value < 1) return fail(400, { error: `${label} must be a whole number of at least 1.` });
 		}
 
+		// Comma/whitespace-separated words, normalized to lowercase and deduped.
+		// These block new leader slugs only — existing slugs are untouched.
+		const blockedSlugs = [
+			...new Set(
+				String(form.get('blockedSlugs') ?? '')
+					.split(/[\s,]+/)
+					.map((s) => s.trim().toLowerCase())
+					.filter(Boolean)
+			)
+		];
+
 		await db
 			.update(platformSettings)
 			.set({
 				otpCooldownSeconds,
 				otpDailyCap,
 				inviteLimits: { aspirant, influencer, mobilizer },
+				blockedSlugs,
 				updatedAt: new Date()
 			})
 			.where(eq(platformSettings.id, 1));

@@ -8,6 +8,7 @@ import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
+import { getPlatformSettings } from '$lib/server/settings';
 
 /**
  * Creates the leader's own `users` row, separate from whichever citizen account
@@ -41,43 +42,21 @@ export function fullName(u: { firstName: string; otherNames: string }): string {
 	return `${u.firstName} ${u.otherNames}`.trim();
 }
 
-// Top-level static routes a leader slug must never shadow — plus the dashboard's
-// own second segments (/dashboard/<slug>/* would otherwise be shadowed by them).
-const RESERVED_SLUGS = [
-	'apply',
-	'account',
-	'admin',
-	'ambassador',
-	'citizen',
-	'invites',
-	'leaders',
-	'pricing',
-	'compare',
-	'ranks',
-	'vote',
-	'search',
-	'parties',
-	'alliances',
-	'invite',
-	'claim',
-	'dashboard',
-	'features',
-	'demo',
-	'logout',
-	'login',
-	'signup',
-	'change-email',
-	'change-password',
-	'delete-account',
-	'forgot-password',
-	'reset-password'
-];
+/** Whether the platform keeps this slug for itself: a numeric-only slug (ballot
+ * routes use bare years like "2027") or a word on the admin-tunable blocked list
+ * (platform_settings.blockedSlugs — seeded with every route a leader slug must
+ * never shadow, plus words the platform may want later). */
+async function isSlugBlocked(slug: string): Promise<boolean> {
+	if (/^[0-9-]+$/.test(slug)) return true;
+	const { blockedSlugs } = await getPlatformSettings();
+	return blockedSlugs.includes(slug);
+}
 
-/** Whether a candidate slug is free to take: not a reserved route, and not already
- * used by another person (rows belonging to `excludeUserId`, if given, don't count —
- * so a person can "claim" their own current slug unchanged). */
+/** Whether a candidate slug is free to take: not blocked by the platform, and not
+ * already used by another person (rows belonging to `excludeUserId`, if given, don't
+ * count — so a person can "claim" their own current slug unchanged). */
 export async function isSlugAvailable(slug: string, excludeUserId?: number): Promise<boolean> {
-	if (!slug || RESERVED_SLUGS.includes(slug)) return false;
+	if (!slug || (await isSlugBlocked(slug))) return false;
 	const [existing] = await db
 		.select({ id: users.id })
 		.from(users)
@@ -89,12 +68,15 @@ export async function isSlugAvailable(slug: string, excludeUserId?: number): Pro
  * (against reserved routes and every other user's slug). Call once, at creation
  * time; every later `leaders` row for the same person just points at this user. */
 export async function generateLeaderSlug(name: string): Promise<string> {
-	const base = slugify(name);
+	// A numeric-only base can never pass the blocked-slug check (nor can any of its
+	// "-2", "-3"... variants), so prefix it rather than loop forever.
+	let base = slugify(name);
+	if (!base || /^[0-9-]+$/.test(base)) base = `leader-${base}`.replace(/-$/, '');
 	let candidate = base;
 	let n = 1;
 	// eslint-disable-next-line no-constant-condition
 	while (true) {
-		if (!RESERVED_SLUGS.includes(candidate) && (await isSlugAvailable(candidate))) {
+		if (await isSlugAvailable(candidate)) {
 			return candidate;
 		}
 		n++;

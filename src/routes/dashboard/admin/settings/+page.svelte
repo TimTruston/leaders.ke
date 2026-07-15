@@ -103,6 +103,21 @@ Applies everywhere a code/link is sent
 			</div>
 		</div>
 
+		<div class="rounded-2xl border border-border bg-surface p-5">
+			<h2 class="font-semibold text-heading">Blocked slugs</h2>
+			<p class="mt-1 text-xs text-muted">
+				Words no leader may take as their public URL: the platform's own routes plus words kept for later use.
+				Comma or space separated. Numeric-only slugs (e.g. 2027) are always blocked.
+				Removing a route word lets a leader shadow that page — edit with care.
+			</p>
+			<textarea
+				name="blockedSlugs"
+				rows="5"
+				value={data.settings.blockedSlugs.join(', ')}
+				class="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+			></textarea>
+		</div>
+
 		<button
 			type="submit"
 			disabled={saving}

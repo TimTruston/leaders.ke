@@ -794,6 +794,20 @@ export const ballotSimulations = pgTable('ballot_simulations', {
 
 // 24. PLATFORM SETTINGS (single-row config an admin can tune without a deploy —
 // OTP/invite anti-abuse thresholds today, room to grow. Always id=1.)
+
+// Default for platformSettings.blockedSlugs, shared with the seed process
+// (scripts/lib/seed-platform-settings.ts backfills these into an existing row).
+export const DEFAULT_BLOCKED_SLUGS = [
+  // routes a leader slug must never shadow
+  'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'leaders', 'pricing',
+  'compare', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
+  'dashboard', 'features', 'demo', 'logout', 'login', 'signup', 'change-email',
+  'change-password', 'delete-account', 'forgot-password', 'reset-password',
+  // kept for the platform's future use
+  'security', 'privacy', 'terms', 'about', 'help', 'support', 'contact', 'api',
+  'blog', 'news', 'press', 'verify', 'settings'
+];
+
 export const platformSettings = pgTable('platform_settings', {
   id: integer('id').primaryKey().default(1),
   // Shared by every OTP send (sms/whatsapp/email) and by re-inviting the same
@@ -807,6 +821,12 @@ export const platformSettings = pgTable('platform_settings', {
     .$type<{ aspirant: number; influencer: number; mobilizer: number }>()
     .default({ aspirant: 10, influencer: 50, mobilizer: 200 })
     .notNull(),
+  // Slugs no leader may take: the platform's own routes (a leader slug must never
+  // shadow a top-level route or a /dashboard/<slug> second segment) plus words the
+  // platform may want later. Numeric-only slugs (e.g. "2027") are always blocked in
+  // code since ballot routes use bare years. Removing a route word here breaks the
+  // shadowing guard for it — edit with care.
+  blockedSlugs: jsonb('blocked_slugs').$type<string[]>().default(DEFAULT_BLOCKED_SLUGS).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
