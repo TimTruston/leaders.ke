@@ -35,7 +35,9 @@
 		return data.leaderContext?.verified ? 'campaign' : 'apply';
 	});
 
-	// The modes this account can switch between right now.
+	// The modes this account can switch between right now. "Claiming a Profile"
+	// only exists while a ?leader= claim is in flight — its href keeps the claim
+	// params so re-picking it returns to the same claim form.
 	const modes = $derived(
 		[
 			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
@@ -46,13 +48,20 @@
 				available: !!data.leaderContext
 			},
 			{ key: 'ambassador', href: '/dashboard/ambassador', label: 'Ambassador', available: data.isAmbassador },
+			{
+				key: 'claim',
+				href: `/dashboard/profile${page.url.search}`,
+				label: 'Claiming a Profile',
+				available: !!data.claimName
+			},
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
 		].filter((m) => m.available)
 	);
 	// 'apply' is the pre-verification leader context, which shares the 'campaign' switcher
 	// entry — without this map the lookup misses and wrongly falls back to Citizen.
+	// An in-flight claim (?leader=) selects its own "Claiming a Profile" entry.
 	const currentMode = $derived(
-		modes.find((m) => m.key === (mode === 'apply' ? 'campaign' : mode)) ?? modes[0]
+		modes.find((m) => m.key === (data.claimName ? 'claim' : mode === 'apply' ? 'campaign' : mode)) ?? modes[0]
 	);
 
 	// Tabs per mode. Only pages that actually exist are listed (no dead links); every
@@ -162,7 +171,11 @@
 
 	<div class="flex flex-wrap items-center justify-between gap-2">
 		<div class="flex items-center justify-between gap-2 w-full">
-			{#if mode === 'campaign' && data.leaderContext}
+			{#if data.claimName}
+				<!-- Claiming another leader's profile (?leader=) outranks whatever mode the
+				viewer is otherwise in — even an existing campaign context. -->
+				<h1 class="text-2xl font-bold text-heading">Claim: {data.claimName}</h1>
+			{:else if mode === 'campaign' && data.leaderContext}
 				<h1 class="text-2xl font-bold text-heading">
 					{data.leaderContext.leaderName}
 					{#if data.leaderContext.role === 'manager'}
@@ -174,7 +187,7 @@
 					{/if}
 				</h1>
 			{:else if mode === 'apply'}
-				<h1 class="text-2xl font-bold text-heading">{data.claimName ? `Claim Profile: ${data.claimName}` : 'Create a Leader Profile'}</h1>
+				<h1 class="text-2xl font-bold text-heading">Create a Leader Profile</h1>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
@@ -216,11 +229,15 @@
 		<div class="flex flex-wrap justify-between gap-2 w-full">
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
-			{#if mode === 'apply'}
+			{#if data.claimName}
+				<!-- Claiming outranks mode here too — and hides the viewer's own
+				Submit Application widget, which doesn't belong to a claim. -->
 				<span class="flex items-center text-sm my-2 sm:my-0">
-					{data.claimName
-					? 'Confirm the details below to claim this profile.'
-					: "A few steps to go public ahead of 10 August 2027."}
+					Confirm the details below to claim this profile.
+				</span>
+			{:else if mode === 'apply'}
+				<span class="flex items-center text-sm my-2 sm:my-0">
+					A few steps to go public ahead of 10 August 2027.
 				</span>
 				{#if data.pendingVerification}
 					<span
