@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { plainText } from '$lib/utils/richtext';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -115,7 +116,8 @@
 						{#if leader!.party}· {leader!.party}{/if}
 					</p>
 					{#if leader!.bio}
-						<p class="mt-3 text-sm leading-relaxed">{leader!.bio.slice(0, 180)}{leader!.bio.length > 180 ? '…' : ''}</p>
+						{@const bio = plainText(leader!.bio)}
+						<p class="mt-3 text-sm leading-relaxed">{bio.slice(0, 180)}{bio.length > 180 ? '…' : ''}</p>
 					{/if}
 				</a>
 			{/each}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { compareSelection, clearCompareSelection } from '$lib/stores/compare.svelte';
+	import { plainText } from '$lib/utils/richtext';
 
 	type Props = {
 		path: string;
@@ -124,7 +125,7 @@ whole card is clickable, while the party name stays its own separate link on top
 		{#if positionTitle || region}
 			<p class="mt-4 text-sm">{positionTitle}{positionTitle && region ? ', ' : ''}{region}</p>
 		{/if}
-		{#if bio}<p class="mt-2 line-clamp-2 text-sm">{bio}</p>{/if}
+		{#if bio}<p class="mt-2 line-clamp-2 text-sm">{plainText(bio)}</p>{/if}
 	{/if}
 	{#if (!compact && status) || followers !== undefined}
 		<div class="mt-2 flex items-center gap-2 text-xs text-muted justify-between">

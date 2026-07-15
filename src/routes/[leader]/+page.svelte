@@ -2,6 +2,7 @@
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import Reviews from '$lib/components/Reviews.svelte';
 	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
+	import { renderRichText } from '$lib/utils/richtext';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -80,7 +81,9 @@
 				</div>
 
 				{#if leader.bio}
-					<p class="mt-6 leading-relaxed">{leader.bio}</p>
+					<!-- Bio is stored as markdown-lite (RichTextEditor); renderRichText
+					escapes it before formatting, so {@html} is safe here. -->
+					<div class="mt-6 space-y-3 leading-relaxed">{@html renderRichText(leader.bio)}</div>
 				{/if}
 			</div>
 

@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
+	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
 	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
 	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
@@ -17,6 +18,8 @@
 	let { data, form }: { data: TabData; form: any } = $props();
 
 	let saving = $state(false);
+	// Local editing state for the rich-text bio (the form posts it via name="bio").
+	let bio = $state(data.form.bio);
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	// Errored fields aren't outlined - the red * next to the label (starClass) and
 	// the message under the save button do the flagging.
@@ -228,16 +231,17 @@
 			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
 		{/if}
 
-		<label class="block">
+		<div class="block">
 			<span class="text-sm font-medium text-heading">Bio <span class={starClass('Bio')}>*</span></span>
-			<textarea
-				name="bio"
-				rows="5"
-				placeholder="Who you are, what you have done, and why you are running."
-				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass()}"
-				>{data.form.bio}</textarea
-			>
-		</label>
+			<div class="mt-1.5">
+				<RichTextEditor
+					name="bio"
+					bind:value={bio}
+					rows={5}
+					placeholder="Who you are, what you have done, and why you are running."
+				/>
+			</div>
+		</div>
 		{#if missing.has('bio')}
 			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
 		{/if}

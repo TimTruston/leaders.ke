@@ -77,7 +77,7 @@
 		const campaignEntries = data.myCampaigns.map((c: { leaderId: number; name: string; verified: boolean; basePath: string }) => ({
 			key: `campaign:${c.basePath}`,
 			href: `${c.basePath}/profile`,
-			label: `${c.verified ? 'Managing' : 'Applying'}: ${c.name}`,
+			label: `${c.verified ? 'Manage' : 'Applying'}: ${c.name}`,
 			available: true
 		}));
 		if (mode === 'apply' && !data.myCampaigns.some((c: { basePath: string }) => c.basePath === base)) {
