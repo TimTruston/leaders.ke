@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
+	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 </script>
 
 <svelte:head><title>PR desk — leaders.ke</title></svelte:head>
@@ -65,6 +67,7 @@
 				</li>
 			{/each}
 		</ul>
+		<Pagination page={data.page} {totalPages} total={data.total} itemLabel="mentions" href={(p) => `?page=${p}`} />
 	</div>
 
 	<!-- Drafts + social -->

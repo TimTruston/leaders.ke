@@ -1,11 +1,15 @@
 import { fail } from '@sveltejs/kit';
 import { requireAdmin } from '$lib/server/dashboard';
 import { listFlaggedReviews, unflagReview } from '$lib/server/moderation';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	await requireAdmin(event);
-	return { flagged: await listFlaggedReviews() };
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
+	const { flagged, total } = await listFlaggedReviews(page, pageSize);
+	return { flagged, total, page, pageSize };
 };
 
 export const actions: Actions = {

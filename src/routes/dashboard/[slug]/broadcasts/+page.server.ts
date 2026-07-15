@@ -1,10 +1,11 @@
 import { fail } from '@sveltejs/kit';
-import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { followers, posts } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 // Broadcasts: compose once, send to a geo segment. Email only in v1;
@@ -12,6 +13,8 @@ import type { Actions, PageServerLoad } from './$types';
 // posts row (medium 'email') so history and analytics share one table.
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
 	const target = and(
 		eq(followers.digest, 'leader'),
@@ -19,12 +22,16 @@ export const load: PageServerLoad = async (event) => {
 		isNull(followers.deletedAt)
 	);
 
-	const [history, followerRows] = await Promise.all([
+	const historyFilter = and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'email'), isNull(posts.deletedAt));
+	const [history, [{ n: total }], followerRows] = await Promise.all([
 		db
 			.select()
 			.from(posts)
-			.where(and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'email'), isNull(posts.deletedAt)))
-			.orderBy(desc(posts.createdAt)),
+			.where(historyFilter)
+			.orderBy(desc(posts.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(posts).where(historyFilter),
 		db.select().from(followers).where(target)
 	]);
 
@@ -43,6 +50,9 @@ export const load: PageServerLoad = async (event) => {
 			summary: b.manualSummary,
 			sentAt: b.createdAt.toISOString()
 		})),
+		total,
+		page,
+		pageSize,
 		audience: {
 			total: followerRows.length,
 			reachable: reachable.length,

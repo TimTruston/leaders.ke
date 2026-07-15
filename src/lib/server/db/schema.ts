@@ -827,6 +827,9 @@ export const platformSettings = pgTable('platform_settings', {
   // code since ballot routes use bare years. Removing a route word here breaks the
   // shadowing guard for it — edit with care.
   blockedSlugs: jsonb('blocked_slugs').$type<string[]>().default(DEFAULT_BLOCKED_SLUGS).notNull(),
+  // Rows per page on every paginated dashboard list (campaign posts/reviews/
+  // followers/broadcasts/PR, admin tables, citizen invites).
+  pageSize: integer('page_size').default(50).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

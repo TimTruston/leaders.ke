@@ -8,19 +8,22 @@ import {
 	REVIEW_FLAG_REASONS,
 	type ReviewFlagReason
 } from '$lib/server/reviews';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 // Moderation queue for citizen reviews of this leader (the person, across every
 // seat they've held or vied for): flag/unflag, and respond in the review's thread.
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
-	const [reviews, pillarOptions] = await Promise.all([
-		listReviewsForModeration(ctx.profileUser.id),
+	const [{ reviews, total }, pillarOptions] = await Promise.all([
+		listReviewsForModeration(ctx.profileUser.id, page, pageSize),
 		listReviewPillarOptions(ctx.leader.id)
 	]);
 
-	return { reviews, pillarOptions, flagReasons: REVIEW_FLAG_REASONS };
+	return { reviews, total, page, pageSize, pillarOptions, flagReasons: REVIEW_FLAG_REASONS };
 };
 
 export const actions: Actions = {

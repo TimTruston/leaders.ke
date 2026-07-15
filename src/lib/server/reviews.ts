@@ -290,30 +290,41 @@ export async function handleDeleteReviewAction(event: RequestEvent, subjectId: n
 	return { deleted: true };
 }
 
-/** Every live review of a person, newest first, for the leader/manager moderation queue. */
-export async function listReviewsForModeration(subjectId: number): Promise<ModerationReviewItem[]> {
-	const rows = await db
-		.select({
-			id: reviews.id,
-			rating: reviews.rating,
-			message: reviews.message,
-			likes: reviews.likes,
-			public: reviews.public,
-			flagReason: reviews.flagReason,
-			pillarTitle: pillars.title,
-			createdAt: reviews.createdAt,
-			firstName: users.firstName,
-			otherNames: users.otherNames
-		})
-		.from(reviews)
-		.innerJoin(users, eq(reviews.userId, users.id))
-		.leftJoin(pillars, eq(reviews.pillarId, pillars.id))
-		.where(and(eq(reviews.subjectId, subjectId), isNull(reviews.deletedAt)))
-		.orderBy(desc(reviews.createdAt));
+/** One page of live reviews of a person, newest first, for the leader/manager
+ * moderation queue — plus the total for the pager. */
+export async function listReviewsForModeration(
+	subjectId: number,
+	page: number,
+	pageSize: number
+): Promise<{ reviews: ModerationReviewItem[]; total: number }> {
+	const filter = and(eq(reviews.subjectId, subjectId), isNull(reviews.deletedAt));
+	const [rows, [{ n: total }]] = await Promise.all([
+		db
+			.select({
+				id: reviews.id,
+				rating: reviews.rating,
+				message: reviews.message,
+				likes: reviews.likes,
+				public: reviews.public,
+				flagReason: reviews.flagReason,
+				pillarTitle: pillars.title,
+				createdAt: reviews.createdAt,
+				firstName: users.firstName,
+				otherNames: users.otherNames
+			})
+			.from(reviews)
+			.innerJoin(users, eq(reviews.userId, users.id))
+			.leftJoin(pillars, eq(reviews.pillarId, pillars.id))
+			.where(filter)
+			.orderBy(desc(reviews.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(reviews).where(filter)
+	]);
 
 	const responseByReviewId = await getResponsesByReviewId(rows.map((r) => r.id));
 
-	return rows.map((r) => {
+	const items = rows.map((r) => {
 		const response = responseByReviewId.get(r.id);
 		return {
 			id: r.id,
@@ -328,6 +339,7 @@ export async function listReviewsForModeration(subjectId: number): Promise<Moder
 			response: response ? { body: response.body, createdAt: response.createdAt.toISOString() } : null
 		};
 	});
+	return { reviews: items, total };
 }
 
 /** Flags a review (hides it from public view, reversible) or clears the flag.

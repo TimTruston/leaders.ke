@@ -21,13 +21,15 @@ export const actions: Actions = {
 		const aspirant = Number(form.get('aspirant'));
 		const influencer = Number(form.get('influencer'));
 		const mobilizer = Number(form.get('mobilizer'));
+		const pageSize = Number(form.get('pageSize'));
 
 		for (const [label, value] of [
 			['Cooldown', otpCooldownSeconds],
 			['Daily cap', otpDailyCap],
 			['Aspirant limit', aspirant],
 			['Influencer limit', influencer],
-			['Mobilizer limit', mobilizer]
+			['Mobilizer limit', mobilizer],
+			['Page size', pageSize]
 		] as const) {
 			if (!Number.isInteger(value) || value < 1) return fail(400, { error: `${label} must be a whole number of at least 1.` });
 		}
@@ -50,6 +52,7 @@ export const actions: Actions = {
 				otpDailyCap,
 				inviteLimits: { aspirant, influencer, mobilizer },
 				blockedSlugs,
+				pageSize,
 				updatedAt: new Date()
 			})
 			.where(eq(platformSettings.id, 1));

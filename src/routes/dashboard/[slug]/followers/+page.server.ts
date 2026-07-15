@@ -4,14 +4,14 @@ import { db } from '$lib/server/db';
 import { followers } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites } from '$lib/server/invites';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
-
-const PAGE_SIZE = 50;
 
 // Follower roster with geo segments; geo values feed the broadcast targeting UI too.
 // Ward filtering happens server-side so it composes correctly with pagination.
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
+	const pageSize = await getPageSize();
 
 	const target = and(
 		eq(followers.digest, 'leader'),
@@ -31,8 +31,8 @@ export const load: PageServerLoad = async (event) => {
 			.from(followers)
 			.where(filtered)
 			.orderBy(desc(followers.createdAt))
-			.limit(PAGE_SIZE)
-			.offset((page - 1) * PAGE_SIZE),
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
 		db.select({ n: count() }).from(followers).where(and(target, gte(followers.createdAt, weekAgo))),
 		db.select({ n: count() }).from(followers).where(filtered),
 		db.selectDistinct({ ward: followers.ward }).from(followers).where(target),
@@ -55,7 +55,7 @@ export const load: PageServerLoad = async (event) => {
 		newThisWeek: weekRow.n,
 		total: totalRow.n,
 		page,
-		pageSize: PAGE_SIZE,
+		pageSize,
 		ward,
 		wards: wardRows.map((w) => w.ward).filter((w): w is string => !!w).sort(),
 		followerInvites: openInvites.filter((i) => i.role === 'follower')

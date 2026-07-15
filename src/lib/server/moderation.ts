@@ -1,7 +1,7 @@
 // Admin "Moderation" tab: every flagged review across the whole platform in one
 // queue. Leaders/managers can already flag from a profile page (reversible, hides
 // the review from public view); this is the admin-side place to review and clear them.
-import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { reviews, users } from '$lib/server/db/schema';
@@ -16,29 +16,38 @@ export type FlaggedReviewRow = {
 	flaggedAt: string;
 };
 
-export async function listFlaggedReviews(): Promise<FlaggedReviewRow[]> {
+export async function listFlaggedReviews(
+	page: number,
+	pageSize: number
+): Promise<{ flagged: FlaggedReviewRow[]; total: number }> {
 	const subject = alias(users, 'subject');
 	const reviewer = alias(users, 'reviewer');
+	const filter = and(isNotNull(reviews.flagReason), isNull(reviews.deletedAt));
 
-	const rows = await db
-		.select({
-			reviewId: reviews.id,
-			public: reviews.public,
-			reason: reviews.flagReason,
-			message: reviews.message,
-			flaggedAt: reviews.flaggedAt,
-			subjectFirstName: subject.firstName,
-			subjectOtherNames: subject.otherNames,
-			reviewerFirstName: reviewer.firstName,
-			reviewerOtherNames: reviewer.otherNames
-		})
-		.from(reviews)
-		.innerJoin(subject, eq(reviews.subjectId, subject.id))
-		.innerJoin(reviewer, eq(reviews.userId, reviewer.id))
-		.where(and(isNotNull(reviews.flagReason), isNull(reviews.deletedAt)))
-		.orderBy(desc(reviews.flaggedAt));
+	const [rows, [{ n: total }]] = await Promise.all([
+		db
+			.select({
+				reviewId: reviews.id,
+				public: reviews.public,
+				reason: reviews.flagReason,
+				message: reviews.message,
+				flaggedAt: reviews.flaggedAt,
+				subjectFirstName: subject.firstName,
+				subjectOtherNames: subject.otherNames,
+				reviewerFirstName: reviewer.firstName,
+				reviewerOtherNames: reviewer.otherNames
+			})
+			.from(reviews)
+			.innerJoin(subject, eq(reviews.subjectId, subject.id))
+			.innerJoin(reviewer, eq(reviews.userId, reviewer.id))
+			.where(filter)
+			.orderBy(desc(reviews.flaggedAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(reviews).where(filter)
+	]);
 
-	return rows.map((r) => ({
+	const flagged = rows.map((r) => ({
 		reviewId: r.reviewId,
 		subjectName: fullName({ firstName: r.subjectFirstName, otherNames: r.subjectOtherNames }),
 		reviewerName: r.public
@@ -48,6 +57,7 @@ export async function listFlaggedReviews(): Promise<FlaggedReviewRow[]> {
 		message: r.message,
 		flaggedAt: r.flaggedAt!.toISOString()
 	}));
+	return { flagged, total };
 }
 
 /** Clears a flag, restoring the review to public view (matches the per-profile unflag). */

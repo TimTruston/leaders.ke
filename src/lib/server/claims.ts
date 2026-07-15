@@ -2,7 +2,7 @@
 // leader row's ownership (see the comment on profileClaims in schema.ts) — it
 // makes the claimant an admin manager of the existing profile instead.
 import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { and, desc, eq, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders, managers, profileClaims, users } from '$lib/server/db/schema';
 import { fullName, resolveCurrentTerm } from '$lib/server/leader';
@@ -186,23 +186,27 @@ export async function requestClaim(leaderId: number, claimedBy: number, evidence
 	return { ok: true as const };
 }
 
-/** Every claim ever made, newest first — pending, approved, and rejected — same
- * revertible shape as the verification queue. */
-export async function listClaims(): Promise<ClaimRow[]> {
-	const claimant = { firstName: users.firstName, otherNames: users.otherNames };
-	const rows = await db
-		.select({
-			claimId: profileClaims.id,
-			leaderId: profileClaims.leaderId,
-			claimedByUserId: profileClaims.claimedBy,
-			requestedAt: profileClaims.requestedAt,
-			outcome: profileClaims.outcome,
-			claimantFirstName: users.firstName,
-			claimantOtherNames: users.otherNames
-		})
-		.from(profileClaims)
-		.innerJoin(users, eq(profileClaims.claimedBy, users.id))
-		.orderBy(desc(profileClaims.requestedAt));
+/** One page of claims, newest first — pending, approved, and rejected — same
+ * revertible shape as the verification queue. Returns the total for the pager. */
+export async function listClaims(page: number, pageSize: number): Promise<{ claims: ClaimRow[]; total: number }> {
+	const [rows, [{ n: total }]] = await Promise.all([
+		db
+			.select({
+				claimId: profileClaims.id,
+				leaderId: profileClaims.leaderId,
+				claimedByUserId: profileClaims.claimedBy,
+				requestedAt: profileClaims.requestedAt,
+				outcome: profileClaims.outcome,
+				claimantFirstName: users.firstName,
+				claimantOtherNames: users.otherNames
+			})
+			.from(profileClaims)
+			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
+			.orderBy(desc(profileClaims.requestedAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(profileClaims)
+	]);
 
 	const subjectRows = await db
 		.select({ leaderId: leaders.id, firstName: users.firstName, otherNames: users.otherNames })
@@ -210,7 +214,7 @@ export async function listClaims(): Promise<ClaimRow[]> {
 		.innerJoin(users, eq(leaders.userId, users.id));
 	const subjectByLeaderId = new Map(subjectRows.map((r) => [r.leaderId, fullName(r)]));
 
-	return rows.map((r) => ({
+	const claims = rows.map((r) => ({
 		claimId: r.claimId,
 		leaderId: r.leaderId,
 		claimedByUserId: r.claimedByUserId,
@@ -219,6 +223,7 @@ export async function listClaims(): Promise<ClaimRow[]> {
 		requestedAt: r.requestedAt.toISOString(),
 		outcome: r.outcome
 	}));
+	return { claims, total };
 }
 
 /**

@@ -5,6 +5,7 @@ import { posts, tags } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
 import { answerConstituentQuestion } from '$lib/server/ai';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 // PR desk: every news post tagged to this leader is a mention. Mentions come
@@ -14,16 +15,26 @@ const CRISIS_THRESHOLD_24H = 3;
 
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
 	const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+	const mentionFilter = and(eq(tags.leaderId, ctx.leader.id), isNull(tags.deletedAt), isNull(posts.deletedAt));
 
-	const [mentionRows, [dayRow], draftRows] = await Promise.all([
+	const [mentionRows, [totalRow], [dayRow], draftRows] = await Promise.all([
 		db
 			.select({ tagId: tags.id, post: posts })
 			.from(tags)
 			.innerJoin(posts, eq(tags.postId, posts.id))
-			.where(and(eq(tags.leaderId, ctx.leader.id), isNull(tags.deletedAt), isNull(posts.deletedAt)))
-			.orderBy(desc(posts.createdAt)),
+			.where(mentionFilter)
+			.orderBy(desc(posts.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db
+			.select({ n: count() })
+			.from(tags)
+			.innerJoin(posts, eq(tags.postId, posts.id))
+			.where(mentionFilter),
 		db
 			.select({ n: count() })
 			.from(tags)
@@ -53,6 +64,9 @@ export const load: PageServerLoad = async (event) => {
 			summary: m.post.aiSummary ?? m.post.body.slice(0, 160),
 			createdAt: m.post.createdAt.toISOString()
 		})),
+		total: totalRow.n,
+		page,
+		pageSize,
 		mentions24h: dayRow.n,
 		crisis: dayRow.n >= CRISIS_THRESHOLD_24H,
 		drafts: draftRows.map((d) => ({ id: d.id, title: d.title }))

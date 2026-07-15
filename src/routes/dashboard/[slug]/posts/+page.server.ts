@@ -1,20 +1,29 @@
 import { fail } from '@sveltejs/kit';
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { posts } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 // The campaign CMS: web posts that appear on the public leader page.
 // Broadcasts (medium email/sms/whatsapp) live under /dashboard/broadcasts.
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
-	const rows = await db
-		.select()
-		.from(posts)
-		.where(and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'web'), isNull(posts.deletedAt)))
-		.orderBy(desc(posts.createdAt));
+	const filter = and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'web'), isNull(posts.deletedAt));
+	const [rows, [{ n: total }]] = await Promise.all([
+		db
+			.select()
+			.from(posts)
+			.where(filter)
+			.orderBy(desc(posts.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(posts).where(filter)
+	]);
 
 	return {
 		posts: rows.map((p) => ({
@@ -23,7 +32,10 @@ export const load: PageServerLoad = async (event) => {
 			body: p.body,
 			isPublic: p.public,
 			createdAt: p.createdAt.toISOString()
-		}))
+		})),
+		total,
+		page,
+		pageSize
 	};
 };
 

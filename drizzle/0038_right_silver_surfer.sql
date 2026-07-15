@@ -1,0 +1,1 @@
+ALTER TABLE "platform_settings" ADD COLUMN "page_size" integer DEFAULT 50 NOT NULL;

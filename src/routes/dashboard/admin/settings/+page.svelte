@@ -104,6 +104,24 @@ Applies everywhere a code/link is sent
 		</div>
 
 		<div class="rounded-2xl border border-border bg-surface p-5">
+			<h2 class="font-semibold text-heading">List pagination</h2>
+			<p class="mt-1 text-xs text-muted">
+				Rows per page on every paginated dashboard list: campaign posts, reviews, followers,
+				broadcasts, PR mentions, the admin tables, and citizen invites.
+			</p>
+			<label class="mt-2 block max-w-40">
+				<span class="text-xs font-medium text-muted">Page size</span>
+				<input
+					type="number"
+					name="pageSize"
+					min="1"
+					value={data.settings.pageSize}
+					class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+				/>
+			</label>
+		</div>
+
+		<div class="rounded-2xl border border-border bg-surface p-5">
 			<h2 class="font-semibold text-heading">Blocked slugs</h2>
 			<p class="mt-1 text-xs text-muted">
 				Words no leader may take as their public URL: the platform's own routes plus words kept for later use.

@@ -1,16 +1,16 @@
 import { fail } from '@sveltejs/kit';
 import { requireAdmin } from '$lib/server/dashboard';
 import { listVerifications, reviewVerification } from '$lib/server/verifications';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
-
-const PAGE_SIZE = 50;
 
 // Every verification request, table view: approve, reject, or revert a past approval.
 export const load: PageServerLoad = async (event) => {
 	await requireAdmin(event);
+	const pageSize = await getPageSize();
 	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
-	const { requests, total } = await listVerifications(page, PAGE_SIZE);
-	return { requests, total, page, pageSize: PAGE_SIZE };
+	const { requests, total } = await listVerifications(page, pageSize);
+	return { requests, total, page, pageSize };
 };
 
 export const actions: Actions = {

@@ -3,7 +3,7 @@
 // the same email/role revokes whatever link was open before, so there's only ever
 // one live.
 import { randomBytes } from 'node:crypto';
-import { and, count, desc, eq, gte, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, gt, gte, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ambassadors, campaigns, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -204,33 +204,46 @@ export type ReceivedInvite = {
 	createdAt: string;
 };
 
-/** Every invite (any leader, any role) addressed to this email that's still open —
- * powers the citizen dashboard's Invites tab. */
-export async function listInvitesForEmail(email: string): Promise<ReceivedInvite[]> {
+/** One page of invites (any leader, any role) addressed to this email that are
+ * still open and unexpired — powers the citizen dashboard's Invites tab. Expiry is
+ * filtered in SQL so it composes correctly with pagination. */
+export async function listInvitesForEmail(
+	email: string,
+	page: number,
+	pageSize: number
+): Promise<{ invites: ReceivedInvite[]; total: number }> {
 	const normalizedEmail = email.trim().toLowerCase();
-	const rows = await db
-		.select({
-			token: invites.token,
-			role: invites.role,
-			expiresAt: invites.expiresAt,
-			createdAt: invites.createdAt,
-			firstName: users.firstName,
-			otherNames: users.otherNames,
-			slug: users.slug,
-			positionTitle: positions.title,
-			region: positions.region
-		})
-		.from(invites)
-		.innerJoin(leaders, eq(invites.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(invites.email, normalizedEmail), isNull(invites.deletedAt), isNull(invites.usedBy)))
-		.orderBy(desc(invites.createdAt));
+	const filter = and(
+		eq(invites.email, normalizedEmail),
+		isNull(invites.deletedAt),
+		isNull(invites.usedBy),
+		or(isNull(invites.expiresAt), gt(invites.expiresAt, new Date()))
+	);
+	const [rows, [{ n: total }]] = await Promise.all([
+		db
+			.select({
+				token: invites.token,
+				role: invites.role,
+				createdAt: invites.createdAt,
+				firstName: users.firstName,
+				otherNames: users.otherNames,
+				slug: users.slug,
+				positionTitle: positions.title,
+				region: positions.region
+			})
+			.from(invites)
+			.innerJoin(leaders, eq(invites.leaderId, leaders.id))
+			.innerJoin(users, eq(leaders.userId, users.id))
+			.innerJoin(positions, eq(leaders.positionId, positions.id))
+			.where(filter)
+			.orderBy(desc(invites.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ n: count() }).from(invites).where(filter)
+	]);
 
-	const now = Date.now();
-	return rows
-		.filter((r) => !r.expiresAt || r.expiresAt.getTime() > now)
-		.map((r) => ({
+	return {
+		invites: rows.map((r) => ({
 			token: r.token,
 			role: r.role,
 			leaderName: fullName(r),
@@ -238,7 +251,9 @@ export async function listInvitesForEmail(email: string): Promise<ReceivedInvite
 			positionTitle: r.positionTitle,
 			region: r.region,
 			createdAt: r.createdAt.toISOString()
-		}));
+		})),
+		total
+	};
 }
 
 /** Revokes an open invite link before it's ever accepted. */

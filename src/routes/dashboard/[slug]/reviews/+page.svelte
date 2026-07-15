@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import ReviewFilter from '$lib/components/ReviewFilter.svelte';
+	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import { filterAndSortReviews } from '$lib/reviewFilter';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 
 	const fmt = new Intl.NumberFormat('en-KE');
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
@@ -215,6 +217,7 @@
 				<p class="text-sm text-muted">No reviews match those filters.</p>
 			{/each}
 		</div>
+		<Pagination page={data.page} {totalPages} total={data.total} itemLabel="reviews" href={(p) => `?page=${p}`} />
 	{:else}
 		<p class="mt-6 text-sm text-muted">No public reviews yet.</p>
 	{/if}

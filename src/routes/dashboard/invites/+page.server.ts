@@ -1,11 +1,15 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { acceptInvite, inviteDestination, joinedBannerQuery, listInvitesForEmail } from '$lib/server/invites';
+import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	const { authUser } = await requireDashboardUser(event);
-	return { invites: await listInvitesForEmail(authUser.email) };
+	const pageSize = await getPageSize();
+	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
+	const { invites, total } = await listInvitesForEmail(authUser.email, page, pageSize);
+	return { invites, total, page, pageSize };
 };
 
 export const actions: Actions = {

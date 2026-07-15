@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
+	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 
 	const roleLabel = (role: string) => (role === 'manager' ? 'Manager' : role === 'ambassador' ? 'Ambassador' : 'Follower');
 </script>
@@ -46,6 +48,7 @@
 				</li>
 			{/each}
 		</ul>
+		<Pagination page={data.page} {totalPages} total={data.total} itemLabel="invites" href={(p) => `?page=${p}`} />
 	{:else}
 		<div class="mt-6 rounded-2xl border border-dashed border-border p-8 text-center">
 			<p class="font-semibold text-heading">No invites right now</p>

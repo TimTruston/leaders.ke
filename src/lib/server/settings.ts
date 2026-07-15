@@ -13,3 +13,8 @@ export async function getPlatformSettings(): Promise<PlatformSettings> {
 	const [created] = await db.insert(platformSettings).values({ id: 1 }).returning();
 	return created;
 }
+
+/** Rows per page on every paginated dashboard list (campaign, admin, and citizen tabs). */
+export async function getPageSize(): Promise<number> {
+	return (await getPlatformSettings()).pageSize;
+}
