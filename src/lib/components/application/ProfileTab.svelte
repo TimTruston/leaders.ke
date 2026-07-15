@@ -95,6 +95,13 @@
 	const expDateInvalid = $derived(!!expFrom && !!expTo && expTo < expFrom);
 	const leadDateInvalid = $derived(!!leadFrom && !!leadTo && leadTo < leadFrom);
 
+	// Year dropdown options, newest first. The "To" pickers filter to years >= the
+	// picked "From", so an inverted range can't be selected in the first place
+	// (the *Invalid deriveds above stay as backstops for stale picks).
+	const years = Array.from({ length: 2030 - 1950 + 1 }, (_, i) => String(2030 - i));
+	const expToYears = $derived(expFrom ? years.filter((y) => y >= expFrom) : years);
+	const leadToYears = $derived(leadFrom ? years.filter((y) => y >= leadFrom) : years);
+
 	function addExperience() {
 		if (adding !== 'professional' && adding !== 'education') return;
 		if (!expTitle.trim() || !expInstitution.trim() || !expFrom || expDateInvalid) return;
@@ -399,20 +406,27 @@
 							<div class="grid grid-cols-2 gap-3">
 								<label class="block">
 									<span class="text-sm font-medium text-heading">From</span>
-									<input
-										type="date"
+									<select
 										bind:value={leadFrom}
 										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-									/>
+									>
+										<option value="">Year</option>
+										{#each years as year (year)}
+											<option value={year}>{year}</option>
+										{/each}
+									</select>
 								</label>
 								<label class="block">
 									<span class="text-sm font-medium text-heading">To (optional)</span>
-									<input
-										type="date"
+									<select
 										bind:value={leadTo}
-										min={leadFrom || undefined}
 										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-									/>
+									>
+										<option value="">Ongoing</option>
+										{#each leadToYears as year (year)}
+											<option value={year}>{year}</option>
+										{/each}
+									</select>
 								</label>
 							</div>
 							{#if leadDateInvalid}
@@ -451,20 +465,27 @@
 						<div class="grid grid-cols-2 gap-3">
 							<label class="block">
 								<span class="text-sm font-medium text-heading">From</span>
-								<input
-									type="date"
+								<select
 									bind:value={expFrom}
 									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-								/>
+								>
+									<option value="">Year</option>
+									{#each years as year (year)}
+										<option value={year}>{year}</option>
+									{/each}
+								</select>
 							</label>
 							<label class="block">
 								<span class="text-sm font-medium text-heading">To (optional)</span>
-								<input
-									type="date"
+								<select
 									bind:value={expTo}
-									min={expFrom || undefined}
 									class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-								/>
+								>
+									<option value="">Ongoing</option>
+									{#each expToYears as year (year)}
+										<option value={year}>{year}</option>
+									{/each}
+								</select>
 							</label>
 						</div>
 						{#if expDateInvalid}
