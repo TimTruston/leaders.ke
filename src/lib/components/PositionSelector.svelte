@@ -8,9 +8,8 @@
 		verified,
 		initialPositionId,
 		name = 'positionId',
-		label = 'Position you are vying for',
+		label = 'Elective position',
 		required = true,
-		filled = false,
 		value = $bindable('')
 	}: {
 		positions: Position[];
@@ -22,9 +21,6 @@
 		// buttons — native HTML validation is form-wide, so an always-required select
 		// here would block unrelated submits (e.g. the main Save button) until filled.
 		required?: boolean;
-		// Mutes the required `*` once the position is saved (driven by the parent's
-		// application checklist), matching the other required-field markers.
-		filled?: boolean;
 		// Exposes the chosen positionId to the parent (e.g. to stage it client-side
 		// instead of relying on native form submission).
 		value?: number | '';
@@ -76,9 +72,7 @@
 </script>
 
 <div class="block">
-	<span class="text-sm font-medium text-heading">{label}{#if required}<span
-				class={filled ? 'text-muted' : 'text-red-500'}> *</span
-			>{/if}</span>
+	<span class="text-sm font-medium text-heading">{label}</span>
 	{#if verified}
 		<p class="mt-1.5 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm text-muted">
 			Your seat is locked while verified. Contact support to change races.
@@ -90,7 +84,7 @@
 				bind:value={selectedTitle}
 				onchange={onTitleChange}
 				{required}
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+				class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none"
 			>
 				<option value="" disabled>Leadership role</option>
 				{#each titles as title (title)}
@@ -104,7 +98,7 @@
 					onchange={onConstituencyChange}
 					{required}
 					disabled={!selectedTitle}
-					class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
+					class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-60"
 				>
 					<option value="" disabled>Select Constituency</option>
 					{#each allConstituencies as c (c.seatName)}
@@ -115,7 +109,7 @@
 					bind:value={value}
 					{required}
 					disabled={!selectedConstituency}
-					class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
+					class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-60"
 				>
 					<option value="" disabled>Select Ward</option>
 					{#each wardOptions as w (w.seatName)}
@@ -130,7 +124,7 @@
 					bind:value={value}
 					{required}
 					disabled={!selectedTitle}
-					class="col-span-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
+					class="col-span-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-2 focus:ring-ring focus:outline-none disabled:opacity-60"
 				>
 					<option value="" disabled>Select Region</option>
 					{#each regionOptions as p (p.id)}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 
@@ -20,45 +21,90 @@
 
 	// Generic one-off banner (e.g. "Your email is already verified.") set as a
 	// flash cookie by whichever route redirected here (see $lib/server/flash.ts).
-	const notice = $derived(data.flash);
+	// Normally hooks consume the cookie and it arrives via data.flash — but when a
+	// redirect lands on the SAME url the user was already on, no server load
+	// re-runs, so read (and clear) the cookie client-side after each navigation.
+	let clientFlash = $state<string | null>(null);
+	afterNavigate(() => {
+		const match = document.cookie.match(/(?:^|;\s*)flash=([^;]+)/);
+		if (match) {
+			clientFlash = decodeURIComponent(match[1]);
+			document.cookie = 'flash=; path=/; max-age=0';
+		} else {
+			clientFlash = null;
+		}
+	});
+	const notice = $derived(clientFlash ?? data.flash);
 
 	// Which mode the current URL/state belongs to. The section nav below shows only this
 	// mode's tabs, so switching modes changes what's available, not just the open tab.
 	// Matched on the exact second path segment — a prefix test would misfile campaign
 	// slugs that merely start with a mode name (/dashboard/admin-tim/* is NOT admin).
-	// Profile/Contacts/Team/Documentation are shared between "applying" and "an
-	// established campaign": not yet verified (or no profile) means still applying.
+	// Leader route families: apply/[id]/* (application in progress), claim/[slug]/*
+	// (claiming an existing profile), [slug]/* (a verified campaign).
 	const mode = $derived.by(() => {
 		const second = page.url.pathname.split('/')[2];
 		if (second === 'admin') return 'admin';
 		if (second === 'ambassador') return 'ambassador';
+		if (second === 'apply') return 'apply';
+		if (second === 'claim') return 'claim';
 		if (!second || second === 'account' || second === 'invites') return 'citizen';
-		return data.leaderContext?.verified ? 'campaign' : 'apply';
+		return 'campaign';
+	});
+
+	// The base path of the leader family currently on screen (tab hrefs, Submit
+	// Application action). Falls back to the viewer's own campaign/application.
+	const base = $derived.by(() => {
+		if (mode === 'apply') return `/dashboard/apply/${page.params.id}`;
+		if (mode === 'claim') return `/dashboard/claim/${page.params.slug}`;
+		return data.leaderContext?.basePath ?? '/dashboard';
 	});
 
 	// The modes this account can switch between right now, each flagged `current`.
-	// "Claiming a Profile" only exists while a ?leader= claim is in flight — its href
-	// keeps the claim params, and the claim outranks whatever mode the URL implies.
-	// 'apply' (the pre-verification flow) shares the 'campaign' switcher entry.
-	// Verified campaigns live under /dashboard/<slug>/* (basePath, +layout.server.ts).
+	// EVERY campaign they lead/manage, every ambassador assignment, and every
+	// pending claim gets its own entry — the switcher is the full directory, not
+	// just one context per kind. A blank application (nothing saved yet) appears
+	// as "New application" while it's on screen; unsaved claims likewise.
 	const modes = $derived.by(() => {
-		const base = data.leaderContext?.basePath ?? '/dashboard';
-		const currentKey = data.claimName ? 'claim' : mode === 'apply' ? 'campaign' : mode;
+		const currentKey =
+			mode === 'apply' || mode === 'campaign'
+				? `campaign:${base}`
+				: mode === 'claim'
+					? `claim:${page.params.slug}`
+					: mode;
+
+		const campaignEntries = data.myCampaigns.map((c: { leaderId: number; name: string; verified: boolean; basePath: string }) => ({
+			key: `campaign:${c.basePath}`,
+			href: `${c.basePath}/profile`,
+			label: `${c.verified ? 'Managing' : 'Applying'}: ${c.name}`,
+			available: true
+		}));
+		if (mode === 'apply' && !data.myCampaigns.some((c: { basePath: string }) => c.basePath === base)) {
+			campaignEntries.push({ key: `campaign:${base}`, href: `${base}/profile`, label: 'New application', available: true });
+		}
+
+		const ambassadorEntries = data.ambassadorFor.map((a: { leaderId: number; name: string }, i: number) => ({
+			key: i === 0 ? 'ambassador' : `ambassador:${a.leaderId}`,
+			href: '/dashboard/ambassador',
+			label: `Ambassador: ${a.name}`,
+			available: true
+		}));
+
+		const claimEntries = data.pendingClaims.map((c: { slug: string; name: string }) => ({
+			key: `claim:${c.slug}`,
+			href: `/dashboard/claim/${c.slug}/profile`,
+			label: `Claiming: ${c.name}`,
+			available: true
+		}));
+		if (mode === 'claim' && !data.pendingClaims.some((c: { slug: string }) => c.slug === page.params.slug)) {
+			claimEntries.push({ key: `claim:${page.params.slug}`, href: `${base}/profile`, label: `Claiming: ${data.claimName}`, available: true });
+		}
+
 		return [
 			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
-			{
-				key: 'campaign',
-				href: `${base}/profile`,
-				label: (data.leaderContext?.role === 'manager' ? 'Managing ' : 'Ambassador: ') + data.leaderContext?.leaderName,
-				available: !!data.leaderContext
-			},
-			{ key: 'ambassador', href: '/dashboard/ambassador', label: 'Ambassador', available: data.isAmbassador },
-			{
-				key: 'claim',
-				href: `/dashboard/profile${page.url.search}`,
-				label: 'Claiming a Profile',
-				available: !!data.claimName
-			},
+			...campaignEntries,
+			...ambassadorEntries,
+			...claimEntries,
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
 		]
 			.filter((m) => m.available)
@@ -68,7 +114,6 @@
 	// This mode's tabs. Only pages that actually exist are listed (no dead links);
 	// every listed tab is always reachable, so no per-tab enable flag is needed.
 	const sections = $derived.by(() => {
-		const base = data.leaderContext?.basePath ?? '/dashboard';
 		switch (mode) {
 			case 'citizen':
 				return [
@@ -76,15 +121,32 @@
 					{ href: '/dashboard/invites', label: 'Invites' },
 					{ href: '/dashboard/account', label: 'Account' }
 				];
-			// Campaign-application flow, reached via "Launch a Campaign": no Overview, and Team
-			// needs 2+ managers before the application can be submitted. Team/Documentation
-			// show their own "save your profile first" prompt until a leader row exists.
+			// Application flow (reached via "Launch a Campaign") and claims share the
+			// same 4 tabs: no Overview, and Team needs 2+ managers before an application
+			// can be submitted. Team/Documentation show their own "save your profile
+			// first" prompt until a leader row exists.
+			// Claims have no Team tab (management belongs to the profile's admins);
+			// Signoff (the applicant's attestation) closes both flows. Everything
+			// beyond Profile/Contacts hangs off the saved profile, so those tabs only
+			// appear once one exists.
 			case 'apply':
 				return [
-					{ href: '/dashboard/profile', label: 'Profile' },
-					{ href: '/dashboard/contacts', label: 'Contacts' },
-					{ href: '/dashboard/team', label: 'Team' },
-					{ href: '/dashboard/documentation', label: 'Documentation' }
+					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/contacts`, label: 'Contacts' },
+					...(data.leaderContext
+						? [
+								{ href: `${base}/documentation`, label: 'Documentation' },
+								{ href: `${base}/team`, label: 'Team' },
+								{ href: `${base}/signoff`, label: 'Signoff' }
+							]
+						: [])
+				];
+			case 'claim':
+				return [
+					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/contacts`, label: 'Contacts' },
+					{ href: `${base}/documentation`, label: 'Documentation' },
+					{ href: `${base}/signoff`, label: 'Signoff' }
 				];
 			case 'campaign':
 				return [
@@ -118,16 +180,17 @@
 	});
 
 	// Apply-flow tabs that still have missing required fields get a `*` on their title.
-	// Maps each tab's route to its checklist key; only meaningful while `application` is
-	// present (apply mode, not yet verified).
+	// Keyed on the tab's last path segment (hrefs carry the family base); only
+	// meaningful while `application` is present (apply mode, not yet verified).
 	const applyTabKeys: Record<string, keyof NonNullable<typeof data.application>> = {
-		'/dashboard/profile': 'profile',
-		'/dashboard/contacts': 'contacts',
-		'/dashboard/team': 'team',
-		'/dashboard/documentation': 'documentation'
+		profile: 'profile',
+		contacts: 'contacts',
+		team: 'team',
+		documentation: 'documentation',
+		signoff: 'signoff'
 	};
 	const tabIncomplete = (href: string) => {
-		const key = applyTabKeys[href];
+		const key = applyTabKeys[href.split('/').pop() ?? ''];
 		return !!(key && data.application && !data.application[key].complete);
 	};
 
@@ -139,7 +202,8 @@
 					...data.application.profile.missing,
 					...data.application.contacts.missing,
 					...data.application.team.missing,
-					...data.application.documentation.missing
+					...data.application.documentation.missing,
+					...data.application.signoff.missing
 				]
 			: []
 	);
@@ -180,8 +244,8 @@
 	<div class="flex flex-wrap items-center justify-between gap-2">
 		<div class="flex items-center justify-between gap-2 w-full">
 			{#if data.claimName}
-				<!-- Claiming another leader's profile (?leader=) outranks whatever mode the
-				viewer is otherwise in — even an existing campaign context. -->
+				<!-- The claim family (/dashboard/claim/[slug]/*) is about someone else's
+				profile, whatever campaign context the viewer otherwise has. -->
 				<h1 class="text-2xl font-bold text-heading">Claim: {data.claimName}</h1>
 			{:else if mode === 'campaign' && data.leaderContext}
 				<h1 class="text-2xl font-bold text-heading">
@@ -238,14 +302,57 @@
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
 			{#if data.claimName}
-				<!-- Claiming outranks mode here too — and hides the viewer's own
-				Submit Application widget, which doesn't belong to a claim. -->
+				<!-- Claim widget: mirrors Submit Application, but finalizes the staged
+				claim (national ID → evidence) — Delete drops a just-testing claim. -->
 				<span class="flex items-center text-sm my-2 sm:my-0">
 					Confirm the details below to claim this profile.
 				</span>
+				{#if data.claimSubmitted}
+					<span
+						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-semibold text-muted"
+					>
+						Claim submitted — pending review
+					</span>
+				{:else}
+					<form
+						method="post"
+						action="{base}/profile?/submitClaim"
+						class="w-full sm:w-auto flex items-center justify-between gap-2"
+						use:enhance={() => {
+							submittingApplication = true;
+							applicationError = '';
+							return async ({ result, update }) => {
+								submittingApplication = false;
+								if (result.type === 'failure') {
+									applicationError = (result.data?.claimError as string) ?? 'Could not submit.';
+								}
+								await update();
+							};
+						}}
+					>
+						<button
+							type="submit"
+							disabled={!data.applicationComplete || submittingApplication}
+							title={data.applicationComplete
+								? ''
+								: `Still needed before you can submit:\n• ${missingFields.join('\n• ')}`}
+							class="shrink-0 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							{submittingApplication ? 'Submitting…' : 'Submit Claim'}
+						</button>
+						<button
+							type="submit"
+							formaction="{base}/profile?/deleteClaim"
+							formnovalidate
+							class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
+						>
+							Delete
+						</button>
+					</form>
+				{/if}
 			{:else if mode === 'apply'}
 				<span class="flex items-center text-sm my-2 sm:my-0">
-					A few steps to go public ahead of 10 August 2027.
+					A few steps to go public ahead of 10 August 2027...
 				</span>
 				{#if data.pendingVerification}
 					<span
@@ -256,7 +363,7 @@
 				{:else}
 					<form
 						method="post"
-						action="/dashboard/profile?/requestVerification"
+						action="{base}/profile?/requestVerification"
 						class="w-full sm:w-auto flex items-center justify-between gap-2 "
 						use:enhance={() => {
 							submittingApplication = true;
@@ -270,13 +377,6 @@
 							};
 						}}
 					>
-						<input
-							type="text"
-							name="nationalId"
-							required
-							placeholder="National ID number"
-							class="w-36 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						/>
 						<button
 							type="submit"
 							disabled={!data.applicationComplete || submittingApplication}
@@ -287,6 +387,16 @@
 						>
 							{submittingApplication ? 'Submitting…' : 'Submit Application'}
 						</button>
+						{#if data.leaderContext}
+							<button
+								type="submit"
+								formaction="{base}/profile?/deleteApplication"
+								formnovalidate
+								class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
+							>
+								Delete
+							</button>
+						{/if}
 					</form>
 				{/if}
 			{:else if mode === 'campaign' && data.leaderContext}
@@ -328,10 +438,12 @@
 	{/if}
 	<!-- Consolidated checklist: collapsed to just its title, click to expand the
 	full list of what's still outstanding across every tab. -->
-	{#if data.application}
+	<!-- The layout load computes `application` off the viewer's own context even on
+	citizen pages, so also gate on the modes the checklist belongs to. -->
+	{#if data.application && (mode === 'apply' || mode === 'claim')}
 		<div class="flex items-center">
 			{#if missingFields.length > 0}
-				<div class="mt-3 flex gap-1.5 text-sm text-muted">
+				<div class="mt-3 flex flex-wrap gap-1.5 text-sm text-muted">
 					<span class="">Required: </span>
 					{#each missingFields as field, i (field)}
 					<span>{field}{i < missingFields.length - 1 ? ',' : ''}</span>

@@ -18,6 +18,6 @@ export const actions: Actions = {
 		const result = await acceptInvite(token, domainUser.id, authUser.email);
 		if (!result.ok) return fail(400, { error: result.error });
 
-		redirect(302, `${inviteDestination(result.role)}?${joinedBannerQuery(result.role, result.leaderName)}`);
+		redirect(302, `${inviteDestination(result.role, result.dashboardBase)}?${joinedBannerQuery(result.role, result.leaderName)}`);
 	}
 };

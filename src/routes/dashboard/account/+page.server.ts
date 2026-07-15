@@ -3,7 +3,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { requireDashboardUser } from '$lib/server/dashboard';
+import { ownVerifiedContacts, requireDashboardUser } from '$lib/server/dashboard';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -23,7 +23,10 @@ export const load: PageServerLoad = async (event) => {
 		smsPhone: contactRows.find((c) => c.channel === 'sms')?.value ?? '',
 		whatsappPhone: contactRows.find((c) => c.channel === 'whatsapp')?.value ?? '',
 		notificationPrefs: domainUser.notificationPrefs as NotificationPrefs,
-		verified: domainUser.verified
+		verified: domainUser.verified,
+		// Values already OTP-verified on this account: re-typing one shows
+		// "✓ Verified" immediately instead of offering another round-trip.
+		ownVerified: (await ownVerifiedContacts(domainUser.id)).lists
 	};
 };
 

@@ -334,19 +334,23 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 	await db.update(invites).set({ usedBy: userId, usedAt: new Date() }).where(eq(invites.id, invite.id));
 
 	const [leader] = await db
-		.select({ firstName: users.firstName, otherNames: users.otherNames })
+		.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId, verifiedAt: leaders.verifiedAt })
 		.from(leaders)
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(eq(leaders.id, invite.leaderId));
 
-	return { ok: true as const, role: invite.role, leaderName: fullName(leader) };
+	// The campaign's dashboard home: verified ones live under their slug,
+	// in-progress applications under their pre-minted UUID (the phantom's auth id).
+	const dashboardBase =
+		leader.verifiedAt && leader.slug ? `/dashboard/${leader.slug}` : `/dashboard/apply/${leader.authUserId}`;
+
+	return { ok: true as const, role: invite.role, leaderName: fullName(leader), dashboardBase };
 }
 
-/** Where each accepted role actually lands: bare /dashboard is always citizen mode
- * (see dashboard/+layout.svelte's mode detection), so managers/ambassadors need a
- * route that's unambiguously campaign-mode instead of bouncing to the citizen view. */
-export function inviteDestination(role: InviteRole): string {
-	if (role === 'manager') return '/dashboard/profile';
+/** Where each accepted role actually lands: managers go straight into the
+ * campaign they joined; ambassadors and followers to their own views. */
+export function inviteDestination(role: InviteRole, dashboardBase: string): string {
+	if (role === 'manager') return `${dashboardBase}/profile`;
 	if (role === 'ambassador') return '/dashboard/ambassador';
 	return '/dashboard';
 }

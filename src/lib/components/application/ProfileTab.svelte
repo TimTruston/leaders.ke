@@ -2,18 +2,38 @@
 	import { enhance } from '$app/forms';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
-	import type { PageProps } from './$types';
 
-	let { data, form }: PageProps = $props();
+	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
+	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
+	// shapes `data` to this contract and hosts the actions this form posts to
+	// (relative ?/action URLs).
+	type TabData = {
+		positions: { id: number; title: string; region: string }[];
+		existingExperience: { id: number; type: string; title: string; institution: string; from: number | null; to: number | null }[];
+		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
+		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
+		application?: { profile: { missing: string[] } } | null;
+	};
+	let { data, form }: { data: TabData; form: any } = $props();
 
 	let saving = $state(false);
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
-	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
+	// Errored fields aren't outlined - the red * next to the label (starClass) and
+	// the message under the save button do the flagging.
+	const errorClass = () => 'border-border focus:border-primary focus:ring-ring';
 
 	// Application checklist (from the layout load): a required-field label still in this
 	// set is unfilled → its `*` stays red; once saved and out of the set, `*` goes muted.
+	// A failed save's missingFields (field names, not labels) redden the same `*`.
 	const appMissing = $derived(new Set(data.application?.profile.missing ?? []));
-	const starClass = (label: string) => (appMissing.has(label) ? 'text-red-500' : 'text-muted');
+	const FIELD_BY_LABEL: Record<string, string> = {
+		'First name': 'firstName',
+		'Other names': 'otherNames',
+		Bio: 'bio',
+		'Elective position': 'positionId'
+	};
+	const starRed = (label: string) => appMissing.has(label) || missing.has(FIELD_BY_LABEL[label] ?? '');
+	const starClass = (label: string) => (starRed(label) ? 'text-red-500' : 'text-muted');
 
 	let adding = $state<'leadership' | 'professional' | 'education' | null>(null);
 	function toggleAdding(type: 'leadership' | 'professional' | 'education') {
@@ -118,7 +138,7 @@
 
 <div class="">
 
-	<p class="text-sm text-muted">This is what citizens see on leader's  public profile/page.</p>
+	<p class="text-sm text-muted">This is what citizens see on the leader's public profile/page.</p>
 
 	{#if form?.error}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
@@ -147,10 +167,6 @@
 			};
 		}}
 	>
-		{#if data.claimSlug}
-			<!-- Ties the application to the existing leader instead of a new phantom user. -->
-			<input type="hidden" name="claimLeader" value={data.claimSlug} />
-		{/if}
 		<input type="hidden" name="experienceEntries" value={JSON.stringify(pendingExperience)} />
 		<input type="hidden" name="leadershipEntries" value={JSON.stringify(pendingLeadership)} />
 		<input type="hidden" name="removedExperienceIds" value={JSON.stringify(removedExperienceIds)} />
@@ -164,7 +180,7 @@
 					name="firstName"
 					required
 					value={data.form.firstName}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass('firstName')}"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
 				/>
 			</label>
 			<label class="block">
@@ -174,7 +190,7 @@
 					name="otherNames"
 					required
 					value={data.form.otherNames}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass('otherNames')}"
+					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
 				/>
 			</label>
 		</div>
@@ -201,12 +217,11 @@
 			</label>
 		{/if}
 
-		<div class="rounded-xl {missing.has('positionId') ? 'ring-2 ring-red-500' : ''}">
+		<div class="rounded-xl ">
 			<PositionSelector
 				positions={data.positions}
 				verified={data.form.verified}
 				initialPositionId={data.form.positionId}
-				filled={!appMissing.has('Position you are vying for')}
 			/>
 		</div>
 		{#if missing.has('positionId')}
@@ -219,7 +234,7 @@
 				name="bio"
 				rows="5"
 				placeholder="Who you are, what you have done, and why you are running."
-				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass('bio')}"
+				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass()}"
 				>{data.form.bio}</textarea
 			>
 		</label>

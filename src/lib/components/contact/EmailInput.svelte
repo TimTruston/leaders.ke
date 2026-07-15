@@ -11,7 +11,9 @@
 		verified = false,
 		required = false,
 		filled = false,
-		scope = 'account'
+		scope = 'account',
+		verifiable = true,
+		verifiedValues = []
 	}: {
 		value?: string;
 		label?: string;
@@ -22,14 +24,27 @@
 		required?: boolean;
 		/** Mutes the required `*` once this contact is saved. */
 		filled?: boolean;
-		/** Who the verification attaches to: 'account' (citizen) or 'profile' (leader). */
+		/** Who the verification attaches to: 'account' (citizen), 'profile' (leader),
+		 * or 'claim' (staged inside a pending claim's evidence). */
 		scope?: string;
+		/** Hides the Verify/✓ affordances entirely. */
+		verifiable?: boolean;
+		/** Addresses this user already verified elsewhere (e.g. their citizen
+		 * account) — typing one shows ✓ immediately, preventing a double OTP. */
+		verifiedValues?: string[];
 	} = $props();
 
 	let original = $state(value);
 
+	const isVerifiedNow = $derived(
+		(verified && value === original) || verifiedValues.includes(value.trim().toLowerCase())
+	);
+
+	// Same rough shape check the servers apply — flags typos before a wasted OTP.
+	const invalid = $derived(value.length > 0 && !/^\S+@\S+\.\S+$/.test(value));
+
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
-	// creation on /dashboard/contacts) instead of the default /dashboard/account.
+	// creation or a claim) instead of the default /dashboard/account.
 	const verifyHref = $derived(
 		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
 	);
@@ -50,9 +65,11 @@
 			placeholder="example@email.com"
 			class="w-full bg-transparent px-4 py-2.5 text-ink-primary placeholder:text-muted outline-hidden focus:outline-none focus:ring-0 border-0"
 		/>
-		{#if value && verified && value === original}
+		{#if invalid}
+			<span class="grid place-items-center px-4 py-0.5 text-sm text-red-400 rounded-r-xl text-nowrap" >Invalid</span>
+		{:else if verifiable && value && isVerifiedNow}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-primary rounded-r-xl text-nowrap" >✓ Verified</span>
-		{:else if value}
+		{:else if verifiable && value}
 			<a href={verifyHref} data-sveltekit-preload-data="off" class="grid place-items-center py-0.5 text-sm text-primary">Verify</a>
 			{#if value !== original}
 				<span class="grid place-items-center px-1 py-0.5 text-sm text-on-primary" >·</span>

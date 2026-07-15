@@ -2,11 +2,13 @@
 	import { enhance } from '$app/forms';
 	import ContactIcon from '$lib/components/contact/ContactIcon.svelte';
 	import { PLATFORMS, stripPrefix, socialsToLinks, type SocialLink } from '$lib/components/contact/socials';
-	import type { PageProps } from './$types';
 	import PhoneInput from '$lib/components/contact/PhoneInput.svelte';
 	import EmailInput from '$lib/components/contact/EmailInput.svelte';
 
-	let { data, form }: PageProps = $props();
+	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
+	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
+	// shapes `data` and hosts the actions this form posts to (relative ?/action URLs).
+	let { data, form }: { data: any; form: any } = $props();
 
 	let address = $state(data.address);
 	let sms = $state(data.sms);
@@ -17,13 +19,25 @@
 	let socialErrors = $state<Record<string, string>>({});
 	let saving = $state(false);
 
-	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
-	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
+	// Errored fields aren't outlined - the red * next to the label (starClass) and
+	// the message under the save button do the flagging.
+	const errorClass = () => 'border-border focus:border-primary focus:ring-ring';
 
-	// Application checklist (from the layout load): a required-field label still in this
-	// set is unfilled → its `*` stays red; once saved and out of the set, `*` goes muted.
-	const appMissing = $derived(new Set(data.application?.contacts.missing ?? []));
-	const starClass = (label: string) => (appMissing.has(label) ? 'text-red-500' : 'text-muted');
+	// Required-field `*`s track the LIVE inputs: red while empty, muted the moment
+	// a value is typed — saving is never blocked on them (the submit widget's
+	// checklist is what gates the application).
+	const liveByLabel = $derived<Record<string, string>>({
+		'Office / address': address,
+		'Phone number': sms,
+		'Email address': email
+	});
+	const starRed = (label: string) => !liveByLabel[label]?.trim();
+	const starClass = (label: string) => (starRed(label) ? 'text-red-500' : 'text-muted');
+
+	// Which /verify/* scope the Verify links target: 'profile' writes to the leader
+	// profile's contacts; 'claim' (claim family) stages the OTP proof inside the
+	// pending claim's evidence instead.
+	const verifyScope = $derived(data.verifyScope ?? 'profile');
 
 	const isSocialActive = (kind: string) => socialLinks.some((s) => s.kind === kind);
 	function toggleSocial(kind: string) {
@@ -92,22 +106,22 @@
 				name="address"
 				bind:value={address}
 				placeholder="Nairobi, Kenya"
-				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass('address')}"
+				class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:ring-0 focus:outline-none {errorClass()}"
 			/>
 		</label>
 
 		<div class="grid gap-3 sm:grid-cols-2">
-			<div class="rounded-xl {missing.has('sms') ? 'ring-1 ring-red-500' : ''}">
-				<PhoneInput bind:value={sms} label="Phone number" scope="profile" required filled={!appMissing.has('Phone number')} />
+			<div class="rounded-xl ">
+				<PhoneInput bind:value={sms} label="Phone number" scope={verifyScope} verified={data.smsVerified ?? false} verifiedValues={data.ownVerified?.sms ?? []} required filled={!starRed('Phone number')} />
 				<input type="hidden" name="sms" value={sms} />
 			</div>
 			<div>
-				<PhoneInput bind:value={whatsapp} label="WhatsApp number" field="whatsapp" scope="profile" />
+				<PhoneInput bind:value={whatsapp} label="WhatsApp number" field="whatsapp" scope={verifyScope} verified={data.whatsappVerified ?? false} verifiedValues={data.ownVerified?.whatsapp ?? []} />
 				<input type="hidden" name="whatsapp" value={whatsapp} />
 			</div>
 		</div>
-		
-		<EmailInput bind:value={email} verified={data.emailVerified} scope="profile" required filled={!appMissing.has('Email address')} />
+
+		<EmailInput bind:value={email} verified={data.emailVerified} scope={verifyScope} verifiedValues={data.ownVerified?.email ?? []} required filled={!starRed('Email address')} />
 			<input type="hidden" name="email" value={email} />
 
 		<label class="block">

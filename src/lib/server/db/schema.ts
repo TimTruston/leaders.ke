@@ -642,7 +642,7 @@ export const otps = pgTable('otps', {
 export const devices = pgTable('devices', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  fingerprint: varchar('fingerprint', { length: 255 }).notNull(), // hashed device signature
+  fingerprint: varchar('fingerprint', { length: 255 }).notNull(), // hashed device signoff
   userAgent: text('user_agent'),
   ipAddress: varchar('ip_address', { length: 45 }), // 45 chars covers IPv6
   lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).defaultNow().notNull(),

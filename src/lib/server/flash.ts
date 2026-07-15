@@ -6,9 +6,12 @@ import { redirect, type Cookies } from '@sveltejs/kit';
 
 const FLASH_COOKIE = 'flash';
 
-/** Queues a notice for the next page load. Call right before redirect(). */
+/** Queues a notice for the next page load. Call right before redirect().
+ * Not httpOnly: when a redirect lands on the SAME url the user is already on,
+ * no server load re-runs, so the dashboard layout falls back to reading (and
+ * clearing) the cookie client-side after navigation. */
 export function setFlash(cookies: Cookies, message: string) {
-	cookies.set(FLASH_COOKIE, message, { path: '/', maxAge: 60, httpOnly: true, sameSite: 'lax' });
+	cookies.set(FLASH_COOKIE, message, { path: '/', maxAge: 60, httpOnly: false, sameSite: 'lax' });
 }
 
 /** Queues the notice and redirects — the flash replacement for the old ?notice= URLs. */

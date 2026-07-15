@@ -1,45 +1,59 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageProps } from './$types';
+	import ImageCropper from '$lib/components/ImageCropper.svelte';
 
-	let { data, form }: PageProps = $props();
+	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
+	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
+	// shapes `data` and hosts the actions this form posts to (relative ?/action URLs).
+	let { data, form }: { data: any; form: any } = $props();
 
-	const docs = $derived(
-		data.noProfile
-			? []
-			: ([
-					{ kind: 'photo', label: 'Photo', accept: 'image/*', url: data.photoUrl },
-					{ kind: 'id-front', label: 'ID — front', accept: 'image/*', url: data.idFrontUrl },
-					{ kind: 'id-back', label: 'ID — back', accept: 'image/*', url: data.idBackUrl },
+	// The campaign's own items — the applicant's ID images live on the Signoff tab.
+	const docs = $derived(([
+					{ kind: 'photo', label: "Leader's Photo", accept: 'image/*', url: data.photoUrl },
 					{
 						kind: 'iebc-certificate',
 						label: 'IEBC Certificate of Clearance (PDF)',
 						accept: 'application/pdf',
 						url: data.iebcCertificateUrl
 					}
-				] as const)
+			] as const)
 	);
 
 	let uploading = $state(false);
+
+	// No submit button: picking a file uploads it. Images pass through a free-crop
+	// modal first (confirming the crop submits); the PDF certificate goes straight up.
+	let formEl: HTMLFormElement | undefined = $state();
+	let inputs: Record<string, HTMLInputElement | undefined> = $state({});
+	let cropping = $state<{ kind: string; file: File } | null>(null);
+
+	function onFileChange(e: Event, kind: string, accept: string) {
+		const input = e.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+		if (!file) return;
+		if (accept === 'application/pdf') {
+			formEl?.requestSubmit();
+			return;
+		}
+		// Hold the original for the cropper; the cropped result replaces it on confirm.
+		input.value = '';
+		cropping = { kind, file };
+	}
+
+	function onCropConfirm(cropped: File) {
+		if (!cropping) return;
+		const input = inputs[cropping.kind];
+		cropping = null;
+		if (!input) return;
+		const dt = new DataTransfer();
+		dt.items.add(cropped);
+		input.files = dt.files;
+		formEl?.requestSubmit();
+	}
 </script>
 
 <svelte:head><title>Documentation — leaders.ke</title></svelte:head>
 
-{#if data.noProfile}
-	<div class="rounded-2xl border border-dashed border-border p-8 text-center">
-		<p class="font-semibold text-heading">Save your profile first</p>
-		<p class="mx-auto mt-2 max-w-md text-sm text-muted">
-			Documents are tied to your campaign profile — fill in the Leader's Profile tab, then come
-			back here to upload.
-		</p>
-		<a
-			href="/dashboard/profile"
-			class="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-		>
-			Go to Leader's Profile
-		</a>
-	</div>
-{:else}
 <div class="documents">
 	<h1 class="text-xl font-bold text-heading">Documentation</h1>
 	<p class="mt-1 text-sm text-muted">
@@ -55,6 +69,7 @@
 	{/if}
 
 	<form
+		bind:this={formEl}
 		method="post"
 		action="?/upload"
 		enctype="multipart/form-data"
@@ -84,19 +99,21 @@
 						type="file"
 						name={doc.kind}
 						accept={doc.accept}
+						disabled={uploading}
+						bind:this={inputs[doc.kind]}
+						onchange={(e) => onFileChange(e, doc.kind, doc.accept)}
 						class="max-w-60 text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-surface-2 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-heading"
 					/>
 				</div>
 			</div>
 		{/each}
 
-		<button
-			type="submit"
-			disabled={uploading}
-			class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
-		>
-			{uploading ? 'Uploading…' : 'Upload/Update files'}
-		</button>
+		{#if uploading}
+			<p class="text-sm font-medium text-muted">Uploading…</p>
+		{/if}
 	</form>
 </div>
+
+{#if cropping}
+	<ImageCropper file={cropping.file} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
 {/if}

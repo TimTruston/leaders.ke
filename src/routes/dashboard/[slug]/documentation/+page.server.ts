@@ -14,14 +14,11 @@ const COLUMN_BY_KIND = {
 } as const;
 
 export const load: PageServerLoad = async (event) => {
-	const { domainUser } = await requireDashboardUser(event);
-	const ctx = await getRouteLeaderContext(event, domainUser.id);
-	// Reachable before a profile is saved (applying), just with nothing to upload
-	// against yet — the upload action still requires ctx (requireLeader).
-	if (!ctx) return { noProfile: true as const };
+	// A blank application is bounced back to its Profile tab (requireLeader) - the
+	// layout only links here once a profile exists.
+	const { ctx } = await requireLeader(event);
 
 	return {
-		noProfile: false as const,
 		photoUrl: ctx.leader.photoUrl,
 		idFrontUrl: ctx.leader.idFrontUrl,
 		idBackUrl: ctx.leader.idBackUrl,

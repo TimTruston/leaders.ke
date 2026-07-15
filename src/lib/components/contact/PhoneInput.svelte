@@ -10,7 +10,9 @@
 		verified = false,
 		required = false,
 		filled = false,
-		scope = 'account'
+		scope = 'account',
+		verifiable = true,
+		verifiedValues = []
 	}: {
 		value?: string;
 		field?: string; // sms | whatsapp
@@ -24,6 +26,11 @@
 		filled?: boolean;
 		/** Who the verification attaches to: 'account' (citizen) or 'profile' (leader). */
 		scope?: string;
+		/** Hides the Verify/✓ affordances entirely. */
+		verifiable?: boolean;
+		/** Numbers (254… form) this user already verified elsewhere (e.g. their
+		 * citizen account) — typing one shows ✓ immediately, preventing a double OTP. */
+		verifiedValues?: string[];
 	} = $props();
 	// Stored numbers are normalized to 254XXXXXXXXX; the field sits after a "+254"
 	// prefix, so show just the local part (712345678) rather than "+254 254…".
@@ -34,6 +41,9 @@
 
 	const normalized = $derived(normalizeKenyanPhone(value));
 	const invalid = $derived(value.length > 0 && normalized === null);
+	const isVerifiedNow = $derived(
+		(verified && value === original) || (!!normalized && verifiedValues.includes(normalized))
+	);
 	// The verify routes read different param names: /verify/sms?phone= vs /verify/whatsapp?number=.
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
 	// creation on /dashboard/contacts) instead of the default /dashboard/account.
@@ -64,9 +74,9 @@
 		/>
 		{#if invalid}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-red-400 rounded-r-xl text-nowrap" >Invalid</span>
-		{:else if value && verified && value === original}
+		{:else if verifiable && value && isVerifiedNow}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-primary rounded-r-xl text-nowrap" >✓ Verified</span>
-		{:else if value}
+		{:else if verifiable && value}
 			<span class="flex items-center gap-2 px-4 py-0.5 text-sm text-primary text-nowrap rounded-r-xl">
 				<a href={verifyHref} data-sveltekit-preload-data="off" class="">Verify</a>
 				{#if value !== original}

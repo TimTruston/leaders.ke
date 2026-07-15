@@ -82,15 +82,15 @@
 			</label>
 		</div>
 
-		<EmailInput bind:value={email} verified={verified.email} />
+		<EmailInput bind:value={email} verified={verified.email} verifiedValues={data.ownVerified.email} />
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div>
-				<PhoneInput bind:value={smsPhone} label="Phone number" field="sms" verified={verified.sms}/>
+				<PhoneInput bind:value={smsPhone} label="Phone number" field="sms" verified={verified.sms} verifiedValues={data.ownVerified.sms}/>
 				<input type="hidden" name="smsPhone" value={smsPhone} />
 			</div>
 			<div>
-				<PhoneInput bind:value={whatsappPhone} label="WhatsApp number" field="whatsapp" verified={verified.whatsapp}/>
+				<PhoneInput bind:value={whatsappPhone} label="WhatsApp number" field="whatsapp" verified={verified.whatsapp} verifiedValues={data.ownVerified.whatsapp}/>
 				<input type="hidden" name="whatsappPhone" value={whatsappPhone} />
 			</div>
 		</div>

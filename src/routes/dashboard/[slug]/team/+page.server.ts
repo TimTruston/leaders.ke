@@ -9,11 +9,9 @@ import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	const { domainUser } = await requireDashboardUser(event);
-	const ctx = await getRouteLeaderContext(event, domainUser.id);
-	// Reachable before a profile is saved (applying), just with nothing to show yet —
-	// unlike the rest of this page's actions, which still require ctx (requireLeader).
-	if (!ctx) return { noProfile: true as const };
+	// A blank application is bounced back to its Profile tab (requireLeader) - the
+	// layout only links here once a profile exists.
+	const { domainUser, ctx } = await requireLeader(event);
 
 	const [managerRows, ambassadorRows, openInvites, isAdmin] = await Promise.all([
 		db
@@ -33,7 +31,6 @@ export const load: PageServerLoad = async (event) => {
 	]);
 
 	return {
-		noProfile: false as const,
 		id: domainUser.id,
 		isAdmin,
 		managers: managerRows.map((r) => ({

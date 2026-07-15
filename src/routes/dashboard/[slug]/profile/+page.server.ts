@@ -1,45 +1,23 @@
+// Shared by the campaign (/dashboard/[slug]/profile) and apply
+// (/dashboard/apply/[id]/profile) families — apply re-exports this module, and
+// getRouteLeaderContext resolves whichever param the URL carries. Claims stage
+// into their own family (/dashboard/claim/[slug]/profile) instead.
 import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
-import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, resolveCurrentTerm, slugify } from '$lib/server/leader';
-import { requestClaim } from '$lib/server/claims';
+import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
 const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
 
-/** Claim mode: ?position=..&leader=<slug> (the "Is this you?" link on a public
- * leader page) prefills this form from the existing profile; saving files a
- * claim on that leader instead of creating a new phantom user. Only verified
- * (public) profiles are claimable — an unverified one belongs to the account
- * still building it, so there's nothing to "claim". */
-async function resolveClaim(url: URL) {
-	const slug = url.searchParams.get('leader');
-	if (!slug) return null;
-	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) return null;
-
-	const positionParam = Number(url.searchParams.get('position') ?? 0);
-	return {
-		slug,
-		leaderId: resolved.currentTerm.leaders.id,
-		firstName: resolved.row.users.firstName,
-		otherNames: resolved.row.users.otherNames,
-		bio: resolved.row.users.bio ?? '',
-		positionId: positionParam || resolved.currentTerm.positions.id
-	};
-}
-
-// The logged-out claimant redirect (login + notice) lives in dashboard/+layout.server.ts —
-// the layout guard runs alongside this load and its redirect wins, so it must be claim-aware there.
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 	const ctx = await getRouteLeaderContext(event, domainUser.id);
-	const claim = await resolveClaim(event.url);
 
 	const positionRows = await db
 		.select()
@@ -88,28 +66,15 @@ export const load: PageServerLoad = async (event) => {
 			from: r.from.getFullYear(),
 			to: r.to?.getFullYear() ?? null
 		})),
-		// Claim mode prefills the claimed leader's identity; the form otherwise
-		// belongs to the viewer's own (or managed) profile.
-		form: claim
-			? {
-					firstName: claim.firstName,
-					otherNames: claim.otherNames,
-					bio: claim.bio,
-					positionId: claim.positionId,
-					slug: null,
-					hasLeader: false,
-					verified: false
-				}
-			: {
-					firstName: subject.firstName,
-					otherNames: subject.otherNames,
-					bio: subject.bio ?? '',
-					positionId: ctx?.leader.positionId ?? null,
-					slug: subject.slug ?? null,
-					hasLeader: !!ctx,
-					verified: !!ctx?.leader.verifiedAt
-				},
-		claimSlug: claim?.slug ?? null,
+		form: {
+			firstName: subject.firstName,
+			otherNames: subject.otherNames,
+			bio: subject.bio ?? '',
+			positionId: ctx?.leader.positionId ?? null,
+			slug: subject.slug ?? null,
+			hasLeader: !!ctx,
+			verified: !!ctx?.leader.verifiedAt
+		},
 		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
 	};
 };
@@ -147,32 +112,13 @@ export const actions: Actions = {
 		}
 		if (!otherNames) return fail(400, { error: 'Other names are required.', missingFields: ['otherNames'] });
 		if (!bio) return fail(400, { error: 'Add a short bio.', missingFields: ['bio'] });
-		if (!positionId) return fail(400, { error: 'Pick the position you are vying for.', missingFields: ['positionId'] });
+		if (!positionId) return fail(400, { error: 'Pick the elective position.', missingFields: ['positionId'] });
 
 		const [position] = await db
 			.select()
 			.from(positions)
 			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
 		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
-
-		// Claim mode: the hidden claimLeader slug ties this application to the
-		// existing (verified) leader instead of creating a new phantom user. Manager
-		// access is granted only when an admin approves the claim — never on save.
-		const claimSlug = String(form.get('claimLeader') ?? '').trim();
-		if (claimSlug) {
-			const resolved = await resolveCurrentTerm(claimSlug);
-			if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
-				return fail(404, { error: 'That leader profile does not exist.' });
-			}
-			const result = await requestClaim(resolved.currentTerm.leaders.id, domainUser.id, {
-				firstName,
-				otherNames,
-				positionId: String(positionId),
-				bio
-			});
-			if (!result.ok) return fail(400, { error: result.error });
-			redirectWithFlash(event.cookies, '/dashboard', 'Claim submitted. An admin will review it and grant you manager access.');
-		}
 
 		for (const e of pendingExperience) {
 			if (e.type !== 'education' && e.type !== 'professional') {
@@ -230,8 +176,17 @@ export const actions: Actions = {
 			}
 		} else {
 			// New leader: a fresh users row for the leader identity itself, never the
-			// creating citizen's own — so editing this profile never touches their login account.
-			const phantom = await createPhantomUser(firstName, otherNames);
+			// creating citizen's own — so editing this profile never touches their login
+			// account. The apply route's pre-minted UUID becomes the phantom's auth id,
+			// keeping /dashboard/apply/<id>/* stable across the whole application.
+			const applyId = (event.params as { id?: string }).id;
+			if (applyId) {
+				// A pasted/guessed UUID could collide with an existing auth user — refuse
+				// rather than 500 on the primary-key insert.
+				const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.authUserId, applyId));
+				if (taken) return fail(400, { error: 'This application link is unavailable. Start a new application from your dashboard.' });
+			}
+			const phantom = await createPhantomUser(firstName, otherNames, applyId);
 			subjectId = phantom.id;
 			await db.update(users).set({ bio }).where(eq(users.id, subjectId));
 
@@ -302,6 +257,26 @@ export const actions: Actions = {
 		return { saved: true };
 	},
 
+	// "Just testing" escape hatch (mirrors the claim form's Delete): soft-deletes
+	// the in-progress application — its leader row and phantom user — so it drops
+	// out of the switcher and its slug frees up. Verified campaigns are exempt.
+	deleteApplication: async (event) => {
+		const { domainUser } = await requireDashboardUser(event);
+		const ctx = await getRouteLeaderContext(event, domainUser.id);
+		if (!ctx) return fail(400, { verificationError: 'Nothing to delete yet.' });
+		if (ctx.leader.verifiedAt) {
+			return fail(400, { verificationError: 'A verified campaign cannot be deleted from here.' });
+		}
+
+		await db.update(leaders).set({ deletedAt: new Date() }).where(eq(leaders.id, ctx.leader.id));
+		// The phantom identity goes with it — but never the citizen's own users row
+		// (legacy self-profiles point leaders.userId at the citizen).
+		if (ctx.profileUser.id !== domainUser.id) {
+			await db.update(users).set({ deletedAt: new Date() }).where(eq(users.id, ctx.profileUser.id));
+		}
+		redirectWithFlash(event.cookies, '/dashboard', 'Application deleted.');
+	},
+
 	requestVerification: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
 		const ctx = await getRouteLeaderContext(event, domainUser.id);
@@ -318,12 +293,20 @@ export const actions: Actions = {
 			return fail(400, { verificationError: 'Add at least one more team member on the Team tab before submitting.' });
 		}
 
-		const form = await event.request.formData();
-		const nationalId = String(form.get('nationalId') ?? '').trim();
-		const notes = String(form.get('notes') ?? '').trim();
-		if (!nationalId) return fail(400, { verificationError: 'Your national ID number is required.' });
+		// The submitter's role + national ID live on their manager row, saved from
+		// the Team tab's "Your details" form — not from a submit-widget input.
+		const [mine] = await db
+			.select({ roles: managers.roles })
+			.from(managers)
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
+		const myRoles = (mine?.roles ?? {}) as { title?: string; nationalId?: string };
+		if (!myRoles.nationalId) {
+			return fail(400, { verificationError: 'Add your role and national ID on the Team tab before submitting.' });
+		}
 
-		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId, notes });
+		const form = await event.request.formData();
+		const notes = String(form.get('notes') ?? '').trim();
+		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId: myRoles.nationalId, myRole: myRoles.title ?? '', notes });
 		if (!result.ok) return fail(400, { verificationError: result.error });
 
 		return { requestedVerification: true };

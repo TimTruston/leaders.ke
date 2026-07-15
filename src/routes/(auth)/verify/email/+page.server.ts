@@ -4,6 +4,7 @@ import { and, eq, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, user, users } from '$lib/server/db/schema';
 import { parseScope, resolveVerifySubject, type DashboardUser } from '$lib/server/dashboard';
+import { stageClaimVerifiedContact } from '$lib/server/claims';
 import { hasPendingOtp, otpCooldownRemaining, sendOtp, verifyOtpWithDestination, verifyOtpLinkToken } from '$lib/server/otp';
 import { getPlatformSettings } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
@@ -20,14 +21,16 @@ function candidateEmail(url: URL, authEmail: string): string {
 	return raw && raw.includes('@') ? raw : authEmail;
 }
 
-/** Only another account's *verified* hold blocks a claim; an unverified one is fair game. */
-async function verifiedByOther(userId: number, email: string): Promise<boolean> {
+/** A hold only blocks when it is *verified* AND belongs to neither the subject
+ * nor the editor - the editor's own citizen contacts are theirs to reuse on any
+ * profile they manage. */
+async function verifiedByOther(ownerIds: number[], email: string): Promise<boolean> {
 	const [held] = await db
 		.select({ userId: contacts.userId, verifiedAt: contacts.verifiedAt })
 		.from(contacts)
 		.where(and(eq(contacts.channel, 'email'), eq(contacts.value, email), isNull(contacts.deletedAt)))
 		.limit(1);
-	return !!(held && held.userId !== userId && held.verifiedAt);
+	return !!(held && !ownerIds.includes(held.userId) && held.verifiedAt);
 }
 
 // A confirmed email becomes the account's login email + verified contact, and flips
@@ -68,23 +71,31 @@ export const load: PageServerLoad = async (event) => {
 	if (linkToken) {
 		const result = await verifyOtpLinkToken(linkToken);
 		if (result && result.userId === subject.id) {
-			await applyEmailVerified(subject, result.destination, isAccount);
+			if (scope === 'claim' && slug) {
+				await stageClaimVerifiedContact(slug, domainUser.id, 'email', result.destination);
+			} else {
+				await applyEmailVerified(subject, result.destination, isAccount);
+			}
 			redirectWithFlash(event.cookies, next, `${result.destination} verified.`);
 		}
 	}
 
-	// Verifying the citizen's current login email that's already verified — nothing to do.
-	if (isAccount && email === authUser.email && domainUser.verified.email) {
-		redirectWithFlash(event.cookies, next, `${email} is already verified.`);
-	}
-	if (await verifiedByOther(subject.id, email)) {
-		redirectWithFlash(event.cookies, next, `${email} is already verified on another account.`);
+	// Claim scope only proves the claimant controls the address (staged in the
+	// claim evidence), so existing holds on it are no obstacle.
+	if (scope !== 'claim') {
+		// Verifying the citizen's current login email that's already verified — nothing to do.
+		if (isAccount && email === authUser.email && domainUser.verified.email) {
+			redirectWithFlash(event.cookies, next, `${email} is already verified.`);
+		}
+		if (await verifiedByOther([subject.id, domainUser.id], email)) {
+			redirectWithFlash(event.cookies, next, `${email} is already verified on another account.`);
+		}
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
 	// address — so a page refresh reuses the code already sent instead of firing a
 	// new one. A later resend is a deliberate button click.
-	const linkPath = scope === 'profile' ? `/verify/email?scope=profile${slug ? `&slug=${slug}` : ''}` : '/verify/email';
+	const linkPath = scope === 'account' ? '/verify/email' : `/verify/email?scope=${scope}${slug ? `&slug=${slug}` : ''}`;
 	let emailCooldown = await otpCooldownRemaining('email', email);
 	if (!(await hasPendingOtp('email', email))) {
 		try {
@@ -103,13 +114,13 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const scope = parseScope(String(form.get('scope') ?? ''));
 		const slug = String(form.get('slug') ?? '') || null;
-		const { authUser, subject } = await resolveVerifySubject(event, scope, slug);
+		const { authUser, domainUser, subject } = await resolveVerifySubject(event, scope, slug);
 		const typed = String(form.get('email') ?? '').trim().toLowerCase();
 		const email = typed.includes('@') ? typed : authUser.email;
-		if (await verifiedByOther(subject.id, email)) {
+		if (scope !== 'claim' && (await verifiedByOther([subject.id, domainUser.id], email))) {
 			return fail(400, { emailError: 'That email is already verified on another account.' });
 		}
-		const linkPath = scope === 'profile' ? `/verify/email?scope=profile${slug ? `&slug=${slug}` : ''}` : '/verify/email';
+		const linkPath = scope === 'account' ? '/verify/email' : `/verify/email?scope=${scope}${slug ? `&slug=${slug}` : ''}`;
 		try {
 			await sendOtp(subject.id, 'email', email, subject.firstName, linkPath);
 		} catch (error) {
@@ -120,7 +131,9 @@ export const actions: Actions = {
 
 	verifyCode: async (event) => {
 		const form = await event.request.formData();
-		const { domainUser, subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')), String(form.get('slug') ?? '') || null);
+		const scope = parseScope(String(form.get('scope') ?? ''));
+		const slug = String(form.get('slug') ?? '') || null;
+		const { domainUser, subject } = await resolveVerifySubject(event, scope, slug);
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });
@@ -128,7 +141,13 @@ export const actions: Actions = {
 		const result = await verifyOtpWithDestination(subject.id, 'email', code);
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
-		await applyEmailVerified(subject, result.destination, subject.id === domainUser.id);
+		// Claim scope: record the proof inside the claim's staged evidence — never
+		// on the citizen's own contacts or the real profile.
+		if (scope === 'claim' && slug) {
+			await stageClaimVerifiedContact(slug, domainUser.id, 'email', result.destination);
+		} else {
+			await applyEmailVerified(subject, result.destination, subject.id === domainUser.id);
+		}
 		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

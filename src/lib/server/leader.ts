@@ -15,8 +15,10 @@ import { user as authUsers } from '$lib/server/db/auth.schema';
  * creator's own login identity. Backed by a placeholder auth-user row (never
  * used for login, same convention as seeded candidates' `{slug}@seed.leaders.ke`).
  */
-export async function createPhantomUser(firstName: string, otherNames: string) {
-	const authId = randomUUID();
+export async function createPhantomUser(firstName: string, otherNames: string, applyId?: string) {
+	// /dashboard/apply/[id]/* pre-mints the application's UUID; using it as the
+	// phantom's auth id keeps that URL stable for the whole application.
+	const authId = applyId ?? randomUUID();
 	const placeholderEmail = `leader-${authId}@phantom.leaders.ke`;
 	await db.insert(authUsers).values({ id: authId, name: `${firstName} ${otherNames}`.trim(), email: placeholderEmail, emailVerified: false });
 
@@ -39,8 +41,15 @@ export function fullName(u: { firstName: string; otherNames: string }): string {
 	return `${u.firstName} ${u.otherNames}`.trim();
 }
 
-// Top-level static routes a leader slug must never shadow.
+// Top-level static routes a leader slug must never shadow — plus the dashboard's
+// own second segments (/dashboard/<slug>/* would otherwise be shadowed by them).
 const RESERVED_SLUGS = [
+	'apply',
+	'account',
+	'admin',
+	'ambassador',
+	'citizen',
+	'invites',
 	'leaders',
 	'pricing',
 	'compare',
@@ -150,6 +159,50 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 	}
 
 	return null;
+}
+
+/** Whether a string looks like the UUID minted for a /dashboard/apply/[id] URL. */
+export function isApplyId(id: string): boolean {
+	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+}
+
+/**
+ * The leader context for a /dashboard/apply/[id]/* URL. The id is the
+ * application's pre-minted UUID, which becomes the phantom user's auth id on
+ * first profile save — so before that save this resolves to null (a blank
+ * application), and afterwards to the in-progress profile. 'denied' when the
+ * application exists but the viewer isn't on its team.
+ */
+export async function getLeaderContextByApplyId(
+	applyId: string,
+	domainUserId: number
+): Promise<LeaderContext | 'denied' | null> {
+	if (!isApplyId(applyId)) return 'denied';
+	const [row] = await db
+		.select()
+		.from(users)
+		.innerJoin(leaders, eq(leaders.userId, users.id))
+		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.where(and(eq(users.authUserId, applyId), isNull(users.deletedAt), isNull(leaders.deletedAt)));
+	if (!row) return null;
+
+	if (row.leaders.userId === domainUserId) {
+		return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'leader' };
+	}
+	const [manager] = await db
+		.select({ id: managers.id })
+		.from(managers)
+		.where(
+			and(
+				eq(managers.userId, domainUserId),
+				eq(managers.leaderId, row.leaders.id),
+				eq(managers.isActive, true),
+				isNull(managers.deletedAt)
+			)
+		);
+	if (!manager) return 'denied';
+
+	return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'manager' };
 }
 
 /**

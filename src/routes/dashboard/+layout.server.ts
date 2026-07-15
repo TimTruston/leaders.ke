@@ -1,7 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import { and, count, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, managers } from '$lib/server/db/schema';
+import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import type { ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
@@ -17,14 +18,28 @@ export type ApplicationChecklist = {
 	contacts: TabChecklist;
 	team: TabChecklist;
 	documentation: TabChecklist;
+	/** The applicant's attestation: role, national ID, and their ID images. */
+	signoff: TabChecklist;
+};
+
+// Each entry: whether the field is still missing, and the human label shown for it.
+const toTab = (rows: (boolean | string)[][]): TabChecklist => {
+	const missing = rows.filter(([isMissing]) => isMissing).map(([, label]) => label as string);
+	return { complete: missing.length === 0, missing };
 };
 
 // Guards every /dashboard page and shares the leader context + role switcher data.
+// Three leader route families hang off /dashboard: apply/[id]/* (application in
+// progress), claim/[slug]/* (claiming an existing profile), and [slug]/* (a
+// verified campaign). The second path segment says which one this request is.
 export const load: LayoutServerLoad = async (event) => {
-	// A guest clicking "Claim this profile" lands on /dashboard/profile?leader=… —
+	const segments = event.url.pathname.split('/'); // ['', 'dashboard', <family|slug>, ...]
+	const family = segments[2];
+
+	// A guest clicking "Claim this profile" lands on /dashboard/claim/<slug>/… —
 	// this must run before requireDashboardUser, whose plain /login redirect would
 	// otherwise win and drop both the notice and the way back to the claim form.
-	if (!event.locals.user && event.url.searchParams.get('leader')) {
+	if (!event.locals.user && family === 'claim') {
 		const next = `${event.url.pathname}${event.url.search}`;
 		redirectWithFlash(event.cookies, `/login?next=${encodeURIComponent(next)}`, 'You need to be logged in to claim a profile');
 	}
@@ -36,33 +51,35 @@ export const load: LayoutServerLoad = async (event) => {
 		redirect(302, `/verify/email?next=${encodeURIComponent(event.url.pathname)}`);
 	}
 
-	// Approved campaigns live at /dashboard/<slug>/* — the URL, not guesswork,
-	// picks which campaign is active. Slugless paths (the apply flow, citizen
-	// tabs) fall back to the viewer's own/first-managed context.
-	const ctx = await getRouteLeaderContext(event, domainUser.id);
-	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
+	// Claim family: the viewer has no access to the claimed profile yet, so there
+	// is no leader context — just the claimed leader's name for the header.
+	let ctx: Awaited<ReturnType<typeof getRouteLeaderContext>> = null;
+	let claimName: string | null = null;
+	let claimLeaderId: number | null = null;
+	if (family === 'claim') {
+		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
+		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+		claimName = fullName(resolved.row.users);
+		claimLeaderId = resolved.currentTerm.leaders.id;
+	} else {
+		// apply/[id] and [slug] resolve by their URL param (access-checked);
+		// citizen pages fall back to the viewer's own/first-managed context.
+		ctx = await getRouteLeaderContext(event, domainUser.id);
+	}
 
-	// Canonicalize: a verified campaign's tabs moved under its slug, so a
-	// slugless campaign URL (old links, post-approval visits) redirects there.
-	const routeSlug = (event.params as { slug?: string }).slug;
-	if (!routeSlug && ctx?.leader.verifiedAt && ctx.profileUser.slug) {
-		const section = event.url.pathname.match(
-			/^\/dashboard\/(profile|contacts|team|documentation|manifesto|posts|reviews|followers|broadcasts|fundraising|pr|competitors)(\/.*)?$/
-		);
-		// Claim mode stays slugless — that form is about someone else's profile.
-		if (section && !event.url.searchParams.get('leader')) {
-			redirect(302, `/dashboard/${ctx.profileUser.slug}/${section[1]}${section[2] ?? ''}${event.url.search}`);
+	// Keep each application/campaign under its canonical family: approved ones
+	// live at /dashboard/<slug>/*, in-progress ones at /dashboard/apply/<id>/*.
+	if (ctx) {
+		if (family === 'apply' && ctx.leader.verifiedAt && ctx.profileUser.slug) {
+			redirect(302, `/dashboard/${ctx.profileUser.slug}/${segments.slice(4).join('/')}${event.url.search}`);
+		}
+		const isCampaignFamily = !['apply', 'claim', 'admin', 'ambassador', 'account', 'invites', undefined, ''].includes(family);
+		if (isCampaignFamily && !ctx.leader.verifiedAt) {
+			redirect(302, `/dashboard/apply/${ctx.profileUser.authUserId}/${segments.slice(3).join('/')}${event.url.search}`);
 		}
 	}
 
-	// Claim mode (?leader=<slug>, see dashboard/profile): the apply-mode header
-	// reads "Manage <name>" instead of "Create a Leader Profile".
-	let claimName: string | null = null;
-	const claimSlug = event.url.searchParams.get('leader');
-	if (claimSlug) {
-		const resolved = await resolveCurrentTerm(claimSlug);
-		if (resolved?.currentTerm.leaders.verifiedAt) claimName = fullName(resolved.row.users);
-	}
+	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
 
 	// Submit Application (top-right, apply mode) is gated on every one of the 4 tabs
 	// being filled in — website/social links are the only optional Contacts fields.
@@ -73,8 +90,45 @@ export const load: LayoutServerLoad = async (event) => {
 	let pendingVerification = false;
 	let rejection: Awaited<ReturnType<typeof getLatestRejection>> = null;
 	let application: ApplicationChecklist | null = null;
-	if (ctx && !ctx.leader.verifiedAt) {
-		const [contactRows, [{ n: teamSize }]] = await Promise.all([
+	let claimSubmitted = false;
+	if (family === 'claim' && claimLeaderId) {
+		// The claim's checklist reads off what's been STAGED in the pending claim,
+		// not the profile's real data — same shape as the apply checklist so the
+		// tab `*`s and the submit widget work identically. Team is a claim
+		// non-requirement (it unlocks after approval).
+		const [claimRow] = await db
+			.select({ evidence: profileClaims.evidence })
+			.from(profileClaims)
+			.where(and(eq(profileClaims.leaderId, claimLeaderId), eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+		const ev = (claimRow?.evidence ?? {}) as ClaimEvidence;
+		application = {
+			profile: toTab([[!ev.profile, 'Profile details']]),
+			contacts: toTab([
+				[!ev.contacts?.address, 'Office / address'],
+				[!ev.contacts?.sms, 'Phone number'],
+				[!ev.contacts?.email, 'Email address']
+			]),
+			// Team management belongs to the profile's admins; a claim has no team requirement.
+			team: { complete: true, missing: [] },
+			documentation: toTab([
+				[!ev.documentation?.photoUrl, 'Photo'],
+				[!ev.documentation?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
+			]),
+			signoff: toTab([
+				[!ev.signoff?.myRole, 'My role'],
+				[!ev.signoff?.nationalId, 'My National ID'],
+				[!ev.signoff?.idFrontUrl, 'ID front'],
+				[!ev.signoff?.idBackUrl, 'ID back']
+			])
+		};
+		applicationComplete =
+			application.profile.complete &&
+			application.contacts.complete &&
+			application.documentation.complete &&
+			application.signoff.complete;
+		claimSubmitted = !!ev.submittedAt;
+	} else if (ctx && !ctx.leader.verifiedAt) {
+		const [contactRows, [{ n: teamSize }], [mine]] = await Promise.all([
 			db
 				.select({ channel: contacts.channel, value: contacts.value })
 				.from(contacts)
@@ -82,14 +136,19 @@ export const load: LayoutServerLoad = async (event) => {
 			db
 				.select({ n: count() })
 				.from(managers)
-				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true)))
+				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true))),
+			db
+				.select({ roles: managers.roles })
+				.from(managers)
+				.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)))
 		]);
+		const myRoles = (mine?.roles ?? {}) as { title?: string; nationalId?: string };
 
 		// Each entry: the human label shown to the user, and whether it's still missing.
 		const profileMissing = [
 			[!ctx.profileUser.firstName, 'First name'],
 			[!ctx.profileUser.otherNames, 'Other names'],
-			[!ctx.leader.positionId, 'Position you are vying for'],
+			[!ctx.leader.positionId, 'Elective position'],
 			[!ctx.profileUser.bio, 'Bio']
 		];
 		const contactsMissing = [
@@ -101,35 +160,77 @@ export const load: LayoutServerLoad = async (event) => {
 			teamSize < 2 ? [`${2 - teamSize} more team member${teamSize === 1 ? '' : 's'} (2 needed)`] : [];
 		const docsMissing = [
 			[!ctx.leader.photoUrl, 'Photo'],
-			[!ctx.leader.idFrontUrl, 'ID — front'],
-			[!ctx.leader.idBackUrl, 'ID — back'],
 			[!ctx.leader.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 		];
-		const toTab = (rows: (boolean | string)[][]): TabChecklist => {
-			const missing = rows.filter(([isMissing]) => isMissing).map(([, label]) => label as string);
-			return { complete: missing.length === 0, missing };
-		};
-
+		// The applicant's attestation: role + national ID (their manager row) and
+		// their own ID images (leaders row columns, written from the Signoff tab).
+		const signoffMissing = [
+			[!myRoles.title, 'My role'],
+			[!myRoles.nationalId, 'My National ID'],
+			[!ctx.leader.idFrontUrl, 'ID front'],
+			[!ctx.leader.idBackUrl, 'ID back']
+		];
 		application = {
 			profile: toTab(profileMissing),
 			contacts: toTab(contactsMissing),
 			team: { complete: teamMissing.length === 0, missing: teamMissing },
-			documentation: toTab(docsMissing)
+			documentation: toTab(docsMissing),
+			signoff: toTab(signoffMissing)
 		};
 		applicationComplete =
 			application.profile.complete &&
 			application.contacts.complete &&
 			application.team.complete &&
-			application.documentation.complete;
+			application.documentation.complete &&
+			application.signoff.complete;
 		pendingVerification = !!(await getPendingVerification(ctx.leader.id));
 		// Only meaningful when nothing's pending — a fresh re-submission supersedes the
 		// old rejection (getLatestRejection returns null once they resubmit).
 		if (!pendingVerification) rejection = await getLatestRejection(ctx.leader.id);
 	}
 
+	// Every campaign the viewer leads or actively manages — the switcher lists
+	// them ALL (verified ones under their slug, in-progress applications under
+	// their apply UUID), not just the first-resolved context.
+	const managedRows = await db
+		.select({
+			leaderId: leaders.id,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			slug: users.slug,
+			authUserId: users.authUserId,
+			verifiedAt: leaders.verifiedAt
+		})
+		.from(managers)
+		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
+		.innerJoin(users, eq(leaders.userId, users.id))
+		.where(and(eq(managers.userId, domainUser.id), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(leaders.deletedAt)));
+	const myCampaigns = [...new Map(managedRows.map((r) => [r.leaderId, r])).values()].map((r) => ({
+		leaderId: r.leaderId,
+		name: fullName(r),
+		verified: !!r.verifiedAt,
+		basePath: r.verifiedAt && r.slug ? `/dashboard/${r.slug}` : `/dashboard/apply/${r.authUserId}`
+	}));
+
+	// Every claim the viewer has in flight — the switcher lists them so a claim
+	// stays reachable after navigating away.
+	const pendingClaimRows = await db
+		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
+		.from(profileClaims)
+		.innerJoin(leaders, eq(profileClaims.leaderId, leaders.id))
+		.innerJoin(users, eq(leaders.userId, users.id))
+		.where(and(eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+	const pendingClaims = pendingClaimRows
+		.filter((r) => r.slug)
+		.map((r) => ({ slug: r.slug as string, name: fullName(r) }));
+
 	return {
 		firstName: domainUser.firstName,
 		claimName,
+		claimSubmitted,
+		pendingClaims,
+		myCampaigns,
+		ambassadorFor: ambassadorAssignments.map((a) => ({ leaderId: a.leaderId, name: a.leaderName })),
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,
@@ -146,11 +247,12 @@ export const load: LayoutServerLoad = async (event) => {
 					status: ctx.leader.status,
 					verified: !!ctx.leader.verifiedAt,
 					publicPath: leaderPath(ctx.profileUser),
-					// Campaign tabs live under the slug once verified; the apply flow stays slugless.
+					// Verified campaigns live under their slug; in-progress applications
+					// under their pre-minted UUID (the phantom's auth id).
 					basePath:
 						ctx.leader.verifiedAt && ctx.profileUser.slug
 							? `/dashboard/${ctx.profileUser.slug}`
-							: '/dashboard'
+							: `/dashboard/apply/${ctx.profileUser.authUserId}`
 				}
 			: null
 	};
