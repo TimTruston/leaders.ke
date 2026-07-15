@@ -69,18 +69,18 @@ export async function isActiveAmbassador(userId: number, leaderId: number): Prom
 export async function addCitizenFollower(
 	recruiterUserId: number,
 	leaderId: number,
-	input: { name: string; contact: string; county: string | null; ward: string | null }
+	input: { name: string; phone: string; email: string; county: string | null; ward: string | null }
 ) {
 	const name = input.name.trim();
-	const contact = input.contact.trim();
-	if (!name || !contact) return { ok: false as const, error: 'A name and a phone or email are required.' };
-
-	const isEmail = contact.includes('@');
-	const emailAddress = isEmail ? contact.toLowerCase() : null;
-	const phoneNumber = isEmail ? null : contact.replace(/[^\d+]/g, '');
-	if (!isEmail && (phoneNumber?.length ?? 0) < 9) {
-		return { ok: false as const, error: 'Enter a valid phone number or email address.' };
+	const email = input.email.trim().toLowerCase();
+	const phone = input.phone.replace(/[^\d+]/g, '');
+	if (!name || (!phone && !email)) {
+		return { ok: false as const, error: 'A name and a phone or email are required.' };
 	}
+	if (phone && phone.length < 9) return { ok: false as const, error: 'Enter a valid phone number.' };
+	if (email && !email.includes('@')) return { ok: false as const, error: 'Enter a valid email address.' };
+	const emailAddress = email || null;
+	const phoneNumber = phone || null;
 
 	// App-layer dedupe for account-less follows: one live follow per contact per leader.
 	const [duplicate] = await db
@@ -108,9 +108,9 @@ export async function addCitizenFollower(
 		ward: input.ward || null,
 		digest: 'leader',
 		digestId: leaderId,
-		// Contact channel doubles as the digest opt-in, same as the public follow form.
-		email: isEmail,
-		sms: !isEmail,
+		// Each provided contact channel doubles as a digest opt-in.
+		email: !!emailAddress,
+		sms: !!phoneNumber,
 		addedBy: recruiterUserId
 	});
 	return { ok: true as const, name };
@@ -119,12 +119,14 @@ export async function addCitizenFollower(
 export type Recruit = {
 	id: number;
 	name: string;
-	contact: string;
+	phone: string | null;
+	email: string | null;
 	ward: string | null;
 	joinedAt: string;
 };
 
-/** One page of the citizens this user recruited for this campaign, newest first. */
+/** One page of the citizens this user recruited for this campaign, newest first —
+ * the ambassador view is scoped to their own recruits, never the full roster. */
 export async function listRecruits(
 	recruiterUserId: number,
 	leaderId: number,
@@ -152,7 +154,8 @@ export async function listRecruits(
 		recruits: rows.map((f) => ({
 			id: f.id,
 			name: f.name ?? 'Follower',
-			contact: f.emailAddress ?? f.phoneNumber ?? '',
+			phone: f.phoneNumber,
+			email: f.emailAddress,
 			ward: f.ward,
 			joinedAt: f.createdAt.toISOString()
 		})),

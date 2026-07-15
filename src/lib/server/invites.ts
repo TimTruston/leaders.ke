@@ -359,14 +359,15 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 	const dashboardBase =
 		leader.verifiedAt && leader.slug ? `/dashboard/${leader.slug}` : `/dashboard/apply/${leader.authUserId}`;
 
-	return { ok: true as const, role: invite.role, leaderName: fullName(leader), dashboardBase };
+	return { ok: true as const, role: invite.role, leaderName: fullName(leader), dashboardBase, leaderId: invite.leaderId };
 }
 
 /** Where each accepted role actually lands: managers go straight into the
- * campaign they joined; ambassadors and followers to their own views. */
-export function inviteDestination(role: InviteRole, dashboardBase: string): string {
+ * campaign they joined; ambassadors to that campaign's tab on the citizen view;
+ * followers to the citizen overview. */
+export function inviteDestination(role: InviteRole, dashboardBase: string, leaderId: number): string {
 	if (role === 'manager') return `${dashboardBase}/profile`;
-	if (role === 'ambassador') return '/dashboard/ambassador';
+	if (role === 'ambassador') return `/dashboard/mobilize/${leaderId}`;
 	return '/dashboard';
 }
 

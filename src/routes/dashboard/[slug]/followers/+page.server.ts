@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { followers } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites } from '$lib/server/invites';
+import { addCitizenFollower } from '$lib/server/ambassador';
 import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -43,8 +44,8 @@ export const load: PageServerLoad = async (event) => {
 		followers: rows.map((f) => ({
 			id: f.id,
 			name: f.name ?? 'Follower',
-			emailAddress: f.emailAddress,
-			phoneNumber: f.phoneNumber,
+			email: f.emailAddress,
+			phone: f.phoneNumber,
 			county: f.county,
 			ward: f.ward,
 			channels: [f.email && 'email', f.sms && 'sms', f.whatsapp && 'whatsapp'].filter(
@@ -71,5 +72,21 @@ export const actions: Actions = {
 
 		await createInvite(ctx.leader.id, 'follower', domainUser.id, email, event.url.origin);
 		return { invited: { email } };
+	},
+
+	// Same add-a-citizen flow ambassadors have on /dashboard/mobilize — managers
+	// recruit too (blueprint funnel A), attributed via followers.addedBy.
+	addFollower: async (event) => {
+		const { domainUser, ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const result = await addCitizenFollower(domainUser.id, ctx.leader.id, {
+			name: String(form.get('name') ?? ''),
+			phone: String(form.get('phone') ?? ''),
+			email: String(form.get('email') ?? ''),
+			county: String(form.get('county') ?? '').trim() || null,
+			ward: String(form.get('ward') ?? '').trim() || null
+		});
+		if (!result.ok) return fail(400, { error: result.error });
+		return { added: { name: result.name } };
 	}
 };

@@ -2,16 +2,15 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import Pagination from '$lib/components/admin/Pagination.svelte';
+	import FollowersTable from '$lib/components/FollowersTable.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
-	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
-	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
-
 	// The public profile URL is where followers sign up; surfaced here for sharing.
 	const publicPath = $derived(page.data.leaderContext?.publicPath ?? '/leaders');
+	const leaderId = $derived(page.data.leaderContext?.leaderId ?? 0);
+	const county = $derived(page.data.leaderContext?.region ?? null);
 
 	function onWardChange(event: Event) {
 		const ward = (event.target as HTMLSelectElement).value;
@@ -24,6 +23,10 @@
 {#if form?.invited}
 	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
 		Invite sent to {form.invited.email}
+	</div>
+{:else if form?.added}
+	<div class="mb-6 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+		{form.added.name} now follows this campaign.
 	</div>
 {:else if form?.error}
 	<div class="mb-6 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
@@ -80,11 +83,14 @@
 </div>
 
 {#if data.total === 0}
+	<!-- The add-a-citizen form below stays available: manual recruitment is how a
+	roster gets its first rows. -->
 	<div class="mt-6 rounded-2xl border border-dashed border-border p-8 text-center">
 		<p class="font-semibold text-heading">No followers yet</p>
 		<p class="mx-auto mt-2 max-w-md text-sm text-muted">
 			Citizens follow you from your public page with just a name and phone or email. Share your
-			link everywhere: posters, WhatsApp groups, radio mentions.
+			link everywhere: posters, WhatsApp groups, radio mentions. You can also add citizens
+			yourself below.
 		</p>
 		<a
 			href={publicPath}
@@ -93,50 +99,16 @@
 			Open your public page
 		</a>
 	</div>
-{:else if data.followers.length === 0}
-	<p class="mt-6 text-sm text-muted">No followers match "{data.ward}".</p>
-{:else}
-	<div class="mt-6 overflow-x-auto rounded-2xl border border-border">
-		<table class="w-full min-w-140 border-collapse text-left">
-			<thead>
-				<tr class="bg-surface-2">
-					<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
-					<th class="px-4 py-3 text-sm font-semibold text-heading">Contact</th>
-					<th class="px-4 py-3 text-sm font-semibold text-heading">Ward</th>
-					<th class="px-4 py-3 text-sm font-semibold text-heading">Channels</th>
-					<th class="px-4 py-3 text-sm font-semibold text-heading">Joined</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.followers as follower (follower.id)}
-					<tr class="border-t border-border">
-						<td class="px-4 py-3 text-sm font-medium text-heading">{follower.name}</td>
-						<td class="px-4 py-3 text-sm">
-							{follower.emailAddress ?? follower.phoneNumber ?? '—'}
-						</td>
-						<td class="px-4 py-3 text-sm">{follower.ward ?? '—'}</td>
-						<td class="px-4 py-3 text-sm">
-							{#each follower.channels as channel (channel)}
-								<span
-									class="mr-1 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary uppercase"
-								>
-									{channel}
-								</span>
-							{:else}
-								<span class="text-muted">—</span>
-							{/each}
-						</td>
-						<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(follower.joinedAt))}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-	<Pagination
-		page={data.page}
-		{totalPages}
-		total={data.total}
-		itemLabel="followers"
-		href={(p) => (data.ward ? `?ward=${encodeURIComponent(data.ward)}&page=${p}` : `?page=${p}`)}
-	/>
 {/if}
+
+<div class="mt-6">
+	<FollowersTable
+		followers={data.followers}
+		total={data.total}
+		page={data.page}
+		pageSize={data.pageSize}
+		pagerHref={(p) => (data.ward ? `?ward=${encodeURIComponent(data.ward)}&page=${p}` : `?page=${p}`)}
+		{leaderId}
+		{county}
+	/>
+</div>

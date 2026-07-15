@@ -29,5 +29,5 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await acceptInvite(params.token, domainUser.id, locals.user.email);
 	if (!result.ok) return { error: result.error };
 
-	redirect(302, `${inviteDestination(result.role, result.dashboardBase)}?${joinedBannerQuery(result.role, result.leaderName)}`);
+	redirect(302, `${inviteDestination(result.role, result.dashboardBase, result.leaderId)}?${joinedBannerQuery(result.role, result.leaderName)}`);
 };

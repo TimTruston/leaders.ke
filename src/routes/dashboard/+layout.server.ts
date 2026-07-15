@@ -73,7 +73,7 @@ export const load: LayoutServerLoad = async (event) => {
 		if (family === 'apply' && ctx.leader.verifiedAt && ctx.profileUser.slug) {
 			redirect(302, `/dashboard/${ctx.profileUser.slug}/${segments.slice(4).join('/')}${event.url.search}`);
 		}
-		const isCampaignFamily = !['apply', 'claim', 'admin', 'ambassador', 'account', 'invites', undefined, ''].includes(family);
+		const isCampaignFamily = !['apply', 'claim', 'admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
 		if (isCampaignFamily && !ctx.leader.verifiedAt) {
 			redirect(302, `/dashboard/apply/${ctx.profileUser.authUserId}/${segments.slice(3).join('/')}${event.url.search}`);
 		}

@@ -45,10 +45,11 @@
 	const mode = $derived.by(() => {
 		const second = page.url.pathname.split('/')[2];
 		if (second === 'admin') return 'admin';
-		if (second === 'ambassador') return 'ambassador';
 		if (second === 'apply') return 'apply';
 		if (second === 'claim') return 'claim';
-		if (!second || second === 'account' || second === 'invites') return 'citizen';
+		// mobilize/* = ambassador work, deliberately a citizen tab: an ambassador is
+		// a citizen with extra duties, not a separate dashboard context.
+		if (!second || second === 'account' || second === 'invites' || second === 'mobilize') return 'citizen';
 		return 'campaign';
 	});
 
@@ -83,13 +84,8 @@
 			campaignEntries.push({ key: `campaign:${base}`, href: `${base}/profile`, label: 'New application', available: true });
 		}
 
-		const ambassadorEntries = data.ambassadorFor.map((a: { leaderId: number; name: string }, i: number) => ({
-			key: i === 0 ? 'ambassador' : `ambassador:${a.leaderId}`,
-			href: '/dashboard/ambassador',
-			label: `Ambassador: ${a.name}`,
-			available: true
-		}));
-
+		// No ambassador entries: ambassador work lives as tabs on the Citizen view
+		// (/dashboard/mobilize/[leaderId]), not as a switcher context of its own.
 		const claimEntries = data.pendingClaims.map((c: { slug: string; name: string }) => ({
 			key: `claim:${c.slug}`,
 			href: `/dashboard/claim/${c.slug}/profile`,
@@ -103,7 +99,6 @@
 		return [
 			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
 			...campaignEntries,
-			...ambassadorEntries,
 			...claimEntries,
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
 		]
@@ -116,9 +111,15 @@
 	const sections = $derived.by(() => {
 		switch (mode) {
 			case 'citizen':
+				// One tab per ambassador assignment, titled with the leader's name —
+				// ambassador work is part of citizen life, not a separate mode.
 				return [
 					{ href: '/dashboard', label: 'Overview' },
 					{ href: '/dashboard/invites', label: 'Invites' },
+					...data.ambassadorFor.map((a: { leaderId: number; name: string }) => ({
+						href: `/dashboard/mobilize/${a.leaderId}`,
+						label: a.name
+					})),
 					{ href: '/dashboard/account', label: 'Account' }
 				];
 			// Application flow (reached via "Launch a Campaign") and claims share the
@@ -162,8 +163,6 @@
 					{ href: `${base}/pr`, label: 'PR desk' },
 					{ href: `${base}/competitors`, label: 'Competitors' }
 				];
-			case 'ambassador':
-				return [{ href: '/dashboard/ambassador', label: 'My campaigns' }];
 			case 'admin':
 				return [
 					{ href: '/dashboard/admin/candidates', label: 'Candidates' },
@@ -207,6 +206,14 @@
 				]
 			: []
 	);
+
+	// The ambassador assignment whose mobilize tab is on screen, if any — drives
+	// the "Ambassador of [Name]" subheading on the citizen view.
+	const activeAssignment = $derived.by(() => {
+		const [, , second, third] = page.url.pathname.split('/');
+		if (second !== 'mobilize') return null;
+		return data.ambassadorFor.find((a: { leaderId: number; name: string }) => a.leaderId === Number(third)) ?? null;
+	});
 
 	// Exact match for any tab that's a URL-prefix of a sibling tab (e.g. Overview at
 	// /dashboard vs. /dashboard/account) — otherwise both would light up.
@@ -418,10 +425,12 @@
 						Pending verification
 					</span>
 				{/if}
+			{:else if activeAssignment}
+				<p class="text-sm text-muted">Ambassador of {activeAssignment.name}</p>
 			{:else}
 				<p class="text-sm text-muted uppercase">{mode}</p>
 			{/if}
-			
+
 		</div>
 	</div>
 	<!-- Rejection feedback: the admin's reason from the last review, shown until the
