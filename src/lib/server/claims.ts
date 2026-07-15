@@ -7,6 +7,7 @@ import { db } from '$lib/server/db';
 import { leaders, managers, profileClaims, users } from '$lib/server/db/schema';
 import { fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
+import { notifyUser } from '$lib/server/notifications';
 
 /** What a claimant stages tab by tab under /dashboard/claim/[slug]/* — held in
  * profileClaims.evidence until an admin approves; the public profile is never
@@ -264,6 +265,23 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 		.update(profileClaims)
 		.set({ outcome, notes: notes || null, reviewedBy: adminUserId, reviewedAt: new Date() })
 		.where(eq(profileClaims.id, claimId));
+
+	// Tell the claimant (in-app notification + email) what was decided and why.
+	const [subject] = await db
+		.select({ firstName: users.firstName, otherNames: users.otherNames })
+		.from(leaders)
+		.innerJoin(users, eq(leaders.userId, users.id))
+		.where(eq(leaders.id, claim.leaderId));
+	const profileName = subject ? fullName(subject) : 'the profile';
+	await notifyUser(claim.claimedBy, {
+		kind: 'claim',
+		title: outcome === 'approved' ? 'Your profile claim was approved' : 'Your profile claim was rejected',
+		body:
+			outcome === 'approved'
+				? `Your claim on ${profileName}'s profile was approved. You now manage this profile from your dashboard.`
+				: `Your claim on ${profileName}'s profile was rejected.${notes ? ` Reason: ${notes}` : ''}`,
+		href: '/dashboard'
+	});
 
 	return { ok: true as const };
 }

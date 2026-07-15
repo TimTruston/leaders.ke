@@ -5,6 +5,7 @@ import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders, users, verifications } from '$lib/server/db/schema';
 import { isSlugAvailable } from '$lib/server/leader';
+import { notifyUser } from '$lib/server/notifications';
 
 export type VerificationRow = {
 	verificationId: number;
@@ -131,6 +132,17 @@ export async function reviewVerification(
 		.update(verifications)
 		.set({ outcome, notes: notes || null, reviewedBy: adminUserId, reviewedAt: new Date() })
 		.where(eq(verifications.id, verificationId));
+
+	// Tell the applicant (in-app notification + email) what was decided and why.
+	await notifyUser(request.requestedBy, {
+		kind: 'verification',
+		title: outcome === 'approved' ? 'Your verification was approved' : 'Your verification was rejected',
+		body:
+			outcome === 'approved'
+				? 'Congratulations — your leaders.ke verification application was approved. Your profile is now live and publicly visible.'
+				: `Your leaders.ke verification application was rejected.${notes ? ` Reason: ${notes}` : ''}\n\nYou can address the reason and re-submit from your dashboard.`,
+		href: '/dashboard'
+	});
 
 	return { ok: true as const };
 }

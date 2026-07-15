@@ -8,6 +8,7 @@ import { redirectWithFlash } from '$lib/server/flash';
 import { leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
+import { listUnreadNotifications } from '$lib/server/notifications';
 import type { LayoutServerLoad } from './$types';
 
 // One application tab's completion state: whether it's done, and the labels of the
@@ -226,6 +227,8 @@ export const load: LayoutServerLoad = async (event) => {
 
 	return {
 		firstName: domainUser.firstName,
+		// Unread decision notifications (verification/claim outcomes), bannered until dismissed.
+		notifications: await listUnreadNotifications(domainUser.id),
 		claimName,
 		claimSubmitted,
 		pendingClaims,

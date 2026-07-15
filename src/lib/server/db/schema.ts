@@ -286,6 +286,24 @@ export const profileClaims = pgTable('profile_claims', {
     .where(sql`${t.outcome} is null`),
 ]);
 
+// 6.4 NOTIFICATIONS (durable in-app notifications, e.g. "your verification was
+// approved/rejected because …". Written alongside the matching email by notifyUser
+// ($lib/server/notifications) — the flash cookie can't carry these because the
+// decision happens in the ADMIN's session, not the applicant's. Unread rows banner
+// on the applicant's dashboard until dismissed.)
+export const notifications = pgTable('notifications', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(), // the recipient
+  kind: varchar('kind', { length: 30 }).notNull(), // 'verification' | 'claim' — what the notification is about
+  title: varchar('title', { length: 255 }).notNull(),
+  body: text('body').notNull(), // includes the admin's reason on rejections
+  href: text('href'), // where "view" should land, e.g. the application page
+  readAt: timestamp('read_at', { withTimezone: true }), // null = unread, still bannered
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('notifications_unread_idx').on(t.userId).where(sql`${t.readAt} is null`),
+]);
+
 // 7. EVENTS
 // A physical or scheduled gathering tied to a campaign.
 export const events = pgTable('events', {

@@ -246,6 +246,28 @@
 		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{notice}</div>
 	{/if}
 
+	<!-- Durable decision notifications (verification/claim outcomes) — bannered until dismissed -->
+	{#each data.notifications as item (item.id)}
+		<div class="mb-4 flex items-start justify-between gap-3 rounded-xl bg-primary-soft p-4 text-on-primary">
+			<div class="min-w-0 text-sm">
+				<p class="font-semibold">{item.title}</p>
+				<p class="mt-0.5 whitespace-pre-line">{item.body}</p>
+			</div>
+			<!-- Plain POST (no enhance): the endpoint is a +server.ts returning a 303
+			back to this page, not a form action returning an ActionResult. -->
+			<form method="post" action="/dashboard/notifications">
+				<input type="hidden" name="id" value={item.id} />
+				<button
+					type="submit"
+					aria-label="Dismiss notification"
+					class="rounded-md px-2 py-1 text-sm font-semibold transition hover:bg-on-primary/10"
+				>
+					✕
+				</button>
+			</form>
+		</div>
+	{/each}
+
 	<!-- Headers -->
 
 	<div class="flex flex-wrap items-center justify-between gap-2">
