@@ -31,16 +31,23 @@ export function parseScope(raw: string | null): VerifyScope {
 }
 
 /** Resolves the subject a verification applies to. For 'profile' scope that's the
- * leader profile's (phantom) user; it falls back to the citizen when there's no
- * leader context yet. `subject === domainUser` exactly when the scope is the
- * citizen's own account — the only case where better-auth's login email is synced. */
+ * leader profile's (phantom) user — picked by the slug the originating
+ * /dashboard/<slug>/* form passed along (a multi-campaign manager has several
+ * profiles; guessing would target the wrong one), falling back to the
+ * own/first-managed guess for slugless (apply-flow) forms, and to the citizen
+ * when there's no leader context yet. `subject === domainUser` exactly when the
+ * scope is the citizen's own account — the only case where better-auth's login
+ * email is synced. */
 export async function resolveVerifySubject(
 	event: RequestEvent,
-	scope: VerifyScope
+	scope: VerifyScope,
+	slug?: string | null
 ): Promise<DashboardUser & { subject: typeof users.$inferSelect }> {
 	const base = await requireDashboardUser(event);
 	if (scope === 'profile') {
-		const ctx = await getLeaderContext(base.domainUser.id);
+		const ctx = slug
+			? await getLeaderContextBySlug(slug, base.domainUser.id)
+			: await getLeaderContext(base.domainUser.id);
 		if (ctx) return { ...base, subject: ctx.profileUser };
 	}
 	return { ...base, subject: base.domainUser };

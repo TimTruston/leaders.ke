@@ -38,6 +38,7 @@
 			<input type="hidden" name="phone" value={data.phone} />
 			<input type="hidden" name="next" value={data.next} />
 			<input type="hidden" name="scope" value={data.scope} />
+			<input type="hidden" name="slug" value={data.slug ?? ''} />
 			<label class="block flex-1">
 				<div class="text-xs font-medium text-muted mb-2">Enter the SMS code</div>
 				<div class="flex items-stretch">
@@ -81,6 +82,7 @@
 		>
 			<input type="hidden" name="phone" value={data.phone} />
 			<input type="hidden" name="scope" value={data.scope} />
+			<input type="hidden" name="slug" value={data.slug ?? ''} />
 			<button
 				type="submit"
 				disabled={sendingCode || phoneCooldown > 0}

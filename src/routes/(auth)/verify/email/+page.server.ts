@@ -57,7 +57,8 @@ async function applyEmailVerified(subject: DashboardUser['domainUser'], email: s
 
 export const load: PageServerLoad = async (event) => {
 	const scope = parseScope(event.url.searchParams.get('scope'));
-	const { authUser, domainUser, subject } = await resolveVerifySubject(event, scope);
+	const slug = event.url.searchParams.get('slug');
+	const { authUser, domainUser, subject } = await resolveVerifySubject(event, scope, slug);
 	const next = safeNext(event.url.searchParams.get('next'));
 	const email = candidateEmail(event.url, authUser.email);
 	const isAccount = subject.id === domainUser.id;
@@ -83,7 +84,7 @@ export const load: PageServerLoad = async (event) => {
 	// Auto-send a code on arrival only if none is already outstanding for this
 	// address — so a page refresh reuses the code already sent instead of firing a
 	// new one. A later resend is a deliberate button click.
-	const linkPath = scope === 'profile' ? '/verify/email?scope=profile' : '/verify/email';
+	const linkPath = scope === 'profile' ? `/verify/email?scope=profile${slug ? `&slug=${slug}` : ''}` : '/verify/email';
 	let emailCooldown = await otpCooldownRemaining('email', email);
 	if (!(await hasPendingOtp('email', email))) {
 		try {
@@ -94,20 +95,21 @@ export const load: PageServerLoad = async (event) => {
 		}
 	}
 
-	return { next, scope, email, emailCooldown };
+	return { next, scope, slug, email, emailCooldown };
 };
 
 export const actions: Actions = {
 	sendEmailCode: async (event) => {
 		const form = await event.request.formData();
 		const scope = parseScope(String(form.get('scope') ?? ''));
-		const { authUser, subject } = await resolveVerifySubject(event, scope);
+		const slug = String(form.get('slug') ?? '') || null;
+		const { authUser, subject } = await resolveVerifySubject(event, scope, slug);
 		const typed = String(form.get('email') ?? '').trim().toLowerCase();
 		const email = typed.includes('@') ? typed : authUser.email;
 		if (await verifiedByOther(subject.id, email)) {
 			return fail(400, { emailError: 'That email is already verified on another account.' });
 		}
-		const linkPath = scope === 'profile' ? '/verify/email?scope=profile' : '/verify/email';
+		const linkPath = scope === 'profile' ? `/verify/email?scope=profile${slug ? `&slug=${slug}` : ''}` : '/verify/email';
 		try {
 			await sendOtp(subject.id, 'email', email, subject.firstName, linkPath);
 		} catch (error) {
@@ -118,7 +120,7 @@ export const actions: Actions = {
 
 	verifyCode: async (event) => {
 		const form = await event.request.formData();
-		const { domainUser, subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')));
+		const { domainUser, subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')), String(form.get('slug') ?? '') || null);
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });

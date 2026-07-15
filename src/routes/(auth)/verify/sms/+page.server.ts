@@ -49,7 +49,8 @@ async function applyPhoneVerified(subject: DashboardUser['domainUser'], phone: s
 
 export const load: PageServerLoad = async (event) => {
 	const scope = parseScope(event.url.searchParams.get('scope'));
-	const { subject } = await resolveVerifySubject(event, scope);
+	const slug = event.url.searchParams.get('slug');
+	const { subject } = await resolveVerifySubject(event, scope, slug);
 	const next = safeNext(event.url.searchParams.get('next'));
 
 	// The candidate number: the ?phone= param (whatever's typed on the account
@@ -79,13 +80,13 @@ export const load: PageServerLoad = async (event) => {
 		}
 	}
 
-	return { next, scope, phone, phoneCooldown };
+	return { next, scope, slug, phone, phoneCooldown };
 };
 
 export const actions: Actions = {
 	sendPhoneCode: async (event) => {
 		const form = await event.request.formData();
-		const { subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')));
+		const { subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')), String(form.get('slug') ?? '') || null);
 		const normalized = normalizeKenyanPhone(String(form.get('phone') ?? ''));
 		if (!normalized) return fail(400, { phoneError: 'Enter a valid Kenyan phone number.' });
 		if (await verifiedByOther(subject.id, normalized)) {
@@ -101,7 +102,7 @@ export const actions: Actions = {
 
 	verifyCode: async (event) => {
 		const form = await event.request.formData();
-		const { subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')));
+		const { subject } = await resolveVerifySubject(event, parseScope(String(form.get('scope') ?? '')), String(form.get('slug') ?? '') || null);
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });

@@ -31,7 +31,7 @@
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
 	// creation on /dashboard/contacts) instead of the default /dashboard/account.
 	const verifyHref = $derived(
-		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}`
+		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
 	);
 </script>
 
