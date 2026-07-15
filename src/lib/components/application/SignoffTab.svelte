@@ -10,8 +10,8 @@
 	let { data, form }: { data: any; form: any } = $props();
 
 	const docs = $derived([
-		{ kind: 'id-front', label: 'ID front', url: data.idFrontUrl },
-		{ kind: 'id-back', label: 'ID back', url: data.idBackUrl }
+		{ kind: 'id-front', label: 'National ID front', url: data.idFrontUrl },
+		{ kind: 'id-back', label: 'National ID back', url: data.idBackUrl }
 	] as const);
 
 	let uploading = $state(false);
@@ -60,41 +60,6 @@
 		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">Uploaded.</div>
 	{/if}
 
-	<form method="post" action="?/saveMyDetails" class="mt-6 rounded-2xl border border-border bg-surface p-5" use:enhance>
-		<div class="flex flex-wrap items-end gap-2">
-			<label class="min-w-48 flex-1">
-				<span class="text-sm font-medium text-heading">My role <span class={data.myRole ? 'text-muted' : 'text-red-500'}>*</span></span>
-				<select
-					name="myRole"
-					required
-					value={data.myRole}
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				>
-					<option value="" disabled>Pick your role</option>
-					{#each CAMPAIGN_ROLES as role (role)}
-						<option value={role}>{role}</option>
-					{/each}
-				</select>
-			</label>
-			<label class="min-w-48 flex-1">
-				<span class="text-sm font-medium text-heading">My National ID <span class={data.nationalId ? 'text-muted' : 'text-red-500'}>*</span></span>
-				<input
-					type="text"
-					name="nationalId"
-					required
-					value={data.nationalId}
-					placeholder="12345678"
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				/>
-			</label>
-			<button
-				type="submit"
-				class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
-			>
-				Save
-			</button>
-		</div>
-	</form>
 
 	<form
 		bind:this={formEl}
@@ -114,7 +79,7 @@
 			<div class="rounded-2xl border border-border bg-surface p-5">
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div>
-						<p class="font-semibold text-heading">{doc.label} <span class={doc.url ? 'text-muted' : 'text-red-500'}>*</span></p>
+						<p class="font-semibold text-sm text-heading">{doc.label} <span class={doc.url ? 'text-muted' : 'text-red-500'}>*</span></p>
 						{#if doc.url}
 							<a href={doc.url} target="_blank" rel="noopener" class="text-sm text-primary hover:underline">
 								View uploaded file
@@ -140,6 +105,43 @@
 			<p class="text-sm font-medium text-muted">Uploading…</p>
 		{/if}
 	</form>
+
+	<form method="post" action="?/saveMyDetails" class="mt-6 rounded-2xl border border-border bg-surface p-5" use:enhance>
+		<div class="flex flex-wrap items-end gap-2">
+			<label class="min-w-48 flex-1">
+				<span class="text-sm font-medium text-heading">My Role <span class={data.myRole ? 'text-muted' : 'text-red-500'}>*</span></span>
+				<select
+					name="myRole"
+					required
+					value={data.myRole}
+					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+				>
+					<option value="" disabled>Pick your role</option>
+					{#each CAMPAIGN_ROLES as role (role)}
+						<option value={role}>{role}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="min-w-48 flex-1">
+				<span class="text-sm font-medium text-heading">National ID <span class={data.nationalId ? 'text-muted' : 'text-red-500'}>*</span></span>
+				<input
+					type="text"
+					name="nationalId"
+					required
+					value={data.nationalId}
+					placeholder="12345678"
+					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+				/>
+			</label>
+			<button
+				type="submit"
+				class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
+			>
+				Save
+			</button>
+		</div>
+	</form>
+
 </div>
 
 {#if cropping}
