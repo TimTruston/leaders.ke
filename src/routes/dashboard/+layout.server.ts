@@ -2,9 +2,9 @@ import { redirect } from '@sveltejs/kit';
 import { and, count, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, managers } from '$lib/server/db/schema';
-import { requireDashboardUser } from '$lib/server/dashboard';
+import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
-import { getLeaderContext, leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
+import { leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
 import type { LayoutServerLoad } from './$types';
@@ -36,8 +36,24 @@ export const load: LayoutServerLoad = async (event) => {
 		redirect(302, `/verify/email?next=${encodeURIComponent(event.url.pathname)}`);
 	}
 
-	const ctx = await getLeaderContext(domainUser.id);
+	// Approved campaigns live at /dashboard/<slug>/* — the URL, not guesswork,
+	// picks which campaign is active. Slugless paths (the apply flow, citizen
+	// tabs) fall back to the viewer's own/first-managed context.
+	const ctx = await getRouteLeaderContext(event, domainUser.id);
 	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
+
+	// Canonicalize: a verified campaign's tabs moved under its slug, so a
+	// slugless campaign URL (old links, post-approval visits) redirects there.
+	const routeSlug = (event.params as { slug?: string }).slug;
+	if (!routeSlug && ctx?.leader.verifiedAt && ctx.profileUser.slug) {
+		const section = event.url.pathname.match(
+			/^\/dashboard\/(profile|contacts|team|documentation|manifesto|posts|reviews|followers|broadcasts|fundraising|pr|competitors)(\/.*)?$/
+		);
+		// Claim mode stays slugless — that form is about someone else's profile.
+		if (section && !event.url.searchParams.get('leader')) {
+			redirect(302, `/dashboard/${ctx.profileUser.slug}/${section[1]}${section[2] ?? ''}${event.url.search}`);
+		}
+	}
 
 	// Claim mode (?leader=<slug>, see dashboard/profile): the apply-mode header
 	// reads "Manage <name>" instead of "Create a Leader Profile".
@@ -129,7 +145,12 @@ export const load: LayoutServerLoad = async (event) => {
 					region: ctx.position.region,
 					status: ctx.leader.status,
 					verified: !!ctx.leader.verifiedAt,
-					publicPath: leaderPath(ctx.profileUser)
+					publicPath: leaderPath(ctx.profileUser),
+					// Campaign tabs live under the slug once verified; the apply flow stays slugless.
+					basePath:
+						ctx.leader.verifiedAt && ctx.profileUser.slug
+							? `/dashboard/${ctx.profileUser.slug}`
+							: '/dashboard'
 				}
 			: null
 	};

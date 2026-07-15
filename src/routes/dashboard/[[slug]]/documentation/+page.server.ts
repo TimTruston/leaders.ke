@@ -2,8 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders } from '$lib/server/db/schema';
-import { requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { getLeaderContext } from '$lib/server/leader';
+import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -16,7 +15,7 @@ const COLUMN_BY_KIND = {
 
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
-	const ctx = await getLeaderContext(domainUser.id);
+	const ctx = await getRouteLeaderContext(event, domainUser.id);
 	// Reachable before a profile is saved (applying), just with nothing to upload
 	// against yet — the upload action still requires ctx (requireLeader).
 	if (!ctx) return { noProfile: true as const };

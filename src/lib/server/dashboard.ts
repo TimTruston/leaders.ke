@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { getDomainUser, getLeaderContext, type LeaderContext } from '$lib/server/leader';
+import { getDomainUser, getLeaderContext, getLeaderContextBySlug, type LeaderContext } from '$lib/server/leader';
 import { managers, type users } from '$lib/server/db/schema';
 
 export type DashboardUser = {
@@ -46,12 +46,32 @@ export async function resolveVerifySubject(
 	return { ...base, subject: base.domainUser };
 }
 
+/**
+ * The leader context a /dashboard/[[slug]]/* route is about. An explicit slug
+ * (approved campaigns live at /dashboard/<slug>/*) picks that exact campaign —
+ * kicked back to /dashboard when it doesn't resolve or the viewer lacks access.
+ * Slugless URLs (the apply flow) fall back to the viewer's own/first-managed
+ * context, which may be null (nothing created yet).
+ */
+export async function getRouteLeaderContext(
+	event: RequestEvent,
+	domainUserId: number
+): Promise<LeaderContext | null> {
+	const slug = (event.params as { slug?: string }).slug;
+	if (slug) {
+		const ctx = await getLeaderContextBySlug(slug, domainUserId);
+		if (!ctx) redirect(302, '/dashboard');
+		return ctx;
+	}
+	return getLeaderContext(domainUserId);
+}
+
 /** For pages that need a leader profile; sends new accounts to the profile step first. */
 export async function requireLeader(
 	event: RequestEvent
 ): Promise<DashboardUser & { ctx: LeaderContext }> {
 	const base = await requireDashboardUser(event);
-	const ctx = await getLeaderContext(base.domainUser.id);
+	const ctx = await getRouteLeaderContext(event, base.domainUser.id);
 	if (!ctx) redirect(302, '/dashboard/profile');
 	return { ...base, ctx };
 }

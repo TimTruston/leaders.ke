@@ -3,8 +3,8 @@ import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
-import { requireDashboardUser } from '$lib/server/dashboard';
-import { createPhantomUser, fullName, generateLeaderSlug, getLeaderContext, isSlugAvailable, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
+import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, resolveCurrentTerm, slugify } from '$lib/server/leader';
 import { requestClaim } from '$lib/server/claims';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
@@ -38,7 +38,7 @@ async function resolveClaim(url: URL) {
 // the layout guard runs alongside this load and its redirect wins, so it must be claim-aware there.
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
-	const ctx = await getLeaderContext(domainUser.id);
+	const ctx = await getRouteLeaderContext(event, domainUser.id);
 	const claim = await resolveClaim(event.url);
 
 	const positionRows = await db
@@ -120,7 +120,7 @@ type PendingLeadership = { positionId: number; description: string; from: string
 export const actions: Actions = {
 	save: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
-		const ctx = await getLeaderContext(domainUser.id);
+		const ctx = await getRouteLeaderContext(event, domainUser.id);
 
 		const form = await event.request.formData();
 		const firstName = String(form.get('firstName') ?? '').trim();
@@ -304,7 +304,7 @@ export const actions: Actions = {
 
 	requestVerification: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
-		const ctx = await getLeaderContext(domainUser.id);
+		const ctx = await getRouteLeaderContext(event, domainUser.id);
 		if (!ctx) return fail(400, { verificationError: 'Save your profile before requesting verification.' });
 		if (ctx.leader.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
 

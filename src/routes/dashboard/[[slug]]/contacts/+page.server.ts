@@ -2,8 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
-import { requireDashboardUser } from '$lib/server/dashboard';
-import { getLeaderContext } from '$lib/server/leader';
+import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -12,7 +11,7 @@ import type { Actions, PageServerLoad } from './$types';
 // is the campaign's PUBLIC contact info, not the citizen's own login identity.
 async function getSubject(event: Parameters<typeof requireDashboardUser>[0]) {
 	const { domainUser } = await requireDashboardUser(event);
-	const ctx = await getLeaderContext(domainUser.id);
+	const ctx = await getRouteLeaderContext(event, domainUser.id);
 	return ctx?.profileUser ?? domainUser;
 }
 

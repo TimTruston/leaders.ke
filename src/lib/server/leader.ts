@@ -152,6 +152,40 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 	return null;
 }
 
+/**
+ * The leader context for an explicit /dashboard/[slug]/* URL — the URL, not
+ * guesswork, picks which campaign is active (a person can manage several).
+ * Returns null when the slug doesn't resolve or the viewer has no access
+ * (not the leader's own profile and not an active manager of it).
+ */
+export async function getLeaderContextBySlug(slug: string, domainUserId: number): Promise<LeaderContext | null> {
+	// One person can hold several `leaders` rows (Track Record) — resolveCurrentTerm
+	// picks the live campaign, not whichever row a bare slug join happens to hit
+	// (a `former` term has no manager rows, which read as access denied).
+	const resolved = await resolveCurrentTerm(slug);
+	if (!resolved) return null;
+	const { row, currentTerm } = resolved;
+
+	if (currentTerm.leaders.userId === domainUserId) {
+		return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'leader' };
+	}
+
+	const [manager] = await db
+		.select({ id: managers.id })
+		.from(managers)
+		.where(
+			and(
+				eq(managers.userId, domainUserId),
+				eq(managers.leaderId, currentTerm.leaders.id),
+				eq(managers.isActive, true),
+				isNull(managers.deletedAt)
+			)
+		);
+	if (!manager) return null;
+
+	return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'manager' };
+}
+
 /** The active election cycle; campaign workspace URLs end with this year. */
 export const ACTIVE_CYCLE = 2027;
 

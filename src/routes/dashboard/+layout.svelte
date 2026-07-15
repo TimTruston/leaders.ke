@@ -24,26 +24,31 @@
 
 	// Which mode the current URL/state belongs to. The section nav below shows only this
 	// mode's tabs, so switching modes changes what's available, not just the open tab.
+	// Matched on the exact second path segment — a prefix test would misfile campaign
+	// slugs that merely start with a mode name (/dashboard/admin-tim/* is NOT admin).
 	// Profile/Contacts/Team/Documentation are shared between "applying" and "an
-	// established campaign": not yet verified (or no profile) means still applying,
-	// derived from data so it's correct on every load regardless of which route you're on.
+	// established campaign": not yet verified (or no profile) means still applying.
 	const mode = $derived.by(() => {
-		const p = page.url.pathname;
-		if (p.startsWith('/dashboard/admin')) return 'admin';
-		if (p.startsWith('/dashboard/ambassador')) return 'ambassador';
-		if (p === '/dashboard' || p === '/dashboard/account' || p === '/dashboard/invites') return 'citizen';
+		const second = page.url.pathname.split('/')[2];
+		if (second === 'admin') return 'admin';
+		if (second === 'ambassador') return 'ambassador';
+		if (!second || second === 'account' || second === 'invites') return 'citizen';
 		return data.leaderContext?.verified ? 'campaign' : 'apply';
 	});
 
-	// The modes this account can switch between right now. "Claiming a Profile"
-	// only exists while a ?leader= claim is in flight — its href keeps the claim
-	// params so re-picking it returns to the same claim form.
-	const modes = $derived(
-		[
+	// The modes this account can switch between right now, each flagged `current`.
+	// "Claiming a Profile" only exists while a ?leader= claim is in flight — its href
+	// keeps the claim params, and the claim outranks whatever mode the URL implies.
+	// 'apply' (the pre-verification flow) shares the 'campaign' switcher entry.
+	// Verified campaigns live under /dashboard/<slug>/* (basePath, +layout.server.ts).
+	const modes = $derived.by(() => {
+		const base = data.leaderContext?.basePath ?? '/dashboard';
+		const currentKey = data.claimName ? 'claim' : mode === 'apply' ? 'campaign' : mode;
+		return [
 			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
 			{
 				key: 'campaign',
-				href: '/dashboard/profile',
+				href: `${base}/profile`,
 				label: (data.leaderContext?.role === 'manager' ? 'Managing ' : 'Ambassador: ') + data.leaderContext?.leaderName,
 				available: !!data.leaderContext
 			},
@@ -55,59 +60,62 @@
 				available: !!data.claimName
 			},
 			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
-		].filter((m) => m.available)
-	);
-	// 'apply' is the pre-verification leader context, which shares the 'campaign' switcher
-	// entry — without this map the lookup misses and wrongly falls back to Citizen.
-	// An in-flight claim (?leader=) selects its own "Claiming a Profile" entry.
-	const currentMode = $derived(
-		modes.find((m) => m.key === (data.claimName ? 'claim' : mode === 'apply' ? 'campaign' : mode)) ?? modes[0]
-	);
-
-	// Tabs per mode. Only pages that actually exist are listed (no dead links); every
-	// listed tab is always reachable, so no per-tab enable flag is needed.
-	const sectionsByMode = {
-		citizen: [
-			{ href: '/dashboard', label: 'Overview' },
-			{ href: '/dashboard/invites', label: 'Invites' },
-			{ href: '/dashboard/account', label: 'Account' }
-		],
-		// Campaign-application flow, reached via "Launch a Campaign": no Overview, and Team
-		// needs 2+ managers before the application can be submitted. Team/Documentation
-		// show their own "save your profile first" prompt until a leader row exists.
-		apply: [
-			{ href: '/dashboard/profile', label: "Profile" },
-			{ href: '/dashboard/contacts', label: 'Contacts' },
-			{ href: '/dashboard/team', label: 'Team' },
-			{ href: '/dashboard/documentation', label: 'Documentation' }
-		],
-		campaign: [
-			{ href: '/dashboard/profile', label: 'Profile' },
-			{ href: '/dashboard/contacts', label: 'Contacts' },
-			{ href: '/dashboard/manifesto', label: 'Manifesto' },
-			{ href: '/dashboard/posts', label: 'Posts' },
-			{ href: '/dashboard/reviews', label: 'Reviews' },
-			{ href: '/dashboard/team', label: 'Team' },
-			{ href: '/dashboard/followers', label: 'Followers' },
-			{ href: '/dashboard/broadcasts', label: 'Broadcasts' },
-			{ href: '/dashboard/fundraising', label: 'Fundraising' },
-			{ href: '/dashboard/pr', label: 'PR desk' },
-			{ href: '/dashboard/competitors', label: 'Competitors' }
-		],
-		ambassador: [{ href: '/dashboard/ambassador', label: 'My campaigns' }],
-		admin: [
-			{ href: '/dashboard/admin/candidates', label: 'Candidates' },
-			{ href: '/dashboard/admin/accounts', label: 'Accounts' },
-			{ href: '/dashboard/admin/pillars', label: 'Pillars' },
-			{ href: '/dashboard/admin/verifications', label: 'Verifications' },
-			{ href: '/dashboard/admin/claims', label: 'Claims' },
-			{ href: '/dashboard/admin/moderation', label: 'Moderation' },
-			{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue' },
-			{ href: '/dashboard/admin/packages', label: 'Packages' },
-			{ href: '/dashboard/admin/settings', label: 'Settings' }
 		]
-	};
-	const sections = $derived(sectionsByMode[mode]);
+			.filter((m) => m.available)
+			.map((m) => ({ ...m, current: m.key === currentKey }));
+	});
+
+	// This mode's tabs. Only pages that actually exist are listed (no dead links);
+	// every listed tab is always reachable, so no per-tab enable flag is needed.
+	const sections = $derived.by(() => {
+		const base = data.leaderContext?.basePath ?? '/dashboard';
+		switch (mode) {
+			case 'citizen':
+				return [
+					{ href: '/dashboard', label: 'Overview' },
+					{ href: '/dashboard/invites', label: 'Invites' },
+					{ href: '/dashboard/account', label: 'Account' }
+				];
+			// Campaign-application flow, reached via "Launch a Campaign": no Overview, and Team
+			// needs 2+ managers before the application can be submitted. Team/Documentation
+			// show their own "save your profile first" prompt until a leader row exists.
+			case 'apply':
+				return [
+					{ href: '/dashboard/profile', label: 'Profile' },
+					{ href: '/dashboard/contacts', label: 'Contacts' },
+					{ href: '/dashboard/team', label: 'Team' },
+					{ href: '/dashboard/documentation', label: 'Documentation' }
+				];
+			case 'campaign':
+				return [
+					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/contacts`, label: 'Contacts' },
+					{ href: `${base}/manifesto`, label: 'Manifesto' },
+					{ href: `${base}/posts`, label: 'Posts' },
+					{ href: `${base}/reviews`, label: 'Reviews' },
+					{ href: `${base}/team`, label: 'Team' },
+					{ href: `${base}/followers`, label: 'Followers' },
+					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
+					{ href: `${base}/fundraising`, label: 'Fundraising' },
+					{ href: `${base}/pr`, label: 'PR desk' },
+					{ href: `${base}/competitors`, label: 'Competitors' }
+				];
+			case 'ambassador':
+				return [{ href: '/dashboard/ambassador', label: 'My campaigns' }];
+			case 'admin':
+				return [
+					{ href: '/dashboard/admin/candidates', label: 'Candidates' },
+					{ href: '/dashboard/admin/accounts', label: 'Accounts' },
+					{ href: '/dashboard/admin/pillars', label: 'Pillars' },
+					{ href: '/dashboard/admin/verifications', label: 'Verifications' },
+					{ href: '/dashboard/admin/claims', label: 'Claims' },
+					{ href: '/dashboard/admin/moderation', label: 'Moderation' },
+					{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue' },
+					{ href: '/dashboard/admin/packages', label: 'Packages' },
+					{ href: '/dashboard/admin/settings', label: 'Settings' }
+				];
+		}
+	});
 
 	// Apply-flow tabs that still have missing required fields get a `*` on their title.
 	// Maps each tab's route to its checklist key; only meaningful while `application` is
@@ -198,7 +206,7 @@
 					<summary
 						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
 					>
-						{currentMode.label}
+						{modes.find((m) => m.current)?.label ?? modes[0].label}
 						<span class="text-muted transition group-open:rotate-180 leading-none h-2">^</span>
 					</summary>
 					<div class="absolute right-0 z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
@@ -206,7 +214,7 @@
 							<a
 								href={m.href}
 								onclick={() => (switcherOpen = false)}
-								class="block truncate rounded-xl px-3 py-1.5 text-sm transition hover:bg-primary hover:text-on-primary {m.key === currentMode.key
+								class="block truncate rounded-xl px-3 py-1.5 text-sm transition hover:bg-primary hover:text-on-primary {m.current
 									? 'bg-surface-2 font-semibold text-heading'
 									: 'text-muted'}"
 							>
