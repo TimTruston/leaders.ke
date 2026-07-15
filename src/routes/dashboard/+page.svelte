@@ -84,16 +84,17 @@
 
 <!-- Claim your profile: pinned to the bottom of the page even when there's little content above. -->
 <div class="mt-8 lg:mt-auto pt-8 rounded-3xl bg-primary p-6 text-center text-on-primary">
-	<h2 class="text-lg font-bold text-on-primary">Running for office?</h2>
+	<h2 class="text-lg font-bold text-on-primary">For Leaders and Campaign Managers</h2>
 	<p class="mt-2 text-sm text-on-primary/80">
-		Launch a campaign profile, or claim your existing seat's page if one's already listed.
+		Are you a leader, candidate or in charge of managing a leader's PR or campaign?
+		Launch your public-facing page and manage your PR and campaigns here.
 	</p>
 	<a
 		href={launchHref}
 		data-sveltekit-preload-data="off"
 		class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
 	>
-		Launch a campaign
+		Create a Leader's Profile
 	</a>
 </div>
 </div>
