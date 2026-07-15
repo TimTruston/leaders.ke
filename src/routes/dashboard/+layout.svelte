@@ -18,9 +18,9 @@
 		return null;
 	});
 
-	// Generic one-off banner (e.g. "Your email is already verified.") set via
-	// ?notice= by whichever route redirected here.
-	const notice = $derived(page.url.searchParams.get('notice'));
+	// Generic one-off banner (e.g. "Your email is already verified.") set as a
+	// flash cookie by whichever route redirected here (see $lib/server/flash.ts).
+	const notice = $derived(data.flash);
 
 	// Which mode the current URL/state belongs to. The section nav below shows only this
 	// mode's tabs, so switching modes changes what's available, not just the open tab.

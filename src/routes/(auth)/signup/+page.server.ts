@@ -5,6 +5,7 @@ import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getInviteByToken } from '$lib/server/invites';
+import { clearFlash } from '$lib/server/flash';
 import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -31,9 +32,10 @@ export const load: PageServerLoad = async (event) => {
 	// discovering the invite mismatch after clicking Accept.
 	const lockedEmail = event.url.searchParams.get('email');
 
-	// ?notice= explains why they landed here (e.g. "log in to claim a profile") —
-	// carried over from login so the intent survives switching forms.
-	const notice = event.url.searchParams.get('notice');
+	// The flash notice explains why they landed here (e.g. "log in to claim a
+	// profile"). hooks only peeks it on /login and /signup, so it survives
+	// switching between the two forms; the action clears it on success.
+	const notice = event.locals.flash ?? null;
 
 	return { next, inviteBanner, lockedEmail, notice };
 };
@@ -87,6 +89,9 @@ export const actions: Actions = {
 				return fail(400, { message: error.message || 'Registration failed' });
 			return fail(500, { message: 'Unexpected error' });
 		}
+
+		// Signed up — drop the peeked pre-auth notice so it can't resurface on the next page.
+		clearFlash(event.cookies);
 
 		// New accounts land on /verify/email first to confirm email
 		return redirect(302, `/verify/email?email=${email}&next=${encodeURIComponent(next)}`);

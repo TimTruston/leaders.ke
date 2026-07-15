@@ -1,4 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { redirectWithFlash } from '$lib/server/flash';
 import { and, eq, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
@@ -11,10 +12,6 @@ import type { Actions, PageServerLoad } from './$types';
 // Only ever redirect to a same-origin relative path — never follow ?next anywhere else.
 function safeNext(next: string | null): string {
 	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
-}
-
-function withNotice(path: string, message: string): string {
-	return `${path}${path.includes('?') ? '&' : '?'}notice=${encodeURIComponent(message)}`;
 }
 
 async function getSmsContact(userId: number) {
@@ -60,13 +57,13 @@ export const load: PageServerLoad = async (event) => {
 	const existing = await getSmsContact(subject.id);
 	const raw = event.url.searchParams.get('phone');
 	const phone = (raw ? normalizeKenyanPhone(raw) : null) ?? existing?.value ?? null;
-	if (!phone) redirect(302, withNotice('/dashboard/account', 'Add an SMS phone number to your account first.'));
+	if (!phone) redirectWithFlash(event.cookies, '/dashboard/account', 'Add an SMS phone number to your account first.');
 
 	if (phone === existing?.value && existing?.verifiedAt) {
-		redirect(302, withNotice(next, 'Your SMS number is already verified.'));
+		redirectWithFlash(event.cookies, next, 'Your SMS number is already verified.');
 	}
 	if (await verifiedByOther(subject.id, phone)) {
-		redirect(302, withNotice('/dashboard/account', 'That number is already verified on another account.'));
+		redirectWithFlash(event.cookies, '/dashboard/account', 'That number is already verified on another account.');
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
@@ -113,6 +110,6 @@ export const actions: Actions = {
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
 		await applyPhoneVerified(subject, result.destination);
-		redirect(302, withNotice(next, `You have successfully verified ${result.destination}`));
+		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

@@ -1,4 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { redirectWithFlash } from '$lib/server/flash';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
@@ -11,10 +12,6 @@ import type { Actions, PageServerLoad } from './$types';
 // Only ever redirect to a same-origin relative path — never follow ?next anywhere else.
 function safeNext(next: string | null): string {
 	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
-}
-
-function withNotice(path: string, message: string): string {
-	return `${path}${path.includes('?') ? '&' : '?'}notice=${encodeURIComponent(message)}`;
 }
 
 /** Only another account's *verified* hold blocks a claim; an unverified one is fair game. */
@@ -48,15 +45,15 @@ export const load: PageServerLoad = async (event) => {
 
 	const raw = event.url.searchParams.get('number');
 	const number = raw ? normalizeKenyanPhone(raw) : null;
-	if (!number) redirect(302, withNotice('/dashboard/account', 'Enter a WhatsApp number to verify.'));
+	if (!number) redirectWithFlash(event.cookies, '/dashboard/account', 'Enter a WhatsApp number to verify.');
 
 	const [existing] = await db
 		.select({ verifiedAt: contacts.verifiedAt })
 		.from(contacts)
 		.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'whatsapp'), eq(contacts.value, number), isNull(contacts.deletedAt)));
-	if (existing?.verifiedAt) redirect(302, withNotice(next, `${number} is already verified.`));
+	if (existing?.verifiedAt) redirectWithFlash(event.cookies, next, `${number} is already verified.`);
 	if (await verifiedByOther(subject.id, number)) {
-		redirect(302, withNotice('/dashboard/account', 'That number is already verified on another account.'));
+		redirectWithFlash(event.cookies, '/dashboard/account', 'That number is already verified on another account.');
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
@@ -105,6 +102,6 @@ export const actions: Actions = {
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
 		await applyNumberVerified(subject, result.destination);
-		redirect(302, withNotice(next, `You have successfully verified ${result.destination}`));
+		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

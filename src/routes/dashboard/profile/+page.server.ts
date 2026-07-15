@@ -1,4 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
@@ -10,10 +11,6 @@ import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
 const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
-
-function withNotice(path: string, message: string): string {
-	return `${path}${path.includes('?') ? '&' : '?'}notice=${encodeURIComponent(message)}`;
-}
 
 /** Claim mode: ?position=..&leader=<slug> (the "Is this you?" link on a public
  * leader page) prefills this form from the existing profile; saving files a
@@ -174,7 +171,7 @@ export const actions: Actions = {
 				bio
 			});
 			if (!result.ok) return fail(400, { error: result.error });
-			redirect(302, withNotice('/dashboard', 'Claim submitted. An admin will review it and grant you manager access.'));
+			redirectWithFlash(event.cookies, '/dashboard', 'Claim submitted. An admin will review it and grant you manager access.');
 		}
 
 		for (const e of pendingExperience) {

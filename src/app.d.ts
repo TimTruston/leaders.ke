@@ -7,6 +7,8 @@ declare global {
 		interface Locals {
 			user?: User;
 			session?: Session;
+			/** One-shot notice banner read from the flash cookie (see $lib/server/flash.ts). */
+			flash?: string | null;
 		}
 
 		// interface Error {}

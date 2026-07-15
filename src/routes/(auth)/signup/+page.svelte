@@ -57,7 +57,7 @@
 
 	{#snippet footer()}
 		Already have an account?
-		<a href="/login?next={encodeURIComponent(data.next)}{data.notice ? `&notice=${encodeURIComponent(data.notice)}` : ''}" class="font-semibold text-primary hover:underline">
+		<a href="/login?next={encodeURIComponent(data.next)}" class="font-semibold text-primary hover:underline">
 			Sign in
 		</a>
 	{/snippet}

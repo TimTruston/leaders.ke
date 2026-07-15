@@ -3,6 +3,7 @@ import { and, count, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, managers } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
+import { redirectWithFlash } from '$lib/server/flash';
 import { getLeaderContext, leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
@@ -25,7 +26,7 @@ export const load: LayoutServerLoad = async (event) => {
 	// otherwise win and drop both the notice and the way back to the claim form.
 	if (!event.locals.user && event.url.searchParams.get('leader')) {
 		const next = `${event.url.pathname}${event.url.search}`;
-		redirect(302, `/login?next=${encodeURIComponent(next)}&notice=${encodeURIComponent('You need to be logged in to claim a profile')}`);
+		redirectWithFlash(event.cookies, `/login?next=${encodeURIComponent(next)}`, 'You need to be logged in to claim a profile');
 	}
 
 	const { domainUser } = await requireDashboardUser(event);

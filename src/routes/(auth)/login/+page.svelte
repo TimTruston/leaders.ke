@@ -54,7 +54,7 @@
 	{#snippet footer()}
 		New here?
 		<a
-			href="/signup?next={encodeURIComponent(data.next)}{data.notice ? `&notice=${encodeURIComponent(data.notice)}` : ''}"
+			href="/signup?next={encodeURIComponent(data.next)}"
 			class="font-semibold text-primary hover:underline"
 		>
 			Create an account

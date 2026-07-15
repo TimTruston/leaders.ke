@@ -1,4 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { redirectWithFlash } from '$lib/server/flash';
 import { and, eq, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, user, users } from '$lib/server/db/schema';
@@ -10,10 +11,6 @@ import type { Actions, PageServerLoad } from './$types';
 // Only ever redirect to a same-origin relative path — never follow ?next anywhere else.
 function safeNext(next: string | null): string {
 	return next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
-}
-
-function withNotice(path: string, message: string): string {
-	return `${path}${path.includes('?') ? '&' : '?'}notice=${encodeURIComponent(message)}`;
 }
 
 /** The candidate email to verify: the ?email= param (e.g. an inline change on the
@@ -71,16 +68,16 @@ export const load: PageServerLoad = async (event) => {
 		const result = await verifyOtpLinkToken(linkToken);
 		if (result && result.userId === subject.id) {
 			await applyEmailVerified(subject, result.destination, isAccount);
-			redirect(302, withNotice(next, `${result.destination} verified.`));
+			redirectWithFlash(event.cookies, next, `${result.destination} verified.`);
 		}
 	}
 
 	// Verifying the citizen's current login email that's already verified — nothing to do.
 	if (isAccount && email === authUser.email && domainUser.verified.email) {
-		redirect(302, withNotice(next, `${email} is already verified.`));
+		redirectWithFlash(event.cookies, next, `${email} is already verified.`);
 	}
 	if (await verifiedByOther(subject.id, email)) {
-		redirect(302, withNotice(next, `${email} is already verified on another account.`));
+		redirectWithFlash(event.cookies, next, `${email} is already verified on another account.`);
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
@@ -130,6 +127,6 @@ export const actions: Actions = {
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
 		await applyEmailVerified(subject, result.destination, subject.id === domainUser.id);
-		redirect(302, withNotice(next, `You have successfully verified ${result.destination}`));
+		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

@@ -7,6 +7,7 @@ import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getInviteByToken } from '$lib/server/invites';
+import { clearFlash } from '$lib/server/flash';
 import { APIError } from 'better-auth/api';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -35,8 +36,10 @@ export const load: PageServerLoad = async (event) => {
 	// and only discovering the invite mismatch after clicking Accept.
 	const lockedEmail = event.url.searchParams.get('email');
 
-	// ?notice= explains why they landed here (e.g. "log in to claim a profile").
-	const notice = event.url.searchParams.get('notice');
+	// The flash notice explains why they landed here (e.g. "log in to claim a
+	// profile"). hooks only peeks it on /login and /signup, so it survives
+	// switching between the two forms; the action clears it on success.
+	const notice = event.locals.flash ?? null;
 
 	return dev
 		? { devEmail: lockedEmail ?? env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner, lockedEmail, notice }
@@ -64,6 +67,9 @@ export const actions: Actions = {
 			if (error instanceof APIError) return fail(400, { message: error.message || 'Sign in failed' });
 			return fail(500, { message: 'Unexpected error' });
 		}
+
+		// Signed in — drop the peeked pre-auth notice so it can't resurface on the next page.
+		clearFlash(event.cookies);
 
 		let [domainUser] = await db.select().from(users).where(eq(users.authUserId, authUser.id));
 
