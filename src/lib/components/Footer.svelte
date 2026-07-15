@@ -12,12 +12,14 @@
 				{ href: launchHref, label: 'Create a Profile' },
 				{ href: '/leaders', label: 'Claim Your Page' },
 				{ href: '/features', label: 'Features' },
+				{ href: '/parties', label: 'Parties' },
 				{ href: '/pricing', label: 'Pricing' }
 			]
 		},
 		{
 			title: 'For citizens',
 			links: [
+				{ href: '/vote/2027', label: 'My 2027 Vote' },
 				{ href: '/leaders', label: 'Leaders' },
 				{ href: '/ranks', label: 'Ranks' },
 				{ href: '/compare', label: 'Compare' },
@@ -28,6 +30,7 @@
 			title: 'Company',
 			links: [
 				{ href: '/about', label: 'About Us' },
+				{ href: '/faq', label: 'FAQ' },
 				{ href: '/contact-us', label: 'Contact Us' }
 			]
 		},

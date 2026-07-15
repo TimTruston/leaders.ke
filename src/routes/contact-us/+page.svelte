@@ -5,29 +5,6 @@
 	let { form }: PageProps = $props();
 
 	let sending = $state(false);
-
-	const faqs = [
-		{
-			q: 'How do I claim my page?',
-			a: 'Find your profile under Leaders, open it, and hit "Claim this profile". You\'ll confirm your details, upload your ID and IEBC clearance, and an admin reviews the claim.'
-		},
-		{
-			q: 'How long does verification take?',
-			a: "Most applications are reviewed within a few business days once every tab (Profile, Contacts, Team, Documentation, Signoff) is complete. You'll see the outcome, and any rejection reason, on your dashboard."
-		},
-		{
-			q: 'What does it cost?',
-			a: "Browsing, following, and reviewing are free for citizens. Campaigns pay a monthly subscription per the Pricing page, scaled to the office you're vying for."
-		},
-		{
-			q: 'Is leaders.ke affiliated with any party or candidate?',
-			a: 'No. The platform is party-neutral: every campaign gets the same tools on the same terms, and we never endorse candidates.'
-		},
-		{
-			q: 'What happens to my personal data?',
-			a: 'Your political choices are never shared, and campaign updates only reach channels you opted into. See the Privacy Policy and Data Policy for the full picture.'
-		}
-	];
 </script>
 
 <svelte:head>
@@ -41,21 +18,19 @@
 		Check the common questions first — if yours isn't there, write to us below.
 	</p>
 
-	<!-- FAQ -->
-	<section class="mt-8" aria-label="Frequently asked questions">
-		<h2 class="text-lg font-semibold text-heading">Frequently asked questions</h2>
-		<div class="mt-3 space-y-2">
-			{#each faqs as faq (faq.q)}
-				<details class="group rounded-2xl border border-border bg-surface p-4">
-					<summary class="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-semibold text-heading">
-						{faq.q}
-						<span class="text-muted transition group-open:rotate-180">⌄</span>
-					</summary>
-					<p class="mt-2 text-sm leading-relaxed text-muted">{faq.a}</p>
-				</details>
-			{/each}
-		</div>
-	</section>
+	<!-- FAQ pointer: the questions themselves live on /faq (searchable). -->
+	<a
+		href="/faq"
+		class="mt-6 flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-5 transition hover:border-primary"
+	>
+		<span>
+			<span class="block font-semibold text-heading">Frequently asked questions</span>
+			<span class="mt-1 block text-sm text-muted">
+				Claiming a page, verification, pricing, data — searchable answers for citizens, leaders, and teams.
+			</span>
+		</span>
+		<span class="text-lg text-muted">→</span>
+	</a>
 
 	<!-- Contact form -->
 	<section class="mt-10" aria-label="Contact form">

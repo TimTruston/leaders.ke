@@ -88,7 +88,7 @@
 	/>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	<h1 class="text-2xl font-bold text-heading sm:text-3xl">2027 Ballot Simulator</h1>
 	<p class="mt-2 text-sm">
 		Pick your county, constituency and ward to see every verified candidate you'd vote for.
