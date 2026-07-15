@@ -11,9 +11,6 @@
 <div>
 	<div class="flex flex-wrap items-center justify-between gap-3">
 		<div>
-			<h2 class="text-lg font-semibold text-heading">
-				Citizens you added <span class="text-sm font-normal text-muted">({data.total})</span>
-			</h2>
 			<p class="mt-1 text-sm text-muted">
 				Citizens you've recruited for
 				<a href={data.assignment.leaderPath} class="font-medium text-heading hover:text-primary">

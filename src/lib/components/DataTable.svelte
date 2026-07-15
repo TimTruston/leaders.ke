@@ -112,6 +112,7 @@
 	}
 </script>
 
+<div class="flex items-center justify-between">
 {#if searchable}
 	<input
 		type="search"
@@ -121,6 +122,9 @@
 		class="mb-3 w-full max-w-xs rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 	/>
 {/if}
+
+<p class="text-muted mr-2">Total: {total}</p>
+</div>
 
 <div class="overflow-x-auto rounded-2xl border border-border">
 	<table class="w-full border-collapse text-left">

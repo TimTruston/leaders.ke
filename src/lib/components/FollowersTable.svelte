@@ -114,8 +114,7 @@
 			</button>
 		</div>
 		<p class="mt-2 text-xs text-muted">
-			Provide a phone, an email, or both — each becomes a campaign-update channel. Make sure
-			they've agreed to be added.
+			Each contact you provide receives campaign updates. Make sure they've agreed to be added.
 		</p>
 	</form>
 </div>
