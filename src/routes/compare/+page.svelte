@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -12,6 +13,16 @@
 		a = data.left?.path ?? '';
 		b = data.right?.path ?? '';
 	});
+
+	// Switching a dropdown triggers the comparison directly (no Compare button for
+	// JS users — a <noscript> submit keeps the plain GET form working without JS).
+	// Only navigate when both are picked, they differ, and they differ from the
+	// pair already on screen — otherwise every click would reload and spam history.
+	function maybeCompare() {
+		if (!a || !b || a === b) return;
+		if (a === (data.left?.path ?? '') && b === (data.right?.path ?? '')) return;
+		goto(`?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`, { noScroll: true, keepFocus: true });
+	}
 
 	const pair = $derived([data.left, data.right]);
 	const rows = $derived(
@@ -50,11 +61,12 @@
 
 	<!-- Picker: plain GET form so comparisons are shareable URLs -->
 	<form method="get" class="mt-8 flex flex-wrap items-end gap-3">
-		<label class="block min-w-0 flex-1 sm:max-w-xs">
+		<label class="block min-w-0 flex-1">
 			<span class="text-sm font-medium text-heading">Leader A</span>
 			<select
 				name="a"
 				bind:value={a}
+				onchange={maybeCompare}
 				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			>
 				<option value="" disabled>Select a leader</option>
@@ -63,11 +75,12 @@
 				{/each}
 			</select>
 		</label>
-		<label class="block min-w-0 flex-1 sm:max-w-xs">
+		<label class="block min-w-0 flex-1">
 			<span class="text-sm font-medium text-heading">Leader B</span>
 			<select
 				name="b"
 				bind:value={b}
+				onchange={maybeCompare}
 				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 			>
 				<option value="" disabled>Select a leader</option>
@@ -76,12 +89,14 @@
 				{/each}
 			</select>
 		</label>
-		<button
-			type="submit"
-			class="rounded-full bg-primary px-6 py-2.5 font-semibold text-on-primary transition hover:brightness-95"
-		>
-			Compare
-		</button>
+		<noscript>
+			<button
+				type="submit"
+				class="rounded-full bg-primary px-6 py-2.5 font-semibold text-on-primary transition hover:brightness-95"
+			>
+				Compare
+			</button>
+		</noscript>
 	</form>
 
 	{#if data.left && data.right}
