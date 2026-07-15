@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { compareSelection, clearCompareSelection } from '$lib/stores/compare.svelte';
 	import { plainText } from '$lib/utils/richtext';
+	import { seatPath } from '$lib/utils/seat';
 
 	type Props = {
 		path: string;
@@ -123,7 +124,17 @@ whole card is clickable, while the party name stays its own separate link on top
 
 	{#if !compact}
 		{#if positionTitle || region}
-			<p class="mt-4 text-sm">{positionTitle}{positionTitle && region ? ', ' : ''}{region}</p>
+			{@const seat = seatPath(positionTitle, region)}
+			<p class="mt-4 text-sm">
+				{#if seat}
+					<!-- z-10 keeps the seat link clickable above the card's stretched link. -->
+					<a href={seat} class="relative z-10 hover:text-primary">
+						{positionTitle}{positionTitle && region ? ', ' : ''}{region}
+					</a>
+				{:else}
+					{positionTitle}{positionTitle && region ? ', ' : ''}{region}
+				{/if}
+			</p>
 		{/if}
 		{#if bio}<p class="mt-2 line-clamp-2 text-sm">{plainText(bio)}</p>{/if}
 	{/if}

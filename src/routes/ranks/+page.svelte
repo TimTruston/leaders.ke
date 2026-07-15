@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Paginator from '$lib/components/Paginator.svelte';
+	import { seatPath } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -76,7 +77,13 @@
 								{leader.name}{#if leader.verified}<span class="ml-1 text-primary">✓</span>{/if}
 							</a>
 							<p class="text-xs text-muted">
-								{leader.positionTitle}, {leader.regionLabel}
+								{#if seatPath(leader.positionTitle, leader.regionLabel)}
+									<a href={seatPath(leader.positionTitle, leader.regionLabel)} class="hover:text-primary">
+										{leader.positionTitle}, {leader.regionLabel}
+									</a>
+								{:else}
+									{leader.positionTitle}, {leader.regionLabel}
+								{/if}
 								<span class="capitalize"> · {leader.status}</span>
 							</p>
 						</td>

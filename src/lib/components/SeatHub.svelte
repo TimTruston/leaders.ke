@@ -58,9 +58,10 @@
 		<div class="flex-1">
 			<h2 class="text-xl font-bold text-heading">Current</h2>
 			{#if data.current}
-				<a
-					href={data.current.path}
-					class="group mt-4 rounded-2xl border border-border bg-surface p-5 flex items-center gap-4 transition hover:border-primary hover:shadow-sm"
+				<!-- Stretched name link keeps the whole card clickable while the party
+				stays its own link on top — nesting an <a> in an <a> is invalid HTML. -->
+				<div
+					class="group relative mt-4 rounded-2xl border border-border bg-surface p-5 flex items-center gap-4 transition hover:border-primary hover:shadow-sm"
 				>
 					<span
 						class="grid size-14 shrink-0 place-items-center rounded-full bg-primary-soft text-xl font-bold text-on-primary"
@@ -68,7 +69,10 @@
 						{data.current.initials}
 					</span>
 					<div class="min-w-0">
-						<p class="flex items-center gap-1 font-semibold text-heading group-hover:text-primary">
+						<a
+							href={data.current.path}
+							class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary"
+						>
 							{data.current.name}
 							{#if data.current.verified}
 								<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary" aria-label="Verified">
@@ -79,12 +83,18 @@
 									/>
 								</svg>
 							{/if}
-						</p>
+						</a>
 						<p class="text-sm text-muted">
-							Serving {data.positionTitle}{data.current.party ? ` · ${data.current.party}` : ''}
+							Serving {data.positionTitle}{#if data.current.party}&nbsp;·
+								{#if data.current.partyPath}
+									<a href={data.current.partyPath} class="relative z-10 hover:text-primary">{data.current.party}</a>
+								{:else}
+									{data.current.party}
+								{/if}
+							{/if}
 						</p>
 					</div>
-				</a>
+				</div>
 			{:else}
 				<p class="mt-3 text-sm text-muted">No current on record for this seat yet.</p>
 			{/if}

@@ -3,6 +3,7 @@
 	import Reviews from '$lib/components/Reviews.svelte';
 	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
+	import { seatPath } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -71,7 +72,14 @@
 						</h1>
 						<p class="mt-1 text-sm text-muted">
 							<span class="capitalize">{leader.status}</span>
-							· {leader.positionTitle}, {leader.regionLabel}
+							·
+							{#if seatPath(leader.positionTitle, leader.regionLabel)}
+								<a href={seatPath(leader.positionTitle, leader.regionLabel)} class="hover:text-primary">
+									{leader.positionTitle}, {leader.regionLabel}
+								</a>
+							{:else}
+								{leader.positionTitle}, {leader.regionLabel}
+							{/if}
 							{#if leader.party}· {leader.party}{/if}
 						</p>
 						<p class="mt-2 text-sm font-medium text-heading">
