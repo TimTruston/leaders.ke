@@ -6,7 +6,7 @@ import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { experience, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
@@ -24,6 +24,23 @@ export const load: PageServerLoad = async (event) => {
 		.from(positions)
 		.where(isNull(positions.deletedAt))
 		.orderBy(asc(positions.title), asc(positions.region));
+
+	const partyRows = await db
+		.select({ id: parties.id, name: parties.name, abbreviation: parties.abbreviation })
+		.from(parties)
+		.where(isNull(parties.deletedAt))
+		.orderBy(asc(parties.name));
+
+	// The leader's live party membership (endAt null) feeds the Party select;
+	// null = independent/none.
+	let partyId: number | null = null;
+	if (ctx) {
+		const [membership] = await db
+			.select({ partyId: partyMemberships.partyId })
+			.from(partyMemberships)
+			.where(and(eq(partyMemberships.leaderId, ctx.leader.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+		partyId = membership?.partyId ?? null;
+	}
 
 	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
 	const subject = ctx?.profileUser ?? domainUser;
@@ -50,6 +67,10 @@ export const load: PageServerLoad = async (event) => {
 			title: p.title,
 			region: p.region
 		})),
+		parties: partyRows.map((p) => ({
+			id: p.id,
+			name: p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name
+		})),
 		existingExperience: existingExperience.map((e) => ({
 			id: e.id,
 			type: e.type,
@@ -71,6 +92,7 @@ export const load: PageServerLoad = async (event) => {
 			otherNames: subject.otherNames,
 			bio: subject.bio ?? '',
 			positionId: ctx?.leader.positionId ?? null,
+			partyId,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
 			verified: !!ctx?.leader.verifiedAt
@@ -92,6 +114,7 @@ export const actions: Actions = {
 		const otherNames = String(form.get('otherNames') ?? '').trim();
 		const bio = String(form.get('bio') ?? '').trim();
 		const positionId = Number(form.get('positionId') ?? 0);
+		const partyId = Number(form.get('partyId') ?? 0) || null; // null = independent
 		const slugInput = slugify(String(form.get('slug') ?? '').trim());
 
 		let pendingExperience: PendingExperience[] = [];
@@ -119,6 +142,14 @@ export const actions: Actions = {
 			.from(positions)
 			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
 		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
+
+		if (partyId) {
+			const [party] = await db
+				.select({ id: parties.id })
+				.from(parties)
+				.where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
+			if (!party) return fail(400, { error: 'That party does not exist.' });
+		}
 
 		for (const e of pendingExperience) {
 			if (e.type !== 'education' && e.type !== 'professional') {
@@ -216,6 +247,24 @@ export const actions: Actions = {
 				roles: { admin: true },
 				verifiedAt: new Date()
 			});
+		}
+
+		// Party membership: one live row (endAt null) per leader. A change ends the
+		// current membership and starts the new one; clearing to independent just ends it.
+		const [currentMembership] = await db
+			.select({ id: partyMemberships.id, partyId: partyMemberships.partyId })
+			.from(partyMemberships)
+			.where(and(eq(partyMemberships.leaderId, leaderId!), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+		if ((currentMembership?.partyId ?? null) !== partyId) {
+			if (currentMembership) {
+				await db
+					.update(partyMemberships)
+					.set({ endAt: new Date(), updatedAt: new Date() })
+					.where(eq(partyMemberships.id, currentMembership.id));
+			}
+			if (partyId) {
+				await db.insert(partyMemberships).values({ partyId, leaderId: leaderId!, role: 'Member', startAt: new Date() });
+			}
 		}
 
 		for (const e of pendingExperience) {

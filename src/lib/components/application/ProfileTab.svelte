@@ -10,9 +10,12 @@
 	// (relative ?/action URLs).
 	type TabData = {
 		positions: { id: number; title: string; region: string }[];
+		// Absent on the claim family (party changes belong to the verified profile's
+		// own admins) — the Party select only renders when provided.
+		parties?: { id: number; name: string }[];
 		existingExperience: { id: number; type: string; title: string; institution: string; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
-		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
+		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { missing: string[] } } | null;
 	};
 	let { data, form }: { data: TabData; form: any } = $props();
@@ -229,6 +232,22 @@
 		</div>
 		{#if missing.has('positionId')}
 			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+		{/if}
+
+		{#if data.parties}
+			<label class="block">
+				<span class="text-sm font-medium text-heading">Party</span>
+				<select
+					name="partyId"
+					value={data.form.partyId ?? ''}
+					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+				>
+					<option value="">Independent (no party)</option>
+					{#each data.parties as party (party.id)}
+						<option value={party.id}>{party.name}</option>
+					{/each}
+				</select>
+			</label>
 		{/if}
 
 		<div class="block">
