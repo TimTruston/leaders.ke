@@ -45,7 +45,7 @@
 	];
 </script>
 
-<footer class="border-t border-border bg-surface-2">
+<footer class="relative overflow-hidden border-t border-border bg-surface-2 @container">
 	<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
 		<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
 			<!-- Brand -->
@@ -72,7 +72,12 @@
 				</nav>
 			{/each}
 		</div>
-
+		<a href="/"
+			aria-hidden="true"
+			class="flex select-none items-center justify-center gap-[0.08em] -ml-[0.1em] text-[18cqw] font-bold leading-none tracking-tighter text-primary/20"
+		>
+			<span class="">leaders.ke</span>
+		</a>
 		<div
 			class="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted sm:flex-row"
 		>
