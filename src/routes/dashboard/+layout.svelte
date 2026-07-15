@@ -97,6 +97,33 @@
 	});
 	const sections = $derived(sectionsByMode[mode].filter((s) => s.enabled));
 
+	// Apply-flow tabs that still have missing required fields get a `*` on their title.
+	// Maps each tab's route to its checklist key; only meaningful while `application` is
+	// present (apply mode, not yet verified).
+	const applyTabKeys: Record<string, keyof NonNullable<typeof data.application>> = {
+		'/dashboard/profile': 'profile',
+		'/dashboard/contacts': 'contacts',
+		'/dashboard/team': 'team',
+		'/dashboard/documentation': 'documentation'
+	};
+	const tabIncomplete = (href: string) => {
+		const key = applyTabKeys[href];
+		return !!(key && data.application && !data.application[key].complete);
+	};
+
+	// Every still-missing field across all four tabs — powers the Submit Application
+	// tooltip so the user sees exactly what's outstanding, not just a disabled button.
+	const missingFields = $derived(
+		data.application
+			? [
+					...data.application.profile.missing,
+					...data.application.contacts.missing,
+					...data.application.team.missing,
+					...data.application.documentation.missing
+				]
+			: []
+	);
+
 	// Exact match for any tab that's a URL-prefix of a sibling tab (e.g. Overview at
 	// /dashboard vs. /dashboard/account) — otherwise both would light up.
 	const isActive = (href: string) =>
@@ -144,7 +171,7 @@
 					{/if}
 				</h1>
 			{:else if mode === 'apply'}
-				<h1 class="text-2xl font-bold text-heading">Get your campaign live</h1>
+				<h1 class="text-2xl font-bold text-heading">Create a Leader Profile</h1>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
@@ -187,7 +214,7 @@
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
 			{#if mode === 'apply'}
-				<p class="text-sm text-muted">A few steps to a public leader page ahead of 10 August 2027.</p>
+				<span class="flex items-center text-sm my-2 sm:my-0">A few steps to go public ahead of 10 August 2027.</span>
 				{#if data.pendingVerification}
 					<span
 						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-semibold text-muted"
@@ -198,7 +225,7 @@
 					<form
 						method="post"
 						action="/dashboard/profile?/requestVerification"
-						class="flex items-center gap-2"
+						class="w-full sm:w-auto flex items-center justify-between gap-2 "
 						use:enhance={() => {
 							submittingApplication = true;
 							applicationError = '';
@@ -221,7 +248,9 @@
 						<button
 							type="submit"
 							disabled={!data.applicationComplete || submittingApplication}
-							title={data.applicationComplete ? '' : 'Fill in every tab (Profile, Contacts, Team, Documentation) first'}
+							title={data.applicationComplete
+								? ''
+								: `Still needed before you can submit:\n• ${missingFields.join('\n• ')}`}
 							class="shrink-0 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							{submittingApplication ? 'Submitting…' : 'Submit Application'}
@@ -252,15 +281,40 @@
 			{/if}
 			
 		</div>
-
 	</div>
-	{#if mode === 'apply' && applicationError}
-		<p class="text-right text-xs text-red-500">{applicationError}</p>
+	<!-- Rejection feedback: the admin's reason from the last review, shown until the
+	applicant re-submits (getLatestRejection stops returning it once a new request is pending). -->
+	{#if mode === 'apply' && data.rejection}
+		<div class="mt-3 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
+			<p class="text-sm font-semibold text-red-500">Your application was not approved.</p>
+			{#if data.rejection.notes}
+				<p class="mt-1 text-sm text-heading">{data.rejection.notes}</p>
+			{:else}
+				<p class="mt-1 text-sm text-muted">No reason was given. Review your details and re-submit.</p>
+			{/if}
+		</div>
+	{/if}
+	<!-- Consolidated checklist: collapsed to just its title, click to expand the
+	full list of what's still outstanding across every tab. -->
+	{#if data.application}
+		<div class="flex items-center">
+			{#if missingFields.length > 0}
+				<div class="mt-3 flex gap-1.5 text-sm text-muted">
+					<span class="">Required: </span>
+					{#each missingFields as field, i (field)}
+					<span>{field}{i < missingFields.length - 1 ? ',' : ''}</span>
+					{/each}
+				</div>
+			{/if}
+			{#if applicationError}
+				<p class="text-right text-xs text-red-500">{applicationError}</p>
+			{/if}
+		</div>
 	{/if}
 
 	<!-- Section nav: only when the mode has more than one tab. -->
 	{#if sections.length > 1}
-		<nav class="mt-4 overflow-x-auto border-b border-border" aria-label="Dashboard sections">
+		<nav class="mt-1 overflow-x-auto border-b border-border" aria-label="Dashboard sections">
 			<div class="flex w-max gap-1">
 				{#each sections as section (section.href)}
 					<a
@@ -272,7 +326,10 @@
 							? 'border-primary text-heading'
 							: 'border-transparent text-muted hover:text-heading'}"
 					>
-						{section.label}
+						{section.label}{#if tabIncomplete(section.href)}<span
+								class="ml-0.5 text-red-500"
+								title="This tab has missing required fields">*</span
+							>{/if}
 					</a>
 				{/each}
 			</div>

@@ -16,6 +16,7 @@ export type VerificationRow = {
 	requestedAt: string;
 	verifiedAt: string | null; // leaders.verifiedAt — the actual live/public state
 	outcome: 'approved' | 'rejected' | null; // null = pending
+	notes: string | null; // admin's reason, shown on the row below a rejected request
 };
 
 /** This leader's live pending (unreviewed) verification request, if any. */
@@ -25,6 +26,26 @@ export async function getPendingVerification(leaderId: number) {
 		.from(verifications)
 		.where(and(eq(verifications.leaderId, leaderId), isNull(verifications.outcome)));
 	return row ?? null;
+}
+
+/**
+ * The reason (and when) behind this leader's most recent rejection — but only when
+ * their latest request is that rejection, i.e. they haven't re-submitted since. Surfaced
+ * back on the application page so a rejected applicant knows what to fix.
+ */
+export async function getLatestRejection(leaderId: number) {
+	const [row] = await db
+		.select({
+			notes: verifications.notes,
+			outcome: verifications.outcome,
+			reviewedAt: verifications.reviewedAt
+		})
+		.from(verifications)
+		.where(eq(verifications.leaderId, leaderId))
+		.orderBy(desc(verifications.requestedAt))
+		.limit(1);
+	if (!row || row.outcome !== 'rejected') return null;
+	return { notes: row.notes, reviewedAt: row.reviewedAt ? row.reviewedAt.toISOString() : null };
 }
 
 /** Submits a verification request. Fails if one is already pending — the
@@ -54,7 +75,8 @@ export async function listVerifications(page: number, pageSize: number): Promise
 				slug: users.slug,
 				requestedAt: verifications.requestedAt,
 				verifiedAt: leaders.verifiedAt,
-				outcome: verifications.outcome
+				outcome: verifications.outcome,
+				notes: verifications.notes
 			})
 			.from(verifications)
 			.innerJoin(leaders, eq(verifications.leaderId, leaders.id))

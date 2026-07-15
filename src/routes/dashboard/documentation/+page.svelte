@@ -71,7 +71,7 @@
 			<div class="rounded-2xl border border-border bg-surface p-5">
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div>
-						<p class="font-semibold text-heading">{doc.label}</p>
+						<p class="font-semibold text-heading">{doc.label} <span class={doc.url ? 'text-muted' : 'text-red-500'}>*</span></p>
 						{#if doc.url}
 							<a href={doc.url} target="_blank" rel="noopener" class="text-sm text-primary hover:underline">
 								View uploaded file

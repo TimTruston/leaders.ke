@@ -10,6 +10,11 @@
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	const errorClass = (field: string) => (missing.has(field) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-border focus:border-primary focus:ring-ring');
 
+	// Application checklist (from the layout load): a required-field label still in this
+	// set is unfilled → its `*` stays red; once saved and out of the set, `*` goes muted.
+	const appMissing = $derived(new Set(data.application?.profile.missing ?? []));
+	const starClass = (label: string) => (appMissing.has(label) ? 'text-red-500' : 'text-muted');
+
 	let adding = $state<'leadership' | 'professional' | 'education' | null>(null);
 	function toggleAdding(type: 'leadership' | 'professional' | 'education') {
 		adding = adding === type ? null : type;
@@ -153,7 +158,7 @@
 
 		<div class="grid gap-5 sm:grid-cols-2">
 			<label class="block">
-				<span class="text-sm font-medium text-heading">First name</span>
+				<span class="text-sm font-medium text-heading">First name <span class={starClass('First name')}>*</span></span>
 				<input
 					type="text"
 					name="firstName"
@@ -163,7 +168,7 @@
 				/>
 			</label>
 			<label class="block">
-				<span class="text-sm font-medium text-heading">Other names</span>
+				<span class="text-sm font-medium text-heading">Other names <span class={starClass('Other names')}>*</span></span>
 				<input
 					type="text"
 					name="otherNames"
@@ -201,6 +206,7 @@
 				positions={data.positions}
 				verified={data.form.verified}
 				initialPositionId={data.form.positionId}
+				filled={!appMissing.has('Position you are vying for')}
 			/>
 		</div>
 		{#if missing.has('positionId')}
@@ -208,7 +214,7 @@
 		{/if}
 
 		<label class="block">
-			<span class="text-sm font-medium text-heading">Bio</span>
+			<span class="text-sm font-medium text-heading">Bio <span class={starClass('Bio')}>*</span></span>
 			<textarea
 				name="bio"
 				rows="5"

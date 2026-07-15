@@ -10,6 +10,7 @@
 		name = 'positionId',
 		label = 'Position you are vying for',
 		required = true,
+		filled = false,
 		value = $bindable('')
 	}: {
 		positions: Position[];
@@ -21,6 +22,9 @@
 		// buttons — native HTML validation is form-wide, so an always-required select
 		// here would block unrelated submits (e.g. the main Save button) until filled.
 		required?: boolean;
+		// Mutes the required `*` once the position is saved (driven by the parent's
+		// application checklist), matching the other required-field markers.
+		filled?: boolean;
 		// Exposes the chosen positionId to the parent (e.g. to stage it client-side
 		// instead of relying on native form submission).
 		value?: number | '';
@@ -72,7 +76,9 @@
 </script>
 
 <div class="block">
-	<span class="text-sm font-medium text-heading">{label}</span>
+	<span class="text-sm font-medium text-heading">{label}{#if required}<span
+				class={filled ? 'text-muted' : 'text-red-500'}> *</span
+			>{/if}</span>
 	{#if verified}
 		<p class="mt-1.5 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm text-muted">
 			Your seat is locked while verified. Contact support to change races.

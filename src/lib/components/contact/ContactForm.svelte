@@ -200,7 +200,7 @@
 						aria-label={labelFor(link.kind)}
 						placeholder={placeholderFor(link.kind)}
 						oninput={(e) => handleSocialInput(e, link.kind, i)}
-						class="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-ink-primary outline-none placeholder:text-ink-secondary/50"
+						class="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-ink-primary outline-none placeholder:text-muted"
 					/>
 					<button type="button" onclick={() => removeSocial(i)} aria-label="Remove {labelFor(link.kind)}" class="grid h-full w-10 shrink-0 place-items-center border-l border-hairline text-ink-secondary transition-colors hover:text-red-400">
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
