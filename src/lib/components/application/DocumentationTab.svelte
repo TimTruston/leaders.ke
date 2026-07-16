@@ -7,7 +7,8 @@
 	// shapes `data` and hosts the actions this form posts to (relative ?/action URLs).
 	let { data, form }: { data: any; form: any } = $props();
 
-	// The campaign's own items — the applicant's ID images live on the Signoff tab.
+	// The campaign's own items — each manager's own ID images live in their sign-off
+	// (embedded on the Team tab for applications, the Signoff tab for claims).
 	const docs = $derived(([
 					{ kind: 'photo', label: "Leader's Photo", accept: 'image/*', url: data.photoUrl },
 					{

@@ -4,12 +4,15 @@
 // into their own family (/dashboard/claim/[slug]/profile) instead.
 import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
-import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
+import { getPlatformSettings } from '$lib/server/settings';
+import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
@@ -332,30 +335,37 @@ export const actions: Actions = {
 		if (!ctx) return fail(400, { verificationError: 'Save your profile before requesting verification.' });
 		if (ctx.leader.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
 
-		// onboarding.md's Team tab: a one-person "campaign" isn't credible — require at
-		// least 2 active team members (the creator plus one more) before submitting.
-		const [{ n: teamSize }] = await db
-			.select({ n: count() })
+		// The two verification gates are admin-tunable (Platform settings): a credible
+		// campaign needs enough email-verified managers, enough of whom have each
+		// completed their own sign-off (role + national ID + ID images) on the Team tab.
+		const settings = await getPlatformSettings();
+		const managerRows = await db
+			.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified })
 			.from(managers)
-			.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true)));
-		if (teamSize < 2) {
-			return fail(400, { verificationError: 'Add at least one more team member on the Team tab before submitting.' });
+			.innerJoin(users, eq(managers.userId, users.id))
+			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+			.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+
+		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
+		if (verifiedManagers < settings.requiredTeamManagers) {
+			return fail(400, {
+				verificationError: `Add at least ${settings.requiredTeamManagers} verified team members on the Team tab before submitting.`
+			});
 		}
 
-		// The submitter's role + national ID live on their manager row, saved from
-		// the Team tab's "Your details" form — not from a submit-widget input.
-		const [mine] = await db
-			.select({ roles: managers.roles })
-			.from(managers)
-			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
-		const myRoles = (mine?.roles ?? {}) as { title?: string; nationalId?: string };
-		if (!myRoles.nationalId) {
-			return fail(400, { verificationError: 'Add your role and national ID on the Team tab before submitting.' });
+		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles)).length;
+		if (completedSignoffs < settings.requiredSignoffs) {
+			return fail(400, {
+				verificationError: `${settings.requiredSignoffs} completed team sign-off${settings.requiredSignoffs === 1 ? '' : 's'} required — finish your sign-off on the Team tab before submitting.`
+			});
 		}
+
+		// The submitter's own role + national ID travel with the request as evidence.
+		const myRoles = (managerRows.find((m) => m.userId === domainUser.id)?.roles ?? {}) as ManagerRoles;
 
 		const form = await event.request.formData();
 		const notes = String(form.get('notes') ?? '').trim();
-		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId: myRoles.nationalId, myRole: myRoles.title ?? '', notes });
+		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId: myRoles.nationalId ?? '', myRole: myRoles.title ?? '', notes });
 		if (!result.ok) return fail(400, { verificationError: result.error });
 
 		return { requestedVerification: true };

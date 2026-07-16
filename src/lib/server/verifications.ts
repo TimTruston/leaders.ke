@@ -6,6 +6,7 @@ import { db } from '$lib/server/db';
 import { contacts, leaders, managers, parties, partyMemberships, positions, users, verifications } from '$lib/server/db/schema';
 import { fullName, isSlugAvailable, leaderPath } from '$lib/server/leader';
 import { notifyUser } from '$lib/server/notifications';
+import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 
 export type VerificationRow = {
 	verificationId: number;
@@ -152,12 +153,6 @@ export async function getVerificationDetail(verificationId: number) {
 			.orderBy(desc(verifications.requestedAt))
 	]);
 
-	// The applicant's attestation lives on their manager row (role + national ID).
-	const applicantRoles = (teamRows.find((t) => t.userId === request.requestedBy)?.roles ?? {}) as {
-		title?: string;
-		nationalId?: string;
-	};
-
 	return {
 		request: {
 			id: request.id,
@@ -184,18 +179,21 @@ export async function getVerificationDetail(verificationId: number) {
 			party: membership ? `${membership.name}${membership.abbreviation ? ` (${membership.abbreviation})` : ''}` : null
 		},
 		contacts: contactRows.map((c) => ({ channel: c.channel, value: c.value, verified: !!c.verifiedAt })),
-		team: teamRows.map((t) => ({
-			name: fullName(t),
-			title: ((t.roles ?? {}) as { title?: string }).title ?? null,
-			isApplicant: t.userId === request.requestedBy
-		})),
+		// Each manager carries their own sign-off (role, national ID, ID images) on
+		// their manager row — no longer a single applicant attestation.
+		team: teamRows.map((t) => {
+			const roles = (t.roles ?? {}) as ManagerRoles;
+			return {
+				name: fullName(t),
+				title: roles.title ?? null,
+				nationalId: roles.nationalId ?? null,
+				idFrontUrl: roles.idFrontUrl ?? null,
+				idBackUrl: roles.idBackUrl ?? null,
+				signoffComplete: signoffComplete(roles),
+				isApplicant: t.userId === request.requestedBy
+			};
+		}),
 		documentation: { photoUrl: leader.photoUrl, iebcCertificateUrl: leader.iebcCertificateUrl },
-		signoff: {
-			role: applicantRoles.title ?? null,
-			nationalId: applicantRoles.nationalId ?? null,
-			idFrontUrl: leader.idFrontUrl,
-			idBackUrl: leader.idBackUrl
-		},
 		history: historyRows.map((h) => ({
 			id: h.id,
 			requestedAt: h.requestedAt.toISOString(),

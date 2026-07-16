@@ -1,6 +1,7 @@
 import { pgTable, serial, varchar, text, boolean, integer, bigint, timestamp, jsonb, customType, pgEnum, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { user } from './auth.schema'; // better-auth owns login; users below is the 1:1 domain profile
+import type { ManagerRoles } from '$lib/utils/campaignRoles';
 
 export const vector = customType<{ data: number[] }>({
   dataType: () => 'vector(1536)', // Optimizing for OpenAI embeddings length
@@ -206,7 +207,9 @@ export const managers = pgTable('managers', {
   userId: integer('user_id').references(() => users.id).notNull(), // Soft delete handles detachment
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
-  roles: jsonb('roles').default({}).notNull(),
+  // Per-manager: admin flag + this manager's own sign-off (role, national ID, ID
+  // images). Never shared across the team — each member attests separately.
+  roles: jsonb('roles').$type<ManagerRoles>().default({}).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -878,6 +881,11 @@ export const platformSettings = pgTable('platform_settings', {
   // Rows per page on every paginated dashboard list (campaign posts/reviews/
   // followers/broadcasts/PR, admin tables, citizen invites).
   pageSize: integer('page_size').default(50).notNull(),
+  // Verification gate: how many email-verified managers a campaign needs on its
+  // team, and how many of them must complete their own sign-off (role + national
+  // ID + ID images), before an application can be submitted.
+  requiredTeamManagers: integer('required_team_managers').default(2).notNull(),
+  requiredSignoffs: integer('required_signoffs').default(1).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

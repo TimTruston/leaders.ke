@@ -1,18 +1,18 @@
 import { fail } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, invites, leaders, managers, users } from '$lib/server/db/schema';
+import { ambassadors, invites, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites, revokeInvite, tryDirectGrant } from '$lib/server/invites';
 import { fullName } from '$lib/server/leader';
-import { isCampaignRole } from '$lib/utils/campaignRoles';
+import { isCampaignRole, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
-// The applicant's own ID images, embedded on this tab's sign-off block under
-// their manager entry (the images live on the leaders row).
-const COLUMN_BY_KIND = { 'id-front': 'idFrontUrl', 'id-back': 'idBackUrl' } as const;
+// Each manager's own ID images live on their own manager row's roles jsonb (never
+// shared), keyed by which side was uploaded.
+const ROLES_KEY_BY_KIND = { 'id-front': 'idFrontUrl', 'id-back': 'idBackUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
 	// A blank application is bounced back to its Profile tab (requireLeader) - the
@@ -36,13 +36,11 @@ export const load: PageServerLoad = async (event) => {
 		isCampaignAdmin(domainUser.id, ctx)
 	]);
 
-	// The sign-off block (embedded under the current user's manager entry) shows
-	// only while the campaign is still an application — it's the attestation the
-	// verification submit reads. Role + national ID live on the user's manager row.
-	const mineRoles = (managerRows.find((r) => r.managers.userId === domainUser.id)?.managers.roles ?? {}) as {
-		title?: string;
-		nationalId?: string;
-	};
+	// The sign-off block is embedded under the current user's OWN manager entry —
+	// it's their personal attestation, so it reads (and writes) only their own
+	// manager row. Other managers see their own under their own entry; nobody sees
+	// anyone else's. Shows only while the campaign is still an application.
+	const mineRoles = (managerRows.find((r) => r.managers.userId === domainUser.id)?.managers.roles ?? {}) as ManagerRoles;
 
 	return {
 		id: domainUser.id,
@@ -51,8 +49,8 @@ export const load: PageServerLoad = async (event) => {
 		signoff: {
 			myRole: mineRoles.title ?? '',
 			nationalId: mineRoles.nationalId ?? '',
-			idFrontUrl: ctx.leader.idFrontUrl,
-			idBackUrl: ctx.leader.idBackUrl
+			idFrontUrl: mineRoles.idFrontUrl ?? null,
+			idBackUrl: mineRoles.idBackUrl ?? null
 		},
 		managers: managerRows.map((r) => ({
 			id: r.managers.id,
@@ -74,9 +72,9 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-	// Sign-off: the current user's attestation, embedded on this tab. Role +
-	// national ID save onto their manager row's jsonb; their ID images go on the
-	// leaders row (idFrontUrl/idBackUrl).
+	// Sign-off: the current user's attestation, embedded on this tab. Role,
+	// national ID, and ID images all save onto their OWN manager row's roles jsonb,
+	// so team members never overwrite each other's sign-off.
 	saveMyDetails: async (event) => {
 		const { domainUser, ctx } = await requireLeader(event);
 		const form = await event.request.formData();
@@ -99,25 +97,33 @@ export const actions: Actions = {
 	},
 
 	upload: async (event) => {
-		const { ctx } = await requireLeader(event);
+		const { domainUser, ctx } = await requireLeader(event);
 		const form = await event.request.formData();
 
-		const updates: Partial<Record<(typeof COLUMN_BY_KIND)[keyof typeof COLUMN_BY_KIND], string>> = {};
-		for (const kind of Object.keys(COLUMN_BY_KIND) as (keyof typeof COLUMN_BY_KIND)[]) {
+		const [mine] = await db
+			.select({ id: managers.id, roles: managers.roles })
+			.from(managers)
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
+		if (!mine) return fail(403, { error: 'Only team members can upload their ID.' });
+
+		// The ID images stage on the uploader's OWN manager row, so managers never
+		// overwrite each other. Filenames are UUIDs (saveLeaderDocument), so sharing
+		// the leader's upload dir is safe.
+		const roles = { ...((mine.roles ?? {}) as ManagerRoles) };
+		let uploadedAny = false;
+		for (const kind of Object.keys(ROLES_KEY_BY_KIND) as (keyof typeof ROLES_KEY_BY_KIND)[]) {
 			const file = form.get(kind);
 			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
 			try {
-				updates[COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+				roles[ROLES_KEY_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+				uploadedAny = true;
 			} catch (err) {
 				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
 			}
 		}
-		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
+		if (!uploadedAny) return fail(400, { error: 'Choose a file to upload.' });
 
-		await db
-			.update(leaders)
-			.set({ ...updates, updatedAt: new Date() })
-			.where(eq(leaders.id, ctx.leader.id));
+		await db.update(managers).set({ roles }).where(eq(managers.id, mine.id));
 		return { uploaded: true };
 	},
 

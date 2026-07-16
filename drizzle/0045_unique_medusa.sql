@@ -1,0 +1,2 @@
+ALTER TABLE "platform_settings" ADD COLUMN "required_team_managers" integer DEFAULT 2 NOT NULL;--> statement-breakpoint
+ALTER TABLE "platform_settings" ADD COLUMN "required_signoffs" integer DEFAULT 1 NOT NULL;

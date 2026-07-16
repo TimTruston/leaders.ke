@@ -14,3 +14,20 @@ export const CAMPAIGN_ROLES = [
 export function isCampaignRole(value: string): boolean {
 	return (CAMPAIGN_ROLES as readonly string[]).includes(value);
 }
+
+// Everything held on a manager's `managers.roles` jsonb: their admin flag plus
+// their own sign-off (role, national ID, and ID images) — per manager, never
+// shared, so each team member attests separately.
+export type ManagerRoles = {
+	admin?: boolean;
+	title?: string;
+	nationalId?: string;
+	idFrontUrl?: string;
+	idBackUrl?: string;
+};
+
+/** A manager's sign-off is complete once they've named their role, national ID,
+ * and uploaded both sides of their ID. */
+export function signoffComplete(roles: ManagerRoles | null | undefined): boolean {
+	return !!(roles?.title && roles?.nationalId && roles?.idFrontUrl && roles?.idBackUrl);
+}

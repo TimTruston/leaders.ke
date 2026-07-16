@@ -19,12 +19,16 @@ export const actions: Actions = {
 		const otpCooldownSeconds = Number(form.get('otpCooldownSeconds'));
 		const otpDailyCap = Number(form.get('otpDailyCap'));
 		const pageSize = Number(form.get('pageSize'));
+		const requiredTeamManagers = Number(form.get('requiredTeamManagers'));
+		const requiredSignoffs = Number(form.get('requiredSignoffs'));
 
 		// Lifetime invite limits live on the Packages page (part of what a package buys).
 		for (const [label, value] of [
 			['Cooldown', otpCooldownSeconds],
 			['Daily cap', otpDailyCap],
-			['Page size', pageSize]
+			['Page size', pageSize],
+			['Verified team members', requiredTeamManagers],
+			['Sign-offs required', requiredSignoffs]
 		] as const) {
 			if (!Number.isInteger(value) || value < 1) return fail(400, { error: `${label} must be a whole number of at least 1.` });
 		}
@@ -47,6 +51,8 @@ export const actions: Actions = {
 				otpDailyCap,
 				blockedSlugs,
 				pageSize,
+				requiredTeamManagers,
+				requiredSignoffs,
 				updatedAt: new Date()
 			})
 			.where(eq(platformSettings.id, 1));

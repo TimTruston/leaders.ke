@@ -192,28 +192,6 @@
 		</div>
 
 		<div class={cardClass}>
-			<h2 class="font-semibold text-heading">Team</h2>
-			{#if d.team.length > 0}
-				<ul class="mt-4 space-y-2">
-					{#each d.team as member (member.name)}
-						<li class="text-sm text-heading">
-							{member.name}
-							{#if member.title}<span class="text-muted"> &middot; {member.title}</span>{/if}
-							{#if member.isApplicant}
-								<span class="ml-1 rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-muted">applicant</span>
-							{/if}
-						</li>
-					{/each}
-				</ul>
-			{/if}
-			{#if d.team.length < 2}
-				<p class="mt-4 text-sm font-medium text-red-500">
-					{2 - d.team.length} more team member{d.team.length === 1 ? '' : 's'} needed (2 needed)
-				</p>
-			{/if}
-		</div>
-
-		<div class={cardClass}>
 			<h2 class="font-semibold text-heading">Documentation</h2>
 			<div class="mt-4 space-y-4">
 				{@render upload("Leader's photo", d.documentation.photoUrl)}
@@ -221,15 +199,40 @@
 			</div>
 		</div>
 
+		<!-- Team, each with their own sign-off (role, national ID, ID images) -->
 		<div class="{cardClass} lg:col-span-2">
-			<h2 class="font-semibold text-heading">Signoff</h2>
-			<p class="mt-1 text-sm text-muted">The applicant's attestation: their role, national ID, and ID images.</p>
-			<div class="mt-4 grid gap-4 sm:grid-cols-2">
-				{@render field('Role', d.signoff.role)}
-				{@render field('National ID', d.signoff.nationalId)}
-				{@render upload('ID front', d.signoff.idFrontUrl)}
-				{@render upload('ID back', d.signoff.idBackUrl)}
-			</div>
+			<h2 class="font-semibold text-heading">Team &amp; sign-offs</h2>
+			<p class="mt-1 text-sm text-muted">Each manager attests separately: their role, national ID, and ID images.</p>
+			{#if d.team.length > 0}
+				<div class="mt-4 space-y-4">
+					{#each d.team as member (member.name)}
+						<div class="rounded-2xl border border-border bg-surface-2/40 p-4">
+							<p class="text-sm font-semibold text-heading">
+								{member.name}
+								{#if member.isApplicant}
+									<span class="ml-1 rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-muted">applicant</span>
+								{/if}
+								{#if member.signoffComplete}
+									<span class="ml-1 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">signed off</span>
+								{:else}
+									<span class="ml-1 rounded-full border border-border px-2 py-0.5 text-xs font-semibold text-muted">no sign-off</span>
+								{/if}
+							</p>
+							<div class="mt-3 grid gap-4 sm:grid-cols-2">
+								{@render field('Role', member.title)}
+								{@render field('National ID', member.nationalId)}
+								{@render upload('ID front', member.idFrontUrl)}
+								{@render upload('ID back', member.idBackUrl)}
+							</div>
+						</div>
+					{/each}
+				</div>
+			{/if}
+			{#if d.team.length < 2}
+				<p class="mt-4 text-sm font-medium text-red-500">
+					{2 - d.team.length} more team member{d.team.length === 1 ? '' : 's'} needed (2 needed)
+				</p>
+			{/if}
 		</div>
 	</div>
 

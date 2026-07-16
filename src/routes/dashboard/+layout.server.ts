@@ -1,13 +1,16 @@
 import { redirect } from '@sveltejs/kit';
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import type { ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
+import { getPlatformSettings } from '$lib/server/settings';
+import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { listUnreadNotifications } from '$lib/server/notifications';
 import type { LayoutServerLoad } from './$types';
 
@@ -129,21 +132,27 @@ export const load: LayoutServerLoad = async (event) => {
 			application.signoff.complete;
 		claimSubmitted = !!ev.submittedAt;
 	} else if (ctx && !ctx.leader.verifiedAt) {
-		const [contactRows, [{ n: teamSize }], [mine]] = await Promise.all([
+		const settings = await getPlatformSettings();
+		const requiredManagers = settings.requiredTeamManagers;
+		const requiredSignoffs = settings.requiredSignoffs;
+
+		const [contactRows, managerRows] = await Promise.all([
 			db
 				.select({ channel: contacts.channel, value: contacts.value })
 				.from(contacts)
 				.where(and(eq(contacts.userId, ctx.profileUser.id), isNull(contacts.deletedAt))),
+			// Active team, each with their own sign-off roles and whether their account
+			// email is verified — the two verification gates count across the whole team.
 			db
-				.select({ n: count() })
+				.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified })
 				.from(managers)
-				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true))),
-			db
-				.select({ roles: managers.roles })
-				.from(managers)
-				.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)))
+				.innerJoin(users, eq(managers.userId, users.id))
+				.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
 		]);
-		const myRoles = (mine?.roles ?? {}) as { title?: string; nationalId?: string };
+
+		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
+		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles)).length;
 
 		// Each entry: the human label shown to the user, and whether it's still missing.
 		const profileMissing = [
@@ -157,26 +166,30 @@ export const load: LayoutServerLoad = async (event) => {
 			[!contactRows.some((c) => c.channel === 'sms'), 'Phone number'],
 			[!contactRows.some((c) => c.channel === 'email'), 'Email address']
 		];
+		// Team gate: enough email-verified managers (admin-set count).
+		const managersShort = requiredManagers - verifiedManagers;
 		const teamMissing =
-			teamSize < 2 ? [`${2 - teamSize} more team member${teamSize === 1 ? '' : 's'} (2 needed)`] : [];
+			managersShort > 0
+				? [`${managersShort} more verified team member${managersShort === 1 ? '' : 's'} (${requiredManagers} needed)`]
+				: [];
 		const docsMissing = [
 			[!ctx.leader.photoUrl, 'Photo'],
 			[!ctx.leader.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 		];
-		// The applicant's attestation: role + national ID (their manager row) and
-		// their own ID images (leaders row columns, written from the Signoff tab).
-		const signoffMissing = [
-			[!myRoles.title, 'Your Role'],
-			[!myRoles.nationalId, 'Your National ID'],
-			[!ctx.leader.idFrontUrl, 'ID front'],
-			[!ctx.leader.idBackUrl, 'ID back']
-		];
+		// Sign-off gate: enough managers who've each completed their own sign-off
+		// (role + national ID + ID images). Each manager attests on the Team tab
+		// under their own entry; the per-field prompts live there.
+		const signoffsShort = requiredSignoffs - completedSignoffs;
+		const signoffMissing =
+			signoffsShort > 0
+				? [`${signoffsShort} more completed sign-off${signoffsShort === 1 ? '' : 's'} (${requiredSignoffs} needed)`]
+				: [];
 		application = {
 			profile: toTab(profileMissing),
 			contacts: toTab(contactsMissing),
 			team: { complete: teamMissing.length === 0, missing: teamMissing },
 			documentation: toTab(docsMissing),
-			signoff: toTab(signoffMissing)
+			signoff: { complete: signoffMissing.length === 0, missing: signoffMissing }
 		};
 		applicationComplete =
 			application.profile.complete &&
