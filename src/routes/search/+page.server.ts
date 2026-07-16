@@ -71,6 +71,7 @@ export const load: PageServerLoad = async ({ url }) => {
 				.slice(0, 2)
 				.toUpperCase(),
 			verified: !!r.leaders.verifiedAt,
+			photoUrl: r.leaders.photoUrl,
 			path: leaderPath(r.users),
 			positionTitle: r.positions.title,
 			region: r.positions.region,

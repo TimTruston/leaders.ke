@@ -68,15 +68,19 @@ const client = postgres(process.env.DATABASE_URL, { max: 1 });
 const db = drizzle(client);
 
 const mz13: Mz13Entry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-mps-13th.json'), 'utf8'));
+const mzSenate13: Mz13Entry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-mps-senate-13th.json'), 'utf8'));
 const wiki: WikiEntry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-13th.json'), 'utf8'));
 
-// Photo source lookup by seat: MPs/Woman Reps from mzalendo renders (near-complete),
-// Senators (mzalendo's NA-only crawl has none) and everyone else from Wikipedia.
+// Photo source lookup by seat: MPs/Woman Reps from mzalendo's NA renders,
+// Senators from its senate renders, Wikipedia as the fallback for everyone.
 const mzByConstituency = new Map(
 	mz13.filter((e) => e.photoUrl && e.constituency).map((e) => [slugify(e.constituency!), e])
 );
 const mzWomanRepByCounty = new Map(
 	mz13.filter((e) => e.photoUrl && e.county && /women/i.test(e.status ?? '')).map((e) => [slugify(e.county!), e])
+);
+const mzSenatorByCounty = new Map(
+	mzSenate13.filter((e) => e.photoUrl && e.county && /elected/i.test(e.status ?? '')).map((e) => [slugify(e.county!), e])
 );
 const wikiBySeatRegion = new Map(
 	wiki.filter((e) => e.photoUrl).map((e) => [`${e.seat}|${slugify(e.region)}`, e])
@@ -111,6 +115,7 @@ for (const row of rows) {
 	const source =
 		(row.title === 'MP' ? mzByConstituency.get(regionSlug) : undefined) ??
 		(row.title === 'Woman Rep' ? mzWomanRepByCounty.get(regionSlug) : undefined) ??
+		(row.title === 'Senator' ? mzSenatorByCounty.get(regionSlug) : undefined) ??
 		wikiBySeatRegion.get(`${row.title}|${regionSlug}`);
 	if (!source?.photoUrl) {
 		noSource++;

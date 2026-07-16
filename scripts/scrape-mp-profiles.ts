@@ -110,21 +110,23 @@ function parseProfile(html: string, url: string): MpProfile {
 	};
 }
 
-/** Sitemap member URLs grouped by parliament: 13th/12th/11th by URL segment, everything
- * else (top-level member-*-10th style pages) into "earlier". */
+/** Sitemap member URLs grouped by chamber+parliament: NA 13th/12th/11th by URL
+ * segment, senate ones prefixed "senate-", and top-level member-*-10th style
+ * pages into "earlier". */
 async function memberUrlsByParliament(): Promise<Map<string, string[]>> {
 	const xml = await fetchText(`${MZALENDO}/sitemap.xml`);
 	const groups = new Map<string, string[]>();
-	for (const m of xml.matchAll(/<loc>(https:\/\/mzalendo\.com\/mps-performance\/national-assembly\/[^<]+)<\/loc>/g)) {
+	for (const m of xml.matchAll(/<loc>(https:\/\/mzalendo\.com\/mps-performance\/(?:national-assembly|senate)\/[^<]+)<\/loc>/g)) {
 		const url = m[1];
+		const senate = url.includes('/senate/');
 		const segments = url.replace(/\/$/, '').split('/');
 		if (segments.length < 6) continue; // the chamber index itself
 		const [, parliament, slug] = [segments[3], segments[5], segments[6]];
 		let key: string;
 		let memberUrl = url;
 		if (slug && /^1[123]th-parliament$/.test(parliament)) {
-			key = parliament.replace('-parliament', '');
-		} else if (!slug && /^member-.*-(8|9|10)th$/.test(parliament)) {
+			key = (senate ? 'senate-' : '') + parliament.replace('-parliament', '');
+		} else if (!senate && !slug && /^member-.*-(8|9|10)th$/.test(parliament)) {
 			// 8th-10th members are listed top-level in the sitemap, but the live pages
 			// sit under their parliament segment: member-x-8th -> /8th-parliament-na/member-x-8th/
 			const n = parliament.match(/-(8|9|10)th$/)![1];
@@ -173,7 +175,9 @@ const { values: flags } = parseArgs({ options: { only: { type: 'string' } } });
 mkdirSync(OUT_DIR, { recursive: true });
 const groups = await memberUrlsByParliament();
 // Current parliament first — those are the profiles the platform needs soonest.
-const order = ['13th', '12th', '11th', 'earlier'].filter((k) => groups.has(k) && (!flags.only || k === flags.only));
+const order = ['13th', '12th', '11th', 'earlier', 'senate-13th', 'senate-12th', 'senate-11th'].filter(
+	(k) => groups.has(k) && (!flags.only || k === flags.only)
+);
 for (const key of order) {
 	console.log(`[${key}] ${groups.get(key)!.length} member pages`);
 	await scrapeParliament(key, groups.get(key)!);

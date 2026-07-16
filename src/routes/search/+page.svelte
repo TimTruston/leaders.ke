@@ -33,6 +33,7 @@
 						path={leader.path}
 						name={leader.name}
 						initials={leader.initials}
+						photoUrl={leader.photoUrl}
 						verified={leader.verified}
 						party={leader.party}
 						partyPath={leader.partyPath}

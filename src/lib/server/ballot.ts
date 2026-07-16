@@ -12,6 +12,7 @@ export type Candidate = {
 	candidateId: string; // "db:<leaderId>" — resolved back to live data on the share page
 	name: string;
 	initials: string;
+	photoUrl: string | null;
 	party: string | null;
 	path: string;
 	verified: boolean;
@@ -43,6 +44,7 @@ function toCandidate(row: {
 			.join('')
 			.slice(0, 2)
 			.toUpperCase(),
+		photoUrl: row.leaders.photoUrl,
 		party: null,
 		path: leaderPath(row.users),
 		verified: !!row.leaders.verifiedAt

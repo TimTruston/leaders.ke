@@ -57,6 +57,7 @@ export const load: PageServerLoad = async () => {
 				.join('')
 				.slice(0, 2)
 				.toUpperCase(),
+			photoUrl: r.leaders.photoUrl,
 			party: partyByLeaderId.get(r.leaders.id) ?? null,
 			partyPath: partyByLeaderId.has(r.leaders.id)
 				? `/parties/${slugify(partyByLeaderId.get(r.leaders.id)!)}`

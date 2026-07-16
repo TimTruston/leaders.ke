@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$lib/components/Avatar.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -43,11 +44,7 @@
 			{#each data.candidates as c (c.recordPath)}
 				<div class="flex flex-col rounded-2xl border border-border bg-surface p-6">
 					<div class="flex items-center gap-3">
-						<span
-							class="grid size-14 shrink-0 place-items-center rounded-full bg-primary-soft text-xl font-bold text-on-primary"
-						>
-							{c.initials}
-						</span>
+						<Avatar name={c.name} initials={c.initials} photoUrl={c.photoUrl} sizeClass="size-16" textClass="text-xl" />
 						<div class="min-w-0">
 							<p class="flex items-center gap-1 font-semibold text-heading">
 								<span class="truncate">{c.name}</span>

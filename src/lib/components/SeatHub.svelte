@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$lib/components/Avatar.svelte';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import type { SeatHubData } from '$lib/server/seatHub';
 
@@ -63,11 +64,7 @@
 				<div
 					class="group relative mt-4 rounded-2xl border border-border bg-surface p-5 flex items-center gap-4 transition hover:border-primary hover:shadow-sm"
 				>
-					<span
-						class="grid size-14 shrink-0 place-items-center rounded-full bg-primary-soft text-xl font-bold text-on-primary"
-					>
-						{data.current.initials}
-					</span>
+					<Avatar name={data.current.name} initials={data.current.initials} photoUrl={data.current.photoUrl} sizeClass="size-16" textClass="text-xl" />
 					<div class="min-w-0">
 						<a
 							href={data.current.path}
@@ -127,6 +124,7 @@
 						path={c.path}
 						name={c.name}
 						initials={c.initials}
+						photoUrl={c.photoUrl}
 						verified={c.verified}
 						party={c.party}
 						partyPath={c.partyPath}

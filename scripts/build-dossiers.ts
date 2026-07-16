@@ -65,12 +65,16 @@ type RosterEntry = {
 		email?: string;
 		phone?: string;
 		links?: string[];
+		fetchedAt?: string;
 	};
 };
 
 // ---------- internal record + cluster shapes ----------
 
-type Contacts = { emails: string[]; phones: string[]; links: string[] };
+// Every contact keeps its provenance: the seeder writes contacts.source from this,
+// so dossiers.json alone must carry everything the trust model needs.
+type ContactFact = { value: string; url: string | null; publisher: string; fetchedAt: string | null };
+type Contacts = { emails: ContactFact[]; phones: ContactFact[]; links: ContactFact[] };
 
 type Rec = {
 	source: string; // 'mzalendo-13th', 'wikipedia-9th', 'roster', 'non-elected'
@@ -270,10 +274,13 @@ for (const { file, source, nominated } of [
 	for (const e of entries) {
 		if (!e.name?.trim() || isPlaceholderName(e.name)) continue;
 		const mz = e.mzalendo?.status === 'found' ? e.mzalendo : null;
+		// parliament.go.ke's MP table hides Woman Reps: their "constituency" cell is
+		// their county. (Senators legitimately have region == county.)
+		const seat = e.seat === 'MP' && e.county && slugify(e.region ?? '') === slugify(e.county) ? 'Woman Rep' : e.seat;
 		records.push({
 			source,
 			parliament: '13th',
-			seat: nominated ? 'Nominated' : e.seat,
+			seat: nominated ? 'Nominated' : seat,
 			region: nominated ? null : e.region || null,
 			name: cleanName(e.name),
 			altNames: mz?.name ? [cleanName(mz.name)] : [],
@@ -284,9 +291,9 @@ for (const { file, source, nominated } of [
 			committees: [],
 			url: e.sourceUrl ?? null,
 			contacts: {
-				emails: mz?.email ? [mz.email] : [],
-				phones: mz?.phone ? [mz.phone] : [],
-				links: mz?.links ?? []
+				emails: mz?.email ? [{ value: mz.email, url: mz.url ?? null, publisher: 'info.mzalendo.com', fetchedAt: mz.fetchedAt ?? null }] : [],
+				phones: mz?.phone ? [{ value: mz.phone, url: mz.url ?? null, publisher: 'info.mzalendo.com', fetchedAt: mz.fetchedAt ?? null }] : [],
+				links: (mz?.links ?? []).map((l) => ({ value: l, url: mz?.url ?? null, publisher: 'info.mzalendo.com', fetchedAt: mz?.fetchedAt ?? null }))
 			},
 			note: nominated ? (e.note ?? 'Nominated') : null,
 			mzSlug: null
@@ -358,15 +365,27 @@ function rule2Match(r: Rec): Cluster | null {
 	return null;
 }
 
-// rule 3 scoring: cross-parliament/source name overlap >= 2, clusters already
-// seated elsewhere in the record's parliament excluded.
+// A bare 2-token overlap is only trustworthy when one side's tokens are a SUBSET
+// of the other's ("Junet Mohamed" ⊆ "Junet Sheikh Nuh Mohamed"). When BOTH sides
+// carry distinctive unmatched tokens ("Martha Wangari KARUA" vs "Martha Wangari
+// WANJIRA", "Fatuma GEDI Ali" vs "Fatuma IBRAHIM Ali") they are namesakes, not
+// the same person — three real mismerges shipped before this guard existed.
+function subsetEitherWay(a: Set<string>, b: Set<string>): boolean {
+	const aInB = [...a].every((t) => b.has(t));
+	const bInA = [...b].every((t) => a.has(t));
+	return aInB || bInA;
+}
+
+// rule 3 scoring: cross-parliament/source name overlap >= 2 (2-token matches
+// additionally need the subset guard), clusters already seated elsewhere in the
+// record's parliament excluded.
 function rule3Scores(r: Rec): { c: Cluster; score: number }[] {
 	const key = seatKey(r);
 	const rTokens = recordTokens(r);
 	return clusters
 		.filter((c) => !key || !conflictsWithCluster(c, key))
 		.map((c) => ({ c, score: overlap(rTokens, clusterTokens(c)) }))
-		.filter((s) => s.score >= 2)
+		.filter((s) => s.score >= 3 || (s.score === 2 && subsetEitherWay(rTokens, clusterTokens(s.c))))
 		.sort((a, b) => b.score - a.score || a.c.id - b.c.id);
 }
 
@@ -440,7 +459,11 @@ for (const c of [...clusters].sort((a, b) => a.id - b.id)) {
 	const scored = clusters
 		.filter((o) => o.id !== c.id && !merged.has(o.id))
 		.map((o) => ({ o, score: overlap(clusterTokens(c), clusterTokens(o)) }))
-		.filter((s) => s.score >= 2 && !seatConflict(c, s.o))
+		.filter(
+			(s) =>
+				(s.score >= 3 || (s.score === 2 && subsetEitherWay(clusterTokens(c), clusterTokens(s.o)))) &&
+				!seatConflict(c, s.o)
+		)
 		.sort((a, b) => b.score - a.score || a.o.id - b.o.id);
 	if (!scored.length) continue;
 	if (scored.length === 1 || scored[0].score > scored[1].score) {
@@ -555,6 +578,10 @@ type Term = {
 	region: string | null;
 	party: string | null;
 	sources: string[];
+	/** Each source's RAW claim for this seat (name form, party, page URL) — the
+	 * evidence behind the merged term, kept so conflict checks (stale Wikipedia,
+	 * seat disputes) can run off dossiers.json alone. */
+	assertions: { source: string; name: string; party: string | null; url: string | null }[];
 	url?: string;
 	note?: string;
 };
@@ -565,6 +592,8 @@ type Dossier = {
 	names: string[];
 	platformSlug: string | null;
 	userId: number | null;
+	/** parliament -> mzalendo person-page slug (raw identity evidence). */
+	mzalendoSlugs: Record<string, string>;
 	terms: Term[];
 	bios: { text: string; source: string; url: string | null; parliament: string | null }[];
 	photos: { url: string; source: string }[];
@@ -594,10 +623,11 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 		const key = `${r.parliament}|${r.seat}|${r.region ? slugify(r.region) : ''}`;
 		let term = termByKey.get(key);
 		if (!term) {
-			term = { parliament: r.parliament, seat: r.seat, region: r.region, party: null, sources: [] };
+			term = { parliament: r.parliament, seat: r.seat, region: r.region, party: null, sources: [], assertions: [] };
 			termByKey.set(key, term);
 		}
 		if (!term.sources.includes(r.source)) term.sources.push(r.source);
+		term.assertions.push({ source: r.source, name: r.name, party: r.party, url: r.url });
 		// party/url from the highest-priority source that has one; a full party
 		// name (mzalendo) beats an abbreviation (wikipedia/roster)
 		if (r.party && (!term.party || (r.partyIsFullName && !termPartyIsFull.get(term)))) {
@@ -617,6 +647,7 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 		);
 		if (!host) continue;
 		for (const s of term.sources) if (!host.sources.includes(s)) host.sources.push(s);
+		host.assertions.push(...term.assertions);
 		if (!host.party && term.party) host.party = term.party;
 		if (!host.note && term.note) host.note = term.note;
 		termByKey.delete(key);
@@ -658,9 +689,17 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 
 	const contacts = emptyContacts();
 	for (const r of recs) {
-		for (const e of r.contacts.emails) if (!contacts.emails.includes(e)) contacts.emails.push(e);
-		for (const p of r.contacts.phones) if (!contacts.phones.includes(p)) contacts.phones.push(p);
-		for (const l of r.contacts.links) if (!contacts.links.includes(l)) contacts.links.push(l);
+		for (const channel of ['emails', 'phones', 'links'] as const) {
+			for (const fact of r.contacts[channel]) {
+				if (!contacts[channel].some((f) => f.value === fact.value)) contacts[channel].push(fact);
+			}
+		}
+	}
+
+	// mzalendo person-page slugs, per parliament — the raw identity evidence.
+	const mzalendoSlugs: Record<string, string> = {};
+	for (const r of recs) {
+		if (r.mzSlug && r.parliament && !mzalendoSlugs[r.parliament]) mzalendoSlugs[r.parliament] = r.mzSlug;
 	}
 
 	return {
@@ -669,6 +708,7 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 		names,
 		platformSlug: dbUser?.slug ?? null,
 		userId: dbUser?.userId ?? null,
+		mzalendoSlugs,
 		terms,
 		bios,
 		photos,

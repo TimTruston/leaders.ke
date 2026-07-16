@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$lib/components/Avatar.svelte';
 	import type { BallotLevel } from '$lib/server/ballot';
 	import type { PageData } from './$types';
 
@@ -39,13 +40,11 @@
 	<div class="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
 		{#each data.results as { level, candidate } (level)}
 			<div class="flex items-center gap-4 p-4 sm:p-5">
-				<span
-					class="grid size-12 shrink-0 place-items-center rounded-full text-sm font-bold {candidate
-						? 'bg-primary-soft text-on-primary'
-						: 'bg-surface-2 text-muted'}"
-				>
-					{candidate ? candidate.initials : '—'}
-				</span>
+				{#if candidate}
+					<Avatar name={candidate.name} initials={candidate.initials} photoUrl={candidate.photoUrl} sizeClass="size-14" textClass="text-sm" />
+				{:else}
+					<span class="grid size-14 shrink-0 place-items-center rounded-full bg-surface-2 text-sm font-bold text-muted">—</span>
+				{/if}
 				<div class="min-w-0 flex-1">
 					<p class="text-xs font-semibold tracking-wide text-muted uppercase">
 						{LEVEL_LABEL[level]}

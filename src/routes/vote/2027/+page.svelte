@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$lib/components/Avatar.svelte';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import GeoSelect from '$lib/components/GeoSelect.svelte';
@@ -148,11 +149,7 @@
 									? 'border-primary bg-primary-soft'
 									: 'border-border bg-surface hover:border-primary'}"
 							>
-								<span
-									class="grid size-11 shrink-0 place-items-center rounded-full bg-primary-soft text-sm font-bold text-on-primary"
-								>
-									{candidate.initials}
-								</span>
+								<Avatar name={candidate.name} initials={candidate.initials} photoUrl={candidate.photoUrl} sizeClass="size-12" textClass="text-sm" />
 								<span>
 									<span class="flex items-center gap-1 font-semibold text-heading">
 										{candidate.name}

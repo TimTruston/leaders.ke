@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Avatar from '$lib/components/Avatar.svelte';
 	import { compareSelection, clearCompareSelection } from '$lib/stores/compare.svelte';
 	import { plainText } from '$lib/utils/richtext';
 	import { seatPath } from '$lib/utils/seat';
@@ -8,6 +9,7 @@
 		path: string;
 		name: string;
 		initials: string;
+		photoUrl?: string | null;
 		verified?: boolean;
 		party?: string | null;
 		partyPath?: string | null;
@@ -23,6 +25,7 @@
 		path,
 		name,
 		initials,
+		photoUrl = null,
 		verified = false,
 		party = null,
 		partyPath = null,
@@ -90,11 +93,7 @@ whole card is clickable, while the party name stays its own separate link on top
 		{/if}
 	</button>
 	<div class="flex items-center gap-3">
-		<span
-			class="grid size-12 shrink-0 place-items-center rounded-full bg-primary-soft text-lg font-bold text-on-primary"
-		>
-			{initials}
-		</span>
+		<Avatar {name} {initials} {photoUrl} sizeClass="size-16" textClass="text-xl" />
 		<div class="min-w-0">
 			<a href={path} class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary">
 				<span class="truncate">{name}</span>

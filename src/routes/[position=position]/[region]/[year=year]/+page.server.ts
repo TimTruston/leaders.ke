@@ -56,6 +56,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					.join('')
 					.slice(0, 2)
 					.toUpperCase(),
+				photoUrl: r.leaders.photoUrl,
 				recordPath: leaderPath(r.users),
 				campaignPath: campaignPath(r.users, year),
 				party: null as string | null,
