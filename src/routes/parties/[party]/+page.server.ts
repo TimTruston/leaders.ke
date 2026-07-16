@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
@@ -25,6 +25,17 @@ export const load: PageServerLoad = async ({ params }) => {
 			)
 		);
 
+	// Follower counts for all members in one grouped query.
+	const memberLeaderIds = memberRows.map((r) => r.leaders.id);
+	const followerRows = memberLeaderIds.length
+		? await db
+				.select({ leaderId: followers.digestId, n: count() })
+				.from(followers)
+				.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, memberLeaderIds), isNull(followers.deletedAt)))
+				.groupBy(followers.digestId)
+		: [];
+	const followersByLeaderId = new Map(followerRows.map((r) => [r.leaderId, r.n]));
+
 	return {
 		party: {
 			name: party.name,
@@ -35,12 +46,25 @@ export const load: PageServerLoad = async ({ params }) => {
 			colors: party.colors,
 			status: party.status
 		},
-		members: memberRows.map((r) => ({
-			name: fullName(r.users),
-			path: leaderPath(r.users),
-			role: r.party_memberships.role,
-			positionTitle: r.positions.title,
-			region: r.positions.region
-		}))
+		members: memberRows.map((r) => {
+			const name = fullName(r.users);
+			return {
+				name,
+				initials: name
+					.split(/\s+/)
+					.map((w) => w[0])
+					.join('')
+					.slice(0, 2)
+					.toUpperCase(),
+				path: leaderPath(r.users),
+				photoUrl: r.leaders.photoUrl,
+				verified: !!r.leaders.verifiedAt,
+				status: r.leaders.status,
+				followers: followersByLeaderId.get(r.leaders.id) ?? 0,
+				role: r.party_memberships.role,
+				positionTitle: r.positions.title,
+				region: r.positions.region
+			};
+		})
 	};
 };

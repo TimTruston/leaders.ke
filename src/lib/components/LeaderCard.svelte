@@ -123,7 +123,7 @@ whole card is clickable, while the party name stays its own separate link on top
 			{#if positionTitle || region}
 				{@const seat = seatPath(positionTitle, region)}
 				<p class="mt-2 text-xs flex items-center gap-2">
-					{#if !compact && status}
+					{#if status}
 						<span class="rounded-full bg-surface-2 px-2 py-0.5 font-medium capitalize {status === 'current' ? 'text-primary' : ''}">
 							{status}
 						</span>

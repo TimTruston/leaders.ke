@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -32,14 +33,19 @@
 		</h2>
 		<div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.members as member (member.path)}
-				<a
-					href={member.path}
-					class="rounded-2xl border border-border bg-surface p-5 transition hover:border-primary hover:shadow-sm"
-				>
-					<p class="font-semibold text-heading">{member.name}</p>
-					<p class="mt-1 text-sm text-muted">{member.positionTitle}, {member.region}</p>
-					<p class="mt-2 text-xs text-muted capitalize">{member.role}</p>
-				</a>
+				<!-- No party prop: the whole page is this party, so the card skips the name. -->
+				<LeaderCard
+					compact
+					path={member.path}
+					name={member.name}
+					initials={member.initials}
+					photoUrl={member.photoUrl}
+					verified={member.verified}
+					positionTitle={member.positionTitle}
+					region={member.region}
+					status={member.status}
+					followers={member.followers}
+				/>
 			{:else}
 				<div class="rounded-2xl border border-border bg-surface p-8 text-center sm:col-span-2 lg:col-span-3">
 					<p class="font-semibold text-heading">No current members listed</p>
