@@ -36,15 +36,22 @@ export const load: PageServerLoad = async () => {
 	const partyByLeaderId = new Map(memberships.map((m) => [m.leaderId, m.partyName]));
 
 	// A person can have several `leaders` rows (Track Record); they all share one
-	// slug/URL, so keep just one card per slug — preferring their non-'former' row.
+	// slug/URL, so keep just one card per slug — preferring their non-'former' row,
+	// and among former-only rows the most recent term.
 	const bySlug = new Map<string, (typeof rows)[number]>();
 	for (const r of rows) {
-		const existing = r.users.slug ? bySlug.get(r.users.slug) : undefined;
-		if (!existing || (existing.leaders.status === 'former' && r.leaders.status !== 'former')) {
-			if (r.users.slug) bySlug.set(r.users.slug, r);
-		}
+		if (!r.users.slug) continue;
+		const existing = bySlug.get(r.users.slug);
+		const better =
+			!existing ||
+			(existing.leaders.status === 'former' &&
+				(r.leaders.status !== 'former' ||
+					(r.leaders.endAt?.getTime() ?? 0) > (existing.leaders.endAt?.getTime() ?? 0)));
+		if (better) bySlug.set(r.users.slug, r);
 	}
 
+	// Directory order: current officeholders first, then aspirants, then former.
+	const STATUS_ORDER: Record<string, number> = { current: 0, aspirant: 1, former: 2 };
 	const dbLeaders = [...bySlug.values()].map((r) => {
 		const name = fullName(r.users);
 		return {
@@ -66,9 +73,18 @@ export const load: PageServerLoad = async () => {
 			positionTitle: r.positions.title,
 			status: r.leaders.status,
 			verified: !!r.leaders.verifiedAt,
-			followers: followersByLeaderId.get(r.leaders.id) ?? 0
+			followers: followersByLeaderId.get(r.leaders.id) ?? 0,
+			// Former leaders rank by how recently their term ended (oldest last).
+			termEnd: (r.leaders.endAt ?? r.leaders.startAt)?.getTime() ?? 0
 		};
 	});
+	dbLeaders.sort(
+		(a, b) =>
+			(STATUS_ORDER[a.status] ?? 3) - (STATUS_ORDER[b.status] ?? 3) ||
+			(a.status === 'former' ? b.termEnd - a.termEnd : 0) ||
+			b.followers - a.followers ||
+			a.name.localeCompare(b.name)
+	);
 
 	return { dbLeaders };
 };

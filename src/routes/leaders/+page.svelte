@@ -43,6 +43,8 @@
 	});
 
 	// Verified profiles rank first within the filtered set — verification is the product.
+	// Then by term status (current, aspirant, former), then reach.
+	const STATUS_ORDER: Record<string, number> = { current: 0, aspirant: 1, former: 2 };
 	const filtered = $derived(
 		allLeaders
 			.filter(
@@ -53,7 +55,13 @@
 					(!status || l.status === status) &&
 					(!query || l.name.toLowerCase().includes(query.toLowerCase()))
 			)
-			.toSorted((a, b) => Number(b.verified) - Number(a.verified) || b.followers - a.followers)
+			.toSorted(
+				(a, b) =>
+					Number(b.verified) - Number(a.verified) ||
+					(STATUS_ORDER[a.status] ?? 3) - (STATUS_ORDER[b.status] ?? 3) ||
+					(a.status === 'former' ? b.termEnd - a.termEnd : 0) ||
+					b.followers - a.followers
+			)
 	);
 
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
