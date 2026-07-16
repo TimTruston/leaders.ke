@@ -108,17 +108,36 @@
 					href={leader!.path}
 					class="group rounded-2xl border border-border bg-surface p-6 transition hover:border-primary"
 				>
-					<h2 class="text-lg font-bold text-heading group-hover:text-primary">
-						{leader!.name}{#if leader!.verified}<span class="ml-1 text-primary">✓</span>{/if}
-					</h2>
-					<p class="mt-1 text-sm text-muted">
-						{leader!.positionTitle}, {leader!.regionLabel}
-						{#if leader!.party}· {leader!.party}{/if}
-					</p>
-					{#if leader!.bio}
-						{@const bio = plainText(leader!.bio)}
-						<p class="mt-3 text-sm leading-relaxed">{bio.slice(0, 180)}{bio.length > 180 ? '…' : ''}</p>
-					{/if}
+					<div class="flex items-stretch gap-5">
+						<!-- Photo spans the card's full height; initials block as fallback. -->
+						{#if leader!.photoUrl}
+							<img
+								src={leader!.photoUrl}
+								alt={leader!.name}
+								loading="lazy"
+								class="size-40 shrink-0 self-stretch rounded-xl border border-border sm:w-40"
+							/>
+						{:else}
+							<span
+								class="grid size-40 shrink-0 place-items-center aspect-square rounded-xl bg-primary-soft text-4xl font-bold text-on-primary sm:size-40"
+							>
+								{leader!.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
+							</span>
+						{/if}
+						<div class="min-w-0">
+							<h2 class="text-lg font-bold text-heading group-hover:text-primary">
+								{leader!.name}{#if leader!.verified}<span class="ml-1 text-primary">✓</span>{/if}
+							</h2>
+							<p class="mt-1 text-sm text-muted">
+								{leader!.positionTitle}, {leader!.regionLabel}
+								{#if leader!.party}· {leader!.party}{/if}
+							</p>
+							{#if leader!.bio}
+								{@const bio = plainText(leader!.bio)}
+								<p class="mt-3 text-sm leading-relaxed">{bio.slice(0, 180)}{bio.length > 180 ? '…' : ''}</p>
+							{/if}
+						</div>
+					</div>
 				</a>
 			{/each}
 		</div>

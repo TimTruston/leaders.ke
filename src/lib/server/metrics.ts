@@ -17,6 +17,7 @@ import { fullName, leaderPath } from '$lib/server/leader';
 export type LeaderMetrics = {
 	name: string;
 	path: string;
+	photoUrl: string | null;
 	positionTitle: string;
 	regionLabel: string;
 	party: string | null;
@@ -103,6 +104,7 @@ export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
 			return {
 				name: fullName(r.users),
 				path: leaderPath(r.users),
+				photoUrl: r.leaders.photoUrl,
 				positionTitle: r.positions.title,
 				regionLabel: r.positions.region,
 				party: null,
