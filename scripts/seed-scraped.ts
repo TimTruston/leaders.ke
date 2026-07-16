@@ -19,10 +19,10 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { and, eq, isNull, like } from 'drizzle-orm';
+import { and, eq, isNull, like, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { contacts, leaders, parties, positions, users } from '../src/lib/server/db/schema';
+import { contacts, leaders, parties, partyMemberships, positions, users } from '../src/lib/server/db/schema';
 import { user as authUsers } from '../src/lib/server/db/auth.schema';
 import { seedPeople, type ContactRow, type PersonRow } from './lib/people';
 import { slugify } from './lib/names';
@@ -180,6 +180,8 @@ type EnrichPlan = {
 	region: string;
 	contacts: PlannedContact[];
 	bio: string | null; // only set when users.bio is currently null
+	/** Roster party to backfill — only set when the holder has NO live membership. */
+	party: string | null;
 };
 
 type Analysis = {
@@ -247,6 +249,10 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 	const userIdBySeedEmail = new Map(seedEmailRows.map((r) => [r.email, r.userId]));
 
 	const partyRows = await db.select({ name: parties.name, abbreviation: parties.abbreviation }).from(parties);
+	// Leaders that already carry a live party membership — enrich never touches those.
+	const memberLeaderIds = new Set(
+		(await db.select({ leaderId: partyMemberships.leaderId }).from(partyMemberships).where(isNull(partyMemberships.deletedAt))).map((r) => r.leaderId)
+	);
 	// seedPeople resolves a membership by EXACT name/abbreviation, so flag on that.
 	const knownPartyExact = new Set(partyRows.flatMap((p) => [p.name, p.abbreviation]).filter(Boolean) as string[]);
 	const partyNameKeyByAbbrKey = new Map(partyRows.filter((p) => p.abbreviation).map((p) => [partyKey(p.abbreviation!), partyKey(p.name)]));
@@ -448,8 +454,10 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 				return true;
 			});
 			const bio = holder.bio ? null : wikiBio; // only backfill a NULL bio
-			if (plannedContacts.length || bio) {
-				enriches.push({ leaderId: holder.leaderId, userId: holder.userId, holderName: dbName, title, region: position.region, contacts: plannedContacts, bio });
+			// Fill-gap-only party backfill: never changes an existing membership.
+			const party = !memberLeaderIds.has(holder.leaderId) && rosterParty && knownPartyExact.has(rosterParty) ? rosterParty : null;
+			if (plannedContacts.length || bio || party) {
+				enriches.push({ leaderId: holder.leaderId, userId: holder.userId, holderName: dbName, title, region: position.region, contacts: plannedContacts, bio, party });
 				for (const c of plannedContacts) plannedValues.add(`${c.channel}:${c.value}`);
 			}
 			continue;
@@ -620,10 +628,12 @@ async function apply(db: ReturnType<typeof drizzle>, a: Analysis) {
 	// leaders row + party membership + contacts-with-source + bio via applyProfile).
 	await seedPeople(db, a.creates.map((c) => c.row), 'scraped-13th');
 
-	// Enrichment: contacts and bio backfill only — the plan already excluded occupied
-	// channels, conflicting values, and non-null bios.
+	// Enrichment: contacts, bio, and fill-gap party backfill — the plan already
+	// excluded occupied channels, conflicting values, non-null bios, and leaders
+	// who carry a live party membership.
 	let contactsAdded = 0;
 	let biosBackfilled = 0;
+	let membershipsAdded = 0;
 	for (const e of a.enriches) {
 		for (const c of e.contacts) {
 			await db
@@ -637,8 +647,27 @@ async function apply(db: ReturnType<typeof drizzle>, a: Analysis) {
 			await db.update(users).set({ bio: e.bio }).where(and(eq(users.id, e.userId), isNull(users.bio)));
 			biosBackfilled++;
 		}
+		if (e.party) {
+			const [party] = await db
+				.select({ id: parties.id })
+				.from(parties)
+				.where(or(eq(parties.name, e.party), eq(parties.abbreviation, e.party)));
+			const [existing] = party
+				? await db
+						.select({ id: partyMemberships.id })
+						.from(partyMemberships)
+						.where(and(eq(partyMemberships.leaderId, e.leaderId), isNull(partyMemberships.deletedAt)))
+				: [];
+			if (party && !existing) {
+				// Same convention as seedPeople: current members' terms start at the 2022 swearing-in.
+				await db.insert(partyMemberships).values({ partyId: party.id, leaderId: e.leaderId, role: 'Member', startAt: new Date('2022-09-13T00:00:00+03:00') });
+				membershipsAdded++;
+			}
+		}
 	}
-	console.log(`[apply] enriched ${a.enriches.length} existing profiles: ${contactsAdded} contacts inserted, ${biosBackfilled} bios backfilled`);
+	console.log(
+		`[apply] enriched ${a.enriches.length} existing profiles: ${contactsAdded} contacts inserted, ${biosBackfilled} bios backfilled, ${membershipsAdded} party memberships backfilled`
+	);
 }
 
 // ---------- entry ----------

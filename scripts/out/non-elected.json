@@ -1,0 +1,479 @@
+[
+	{
+		"name": "Jackson Kipkemoi Kosgei",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-jackson-kipkemoi-kosgei",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:13:59.394Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Abubakar Talib Ahmed",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "WPF",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abubakar-talib-ahmed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:53.254Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Ali Abdisirat Khalif",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ali-abdisirat-khalif",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:15:50.574Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Chege Sabina Wanjiru",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "JP",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chege-sabina-wanjiru",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/sabina-wanjiru-chege/",
+			"name": "Sabina Wanjiru Chege",
+			"email": "info@sabinawanjiruchege.com",
+			"links": [
+				"https://www.facebook.com/Sabina.Wanjiru.Chege",
+				"http://www.sabinawanjiruchege.com/"
+			],
+			"fetchedAt": "2026-07-16T04:51:07.583Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Ikiara Dorothy Muthoni",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ikiara-dorothy-muthoni",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:22.305Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Joseph Wainaina Iraya",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-joseph-wainaina-iraya",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:30.674Z"
+		},
+		"note": "Nominated by UDA to represent special interests"
+	},
+	{
+		"name": "Kipchumba Harold Kimuge",
+		"seat": "MP",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kipchumba-harold-kimuge",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/harold-kimunge-kipchumba/",
+			"name": "Harold Kimunge Kipchumba",
+			"email": "haroldkip@yahoo.com",
+			"phone": "0721802851",
+			"links": [
+				"http://disqus.com/?ref_noscript",
+				"http://disqus.com"
+			],
+			"fetchedAt": "2026-07-16T05:21:22.705Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Mayaka Irene Nyakerario",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mayaka-irene-nyakerario",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:52.416Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Mohamed Umulkher Harun",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohamed-umulkher-harun",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:32.175Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Mwangi Teresia Wanjiru",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwangi-teresia-wanjiru",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:26:37.527Z"
+		},
+		"note": "Nominated by UDA to represent youth affairs"
+	},
+	{
+		"name": "Suleka Hulbale Harun",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-suleka-hulbale-harun",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:49.744Z"
+		},
+		"note": "Nominated MP"
+	},
+	{
+		"name": "Rt Moses Fm Wetang'Ula",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:28.485Z"
+		},
+		"note": "8th Speaker of the National Assembly of Kenya"
+	},
+	{
+		"name": "Abdalla Shakilla Mohamed",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "WPF",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:45.125Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Beatrice Akinyi Ogolla",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:49.436Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Beth Kalunda Syengo",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:53.605Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Betty Batuli Montet",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:57.765Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Catherine Muyeka Mumma",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:16.326Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Chimera Raphael Mwinzago",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:38.965Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Consolata Nabwire Wakwabubi",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:47.165Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Crystal Asige",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:51.306Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Essy Okenyuri Nyaituga Anyieni",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:59.585Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "George Mungai Mbugua",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:07.825Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Hamida Ali Kibwana",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:16.126Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Hezena M Lemaletian",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:20.293Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Joyce Chepkoech Korir",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joyce-chepkoech-korir/",
+			"name": "Joyce Chepkoech Korir",
+			"email": "joycekorir95@gmail.com",
+			"phone": "0725653945",
+			"fetchedAt": "2026-07-16T05:11:03.062Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Miraj Abdillahi Abdulrahman",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:43.325Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Mutinda Maureen Tabitha",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:19.066Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Nyamu Karen Njeri",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/karen-nyamu/",
+			"name": "Ms. Karen Nyamu",
+			"fetchedAt": "2026-07-16T05:38:45.245Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Omar Mariam Sheikh",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:54.775Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Pesi Peris Tobiko",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/peris-pesi-tobiko/",
+			"name": "Peris Pesi Tobiko",
+			"email": "tobppp68@yahoo.com",
+			"phone": "0720292150",
+			"links": [
+				"https://www.facebook.com/PerisPesiTobiko",
+				"http://twitter.com/pesitobiko"
+			],
+			"fetchedAt": "2026-07-16T05:12:49.142Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Margaret Jepkoech Kamar",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "JP",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:58.956Z"
+		},
+		"note": "Nominated Senator"
+	},
+	{
+		"name": "Veronica Waheti Nduati",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:39:07.276Z"
+		},
+		"note": "Nominated Senator"
+	}
+]
