@@ -95,7 +95,7 @@ whole card is clickable, while the party name stays its own separate link on top
 			&lt;&gt;
 		{/if}
 	</button>
-	<div class="flex items-center {large ? 'gap-5' : 'gap-3'}">
+	<div class="flex items-center {large ? 'gap-5 flex-col lg:flex-row' : 'gap-3'}" >
 		<!-- In the large variant the photo spans the card's height. -->
 		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-40' : 'size-24'} textClass={large ? 'text-4xl' : 'text-xl'} />
 		<div class="w-full min-w-0">
@@ -112,7 +112,7 @@ whole card is clickable, while the party name stays its own separate link on top
 				{/if}
 			</a>
 			{#if party}
-				<p class="relative z-10 truncate text-xs text-muted">
+				<p class="relative z-10 truncate {large ? 'my-1 text-sm' : 'text-xs'} text-muted">
 					{#if partyPath}
 						<a href={partyPath} class="hover:text-heading hover:underline">{party}</a>
 					{:else}
