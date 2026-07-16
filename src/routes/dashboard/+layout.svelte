@@ -2,12 +2,22 @@
 	import { enhance } from '$app/forms';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
 
 	let submittingApplication = $state(false);
 	let applicationError = $state('');
+
+	// Delete (application or claim) goes through a confirmation modal: the button
+	// click is intercepted, and confirming re-submits its form with the button as
+	// the submitter, so the button's formaction still picks the delete action.
+	let deleteBtn = $state<HTMLButtonElement | null>(null);
+	const confirmDelete = (e: MouseEvent) => {
+		e.preventDefault();
+		deleteBtn = e.currentTarget as HTMLButtonElement;
+	};
 
 	// Set by /invite/[token] right after accepting — a one-time "you're in" banner.
 	const joinedRole = $derived(page.url.searchParams.get('joined'));
@@ -373,6 +383,7 @@
 							type="submit"
 							formaction="{base}/profile?/deleteClaim"
 							formnovalidate
+							onclick={confirmDelete}
 							class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
 						>
 							Delete
@@ -421,6 +432,7 @@
 								type="submit"
 								formaction="{base}/profile?/deleteApplication"
 								formnovalidate
+								onclick={confirmDelete}
 								class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
 							>
 								Delete
@@ -516,3 +528,16 @@
 	</div>
 
 </section>
+
+{#if deleteBtn}
+	<ConfirmDialog
+		title={mode === 'claim' ? 'Delete this claim?' : 'Delete this application?'}
+		body="Everything entered so far is discarded and it drops off your dashboard. This cannot be undone."
+		oncancel={() => (deleteBtn = null)}
+		onconfirm={() => {
+			const btn = deleteBtn;
+			deleteBtn = null;
+			btn?.form?.requestSubmit(btn);
+		}}
+	/>
+{/if}
