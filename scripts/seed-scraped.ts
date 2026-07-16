@@ -434,7 +434,9 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 			return true;
 		});
 
-		const wikiBio = wikiRow?.bio?.replace(/\s+/g, ' ').trim() || null;
+		// Wikipedia's summary first, else the member page's Official Background
+		// (mz13Row is already name-checked against the roster above).
+		const wikiBio = wikiRow?.bio?.replace(/\s+/g, ' ').trim() || mz13Row?.bio?.replace(/\s+/g, ' ').trim() || null;
 
 		if (holder) {
 			// Seat already has a current leader: never replace, only enrich. Zero shared

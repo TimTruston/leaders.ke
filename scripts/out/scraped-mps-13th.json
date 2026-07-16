@@ -11,7 +11,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T04:51:04.805Z"
+		"fetchedAt": "2026-07-16T13:53:17.480Z"
 	},
 	{
 		"slug": "sergon-florence-jematiah",
@@ -29,7 +29,7 @@
 			"Communication, Information and Innovation",
 			"Decentralised Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:51:07.345Z"
+		"fetchedAt": "2026-07-16T13:53:19.309Z"
 	},
 	{
 		"slug": "kandie-joshua",
@@ -40,7 +40,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joshua Chepyegon Kandie is the sitting Member of the National Assembly for Baringo Central Constituency, Baringo County, representing the United Democratic Alliance (UDA) in the 13th Parliament. He was first elected to the seat in 2017 on a Maendeleo Chap Chap Party ticket, and was re-elected in 2022 after switching to UDA.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Joshua_Chepyegon_Kandie.min-320x400.jpg",
 		"committees": [
 			"Defence, Intelligence and Foreign Relations",
@@ -48,7 +48,7 @@
 			"Departmental",
 			"following Motion: 25th November 2025 NATIONAL ASSEMBLY DEBATES 2 Hon. Joshua Kandie (Baringo Central, UDA)A certified version of this ReportTHAT, this House adopts the Report of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:09.906Z"
+		"fetchedAt": "2026-07-16T13:53:21.620Z"
 	},
 	{
 		"slug": "joseph-makilap-13th-parliament-assembly",
@@ -67,7 +67,7 @@
 			"Joint sitting of the National Assembly Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:12.077Z"
+		"fetchedAt": "2026-07-16T13:53:24.195Z"
 	},
 	{
 		"slug": "kamuren-charles",
@@ -89,7 +89,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:13.976Z"
+		"fetchedAt": "2026-07-16T13:53:26.414Z"
 	},
 	{
 		"slug": "kassait-william",
@@ -110,7 +110,7 @@
 			"following Motion: THAT, this House adopts the Second Report of the Constitutional Implementation Oversight",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:51:15.929Z"
+		"fetchedAt": "2026-07-16T13:53:28.898Z"
 	},
 	{
 		"slug": "chepkorir-linet",
@@ -128,7 +128,7 @@
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:17.504Z"
+		"fetchedAt": "2026-07-16T13:53:31.276Z"
 	},
 	{
 		"slug": "kilel-richard-cheruiyot",
@@ -147,7 +147,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:18.946Z"
+		"fetchedAt": "2026-07-16T13:53:32.938Z"
 	},
 	{
 		"slug": "yegon-richard",
@@ -165,7 +165,7 @@
 			"Sports and Culture",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:20.665Z"
+		"fetchedAt": "2026-07-16T13:53:35.478Z"
 	},
 	{
 		"slug": "victor-kipngetich-koech",
@@ -184,7 +184,7 @@
 			"Committee? Hon. Victor Koech (Chepalungu, CCM) I am not a Member of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:22.445Z"
+		"fetchedAt": "2026-07-16T13:53:37.561Z"
 	},
 	{
 		"slug": "yegon-brighton-leonard",
@@ -202,7 +202,7 @@
 			"Members Service and Facilities",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:24.304Z"
+		"fetchedAt": "2026-07-16T13:53:39.550Z"
 	},
 	{
 		"slug": "francis-kipyegon-sigei",
@@ -220,7 +220,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:26.066Z"
+		"fetchedAt": "2026-07-16T13:53:41.543Z"
 	},
 	{
 		"slug": "nelson-jack-wanami-wamboka",
@@ -239,7 +239,7 @@
 			"Public Investments",
 			"Multi-Agency"
 		],
-		"fetchedAt": "2026-07-16T04:51:28.377Z"
+		"fetchedAt": "2026-07-16T13:53:44.198Z"
 	},
 	{
 		"slug": "wambilianga-catherine-nanjala",
@@ -250,13 +250,13 @@
 		"party": "Forum for Restoration of Democracy - Kenya",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Wambilianga Catherine Nanjala is the County Woman Representative for Bungoma County in the National Assembly of the 13th Parliament of Kenya, elected on a FORD-Kenya ticket. First elected in 2017 and re-elected in 2022, she is serving her second term, which runs to 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Wambilianga_Catherine_Nanjala.min-320x400.jpg",
 		"committees": [
 			"Labour",
 			"National Government Constituencies Development"
 		],
-		"fetchedAt": "2026-07-16T04:51:29.968Z"
+		"fetchedAt": "2026-07-16T13:53:45.868Z"
 	},
 	{
 		"slug": "oyula-joseph",
@@ -267,14 +267,14 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joseph H Maero Oyula is the Member of the National Assembly for Butula Constituency in Busia County, representing the Orange Democratic Movement (ODM). A sitting member of the 13th Parliament (2022-2027), he was first elected in 2017 and re-elected in the 2022 general election.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Joseph_Maero_Oyula.min-320x400.jpg",
 		"committees": [
 			"Finance and National Planning",
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:31.585Z"
+		"fetchedAt": "2026-07-16T13:53:47.935Z"
 	},
 	{
 		"slug": "majimbo-kalasinga",
@@ -292,7 +292,7 @@
 			"Selection",
 			"Special Funds Account"
 		],
-		"fetchedAt": "2026-07-16T04:51:33.408Z"
+		"fetchedAt": "2026-07-16T13:53:50.336Z"
 	},
 	{
 		"slug": "didmus-wekesa-barasa-mutua",
@@ -312,7 +312,7 @@
 			"Departmental",
 			"Elementaita-Mitimingi-Mau Narok Road in Nakuru County. Hon. Martha Wangari, in the request, sought the following:"
 		],
-		"fetchedAt": "2026-07-16T04:51:35.226Z"
+		"fetchedAt": "2026-07-16T13:53:53.099Z"
 	},
 	{
 		"slug": "fred-chesebe-kapondi",
@@ -329,7 +329,7 @@
 			"Administration and Internal Security",
 			"Diaspora Affairs and Migrant Workers"
 		],
-		"fetchedAt": "2026-07-16T04:51:36.543Z"
+		"fetchedAt": "2026-07-16T13:53:54.614Z"
 	},
 	{
 		"slug": "john-waluke-koyi",
@@ -347,7 +347,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Special Funds Account"
 		],
-		"fetchedAt": "2026-07-16T04:51:38.266Z"
+		"fetchedAt": "2026-07-16T13:53:56.692Z"
 	},
 	{
 		"slug": "john-murumba-chikati",
@@ -365,7 +365,7 @@
 			"Tourism and Wildlife",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:51:39.835Z"
+		"fetchedAt": "2026-07-16T13:53:59.058Z"
 	},
 	{
 		"slug": "martin-wanyonyi-pepela",
@@ -382,7 +382,7 @@
 			"Decentralized Funds Accounts",
 			"Health"
 		],
-		"fetchedAt": "2026-07-16T04:51:41.476Z"
+		"fetchedAt": "2026-07-16T13:54:02.504Z"
 	},
 	{
 		"slug": "daniel-wanyama-sitati",
@@ -404,7 +404,7 @@
 			"Mediation",
 			"following Motion: THAT, this House approves the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:51:43.789Z"
+		"fetchedAt": "2026-07-16T13:54:05.410Z"
 	},
 	{
 		"slug": "raphael-bitta-sauti-wanjala",
@@ -426,7 +426,7 @@
 			"Select",
 			"Committee on Implementation on the implementation status of the Report of the"
 		],
-		"fetchedAt": "2026-07-16T04:51:45.517Z"
+		"fetchedAt": "2026-07-16T13:54:07.866Z"
 	},
 	{
 		"slug": "omanyo-catherine-nakhabi",
@@ -446,7 +446,7 @@
 			"Special Funds Accounts",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:51:47.390Z"
+		"fetchedAt": "2026-07-16T13:54:10.202Z"
 	},
 	{
 		"slug": "oundo-wilberforce-ojiambo",
@@ -457,7 +457,7 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Wilberforce Ojiambo Oundo is the sitting Member of the National Assembly for Funyula Constituency, Busia County, representing the Orange Democratic Movement (ODM) in the 13th Parliament (2022-2027). First elected in 2017 and re-elected in 2022, he previously served as a Real Estate lecturer at the University of Nairobi.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Oundo_Wilberforce_Ojiambo.min-320x400.jpg",
 		"committees": [
 			"people of Funyula Constituency, I convey my condolences to the family of Hon. Gideon Konchellah. I served with him in the 12th Parliament. We were also in the same Departmental",
@@ -465,7 +465,7 @@
 			"Chairperson of the",
 			"Public Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:51:50.549Z"
+		"fetchedAt": "2026-07-16T13:54:13.299Z"
 	},
 	{
 		"slug": "geoffrey-makokha-odanga",
@@ -483,7 +483,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:52.195Z"
+		"fetchedAt": "2026-07-16T13:54:15.063Z"
 	},
 	{
 		"slug": "geoffrey-ekesa-mulanya",
@@ -502,7 +502,7 @@
 			"Departmental",
 			"following Motion: THAT this House adopts the first Report of the Constitutional Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T04:51:54.173Z"
+		"fetchedAt": "2026-07-16T13:54:16.865Z"
 	},
 	{
 		"slug": "edward-oku-kaunya",
@@ -521,7 +521,7 @@
 			"Chairperson of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:55.760Z"
+		"fetchedAt": "2026-07-16T13:54:18.598Z"
 	},
 	{
 		"slug": "mary-emaase-otuch",
@@ -541,7 +541,7 @@
 			"Budget and Appropriations",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:51:57.515Z"
+		"fetchedAt": "2026-07-16T13:54:20.578Z"
 	},
 	{
 		"slug": "adams-kipsanai",
@@ -559,7 +559,7 @@
 			"Trade, Industry and Cooperatives",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:51:59.067Z"
+		"fetchedAt": "2026-07-16T13:54:22.248Z"
 	},
 	{
 		"slug": "gideon-kimaiyo",
@@ -579,7 +579,7 @@
 			"Whole House. On behalf of the Chairperson of the",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:52:01.126Z"
+		"fetchedAt": "2026-07-16T13:54:24.130Z"
 	},
 	{
 		"slug": "david-kangongo-bowen",
@@ -600,7 +600,7 @@
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation",
 			"Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:52:03.448Z"
+		"fetchedAt": "2026-07-16T13:54:26.704Z"
 	},
 	{
 		"slug": "ngelechei-caroline-jeptoo",
@@ -618,7 +618,7 @@
 			"Decentralized Funds Accounts",
 			"Selection"
 		],
-		"fetchedAt": "2026-07-16T04:52:04.867Z"
+		"fetchedAt": "2026-07-16T13:54:28.166Z"
 	},
 	{
 		"slug": "timothy-kipchumba",
@@ -640,7 +640,7 @@
 			"whole House on the said Report. I request Hon. TJ Kajwang’ to second the Motion for agreement with the Report of the",
 			"Select"
 		],
-		"fetchedAt": "2026-07-16T04:52:06.900Z"
+		"fetchedAt": "2026-07-16T13:54:30.689Z"
 	},
 	{
 		"slug": "pamela-njoki-njeru",
@@ -651,13 +651,13 @@
 		"party": "United Democratic Alliance",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Pamela Njoki Njeru, popularly known as \"Double N\", is the County Woman Representative for Embu County in the 13th Parliament of Kenya (2022-2027). She was elected on the United Democratic Alliance (UDA) ticket and is a current sitting member of the National Assembly.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Pamela_Njoki_Njeru.min-320x400.jpg",
 		"committees": [
 			"Diaspora Affairs and Migrant Workers",
 			"Regional Development"
 		],
-		"fetchedAt": "2026-07-16T04:52:08.477Z"
+		"fetchedAt": "2026-07-16T13:54:32.324Z"
 	},
 	{
 		"slug": "nebart-bernard-muriuki",
@@ -674,7 +674,7 @@
 			"Blue Economy, Water and Irrigation",
 			"Public Petitions"
 		],
-		"fetchedAt": "2026-07-16T04:52:09.998Z"
+		"fetchedAt": "2026-07-16T13:54:33.958Z"
 	},
 	{
 		"slug": "karemba-eric-muchangi",
@@ -685,7 +685,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Karemba Eric Muchangi Njiru is the current Member of the National Assembly for Runyenjes Constituency, Embu County, elected on a United Democratic Alliance (UDA) ticket and serving in the 13th Parliament (2022-2027). Now in his second term, having first been elected in 2017, he chairs the National Assembly&#x27;s Public Petitions Committee.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Karemba_Eric_Muchangi.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Runyenjes Constituency, Embu County, elected on a United Democratic Alliance (UDA) ticket and serving in the 13th Parliament (2022-2027). Now in his second term, having first been elected in 2017, he chairs the National Assembly&#x27;s Public Petitions",
@@ -699,7 +699,7 @@
 			"Constitutional Implementation Oversight",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:11.828Z"
+		"fetchedAt": "2026-07-16T13:54:35.906Z"
 	},
 	{
 		"slug": "abdi-omar-shurie",
@@ -710,7 +710,7 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Abdi Omar Shurie is the sitting Member of the National Assembly for Balambala Constituency in Garissa County, affiliated with the Jubilee Party. First elected in 2017 and re-elected in 2022, he serves in the 13th Parliament of Kenya and chairs the National Assembly Public Debt and Privatization Committee.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Abdi_Omar_Shurie.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Balambala Constituency in Garissa County, affiliated with the Jubilee Party. First elected in 2017 and re-elected in 2022, he serves in the 13th Parliament of Kenya and chairs the National Assembly Public Debt and Privatization",
@@ -727,7 +727,7 @@
 			"Majority Party, Hon. Ichung’wah. This Bill has undergone extensive and rigorous deliberations by both",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:52:13.632Z"
+		"fetchedAt": "2026-07-16T13:54:38.184Z"
 	},
 	{
 		"slug": "farah-maalim",
@@ -738,7 +738,7 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Farah Maalim is the Member of the National Assembly for Dadaab Constituency, Garissa County, elected in August 2022 on the Wiper Democratic Movement (WDM) ticket and serving in the 13th Parliament. He previously served as Deputy Speaker from 2008 to 2013.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Farah_Maalim.min-320x400.jpg",
 		"committees": [
 			"Justice and Legal Affairs",
@@ -755,7 +755,7 @@
 			"whole House since I have to put the question for recommittal. (Question put and agreed to)",
 			"Public Debt and Privatisation"
 		],
-		"fetchedAt": "2026-07-16T04:52:22.204Z"
+		"fetchedAt": "2026-07-16T13:54:46.381Z"
 	},
 	{
 		"slug": "salah-yakub",
@@ -773,7 +773,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:23.803Z"
+		"fetchedAt": "2026-07-16T13:54:48.141Z"
 	},
 	{
 		"slug": "siyad-udgoon-amina",
@@ -791,7 +791,7 @@
 			"Energy",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:25.356Z"
+		"fetchedAt": "2026-07-16T13:54:49.797Z"
 	},
 	{
 		"slug": "abdi-ali",
@@ -809,7 +809,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:26.908Z"
+		"fetchedAt": "2026-07-16T13:54:51.522Z"
 	},
 	{
 		"slug": "abdikadir-hussein",
@@ -820,13 +820,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Abdikadir Hussein is the member of the National Assembly of Kenya for Lagdera Constituency, representing the Orange Democratic Movement in the 13th Parliament.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Abdikadir_Hussein.min-320x400.jpg",
 		"committees": [
 			"Blue Economy, Water and Irrigation",
 			"Defence, Intelligence and Foreign Relations"
 		],
-		"fetchedAt": "2026-07-16T04:52:28.465Z"
+		"fetchedAt": "2026-07-16T13:54:53.398Z"
 	},
 	{
 		"slug": "osogo-joyce-atieno-bensuda",
@@ -843,7 +843,7 @@
 			"Blue Economy, Water and Irrigation",
 			"Communication, Information and Innovation"
 		],
-		"fetchedAt": "2026-07-16T04:52:30.325Z"
+		"fetchedAt": "2026-07-16T13:54:55.178Z"
 	},
 	{
 		"slug": "george-peter-opondo-kaluma",
@@ -873,7 +873,7 @@
 			"delegation of the",
 			"House that I put the question? (Question, that the Bill be deferred, put and agreed to) Debate on the Bill is, therefore, deferred to a future date, as will be scheduled by the House Business"
 		],
-		"fetchedAt": "2026-07-16T04:52:37.157Z"
+		"fetchedAt": "2026-07-16T13:55:03.743Z"
 	},
 	{
 		"slug": "eve-akinyi-obara",
@@ -884,7 +884,7 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Eve Akinyi Obara is the sitting Member of the National Assembly for Kabondo Kasipul Constituency in Homa Bay County, a seat she was first elected to in 2017 and re-elected to in 2022 in the 13th Parliament of Kenya. She represents the constituency on the Orange Democratic Movement (ODM) ticket. Before entering Parliament, she served as Managing Director of the Kenya Literature Bureau.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Eve_Akinyi_Obara.min-320x400.jpg",
 		"committees": [
 			"Education",
@@ -892,7 +892,7 @@
 			"Sixth Report of the Special Funds Accounts",
 			"Special Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:52:38.937Z"
+		"fetchedAt": "2026-07-16T13:55:05.551Z"
 	},
 	{
 		"slug": "andrew-adipo-okuome",
@@ -910,7 +910,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:40.687Z"
+		"fetchedAt": "2026-07-16T13:55:07.253Z"
 	},
 	{
 		"slug": "martin-peters-owino",
@@ -929,7 +929,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:42.579Z"
+		"fetchedAt": "2026-07-16T13:55:09.149Z"
 	},
 	{
 		"slug": "lilian-achieng-gogo",
@@ -947,7 +947,7 @@
 			"Procedure and House Rules",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:52:44.879Z"
+		"fetchedAt": "2026-07-16T13:55:11.133Z"
 	},
 	{
 		"slug": "millie-grace-akoth-odhiambo-mabona",
@@ -970,7 +970,7 @@
 			"House of Wednesday, 5th March 2025 and Thursday, 6th March 2025 appointing Members to various",
 			"Standing Order 175, and further to the resolution of the House on 27th October 2022, this House approves the appointment of Members to the respective"
 		],
-		"fetchedAt": "2026-07-16T04:52:51.989Z"
+		"fetchedAt": "2026-07-16T13:55:15.494Z"
 	},
 	{
 		"slug": "caroli-omondi",
@@ -990,7 +990,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:55.426Z"
+		"fetchedAt": "2026-07-16T13:55:17.997Z"
 	},
 	{
 		"slug": "mumina-golo-bonaya",
@@ -1008,7 +1008,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:52:58.226Z"
+		"fetchedAt": "2026-07-16T13:55:19.747Z"
 	},
 	{
 		"slug": "joseph-samal-lomwa",
@@ -1019,13 +1019,13 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joseph Samal Lomwa is the sitting Member of the National Assembly for Isiolo North Constituency, representing the Jubilee Party (JP) in the 13th Parliament of Kenya (2022-2027). He won the seat in the 2022 general election with 10,326 votes, defeating Hassan Odha and Mwenda Thuranira. Lomwa previously served as the Member of Parliament for Isiolo North in the 11th Parliament (2013-2017).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Joseph_Samal_Lomwa.min-320x400.jpg",
 		"committees": [
 			"Labour",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T04:53:11.110Z"
+		"fetchedAt": "2026-07-16T13:55:32.075Z"
 	},
 	{
 		"slug": "leah-sankaire-sopiato",
@@ -1045,7 +1045,7 @@
 			"Departmental",
 			"Committee on the appointment of NG-CDF Board Members. I support the Report because, before a"
 		],
-		"fetchedAt": "2026-07-16T04:53:12.747Z"
+		"fetchedAt": "2026-07-16T13:55:33.735Z"
 	},
 	{
 		"slug": "elijah-memusi-kanchory",
@@ -1063,7 +1063,7 @@
 			"Defence, Intelligence and Foreign Relations",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:14.638Z"
+		"fetchedAt": "2026-07-16T13:55:35.683Z"
 	},
 	{
 		"slug": "hamisi-kakuta",
@@ -1082,7 +1082,7 @@
 			"Constitutional Implementation Oversight",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:16.367Z"
+		"fetchedAt": "2026-07-16T13:55:37.348Z"
 	},
 	{
 		"slug": "onesmus-ngogoyo-nguro",
@@ -1101,7 +1101,7 @@
 			"Departmental",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:53:18.617Z"
+		"fetchedAt": "2026-07-16T13:55:39.589Z"
 	},
 	{
 		"slug": "samuel-sakimba",
@@ -1119,7 +1119,7 @@
 			"Majority Party. I also sit in the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:20.316Z"
+		"fetchedAt": "2026-07-16T13:55:41.481Z"
 	},
 	{
 		"slug": "george-risa-sunkuyia",
@@ -1136,7 +1136,7 @@
 			"Constitutional Implementation Oversight",
 			"Finance and National Planning"
 		],
-		"fetchedAt": "2026-07-16T04:53:21.957Z"
+		"fetchedAt": "2026-07-16T13:55:43.269Z"
 	},
 	{
 		"slug": "nicholas-scott-tindi-mwale",
@@ -1156,7 +1156,7 @@
 			"following Motion: THAT, this House adopts the Report of the Public Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:24.175Z"
+		"fetchedAt": "2026-07-16T13:55:45.229Z"
 	},
 	{
 		"slug": "muhanda-elsie-busihile",
@@ -1167,14 +1167,14 @@
 		"party": "Orange Democratic Movement",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Muhanda Elsie Busihile is the Woman Representative for Kakamega County in the National Assembly, serving in the 13th Parliament as a member of ODM. She has held the seat since 2017 and was re-elected in 2022 in a landslide with 300,426 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Muhanda_Elsie_Busihile.min-320x400.jpg",
 		"committees": [
 			"Members Service and Facilities",
 			"Sports and Culture",
 			"Transport and Infrastructure"
 		],
-		"fetchedAt": "2026-07-16T04:53:26.056Z"
+		"fetchedAt": "2026-07-16T13:55:46.813Z"
 	},
 	{
 		"slug": "christopher-aseka-wangaya",
@@ -1192,7 +1192,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:28.140Z"
+		"fetchedAt": "2026-07-16T13:55:48.521Z"
 	},
 	{
 		"slug": "nabii-nabwera",
@@ -1210,7 +1210,7 @@
 			"Public Accounts",
 			"Selection"
 		],
-		"fetchedAt": "2026-07-16T04:53:30.356Z"
+		"fetchedAt": "2026-07-16T13:55:50.190Z"
 	},
 	{
 		"slug": "titus-khamala-mukhwana",
@@ -1228,7 +1228,7 @@
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:32.026Z"
+		"fetchedAt": "2026-07-16T13:55:51.828Z"
 	},
 	{
 		"slug": "nabulindo-peter-oscar",
@@ -1245,7 +1245,7 @@
 			"Constitutional Implementation Oversight",
 			"Regional Development"
 		],
-		"fetchedAt": "2026-07-16T04:53:33.607Z"
+		"fetchedAt": "2026-07-16T13:55:53.498Z"
 	},
 	{
 		"slug": "peter-salasya-kalerwa",
@@ -1262,7 +1262,7 @@
 			"Members Service and Facilities",
 			"Parliamentary Broadcasting and Library"
 		],
-		"fetchedAt": "2026-07-16T04:53:35.248Z"
+		"fetchedAt": "2026-07-16T13:55:55.197Z"
 	},
 	{
 		"slug": "johnson-manya-naicca",
@@ -1279,7 +1279,7 @@
 			"Committee on Implementation",
 			"Transport and Infrastructure"
 		],
-		"fetchedAt": "2026-07-16T04:53:36.528Z"
+		"fetchedAt": "2026-07-16T13:55:56.494Z"
 	},
 	{
 		"slug": "emmanuel-wangwe",
@@ -1302,7 +1302,7 @@
 			"National Government Constituency Development Fund",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:53:38.827Z"
+		"fetchedAt": "2026-07-16T13:55:58.661Z"
 	},
 	{
 		"slug": "ikana-fredrick-lusuli",
@@ -1320,7 +1320,7 @@
 			"National Cohesion and Equal Opportunity",
 			"Diaspora Affairs and Migrant Workers"
 		],
-		"fetchedAt": "2026-07-16T04:53:40.058Z"
+		"fetchedAt": "2026-07-16T13:56:00.190Z"
 	},
 	{
 		"slug": "benjamin-kipkirui-langat",
@@ -1341,7 +1341,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:41.967Z"
+		"fetchedAt": "2026-07-16T13:56:02.213Z"
 	},
 	{
 		"slug": "nelson-koech",
@@ -1362,7 +1362,7 @@
 			"Members of the National Assembly were on recess. I thank the",
 			"following Motion: THAT, taking into consideration the findings of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:43.867Z"
+		"fetchedAt": "2026-07-16T13:56:04.224Z"
 	},
 	{
 		"slug": "komingoi-kibet-kirui",
@@ -1383,7 +1383,7 @@
 			"Select",
 			"Adjustment of Export Levy for Inflation made under the Miscellaneous Fees and Levies Act Regulations 2022, Legal Notice No. 203/2022 Report of the Select"
 		],
-		"fetchedAt": "2026-07-16T04:53:45.686Z"
+		"fetchedAt": "2026-07-16T13:56:06.078Z"
 	},
 	{
 		"slug": "hilary-kiplangat-kosgei",
@@ -1401,7 +1401,7 @@
 			"Committee on Implementation",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:47.456Z"
+		"fetchedAt": "2026-07-16T13:56:07.882Z"
 	},
 	{
 		"slug": "justice-kipsang-kemei",
@@ -1421,7 +1421,7 @@
 			"Departmental",
 			"Chairperson of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:49.109Z"
+		"fetchedAt": "2026-07-16T13:56:09.609Z"
 	},
 	{
 		"slug": "njoroge-w",
@@ -1438,7 +1438,7 @@
 			"Education",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:53:50.667Z"
+		"fetchedAt": "2026-07-16T13:56:11.248Z"
 	},
 	{
 		"slug": "gathoni-wamuchomba",
@@ -1449,7 +1449,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Gathoni Wamuchomba is the Member of the National Assembly for Githunguri Constituency in Kiambu County, elected on a UDA ticket and serving in the 13th Parliament (2022–2027). She has represented Githunguri since the 2022 general election and previously served as Kiambu Woman Representative from 2017 to 2022.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Gathoni_Wamuchomba_GSdJmUT.min-320x400.jpg",
 		"committees": [
 			"Finance and National Planning",
@@ -1458,7 +1458,7 @@
 			"Constitution Implementation Oversight",
 			"Constitutional Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T04:53:52.560Z"
+		"fetchedAt": "2026-07-16T13:56:13.110Z"
 	},
 	{
 		"slug": "george-koimburi-ndungu",
@@ -1475,7 +1475,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:53:54.138Z"
+		"fetchedAt": "2026-07-16T13:56:14.837Z"
 	},
 	{
 		"slug": "james-githua-kamau-wamacukuru",
@@ -1493,7 +1493,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:53:55.752Z"
+		"fetchedAt": "2026-07-16T13:56:16.464Z"
 	},
 	{
 		"slug": "wanjiku-john-njuguna",
@@ -1512,7 +1512,7 @@
 			"Departmental",
 			"Select"
 		],
-		"fetchedAt": "2026-07-16T04:53:57.506Z"
+		"fetchedAt": "2026-07-16T13:56:18.362Z"
 	},
 	{
 		"slug": "muratha-anne-wanjiku-mugo",
@@ -1530,7 +1530,7 @@
 			"National Cohesion and Equal Opportunity",
 			"Selection"
 		],
-		"fetchedAt": "2026-07-16T04:53:58.827Z"
+		"fetchedAt": "2026-07-16T13:56:19.586Z"
 	},
 	{
 		"slug": "john-machua-waithaka",
@@ -1547,7 +1547,7 @@
 			"Delegated Legislation",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:01.608Z"
+		"fetchedAt": "2026-07-16T13:56:21.356Z"
 	},
 	{
 		"slug": "anthony-kimani-ichungwah",
@@ -1558,7 +1558,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Anthony Kimani Ichung&#x27;wah is the Member of Parliament for Kikuyu Constituency in Kiambu County, serving in the 13th Parliament of Kenya after being elected on a United Democratic Alliance (UDA) ticket. He is the Leader of the Majority Party in the National Assembly.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Anthony_Kimani_Ichungwah.min-320x400.jpg",
 		"committees": [
 			"Selection",
@@ -1575,7 +1575,7 @@
 			"House of Wednesday, 5th March 2025, Thursday, 6th March 2025, Tuesday, 29th July 2025, and Tuesday 24th February 2026, appointing Members to various",
 			"House of Wednesday, 5th March 2025, Thursday, 6th March 2025 and Tuesday, 29th July 2025, appointing Members to various"
 		],
-		"fetchedAt": "2026-07-16T04:54:06.950Z"
+		"fetchedAt": "2026-07-16T13:56:26.388Z"
 	},
 	{
 		"slug": "joseph-mburu-kahangara",
@@ -1594,7 +1594,7 @@
 			"Departmental",
 			"Report by the"
 		],
-		"fetchedAt": "2026-07-16T04:54:08.607Z"
+		"fetchedAt": "2026-07-16T13:56:28.103Z"
 	},
 	{
 		"slug": "john-kiragu-chege",
@@ -1612,7 +1612,7 @@
 			"Transport and Infrastructure",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:10.227Z"
+		"fetchedAt": "2026-07-16T13:56:29.837Z"
 	},
 	{
 		"slug": "simon-nganga-kingara",
@@ -1629,7 +1629,7 @@
 			"Diaspora Affairs and Migrant Workers",
 			"Energy"
 		],
-		"fetchedAt": "2026-07-16T04:54:11.937Z"
+		"fetchedAt": "2026-07-16T13:56:31.568Z"
 	},
 	{
 		"slug": "nganga-alice-wambui",
@@ -1640,7 +1640,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Nganga Alice Wambui is a Kenyan politician and the Member of Parliament for Thika Town Constituency, Kiambu County, elected in 2022 on a UDA ticket. She is a sitting member of the 13th Parliament (National Assembly) and serves as Chairperson of the Departmental Committee on Social Protection.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Nganga_Alice_Wambui.min-320x400.jpg",
 		"committees": [
 			"13th Parliament (National Assembly) and serves as Chairperson of the Departmental",
@@ -1648,7 +1648,7 @@
 			"Liaison",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:13.778Z"
+		"fetchedAt": "2026-07-16T13:56:33.438Z"
 	},
 	{
 		"slug": "charo-kenneth-kazungu",
@@ -1666,7 +1666,7 @@
 			"Regional Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:15.528Z"
+		"fetchedAt": "2026-07-16T13:56:35.080Z"
 	},
 	{
 		"slug": "paul-kahindi-katana",
@@ -1684,7 +1684,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:17.110Z"
+		"fetchedAt": "2026-07-16T13:56:36.718Z"
 	},
 	{
 		"slug": "gertrude-mbeyu-mwanyanje",
@@ -1695,13 +1695,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Gertrude Mbeyu Mwanyanje is the Kilifi County Woman Representative in the National Assembly of Kenya, serving in the 13th Parliament. She was elected on the Orange Democratic Movement (ODM) ticket, having won the 2022 Kilifi Woman Representative election with 111,039 votes (39.33%).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Gertrude_Mbeyu_Mwanyanje.min-320x400.jpg",
 		"committees": [
 			"Decentralized Funds Accounts",
 			"Environment, Forestry and Mining"
 		],
-		"fetchedAt": "2026-07-16T04:54:18.747Z"
+		"fetchedAt": "2026-07-16T13:56:38.391Z"
 	},
 	{
 		"slug": "baya-owen-yaa",
@@ -1722,7 +1722,7 @@
 			"Departmental",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:54:22.358Z"
+		"fetchedAt": "2026-07-16T13:56:42.134Z"
 	},
 	{
 		"slug": "richard-ken-chonga-kiti",
@@ -1743,7 +1743,7 @@
 			"Departmental",
 			"following Motion: THAT, taking into consideration the findings of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:24.097Z"
+		"fetchedAt": "2026-07-16T13:56:44.206Z"
 	},
 	{
 		"slug": "harrison-garama-kombe",
@@ -1759,7 +1759,7 @@
 		"committees": [
 			"Budget & Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:54:26.279Z"
+		"fetchedAt": "2026-07-16T13:56:46.046Z"
 	},
 	{
 		"slug": "anthony-kenga",
@@ -1777,7 +1777,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:27.988Z"
+		"fetchedAt": "2026-07-16T13:56:47.667Z"
 	},
 	{
 		"slug": "githinji-robert-gichimu",
@@ -1788,7 +1788,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Githinji Robert Gichimu is the sitting Member of the National Assembly for Gichugu Constituency in Kirinyaga County, representing the United Democratic Alliance (UDA) in the 13th Parliament (2022-2027). He was first elected to the National Assembly in 2017 under the Jubilee party and re-elected in 2022 on a UDA ticket.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Githinji_Robert_Gichimu.min-320x400.jpg",
 		"committees": [
 			"Delegated Legislation",
@@ -1798,7 +1798,7 @@
 			"following Motion: THAT, this House adopts the Report of the",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:32.329Z"
+		"fetchedAt": "2026-07-16T13:56:49.530Z"
 	},
 	{
 		"slug": "jane-njeri-maina",
@@ -1809,13 +1809,13 @@
 		"party": "United Democratic Alliance",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Jane Njeri Maina is a Member of the National Assembly serving as the County Woman Representative for Kirinyaga County under the United Democratic Alliance (UDA). She is a current sitting member of the 13th Parliament.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Jane_Njeri_Maina.min-320x400.jpg",
 		"committees": [
 			"Parliamentary Powers and Privileges",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:34.717Z"
+		"fetchedAt": "2026-07-16T13:56:51.329Z"
 	},
 	{
 		"slug": "joseph-gachoki-gitari",
@@ -1834,7 +1834,7 @@
 			"Departmental",
 			"Diaspora and Migrant Workers"
 		],
-		"fetchedAt": "2026-07-16T04:54:36.847Z"
+		"fetchedAt": "2026-07-16T13:56:53.127Z"
 	},
 	{
 		"slug": "mary-maingi",
@@ -1845,14 +1845,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Mary Maingi is the Member of the National Assembly for Mwea Constituency in Kirinyaga County, representing the United Democratic Alliance (UDA), and is a sitting member of Kenya&#x27;s 13th Parliament (2022–2027). She was elected in the August 2022 general election, defeating six opponents to become the first female MP for Mwea, and is the only woman among Kirinyaga&#x27;s four elected constituency MPs.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mary_Maingi.min-320x400.jpg",
 		"committees": [
 			"Health",
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:38.718Z"
+		"fetchedAt": "2026-07-16T13:56:54.880Z"
 	},
 	{
 		"slug": "george-macharia-kariuki-gk",
@@ -1871,7 +1871,7 @@
 			"Departmental",
 			"roads. Since we have a planned"
 		],
-		"fetchedAt": "2026-07-16T04:54:41.187Z"
+		"fetchedAt": "2026-07-16T13:56:56.920Z"
 	},
 	{
 		"slug": "innocent-momanyi-obiri",
@@ -1891,7 +1891,7 @@
 			"Decentralised Funds Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:43.136Z"
+		"fetchedAt": "2026-07-16T13:56:58.471Z"
 	},
 	{
 		"slug": "alfah-miruka-ondieki",
@@ -1909,7 +1909,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:45.038Z"
+		"fetchedAt": "2026-07-16T13:57:00.414Z"
 	},
 	{
 		"slug": "charles-mamwacha-onchoke",
@@ -1929,7 +1929,7 @@
 			"Departmental",
 			"Report of the"
 		],
-		"fetchedAt": "2026-07-16T04:54:47.048Z"
+		"fetchedAt": "2026-07-16T13:57:02.319Z"
 	},
 	{
 		"slug": "donya-dorice-aburi",
@@ -1947,7 +1947,7 @@
 			"Labour",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:49.217Z"
+		"fetchedAt": "2026-07-16T13:57:04.230Z"
 	},
 	{
 		"slug": "anthony-kibagendi",
@@ -1958,12 +1958,12 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Antoney Kibagendi is a Kenyan politician serving as the Member of the National Assembly for Kitutu Chache South constituency, Kisii County. He was elected on an Orange Democratic Movement (ODM) ticket and sits in the 13th Parliament (2022-2027).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Anthony_Kibagendi.min-320x400.jpg",
 		"committees": [
 			"Health"
 		],
-		"fetchedAt": "2026-07-16T04:54:50.837Z"
+		"fetchedAt": "2026-07-16T13:57:06.028Z"
 	},
 	{
 		"slug": "zaheer-jhanda",
@@ -1982,7 +1982,7 @@
 			"Chairman of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:54:52.547Z"
+		"fetchedAt": "2026-07-16T13:57:08.303Z"
 	},
 	{
 		"slug": "silvanus-osoro-onyiego",
@@ -2005,7 +2005,7 @@
 			"Departmental",
 			"Standing Order 175, and further to the resolution of the House on 27th October 2022, this House approves the appointment of Members to the respective"
 		],
-		"fetchedAt": "2026-07-16T04:54:54.910Z"
+		"fetchedAt": "2026-07-16T13:57:10.621Z"
 	},
 	{
 		"slug": "joshua-oron-odongo",
@@ -2022,7 +2022,7 @@
 			"Health",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T04:54:56.635Z"
+		"fetchedAt": "2026-07-16T13:57:12.375Z"
 	},
 	{
 		"slug": "buyu-rozaah-akinyi",
@@ -2033,13 +2033,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Rozaah Akinyi Buyu is the Member of the National Assembly for Kisumu West Constituency, serving on the Orange Democratic Movement (ODM) ticket in the 13th Parliament of Kenya. She won the Kisumu West seat in the 2022 general election, securing 39,658 votes and defeating incumbent Olago Aluoch.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Buyu_Rozaah_Akinyi.min-320x400.jpg",
 		"committees": [
 			"Administration and Internal Security",
 			"Blue Economy, Water and Irrigation"
 		],
-		"fetchedAt": "2026-07-16T04:54:58.298Z"
+		"fetchedAt": "2026-07-16T13:57:14.195Z"
 	},
 	{
 		"slug": "james-onyango-oyoo",
@@ -2059,7 +2059,7 @@
 			"Departmental",
 			"Committee. Hon. Speaker Yes, Hon. K’Oyoo. Tell your Chair and"
 		],
-		"fetchedAt": "2026-07-16T04:55:00.095Z"
+		"fetchedAt": "2026-07-16T13:57:15.837Z"
 	},
 	{
 		"slug": "joshua-aduma-owuor",
@@ -2070,14 +2070,14 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joshua Aduma Owuor is the Member of the National Assembly for Nyakach Constituency in Kisumu County, representing the Orange Democratic Movement (ODM) in the 13th Parliament. A lawyer by profession, he is serving his third term, having first been elected in 2013 and re-elected in 2017 and 2022. He sits on the National Government Constituencies Development Fund (NG-CDF) committee.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Joshua_Aduma_Owuor.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Nyakach Constituency in Kisumu County, representing the Orange Democratic Movement (ODM) in the 13th Parliament. A lawyer by profession, he is serving his third term, having first been elected in 2013 and re-elected in 2017 and 2022. He sits on the National Government Constituencies Development Fund (NG-CDF)",
 			"Administration and Internal Security",
 			"National Government Constituencies Development"
 		],
-		"fetchedAt": "2026-07-16T04:55:01.667Z"
+		"fetchedAt": "2026-07-16T13:57:17.519Z"
 	},
 	{
 		"slug": "jared-odoyo-okelo",
@@ -2095,7 +2095,7 @@
 			"Delegated Legislation",
 			"Majority Party, and Hon. Atandi, the Member for Alego Usonga and the Chairperson of the Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:55:03.697Z"
+		"fetchedAt": "2026-07-16T13:57:19.512Z"
 	},
 	{
 		"slug": "irene-muthoni-kasalu",
@@ -2106,7 +2106,7 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Irene Muthoni Kasalu is the sitting Woman Representative for Kitui County in Kenya&#x27;s National Assembly, serving in the 13th Parliament on a Wiper Democratic Movement – Kenya (WDM-K) ticket. First elected in 2017, she was re-elected in 2022 with 201,899 votes, defeating Peninah Malonza of UDA.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Irene_Muthoni_Kasalu.min-320x400.jpg",
 		"committees": [
 			"Defence, Intelligence and Foreign Relations",
@@ -2114,7 +2114,7 @@
 			"Departmental",
 			"Public Debt and Privatization"
 		],
-		"fetchedAt": "2026-07-16T04:55:05.306Z"
+		"fetchedAt": "2026-07-16T13:57:21.098Z"
 	},
 	{
 		"slug": "nimrod-mbithuka-mbai",
@@ -2125,14 +2125,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Nimrod Mbithuka Mbai is the sitting Member of the National Assembly for Kitui East Constituency, Kitui County, elected on a United Democratic Alliance (UDA) ticket in the 13th Parliament (2022–2027). A Kenyan politician, he remains an incumbent expected to defend the seat in 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Nimrod_Mbithuka_Mbai.min-320x400.jpg",
 		"committees": [
 			"Constitutional Implementation Oversight",
 			"Public Petitions",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:07.017Z"
+		"fetchedAt": "2026-07-16T13:57:23.046Z"
 	},
 	{
 		"slug": "david-mwalika-mboni",
@@ -2152,7 +2152,7 @@
 			"Joint",
 			"following Motion: THAT, this House adopts the Report of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:08.749Z"
+		"fetchedAt": "2026-07-16T13:57:24.818Z"
 	},
 	{
 		"slug": "rachael-kaki-nyamai",
@@ -2163,14 +2163,14 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Rachael Kaki Nyamai is the Member of the National Assembly for Kitui South Constituency, Kitui County, elected on the Jubilee Party (JP) ticket. She is serving a term running from 16 August 2022 to 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Rachael_Kaki_Nyamai.min-320x400.jpg",
 		"committees": [
 			"Lands",
 			"Procedure and House Rules",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:10.719Z"
+		"fetchedAt": "2026-07-16T13:57:26.742Z"
 	},
 	{
 		"slug": "gideon-mutemi-mulyungi",
@@ -2192,7 +2192,7 @@
 			"Departmental",
 			"following Motion: THAT, this House adopts the Seventh Report of the Decentralised Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:55:12.688Z"
+		"fetchedAt": "2026-07-16T13:57:28.731Z"
 	},
 	{
 		"slug": "paul-musyimi-nzengu",
@@ -2210,7 +2210,7 @@
 			"National Cohesion and Equal Opportunity",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:14.516Z"
+		"fetchedAt": "2026-07-16T13:57:30.908Z"
 	},
 	{
 		"slug": "charles-ngusya-nguna",
@@ -2230,7 +2230,7 @@
 			"Audit",
 			"Constitution Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T04:55:16.587Z"
+		"fetchedAt": "2026-07-16T13:57:32.794Z"
 	},
 	{
 		"slug": "samuel-gonzi-rai",
@@ -2241,7 +2241,7 @@
 		"party": "Pamoja African Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Samuel Gonzi Rai is the current Member of the National Assembly for Kinango Constituency, Kwale County, serving in the 13th Parliament (2022-2027) on the Pamoja African Alliance (PAA) ticket, to which he was re-elected in the August 2022 general election after losing the seat in 2017. First elected to Parliament in 1992 on a KANU ticket following the death of Ali Bidu, he was subsequently re-elected in 2002 and 2007 on the Ford-People ticket.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Samuel_Gonzi_Rai.min-320x400.jpg",
 		"committees": [
 			"Energy",
@@ -2249,7 +2249,7 @@
 			"Departmental",
 			"Diaspora Affairs and Migrant Workers"
 		],
-		"fetchedAt": "2026-07-16T04:55:18.317Z"
+		"fetchedAt": "2026-07-16T13:57:34.582Z"
 	},
 	{
 		"slug": "masito-fatuma-hamisi",
@@ -2267,7 +2267,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:19.947Z"
+		"fetchedAt": "2026-07-16T13:57:36.305Z"
 	},
 	{
 		"slug": "chiforomodo-mangale-munga",
@@ -2285,7 +2285,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:21.547Z"
+		"fetchedAt": "2026-07-16T13:57:37.926Z"
 	},
 	{
 		"slug": "kassim-sawa-tandaza",
@@ -2304,7 +2304,7 @@
 			"Departmental",
 			"Select"
 		],
-		"fetchedAt": "2026-07-16T04:55:23.568Z"
+		"fetchedAt": "2026-07-16T13:57:40.072Z"
 	},
 	{
 		"slug": "abdallah-kadi",
@@ -2322,7 +2322,7 @@
 			"Members Service and Facilities",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:25.028Z"
+		"fetchedAt": "2026-07-16T13:57:41.679Z"
 	},
 	{
 		"slug": "kagiri-jane-wangechi",
@@ -2339,7 +2339,7 @@
 			"Budget and Appropriations",
 			"Housing, Urban Planning and Public Works"
 		],
-		"fetchedAt": "2026-07-16T04:55:26.787Z"
+		"fetchedAt": "2026-07-16T13:57:43.433Z"
 	},
 	{
 		"slug": "sara-paulata-korere",
@@ -2350,14 +2350,14 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Sarah Paulata Korere is the current Member of the National Assembly for Laikipia North constituency in Laikipia County, elected on a Jubilee Party (JP) ticket. She won the seat in the 2022 general election with 14,148 votes and serves in the 13th Parliament of Kenya, with a term running from 2022 to 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Sara_Paulata_Korere.min-320x400.jpg",
 		"committees": [
 			"Administration and Internal Security",
 			"House Business",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:55:28.466Z"
+		"fetchedAt": "2026-07-16T13:57:45.146Z"
 	},
 	{
 		"slug": "stephen-wachira-karani",
@@ -2379,7 +2379,7 @@
 			"following Motion: THAT, this House adopts the Report of the Select",
 			"following Motion: 2nd October 2025 NATIONAL ASSEMBLY DEBATES 9 Hon. Wachira Karani (Laikipia West, UDA)THAT, this House adopts the Report of the Select"
 		],
-		"fetchedAt": "2026-07-16T04:55:30.587Z"
+		"fetchedAt": "2026-07-16T13:57:46.946Z"
 	},
 	{
 		"slug": "marubu-muthoni-monicah",
@@ -2390,14 +2390,14 @@
 		"party": "Independent",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Marubu Muthoni Monicah is the County Woman Representative for Lamu County and a sitting Member of the National Assembly in Kenya&#x27;s 13th Parliament (2022–2027). She was elected on 9 August 2022.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Marubu_Muthoni_Monicah.min-320x400.jpg",
 		"committees": [
 			"Agriculture and Livestock",
 			"National Cohesion and Equal Opportunity",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:32.047Z"
+		"fetchedAt": "2026-07-16T13:57:48.472Z"
 	},
 	{
 		"slug": "obo-ruweida-mohamed",
@@ -2415,7 +2415,7 @@
 			"Tourism and Wildlife",
 			"Chair of the"
 		],
-		"fetchedAt": "2026-07-16T04:55:33.797Z"
+		"fetchedAt": "2026-07-16T13:57:50.241Z"
 	},
 	{
 		"slug": "stanley-muiruri-muthama",
@@ -2434,7 +2434,7 @@
 			"Majority Party. We invited the Cabinet Secretary for Water, Sanitation and Irrigation as the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:35.227Z"
+		"fetchedAt": "2026-07-16T13:57:51.730Z"
 	},
 	{
 		"slug": "fabian-kyule-muli",
@@ -2445,14 +2445,14 @@
 		"party": "Grand Dream Development Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Fabian Kyule Muli is the Member of the National Assembly for Kangundo Constituency in Machakos County, serving in the 13th Parliament of Kenya (2022-2027). He was elected on the Grand Dream Development Party (GDDP) ticket and is the party leader of GDDP, which holds a single seat in the National Assembly.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Fabian_Kyule_Muli.min-320x400.jpg",
 		"committees": [
 			"Labour",
 			"Parliamentary Powers and Privileges",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:36.967Z"
+		"fetchedAt": "2026-07-16T13:57:53.343Z"
 	},
 	{
 		"slug": "joyce-kamene",
@@ -2463,7 +2463,7 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joyce Kamene Kasimbi is the Woman Representative for Machakos County in the National Assembly, serving in the 13th Parliament (2022-2027) as a member of the Wiper Democratic Movement (WDM-K). She was elected in 2022 with 253,113 votes (about 66%), retaining the seat she had previously held.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Joyce_Kamene.min-320x400.jpg",
 		"committees": [
 			"Delegated Legislation",
@@ -2471,7 +2471,7 @@
 			"Departmental",
 			"Constitution; Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:55:38.996Z"
+		"fetchedAt": "2026-07-16T13:57:55.200Z"
 	},
 	{
 		"slug": "caleb-mule-mutiso",
@@ -2488,7 +2488,7 @@
 			"Housing, Urban Planning and Public Works",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:55:41.109Z"
+		"fetchedAt": "2026-07-16T13:57:56.949Z"
 	},
 	{
 		"slug": "joshua-mbithi-mwalyo",
@@ -2509,7 +2509,7 @@
 			"Select",
 			"Committee on National Government Constituencies Development Fund on the Nominees to the National Government Constituencies Development Fund"
 		],
-		"fetchedAt": "2026-07-16T04:55:42.757Z"
+		"fetchedAt": "2026-07-16T13:57:58.647Z"
 	},
 	{
 		"slug": "stephen-mutinda-mule",
@@ -2526,7 +2526,7 @@
 			"Appointments",
 			"Sports and Culture"
 		],
-		"fetchedAt": "2026-07-16T04:55:44.417Z"
+		"fetchedAt": "2026-07-16T13:58:00.599Z"
 	},
 	{
 		"slug": "patrick-makau-kingola",
@@ -2544,7 +2544,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:46.097Z"
+		"fetchedAt": "2026-07-16T13:58:02.432Z"
 	},
 	{
 		"slug": "vincent-musyoka-musau",
@@ -2563,7 +2563,7 @@
 			"Departmental",
 			"following Motion: THAT, taking into consideration the findings of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:48.207Z"
+		"fetchedAt": "2026-07-16T13:58:04.571Z"
 	},
 	{
 		"slug": "basil-robert-ngui",
@@ -2582,7 +2582,7 @@
 			"Sports and Culture",
 			"region? (To be replied before the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:49.878Z"
+		"fetchedAt": "2026-07-16T13:58:06.479Z"
 	},
 	{
 		"slug": "joshua-kivinda-kimilu",
@@ -2601,7 +2601,7 @@
 			"Selection",
 			"whole House completed with amendments\">"
 		],
-		"fetchedAt": "2026-07-16T04:55:51.657Z"
+		"fetchedAt": "2026-07-16T13:58:08.368Z"
 	},
 	{
 		"slug": "eckomas-mwengi-mutuse",
@@ -2622,7 +2622,7 @@
 			"Departmental",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:53.658Z"
+		"fetchedAt": "2026-07-16T13:58:10.344Z"
 	},
 	{
 		"slug": "thaddeus-kithua-nzambia",
@@ -2640,7 +2640,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:55.346Z"
+		"fetchedAt": "2026-07-16T13:58:12.113Z"
 	},
 	{
 		"slug": "suzanne-ndunge-kiamba",
@@ -2651,14 +2651,14 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Suzanne Ndunge Kiamba is the Member of the National Assembly for Makueni Constituency in Makueni County, elected in August 2022 on the Wiper Democratic Movement-Kenya (WDM-K) ticket. She is serving her first term in the 13th Parliament and is the first woman elected MP for Makueni Constituency, having garnered 26,909 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Suzanne_Ndunge_Kiamba.min-320x400.jpg",
 		"committees": [
 			"Parliamentary Broadcasting and Library",
 			"Public Petitions",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:55:57.055Z"
+		"fetchedAt": "2026-07-16T13:58:13.911Z"
 	},
 	{
 		"slug": "mumo-rose-museo",
@@ -2669,7 +2669,7 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Mumo Rose Museo is the Woman Representative for Makueni County in the National Assembly, serving in the 13th Parliament of Kenya as a member of the Wiper Democratic Movement. First elected to the seat in 2013, she won re-election in 2022 with 116,599 votes (49.08%), for a term running from 16 August 2022 to 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mumo_Rose_Museo.min-320x400.jpg",
 		"committees": [
 			"Committee on Implementation",
@@ -2678,7 +2678,7 @@
 			"Select",
 			"following Motion: THAT, this House adopts the Report of the Select"
 		],
-		"fetchedAt": "2026-07-16T04:55:58.667Z"
+		"fetchedAt": "2026-07-16T13:58:15.654Z"
 	},
 	{
 		"slug": "erastus-kivasu-nzioka",
@@ -2698,7 +2698,7 @@
 			"seven men in the Special Funds Accounts",
 			"Chairperson of the Special Fund Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:56:00.355Z"
+		"fetchedAt": "2026-07-16T13:58:17.291Z"
 	},
 	{
 		"slug": "abdirahman-mohamed-abdille",
@@ -2716,7 +2716,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:13.167Z"
+		"fetchedAt": "2026-07-16T13:58:29.822Z"
 	},
 	{
 		"slug": "hussein-weytan",
@@ -2735,7 +2735,7 @@
 			"Departmental",
 			"29th July 2025 NATIONAL ASSEMBLY DEBATES 5 Hon. Hussein Weytan (Mandera East, ODM)A certified version of this Report Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:15.099Z"
+		"fetchedAt": "2026-07-16T13:58:31.555Z"
 	},
 	{
 		"slug": "sheikh-abdullahi-bashir",
@@ -2755,7 +2755,7 @@
 			"following Motion: 28th April 2026 NATIONAL ASSEMBLY DEBATES 2 Hon. Major (Rtd) Abdullahi Sheikh (Mandera North, UDM)THAT, taking into consideration the findings of the Departmental",
 			"following Motion: THAT, this House adopts the Report of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:17.776Z"
+		"fetchedAt": "2026-07-16T13:58:33.402Z"
 	},
 	{
 		"slug": "haro-abdul-ebrahim",
@@ -2773,7 +2773,7 @@
 			"Education",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:19.807Z"
+		"fetchedAt": "2026-07-16T13:58:35.156Z"
 	},
 	{
 		"slug": "adan-haji-yussuf",
@@ -2793,7 +2793,7 @@
 			"Select",
 			"following Motion: THAT, this House adopts the Fourth Report of the Select"
 		],
-		"fetchedAt": "2026-07-16T04:56:21.777Z"
+		"fetchedAt": "2026-07-16T13:58:37.010Z"
 	},
 	{
 		"slug": "lekuton-joseph",
@@ -2804,7 +2804,7 @@
 		"party": "United Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Joseph Lemasolai Lekuton is the current sitting Member of the National Assembly for Laisamis Constituency, Marsabit County, in the 13th Parliament (2022-2027). Elected in the August 2022 general election on a United Democratic Movement (UDM) ticket within the Kenya Kwanza coalition — returning to the seat with 6,157 votes after about a decade out of Parliament — he serves as Vice-Chair of the Committee on Powers and Privileges.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Lekuton_Joseph.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Laisamis Constituency, Marsabit County, in the 13th Parliament (2022-2027). Elected in the August 2022 general election on a United Democratic Movement (UDM) ticket within the Kenya Kwanza coalition — returning to the seat with 6,157 votes after about a decade out of Parliament — he serves as Vice-Chair of the",
@@ -2813,7 +2813,7 @@
 			"Liaison",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:23.456Z"
+		"fetchedAt": "2026-07-16T13:58:38.733Z"
 	},
 	{
 		"slug": "naomi-jilo-waqo",
@@ -2832,7 +2832,7 @@
 			"Sports and Culture",
 			"Select"
 		],
-		"fetchedAt": "2026-07-16T04:56:25.789Z"
+		"fetchedAt": "2026-07-16T13:58:40.734Z"
 	},
 	{
 		"slug": "guyo-waqo-jaldesa",
@@ -2849,7 +2849,7 @@
 			"Health",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:27.467Z"
+		"fetchedAt": "2026-07-16T13:58:42.494Z"
 	},
 	{
 		"slug": "adhe-wario-guyo",
@@ -2870,7 +2870,7 @@
 			"Trade, Industry and Cooperatives",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:29.326Z"
+		"fetchedAt": "2026-07-16T13:58:44.193Z"
 	},
 	{
 		"slug": "col-rtd-ali-rasso-dido",
@@ -2890,7 +2890,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:31.817Z"
+		"fetchedAt": "2026-07-16T13:58:46.611Z"
 	},
 	{
 		"slug": "moses-nguchine-kirima",
@@ -2911,7 +2911,7 @@
 			"Decentralised Funds Accounts",
 			"Decentralized Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:56:33.596Z"
+		"fetchedAt": "2026-07-16T13:58:48.399Z"
 	},
 	{
 		"slug": "kiili-daniel-karitho",
@@ -2929,7 +2929,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:35.297Z"
+		"fetchedAt": "2026-07-16T13:58:50.111Z"
 	},
 	{
 		"slug": "taitamu-julius-manaiba",
@@ -2947,7 +2947,7 @@
 			"Education",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:36.847Z"
+		"fetchedAt": "2026-07-16T13:58:51.811Z"
 	},
 	{
 		"slug": "mwirigi-john-paul",
@@ -2964,7 +2964,7 @@
 			"Budget and Appropriations",
 			"Delegated Legislation"
 		],
-		"fetchedAt": "2026-07-16T04:56:38.488Z"
+		"fetchedAt": "2026-07-16T13:58:53.429Z"
 	},
 	{
 		"slug": "kailemia-elizabeth-karambu",
@@ -2981,7 +2981,7 @@
 			"Regional Integration",
 			"Tourism and Wildlife"
 		],
-		"fetchedAt": "2026-07-16T04:56:40.066Z"
+		"fetchedAt": "2026-07-16T13:58:55.067Z"
 	},
 	{
 		"slug": "abdul-rahim-dawood",
@@ -2992,7 +2992,7 @@
 		"party": "Independent",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Abdul Rahim Dawood is a member of the National Assembly of Kenya representing North Imenti Constituency, Meru County, serving as an Independent in the 13th Parliament (2022-2027). He is a Kenyan businessman.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Abdul_Rahim_Dawood.min-320x400.jpg",
 		"committees": [
 			"Special Funds Account",
@@ -3001,7 +3001,7 @@
 			"Departmental",
 			"Special Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T04:56:42.347Z"
+		"fetchedAt": "2026-07-16T13:58:57.099Z"
 	},
 	{
 		"slug": "shadrack-muli",
@@ -3019,7 +3019,7 @@
 			"Public Investments",
 			"Joint"
 		],
-		"fetchedAt": "2026-07-16T04:56:43.899Z"
+		"fetchedAt": "2026-07-16T13:58:58.756Z"
 	},
 	{
 		"slug": "lawrence-mpuru-aburi",
@@ -3030,14 +3030,14 @@
 		"party": "National Ordinary People Empowerment Union",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Lawrence Mpuru Aburi is the Member of the National Assembly for Tigania East Constituency, Meru County, in Kenya&#x27;s 13th Parliament, having been elected in the 2022 general election. He represents the National Ordinary People Empowerment Union (NOPEU), of which he is the party leader and the only member elected to the National Assembly.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Lawrence_Mpuru_Aburi.min-320x400.jpg",
 		"committees": [
 			"Agriculture and Livestock",
 			"Constitutional Implementation Oversight",
 			"Procedure and House Rules"
 		],
-		"fetchedAt": "2026-07-16T04:56:45.499Z"
+		"fetchedAt": "2026-07-16T13:59:00.720Z"
 	},
 	{
 		"slug": "john-kanyuithia-mutunga",
@@ -3061,7 +3061,7 @@
 			"Departmental",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:56:48.296Z"
+		"fetchedAt": "2026-07-16T13:59:03.455Z"
 	},
 	{
 		"slug": "john-walter-owino",
@@ -3079,7 +3079,7 @@
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:49.868Z"
+		"fetchedAt": "2026-07-16T13:59:05.181Z"
 	},
 	{
 		"slug": "marwa-kemero-maisori-kitayama",
@@ -3097,7 +3097,7 @@
 			"Public Petitions",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:51.549Z"
+		"fetchedAt": "2026-07-16T13:59:06.873Z"
 	},
 	{
 		"slug": "mathias-nyamabe-robi",
@@ -3114,7 +3114,7 @@
 			"Budget and Appropriations",
 			"Lands"
 		],
-		"fetchedAt": "2026-07-16T04:56:52.766Z"
+		"fetchedAt": "2026-07-16T13:59:08.127Z"
 	},
 	{
 		"slug": "fatuma-zainab-mohammed",
@@ -3125,7 +3125,7 @@
 		"party": "Independent",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Fatuma Zainab Mohammed is the Independent County Woman Representative for Migori County in the National Assembly, serving in the 13th Parliament of Kenya for a term running from 16 August 2022 to 29 July 2027. Sitting as an Independent, she won the seat in the 2022 general election, defeating Dennitah Ghati. She also chairs the Special Funds Account Committee.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Fatuma_Zainab_Mohammed.min-320x400.jpg",
 		"committees": [
 			"Special Funds Account",
@@ -3134,7 +3134,7 @@
 			"following Motion: THAT, this House adopts the 19th Report of the Special Funds Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:54.581Z"
+		"fetchedAt": "2026-07-16T13:59:09.996Z"
 	},
 	{
 		"slug": "tom-mboya-odege",
@@ -3152,7 +3152,7 @@
 			"Special Funds Account",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:56.200Z"
+		"fetchedAt": "2026-07-16T13:59:11.665Z"
 	},
 	{
 		"slug": "peter-francis-masara",
@@ -3171,7 +3171,7 @@
 			"Departmental",
 			"First Supplementary Estimate for Financial Year 2024/2025, and the compendium of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:56:57.959Z"
+		"fetchedAt": "2026-07-16T13:59:13.507Z"
 	},
 	{
 		"slug": "nuh-junet",
@@ -3196,7 +3196,7 @@
 			"House of Wednesday, 5th March 2025, Thursday, 6th March 2025 and Tuesday, 29th July 2025, appointing Members to various",
 			"following Members to the House Business"
 		],
-		"fetchedAt": "2026-07-16T04:57:00.896Z"
+		"fetchedAt": "2026-07-16T13:59:16.057Z"
 	},
 	{
 		"slug": "mark-ogolla-nyamita",
@@ -3214,7 +3214,7 @@
 			"National Government Constituencies Development",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:57:02.668Z"
+		"fetchedAt": "2026-07-16T13:59:17.748Z"
 	},
 	{
 		"slug": "omar-mwinyi-shimbwa",
@@ -3225,14 +3225,14 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Omar Mwinyi Shimbwa is the Member of the National Assembly for Changamwe Constituency, Mombasa County, sitting in the 13th Parliament of Kenya for the Orange Democratic Movement (ODM). He was first elected to the seat in 2013 and re-elected in 2017.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Omar_Mwinyi_Shimbwa.min-320x400.jpg",
 		"committees": [
 			"Lands",
 			"Procedure and House Rules",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:04.399Z"
+		"fetchedAt": "2026-07-16T13:59:19.460Z"
 	},
 	{
 		"slug": "rashid-juma-bedzimba",
@@ -3251,7 +3251,7 @@
 			"House: Report of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:06.167Z"
+		"fetchedAt": "2026-07-16T13:59:21.237Z"
 	},
 	{
 		"slug": "mishi-juma-khamisi",
@@ -3262,13 +3262,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Mboko Mishi Juma Khamisi is the Member of the National Assembly for Likoni Constituency, Mombasa County, elected on the ODM ticket and serving in the 13th Parliament. First elected to the Likoni seat in 2017, defeating incumbent Masoud Mwahima, Mboko was re-elected in 2022.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mishi_Juma_Khamisi.min-320x400.jpg",
 		"committees": [
 			"Diaspora Affairs and Migrant Workers",
 			"Parliamentary Powers and Privileges"
 		],
-		"fetchedAt": "2026-07-16T04:57:08.121Z"
+		"fetchedAt": "2026-07-16T13:59:23.108Z"
 	},
 	{
 		"slug": "mohamed-zamzam-chimba",
@@ -3287,7 +3287,7 @@
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:09.879Z"
+		"fetchedAt": "2026-07-16T13:59:24.936Z"
 	},
 	{
 		"slug": "mohamed-soud",
@@ -3305,7 +3305,7 @@
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:11.360Z"
+		"fetchedAt": "2026-07-16T13:59:26.338Z"
 	},
 	{
 		"slug": "mohamed-ali-mohamed",
@@ -3322,7 +3322,7 @@
 			"Committee on Implementation",
 			"Environment, Forestry and Mining"
 		],
-		"fetchedAt": "2026-07-16T04:57:13.010Z"
+		"fetchedAt": "2026-07-16T13:59:27.945Z"
 	},
 	{
 		"slug": "edwin-chege-njuguna",
@@ -3340,7 +3340,7 @@
 			"Public Debt and Privatisation",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:14.528Z"
+		"fetchedAt": "2026-07-16T13:59:29.692Z"
 	},
 	{
 		"slug": "mary-wamaua-waithira-njoroge",
@@ -3351,14 +3351,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Mary Wamaua Waithira Njoroge is the current Member of the National Assembly for Maragua Constituency, Murang&#x27;a County. She was elected on the UDA ticket and is serving her second term in the 13th Parliament.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mary_Wamaua_Waithira_Njoroge.min-320x400.jpg",
 		"committees": [
 			"Constitutional Implementation Oversight",
 			"Labour",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:16.186Z"
+		"fetchedAt": "2026-07-16T13:59:31.510Z"
 	},
 	{
 		"slug": "samson-ndindi-nyoro",
@@ -3369,7 +3369,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Samson Ndindi Nyoro is the sitting Member of the National Assembly for Kiharu Constituency, Murang&#x27;a County, in the 13th Parliament, and is the immediate former Chair of the Budget and Appropriations Committee. He has announced his departure from the UDA party, leaving his current party affiliation unsettled.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Samson_Ndindi_Nyoro.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Kiharu Constituency, Murang&#x27;a County, in the 13th Parliament, and is the immediate former Chair of the Budget and Appropriations",
@@ -3381,7 +3381,7 @@
 			"Estimates of Revenue and Expenditure for the Financial Year 2024/2025 and the Medium Term and the Compendium of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:19.668Z"
+		"fetchedAt": "2026-07-16T13:59:35.124Z"
 	},
 	{
 		"slug": "maina-betty-njeri",
@@ -3397,7 +3397,7 @@
 		"committees": [
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:57:21.561Z"
+		"fetchedAt": "2026-07-16T13:59:36.761Z"
 	},
 	{
 		"slug": "peter-irungu-kihungi",
@@ -3416,7 +3416,7 @@
 			"Departmental",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:57:23.339Z"
+		"fetchedAt": "2026-07-16T13:59:38.477Z"
 	},
 	{
 		"slug": "edwin-mugo",
@@ -3434,7 +3434,7 @@
 			"Public Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:24.987Z"
+		"fetchedAt": "2026-07-16T13:59:40.219Z"
 	},
 	{
 		"slug": "elachi-beatrice",
@@ -3453,7 +3453,7 @@
 			"Departmental",
 			"things I would like to appreciate Hon. Atandi’s"
 		],
-		"fetchedAt": "2026-07-16T04:57:26.928Z"
+		"fetchedAt": "2026-07-16T13:59:42.227Z"
 	},
 	{
 		"slug": "john-kiarie-waweru",
@@ -3464,7 +3464,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. John Kiarie Waweru is the current Member of the National Assembly for Dagoretti South Constituency, Nairobi County, serving in the 13th Parliament (2022-2027) on a UDA ticket. He chairs the National Assembly Departmental Committee on Communication, Information and Innovation. He is also a comedian and co-founder of Redykyulass.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/John_Kiarie_Waweru.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Dagoretti South Constituency, Nairobi County, serving in the 13th Parliament (2022-2027) on a UDA ticket. He chairs the National Assembly Departmental",
@@ -3477,7 +3477,7 @@
 			"Majority Party. Our",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:29.440Z"
+		"fetchedAt": "2026-07-16T13:59:44.884Z"
 	},
 	{
 		"slug": "babu-owino-paul-ongili",
@@ -3488,13 +3488,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Babu Owino Paul Ongili is the current sitting Member of the National Assembly for Embakasi East Constituency in Kenya&#x27;s 13th Parliament, elected on the Orange Democratic Movement (ODM) ticket. He won the seat in August 2022 with 57,410 votes, defeating Francis Mureithi. He previously served as chairperson of the Students Organisation of Nairobi University (SONU).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Babu_Owino_Paul_Ongili.min-320x400.jpg",
 		"committees": [
 			"Budget and Appropriations",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:57:31.219Z"
+		"fetchedAt": "2026-07-16T13:59:46.747Z"
 	},
 	{
 		"slug": "mwenje-mark-samuel-muriithi",
@@ -3513,7 +3513,7 @@
 			"House be reached before conclusion of business listed as Order No. 13 (",
 			"House of Thursday, 27th October 2022 appointing Members into various"
 		],
-		"fetchedAt": "2026-07-16T04:57:33.160Z"
+		"fetchedAt": "2026-07-16T13:59:48.755Z"
 	},
 	{
 		"slug": "james-mwangi-gakuya",
@@ -3524,7 +3524,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. James Mwangi Gakuya is the sitting Member of the National Assembly for Embakasi North Constituency, Nairobi County, serving in the 13th Parliament after being elected on a UDA ticket in the 2022 general election. He first won the seat in the 2013 general election on a TNA (Jubilee coalition) ticket.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/James_Mwangi_Gakuya.min-320x400.jpg",
 		"committees": [
 			"Parliamentary Broadcasting and Library",
@@ -3535,7 +3535,7 @@
 			"following Motion: That, this House adopts the report of the Departmental",
 			"following Motion: THAT, taking into consideration the findings of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:34.897Z"
+		"fetchedAt": "2026-07-16T13:59:50.816Z"
 	},
 	{
 		"slug": "julius-musili-mawathe",
@@ -3552,7 +3552,7 @@
 			"Energy",
 			"Regional Development"
 		],
-		"fetchedAt": "2026-07-16T04:57:36.992Z"
+		"fetchedAt": "2026-07-16T13:59:53.037Z"
 	},
 	{
 		"slug": "yusuf-hassan-abdi",
@@ -3563,13 +3563,13 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Yusuf Hassan Abdi is the current Member of the National Assembly for Kamukunji Constituency, Nairobi County, serving in the 13th Parliament (2022-2027) on a Jubilee Party (JP) ticket. He won the Kamukunji seat in the 2022 Kenyan general election, having first entered parliament in 2011 through the Kamukunji by-election.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Yusuf_Hassan_Abdi.min-320x400.jpg",
 		"committees": [
 			"Defence, Intelligence and Foreign Relations",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T04:57:38.606Z"
+		"fetchedAt": "2026-07-16T13:59:54.789Z"
 	},
 	{
 		"slug": "khodhe-phelix-odiwuor",
@@ -3587,7 +3587,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:40.266Z"
+		"fetchedAt": "2026-07-16T13:59:56.965Z"
 	},
 	{
 		"slug": "george-aladwa-omwera",
@@ -3604,7 +3604,7 @@
 			"Energy",
 			"Labour"
 		],
-		"fetchedAt": "2026-07-16T04:57:41.446Z"
+		"fetchedAt": "2026-07-16T13:59:58.169Z"
 	},
 	{
 		"slug": "anthony-tom-oluoch",
@@ -3622,7 +3622,7 @@
 			"Procedure and House Rules",
 			"Trade, Industry and Cooperatives"
 		],
-		"fetchedAt": "2026-07-16T04:57:43.478Z"
+		"fetchedAt": "2026-07-16T14:00:00.890Z"
 	},
 	{
 		"slug": "gathoni-esther-passaris",
@@ -3640,7 +3640,7 @@
 			"Public Investments",
 			"Defence Cooperation Agreements, as tabled by the Chairperson of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:45.226Z"
+		"fetchedAt": "2026-07-16T14:00:03.346Z"
 	},
 	{
 		"slug": "mwafrika-augustine-kamande",
@@ -3656,7 +3656,7 @@
 		"committees": [
 			"Members Service and Facilities"
 		],
-		"fetchedAt": "2026-07-16T04:57:46.857Z"
+		"fetchedAt": "2026-07-16T14:00:05.270Z"
 	},
 	{
 		"slug": "mwago-amos",
@@ -3675,7 +3675,7 @@
 			"Departmental",
 			"new market in the Central Business district area? (To be replied before the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:48.526Z"
+		"fetchedAt": "2026-07-16T14:00:07.112Z"
 	},
 	{
 		"slug": "timothy-wanyonyi-wetangula",
@@ -3686,14 +3686,14 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Timothy Wanyonyi Wetangula is the current Member of the National Assembly for Westlands Constituency, Nairobi County, serving on an Orange Democratic Movement (ODM) ticket in the 13th Parliament (2022–present). A Kenyan lawyer and politician, he won the Westlands seat in the 2022 general election, defeating Nelson Havi.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Timothy_Wanyonyi_Wetangula.min-320x400.jpg",
 		"committees": [
 			"Justice and Legal Affairs",
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:57:50.187Z"
+		"fetchedAt": "2026-07-16T14:00:08.943Z"
 	},
 	{
 		"slug": "irene-njoki",
@@ -3712,7 +3712,7 @@
 			"Regional Integration",
 			"Public Debt and Privatization"
 		],
-		"fetchedAt": "2026-07-16T04:57:51.916Z"
+		"fetchedAt": "2026-07-16T14:00:10.802Z"
 	},
 	{
 		"slug": "martha-wangari",
@@ -3723,7 +3723,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Martha Wangari Wanjira is the Member of the National Assembly for Gilgil Constituency, Nakuru County, representing the United Democratic Alliance (UDA) in the 13th Parliament of Kenya. She won the Gilgil seat in 2022 on a UDA ticket with 35,363 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Martha_Wangari.min-320x400.jpg",
 		"committees": [
 			"Liaison",
@@ -3736,7 +3736,7 @@
 			"Supplementary Estimates for the Financial Year 2025/2026, general debate: THAT, this House adopts the Report of the Budget and Appropriations",
 			"Majority Party. I feel Kenya Defence Forces (KDF) has &#x27;suffered&#x27; the problem of being efficient. That is why they are being poached to do everything. I confirm that, as a"
 		],
-		"fetchedAt": "2026-07-16T04:57:59.511Z"
+		"fetchedAt": "2026-07-16T14:00:21.896Z"
 	},
 	{
 		"slug": "tonui-joseph-kipkosgei",
@@ -3753,7 +3753,7 @@
 			"Housing, Urban Planning and Public Works",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:01.289Z"
+		"fetchedAt": "2026-07-16T14:00:25.558Z"
 	},
 	{
 		"slug": "kihara-jayne-njeri-wanjiru",
@@ -3771,7 +3771,7 @@
 			"people of Naivasha. I served with Hon. Denar in the",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:03.007Z"
+		"fetchedAt": "2026-07-16T14:00:27.936Z"
 	},
 	{
 		"slug": "david-gikaria",
@@ -3782,7 +3782,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. David Gikaria is the sitting Member of the National Assembly for Nakuru Town East constituency in Nakuru County, representing the United Democratic Alliance (UDA) in the 13th Parliament (2022–2027). He was elected to a third term in the 2022 general election, having first been elected in 2013 on a TNA ticket and re-elected in 2017.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/David_Gikaria.min-320x400.jpg",
 		"committees": [
 			"Energy",
@@ -3793,7 +3793,7 @@
 			"National Assembly and the Standing",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:04.828Z"
+		"fetchedAt": "2026-07-16T14:00:33.566Z"
 	},
 	{
 		"slug": "samuel-arama",
@@ -3804,14 +3804,14 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Samuel Arama is the sitting Member of the National Assembly for Nakuru Town West constituency, Nakuru County, elected on a Jubilee Party (JP) ticket. First elected in 2013, he is serving his third term, having also been returned in the 2017 and 2022 general elections.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Samuel_Arama.min-320x400.jpg",
 		"committees": [
 			"Selection",
 			"Transport and Infrastructure",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:06.386Z"
+		"fetchedAt": "2026-07-16T14:00:36.168Z"
 	},
 	{
 		"slug": "charity-kathambi-chepkwony",
@@ -3822,7 +3822,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Charity Kathambi Chepkwony is a Kenyan politician serving as the Member of Parliament for Njoro Constituency, Nakuru County, on a UDA ticket. She was first elected in 2017 and re-elected in 2022, and is serving her second term in the 13th Parliament.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Charity_Kathambi_Chepkwony.min-320x400.jpg",
 		"committees": [
 			"Committee on Implementation",
@@ -3831,7 +3831,7 @@
 			"Departmental",
 			"presence of the Cabinet Secretary for Agriculture and Livestock Development. Are Kenyans truly safe with the pesticides and insecticides currently being used on crops? A report before this House’s Select"
 		],
-		"fetchedAt": "2026-07-16T04:58:07.987Z"
+		"fetchedAt": "2026-07-16T14:00:39.112Z"
 	},
 	{
 		"slug": "paul-kibet-chebor",
@@ -3848,7 +3848,7 @@
 			"Delegated Legislation",
 			"Tourism and Wildlife"
 		],
-		"fetchedAt": "2026-07-16T04:58:09.176Z"
+		"fetchedAt": "2026-07-16T14:00:40.754Z"
 	},
 	{
 		"slug": "samuel-kinuthia-gachobe",
@@ -3866,7 +3866,7 @@
 			"Parliamentary Pensions Management",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:10.797Z"
+		"fetchedAt": "2026-07-16T14:00:43.055Z"
 	},
 	{
 		"slug": "marianne-kitany",
@@ -3877,7 +3877,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Marianne Kitany is the sitting Member of the National Assembly for Aldai Constituency in Nandi County, representing the United Democratic Alliance (UDA) in the 13th Parliament. She was elected in 2022 with 42,015 votes, defeating the incumbent Cornelly Serem. Before her election, she served as chief of staff to Deputy President William Ruto.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Marianne_Kitany.min-320x400.jpg",
 		"committees": [
 			"Trade, Industry and Cooperatives",
@@ -3885,7 +3885,7 @@
 			"following Motion: THAT, this House adopts the Report of the Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:12.707Z"
+		"fetchedAt": "2026-07-16T14:00:46.131Z"
 	},
 	{
 		"slug": "kirwa-abraham",
@@ -3902,7 +3902,7 @@
 			"Housing, Urban Planning and Public Works",
 			"Public Debt and Privatisation"
 		],
-		"fetchedAt": "2026-07-16T04:58:14.427Z"
+		"fetchedAt": "2026-07-16T14:00:47.988Z"
 	},
 	{
 		"slug": "muge-cynthia-jepkosgei",
@@ -3920,7 +3920,7 @@
 			"Health",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:16.411Z"
+		"fetchedAt": "2026-07-16T14:00:50.292Z"
 	},
 	{
 		"slug": "bernard-kitur-kibor",
@@ -3938,7 +3938,7 @@
 			"Constitutional Implementation Oversight",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:18.116Z"
+		"fetchedAt": "2026-07-16T14:00:52.256Z"
 	},
 	{
 		"slug": "julius-kipbiwot-meli",
@@ -3959,7 +3959,7 @@
 			"expenditures of the Consolidated Fund Services for the Budget Estimates for the 2026/2027 Financial Year. The",
 			"Budget and Appropriation"
 		],
-		"fetchedAt": "2026-07-16T04:58:20.018Z"
+		"fetchedAt": "2026-07-16T14:00:54.657Z"
 	},
 	{
 		"slug": "julius-lekakeny-sunkuli",
@@ -3970,7 +3970,7 @@
 		"party": "Kenya African National Union",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Julius Lekakeny Sunkuli is the Member of the National Assembly for Kilgoris Constituency in Narok County, elected on 8 August 2022 on a KANU ticket in the 13th Parliament. He previously served as a Cabinet minister.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Julius_Lekakeny_Sunkuli.min-320x400.jpg",
 		"committees": [
 			"Delegated Legislation",
@@ -3979,7 +3979,7 @@
 			"House: Report of the",
 			"following Motion: 29th April 2026 NATIONAL ASSEMBLY DEBATES 9 Hon. Julius Sunkuli (Kilgoris, JP)THAT, this House adopts the Report of the"
 		],
-		"fetchedAt": "2026-07-16T04:58:32.918Z"
+		"fetchedAt": "2026-07-16T14:01:09.331Z"
 	},
 	{
 		"slug": "tonkei-rebecca-noonaishi",
@@ -3997,7 +3997,7 @@
 			"Public Investments",
 			"current harsh economic conditions. The"
 		],
-		"fetchedAt": "2026-07-16T04:58:34.617Z"
+		"fetchedAt": "2026-07-16T14:01:11.746Z"
 	},
 	{
 		"slug": "lemanken-aramat",
@@ -4016,7 +4016,7 @@
 			"National Assembly Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:36.366Z"
+		"fetchedAt": "2026-07-16T14:01:13.866Z"
 	},
 	{
 		"slug": "agnes-mantaine-pareyio",
@@ -4027,13 +4027,13 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Agnes Mantaine Pareyio is the sitting Member of the National Assembly for Narok North Constituency, Narok County, representing the Jubilee Party (JP) in the 13th Parliament (2022-2027). Elected in August 2022, she is the first woman elected MP for Narok North. She is a Maasai women&#x27;s rights and anti-FGM activist.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Agnes_Mantaine_Pareyio.min-320x400.jpg",
 		"committees": [
 			"National Cohesion and Equal Opportunity",
 			"Social Protection"
 		],
-		"fetchedAt": "2026-07-16T04:58:38.096Z"
+		"fetchedAt": "2026-07-16T14:01:16.228Z"
 	},
 	{
 		"slug": "ntutu-kitilai",
@@ -4050,7 +4050,7 @@
 			"Budget and Appropriations",
 			"Committee on Implementation"
 		],
-		"fetchedAt": "2026-07-16T04:58:39.657Z"
+		"fetchedAt": "2026-07-16T14:01:18.208Z"
 	},
 	{
 		"slug": "gabriel-koshal-tongoyo",
@@ -4070,7 +4070,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:42.089Z"
+		"fetchedAt": "2026-07-16T14:01:22.119Z"
 	},
 	{
 		"slug": "joash-nyamache-nyamoko",
@@ -4090,7 +4090,7 @@
 			"following Motion: THAT, taking into consideration the findings of the Departmental",
 			"Bill be amended by- Hon. Joash Nyamoko (North Mugirango, UDA) Hon. Temporary Chairman, I beg to move that the"
 		],
-		"fetchedAt": "2026-07-16T04:58:43.791Z"
+		"fetchedAt": "2026-07-16T14:01:24.040Z"
 	},
 	{
 		"slug": "jerusha-mongina-momanyi",
@@ -4101,14 +4101,14 @@
 		"party": "Jubilee Party",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Jerusha Mongina Momanyi is the Woman Representative for Nyamira County in the 13th Parliament of Kenya&#x27;s National Assembly, elected on a Jubilee Party ticket and currently a sitting member. She was re-elected to this seat in 2022 with 84,843 votes, having first been elected Nyamira Woman Representative in 2017 during the 12th Parliament.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Jerusha_Mongina_Momanyi.min-320x400.jpg",
 		"committees": [
 			"Education",
 			"Members Service and Facilities",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:45.546Z"
+		"fetchedAt": "2026-07-16T14:01:25.963Z"
 	},
 	{
 		"slug": "stephen-mogaka",
@@ -4119,7 +4119,7 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Stephen Mogaka is the sitting Member of the National Assembly for West Mugirango Constituency, Nyamira County, elected on a Jubilee Party (JP) ticket in the 13th Parliament on 9 August 2022. He is a lawyer by profession.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Stephen_Mogaka.min-320x400.jpg",
 		"committees": [
 			"Decentralized Funds Accounts",
@@ -4127,7 +4127,7 @@
 			"Departmental",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T04:58:47.417Z"
+		"fetchedAt": "2026-07-16T14:01:28.136Z"
 	},
 	{
 		"slug": "patrick-osero",
@@ -4146,7 +4146,7 @@
 			"Bill be amended— Hon. Patrick Osero (Borabu, ODM) This is to emphasise the role of the county government and not the county executive",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:49.326Z"
+		"fetchedAt": "2026-07-16T14:01:30.663Z"
 	},
 	{
 		"slug": "zachary-kwenya-thuku",
@@ -4166,7 +4166,7 @@
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation",
 			"Public Debt and Privatization"
 		],
-		"fetchedAt": "2026-07-16T04:58:51.079Z"
+		"fetchedAt": "2026-07-16T14:01:32.726Z"
 	},
 	{
 		"slug": "gachagua-george",
@@ -4184,7 +4184,7 @@
 			"Members Service and Facilities",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:52.987Z"
+		"fetchedAt": "2026-07-16T14:01:34.650Z"
 	},
 	{
 		"slug": "faith-wairimu-gitau",
@@ -4204,7 +4204,7 @@
 			"Staff Welfare",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:58:54.530Z"
+		"fetchedAt": "2026-07-16T14:01:36.352Z"
 	},
 	{
 		"slug": "michael-mwangi-muchira",
@@ -4223,7 +4223,7 @@
 			"Departmental",
 			"Committee on Delegated Legislation. The mover of the Motion has made the case of the"
 		],
-		"fetchedAt": "2026-07-16T04:58:56.118Z"
+		"fetchedAt": "2026-07-16T14:01:38.192Z"
 	},
 	{
 		"slug": "anthony-njoroge-wainaina",
@@ -4234,14 +4234,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Anthony Njoroge Wainaina is the Member of the National Assembly for Kieni Constituency, Nyeri County. He was elected in 2022 on a United Democratic Alliance (UDA) ticket and is a sitting member of the 13th Parliament of Kenya.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Anthony_Njoroge_Wainaina.min-320x400.jpg",
 		"committees": [
 			"Communication, Information and Innovation",
 			"National Cohesion and Equal Opportunity",
 			"National Government Constituencies Development"
 		],
-		"fetchedAt": "2026-07-16T04:59:09.229Z"
+		"fetchedAt": "2026-07-16T14:01:51.345Z"
 	},
 	{
 		"slug": "eric-wamumbi",
@@ -4259,7 +4259,7 @@
 			"Special Funds Account",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:10.784Z"
+		"fetchedAt": "2026-07-16T14:01:53.205Z"
 	},
 	{
 		"slug": "kaguchia-john-philip",
@@ -4278,7 +4278,7 @@
 			"Departmental",
 			"Constitutional Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T04:59:12.746Z"
+		"fetchedAt": "2026-07-16T14:01:55.426Z"
 	},
 	{
 		"slug": "rahab-mukami-wachira",
@@ -4289,7 +4289,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Rahab Mukami Wachira is the Woman Representative for Nyeri County in the National Assembly of Kenya, serving in the 13th Parliament (2022–2027). She was elected on the United Democratic Alliance (UDA) ticket, aligned with the Kenya Kwanza coalition, having won the 2022 Nyeri County Woman Representative seat with 200,155 votes (about 88 percent). In May 2026 she was also elected President of the Pan-African Parliament Women&#x27;s Caucus.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Rahab_Mukami_Wachira.min-320x400.jpg",
 		"committees": [
 			"Appointments",
@@ -4301,7 +4301,7 @@
 			"Public Debt and Privatization",
 			"Kenya Delegation to the sitting of the Permanent"
 		],
-		"fetchedAt": "2026-07-16T04:59:14.328Z"
+		"fetchedAt": "2026-07-16T14:01:57.129Z"
 	},
 	{
 		"slug": "duncan-maina-mathenge",
@@ -4324,7 +4324,7 @@
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation",
 			"Mediation"
 		],
-		"fetchedAt": "2026-07-16T04:59:16.158Z"
+		"fetchedAt": "2026-07-16T14:01:59.103Z"
 	},
 	{
 		"slug": "michael-wambugu-wainaina",
@@ -4342,7 +4342,7 @@
 			"Trade, Industry and Cooperatives",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:17.747Z"
+		"fetchedAt": "2026-07-16T14:02:01.545Z"
 	},
 	{
 		"slug": "geoffrey-wandeto-mwangi",
@@ -4359,7 +4359,7 @@
 			"Budget and Appropriations",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:19.597Z"
+		"fetchedAt": "2026-07-16T14:02:03.719Z"
 	},
 	{
 		"slug": "lenguris-pauline",
@@ -4377,7 +4377,7 @@
 			"Health",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:21.470Z"
+		"fetchedAt": "2026-07-16T14:02:05.583Z"
 	},
 	{
 		"slug": "jackson-lekumontare",
@@ -4395,7 +4395,7 @@
 			"Decentralized Funds Accounts",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T04:59:23.037Z"
+		"fetchedAt": "2026-07-16T14:02:07.348Z"
 	},
 	{
 		"slug": "letipila-dominic-eli",
@@ -4413,7 +4413,7 @@
 			"Sports and Culture",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:24.695Z"
+		"fetchedAt": "2026-07-16T14:02:09.132Z"
 	},
 	{
 		"slug": "naisula-lesuuda",
@@ -4424,7 +4424,7 @@
 		"party": "Kenya African National Union",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Josephine Naisula Lesuuda is the Member of the National Assembly for Samburu West constituency, Samburu County, elected on a KANU ticket and serving her second term in the 13th Parliament after being re-elected at the 2022 general election. She chairs the National Assembly&#x27;s Regional Integration Committee. She had previously served as a nominated Senator in 2013.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Naisula_Lesuuda_Josephine.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Samburu West constituency, Samburu County, elected on a KANU ticket and serving her second term in the 13th Parliament after being re-elected at the 2022 general election. She chairs the National Assembly&#x27;s Regional Integration",
@@ -4435,7 +4435,7 @@
 			"Chairperson of the Departmental",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T04:59:26.827Z"
+		"fetchedAt": "2026-07-16T14:02:11.467Z"
 	},
 	{
 		"slug": "atandi-samuel-onunga",
@@ -4463,7 +4463,7 @@
 			"Budget Policy Statement for the Financial Year 2026/2027 and the Medium Term together with a compendium of Departmental",
 			"Estimates of Revenue and Expenditure for the Financial Year 2025/2026 and the Medium Term and the Compendium of Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:29.378Z"
+		"fetchedAt": "2026-07-16T14:02:14.744Z"
 	},
 	{
 		"slug": "gideon-ochanda-ogolla",
@@ -4481,7 +4481,7 @@
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:31.717Z"
+		"fetchedAt": "2026-07-16T14:02:16.618Z"
 	},
 	{
 		"slug": "elisha-ochieng-odhiambo",
@@ -4500,7 +4500,7 @@
 			"Chairman who is indisposed, we will address that question within two weeks. Given your directive, the Cabinet Secretary in charge of Petroleum and Energy will be before the",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:33.398Z"
+		"fetchedAt": "2026-07-16T14:02:18.485Z"
 	},
 	{
 		"slug": "paul-otiende-amollo",
@@ -4518,7 +4518,7 @@
 			"Public Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:35.996Z"
+		"fetchedAt": "2026-07-16T14:02:20.665Z"
 	},
 	{
 		"slug": "christine-oduor-ombaka",
@@ -4537,7 +4537,7 @@
 			"Special Funds Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:37.677Z"
+		"fetchedAt": "2026-07-16T14:02:22.417Z"
 	},
 	{
 		"slug": "david-ouma-ochieng",
@@ -4548,7 +4548,7 @@
 		"party": "Movement for Democracy and Growth",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. David Ouma Ochieng&#x27; is the current Member of the National Assembly for Ugenya Constituency in Siaya County and the leader of the Movement for Democracy and Growth (MDG) party. He is a Kenyan politician serving in the 13th Parliament of Kenya (2022–2027).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/David_Ouma_Ochieng.min-320x400.jpg",
 		"committees": [
 			"Budget and Appropriations",
@@ -4557,7 +4557,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:41.657Z"
+		"fetchedAt": "2026-07-16T14:02:26.487Z"
 	},
 	{
 		"slug": "shake-mbogho-peter",
@@ -4575,7 +4575,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:43.298Z"
+		"fetchedAt": "2026-07-16T14:02:28.091Z"
 	},
 	{
 		"slug": "lydia-haika-mnene-mizighi",
@@ -4586,7 +4586,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Lydia Haika Mnene Mizighi is a member of the National Assembly of Kenya, serving as the County Woman Representative for Taita Taveta County. She was elected on a United Democratic Alliance (UDA) ticket and has served in the 13th Parliament since 16 August 2022, with her term running to 2027.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Lydia_Haika_Mnene_Mizighi.min-320x400.jpg",
 		"committees": [
 			"Diaspora Affairs and Migrant Workers",
@@ -4594,7 +4594,7 @@
 			"Leader of the Majority Party, these are issues that come to our",
 			"Diaspora and Migrant Workers"
 		],
-		"fetchedAt": "2026-07-16T04:59:44.895Z"
+		"fetchedAt": "2026-07-16T14:02:29.908Z"
 	},
 	{
 		"slug": "bwire-john-okano",
@@ -4612,7 +4612,7 @@
 			"Trade, Industry and Cooperatives",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:46.576Z"
+		"fetchedAt": "2026-07-16T14:02:31.685Z"
 	},
 	{
 		"slug": "khamis-chome",
@@ -4630,7 +4630,7 @@
 			"Tourism and Wildlife",
 			"Committee are not in the House. They went to Eldoret for the conferment of the city status. As a"
 		],
-		"fetchedAt": "2026-07-16T04:59:48.085Z"
+		"fetchedAt": "2026-07-16T14:02:33.430Z"
 	},
 	{
 		"slug": "danson-mwashako-mwakuwona",
@@ -4641,13 +4641,13 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Danson Mwashako Mwakuwona is the current Member of Parliament for Wundanyi Constituency, Taita Taveta County, in the 13th Parliament of Kenya&#x27;s National Assembly. He holds the seat on a Wiper Democratic Movement-Kenya (WDM-K) ticket, having first been elected in 2017 and re-elected in 2022 for a second term.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Danson_Mwashako_Mwakuwona.min-320x400.jpg",
 		"committees": [
 			"Budget and Appropriations",
 			"Regional Integration"
 		],
-		"fetchedAt": "2026-07-16T04:59:49.797Z"
+		"fetchedAt": "2026-07-16T14:02:35.218Z"
 	},
 	{
 		"slug": "yakub-adow",
@@ -4667,7 +4667,7 @@
 			"Public Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:51.507Z"
+		"fetchedAt": "2026-07-16T14:02:36.943Z"
 	},
 	{
 		"slug": "said-buya-hiribae",
@@ -4684,7 +4684,7 @@
 			"Environment, Forestry and Mining",
 			"Housing, Urban Planning and Public Works"
 		],
-		"fetchedAt": "2026-07-16T04:59:53.037Z"
+		"fetchedAt": "2026-07-16T14:02:38.539Z"
 	},
 	{
 		"slug": "ali-wario",
@@ -4695,12 +4695,12 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Guyo Ali Wario is a Member of the National Assembly in Kenya&#x27;s 13th Parliament (2022–2027), representing Garsen Constituency in Tana River County. He was elected on the ODM (Azimio) ticket.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Ali_Wario.min-320x400.jpg",
 		"committees": [
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:54.749Z"
+		"fetchedAt": "2026-07-16T14:02:40.415Z"
 	},
 	{
 		"slug": "amina-dika-abdullahi",
@@ -4718,7 +4718,7 @@
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:56.295Z"
+		"fetchedAt": "2026-07-16T14:02:42.097Z"
 	},
 	{
 		"slug": "patrick-munene-ntwiga",
@@ -4740,7 +4740,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:57.966Z"
+		"fetchedAt": "2026-07-16T14:02:43.879Z"
 	},
 	{
 		"slug": "mbiuki-japhet-miriti-kareke",
@@ -4751,7 +4751,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Mbiuki Japhet Miriti Kareke is the Member of the National Assembly for Maara Constituency in Tharaka-Nithi County, elected on a UDA ticket in 2022 in his fourth term, and chairs the National Assembly Departmental Committee on Tourism and Wildlife. He previously represented the now-defunct Nithi Constituency from 2007 to 2013 before it was redrawn into Maara.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mbiuki_Japhet_Miriti_Kareke.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Maara Constituency in Tharaka-Nithi County, elected on a UDA ticket in 2022 in his fourth term, and chairs the National Assembly Departmental",
@@ -4761,7 +4761,7 @@
 			"Departmental",
 			"following Motion: THAT, this House adopts the Report of the Departmental"
 		],
-		"fetchedAt": "2026-07-16T04:59:59.626Z"
+		"fetchedAt": "2026-07-16T14:02:45.777Z"
 	},
 	{
 		"slug": "ngugi-susan-nduyo",
@@ -4778,7 +4778,7 @@
 			"National Government Constituencies Development",
 			"Social Protection"
 		],
-		"fetchedAt": "2026-07-16T05:00:01.400Z"
+		"fetchedAt": "2026-07-16T14:02:47.564Z"
 	},
 	{
 		"slug": "george-gitonga-murugara",
@@ -4804,7 +4804,7 @@
 			"National Government Constituency Development Fund for four (4) Constituencies",
 			"Monetary Policy"
 		],
-		"fetchedAt": "2026-07-16T05:00:04.758Z"
+		"fetchedAt": "2026-07-16T14:02:50.151Z"
 	},
 	{
 		"slug": "patrick-simiyu",
@@ -4820,7 +4820,7 @@
 		"committees": [
 			"Labour"
 		],
-		"fetchedAt": "2026-07-16T05:00:06.191Z"
+		"fetchedAt": "2026-07-16T14:02:51.681Z"
 	},
 	{
 		"slug": "robert-pukose",
@@ -4831,7 +4831,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Robert Pukose is the current Member of the National Assembly for Endebess Constituency, Trans Nzoia County, elected on a UDA ticket in the 13th Parliament. A medical doctor and consultant general surgeon by profession, he serves as Vice Chairperson of the Budget and Appropriations Committee and Vice Chair of the Health Committee (2025-2026).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Robert_Pukose.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Endebess Constituency, Trans Nzoia County, elected on a UDA ticket in the 13th Parliament. A medical doctor and consultant general surgeon by profession, he serves as Vice Chairperson of the Budget and Appropriations",
@@ -4844,7 +4844,7 @@
 			"National Assembly Departmental",
 			"Budget & Appropriations"
 		],
-		"fetchedAt": "2026-07-16T05:00:08.558Z"
+		"fetchedAt": "2026-07-16T14:02:54.901Z"
 	},
 	{
 		"slug": "ferdinard-kevin-wanyonyi",
@@ -4863,7 +4863,7 @@
 			"Public Investments",
 			"six watchdog"
 		],
-		"fetchedAt": "2026-07-16T05:00:10.638Z"
+		"fetchedAt": "2026-07-16T14:02:56.835Z"
 	},
 	{
 		"slug": "lillian-chebet-siyoi",
@@ -4882,7 +4882,7 @@
 			"Special Funds Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:12.547Z"
+		"fetchedAt": "2026-07-16T14:02:58.741Z"
 	},
 	{
 		"slug": "maurice-kakai-bisau",
@@ -4899,7 +4899,7 @@
 			"Housing, Urban Planning and Public Works",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:00:14.280Z"
+		"fetchedAt": "2026-07-16T14:03:01.366Z"
 	},
 	{
 		"slug": "caleb-amisi-luyai",
@@ -4923,7 +4923,7 @@
 			"following Motion: THAT, taking into consideration the findings of the Departmental",
 			"six watchdog"
 		],
-		"fetchedAt": "2026-07-16T05:00:16.230Z"
+		"fetchedAt": "2026-07-16T14:03:03.890Z"
 	},
 	{
 		"slug": "protus-ewesit",
@@ -4943,7 +4943,7 @@
 			"Budget and Appropriations",
 			"social services projects earmarked by the Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T05:00:17.867Z"
+		"fetchedAt": "2026-07-16T14:03:05.752Z"
 	},
 	{
 		"slug": "cecilia-asinyen-ngitit",
@@ -4960,7 +4960,7 @@
 			"Energy",
 			"Special Funds Account"
 		],
-		"fetchedAt": "2026-07-16T05:00:19.125Z"
+		"fetchedAt": "2026-07-16T14:03:07.024Z"
 	},
 	{
 		"slug": "nicholas-ngikor-nixon",
@@ -4978,7 +4978,7 @@
 			"Public Investments",
 			"m in the North Rift, which the Ministry of Energy and Petroleum constructed through REREC, have stalled. None of them is working. We fail to understand the"
 		],
-		"fetchedAt": "2026-07-16T05:00:20.778Z"
+		"fetchedAt": "2026-07-16T14:03:08.715Z"
 	},
 	{
 		"slug": "ekwom-nabuin",
@@ -4997,7 +4997,7 @@
 			"Departmental",
 			"Chairperson of the Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:00:22.546Z"
+		"fetchedAt": "2026-07-16T14:03:13.884Z"
 	},
 	{
 		"slug": "daniel-epuyo-nanok",
@@ -5018,7 +5018,7 @@
 			"Select",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:24.286Z"
+		"fetchedAt": "2026-07-16T14:03:16.910Z"
 	},
 	{
 		"slug": "samuel-kiprono-chepkonga",
@@ -5042,7 +5042,7 @@
 			"Budget & Appropriations",
 			"National Government Constituency Development Fund on three (3) Constituency"
 		],
-		"fetchedAt": "2026-07-16T05:00:26.401Z"
+		"fetchedAt": "2026-07-16T14:03:19.668Z"
 	},
 	{
 		"slug": "oscar-kipchumba-sudi",
@@ -5058,7 +5058,7 @@
 		"committees": [
 			"Regional Development"
 		],
-		"fetchedAt": "2026-07-16T05:00:27.647Z"
+		"fetchedAt": "2026-07-16T14:03:20.942Z"
 	},
 	{
 		"slug": "rutto-julius-kipletting",
@@ -5080,7 +5080,7 @@
 			"Report of the Delegated Legislation",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:29.636Z"
+		"fetchedAt": "2026-07-16T14:03:23.001Z"
 	},
 	{
 		"slug": "bartoo-phyllis-jepkemoi",
@@ -5099,7 +5099,7 @@
 			"Public Petitions",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:31.326Z"
+		"fetchedAt": "2026-07-16T14:03:24.587Z"
 	},
 	{
 		"slug": "david-kiplagat",
@@ -5117,7 +5117,7 @@
 			"Public Investments",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:33.116Z"
+		"fetchedAt": "2026-07-16T14:03:26.517Z"
 	},
 	{
 		"slug": "janet-jepkemboi-sitienei",
@@ -5128,7 +5128,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Janet Jepkemboi Sitienei is the current Member of the National Assembly for Turbo Constituency, Uasin Gishu County, elected in 2022 on the United Democratic Alliance (UDA) ticket. She serves as Vice-Chairperson of the National Assembly Public Petitions Committee, having first won the Turbo seat in 2017 as an independent candidate.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Janet_Jepkemboi_Sitienei.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Turbo Constituency, Uasin Gishu County, elected in 2022 on the United Democratic Alliance (UDA) ticket. She serves as Vice-Chairperson of the National Assembly Public Petitions",
@@ -5136,7 +5136,7 @@
 			"Sports and Culture",
 			"members of the Public Petitions"
 		],
-		"fetchedAt": "2026-07-16T05:00:34.857Z"
+		"fetchedAt": "2026-07-16T14:03:28.255Z"
 	},
 	{
 		"slug": "jeremiah-omboko-milemba",
@@ -5160,7 +5160,7 @@
 			"Majority Party, just one minute as you settle down. Chairman of the Departmental",
 			"Public Debt and Privatization"
 		],
-		"fetchedAt": "2026-07-16T05:00:41.181Z"
+		"fetchedAt": "2026-07-16T14:03:35.202Z"
 	},
 	{
 		"slug": "charles-gumini-gimose",
@@ -5177,7 +5177,7 @@
 			"Committee on Implementation",
 			"Energy"
 		],
-		"fetchedAt": "2026-07-16T05:00:42.517Z"
+		"fetchedAt": "2026-07-16T14:03:36.707Z"
 	},
 	{
 		"slug": "dick-maungu",
@@ -5196,7 +5196,7 @@
 			"National Cohesion and Equal Opportunity",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:44.499Z"
+		"fetchedAt": "2026-07-16T14:03:38.533Z"
 	},
 	{
 		"slug": "ernest-ogesi-kivai",
@@ -5214,7 +5214,7 @@
 			"Liaison",
 			"Public Petitions"
 		],
-		"fetchedAt": "2026-07-16T05:00:46.286Z"
+		"fetchedAt": "2026-07-16T14:03:40.186Z"
 	},
 	{
 		"slug": "keynan-wehliye-adan",
@@ -5225,7 +5225,7 @@
 		"party": "Jubilee Party",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Keynan Wehliye Adan is the current sitting Member of the National Assembly for Eldas Constituency, Wajir County, serving in the 13th Parliament (2022–2027) under the Jubilee Party. The longest-serving MP and \"Father of the House,\" he was first elected in 1997, representing Wajir West.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Keynan_Wehliye_Adan.min-320x400.jpg",
 		"committees": [
 			"Budget and Appropriations",
@@ -5234,7 +5234,7 @@
 			"Selection",
 			"following Members to the House Business"
 		],
-		"fetchedAt": "2026-07-16T05:00:48.087Z"
+		"fetchedAt": "2026-07-16T14:03:42.239Z"
 	},
 	{
 		"slug": "hussein-abdi",
@@ -5252,7 +5252,7 @@
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:49.757Z"
+		"fetchedAt": "2026-07-16T14:03:43.938Z"
 	},
 	{
 		"slug": "fatuma-abdi-jehow",
@@ -5263,13 +5263,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Fatuma Abdi Jehow is the sitting Woman Representative for Wajir County in the National Assembly of Kenya, serving in the 13th Parliament (2022-2027). She was elected in the August 2022 general election on an Orange Democratic Movement (ODM) ticket, winning 36,064 votes to defeat the incumbent, Fatuma Gedi of Jubilee.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Fatuma_Abdi_Jehow.min-320x400.jpg",
 		"committees": [
 			"Lands",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:00:51.666Z"
+		"fetchedAt": "2026-07-16T14:03:45.616Z"
 	},
 	{
 		"slug": "mohamed-aden-abdi",
@@ -5288,7 +5288,7 @@
 			"Chairman. (Proposed amendment by Hon. Aden Mohammed withdrawn) (Clause 6 as amended agreed to) Clause 2 The Temporary Chairman (Hon. Omboko Milemba) : Proceed, Departmental",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:53.337Z"
+		"fetchedAt": "2026-07-16T14:03:47.260Z"
 	},
 	{
 		"slug": "ibrahim-abdi-saney",
@@ -5299,14 +5299,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Ibrahim Abdi Saney is the sitting Member of the National Assembly for Wajir North Constituency, Wajir County, elected on a UDA ticket in the 13th Parliament (2022–2027). His 2022 election was challenged by petition, but the petition was dismissed, upholding his win with 6,502 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Ibrahim_Abdi_Saney.min-320x400.jpg",
 		"committees": [
 			"Diaspora Affairs and Migrant Workers",
 			"Transport and Infrastructure",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:55.156Z"
+		"fetchedAt": "2026-07-16T14:03:49.082Z"
 	},
 	{
 		"slug": "adow-aden-mohammed",
@@ -5327,7 +5327,7 @@
 			"Departmental",
 			"Chairman. (Proposed amendment by Hon. Aden Mohammed withdrawn) (Clause 6 as amended agreed to) Clause 2 The Temporary Chairman (Hon. Omboko Milemba) : Proceed, Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:00:56.857Z"
+		"fetchedAt": "2026-07-16T14:03:50.931Z"
 	},
 	{
 		"slug": "farah-yussuf-mohamed",
@@ -5345,7 +5345,7 @@
 			"Departmental",
 			"Report. Without further ado, I support the"
 		],
-		"fetchedAt": "2026-07-16T05:00:58.727Z"
+		"fetchedAt": "2026-07-16T14:03:52.853Z"
 	},
 	{
 		"slug": "lotee-titus",
@@ -5364,7 +5364,7 @@
 			"Departmental",
 			"things the Report has captured clearly is the boundaries issue in the region. Nobody has talked about it. The"
 		],
-		"fetchedAt": "2026-07-16T05:01:00.987Z"
+		"fetchedAt": "2026-07-16T14:03:54.847Z"
 	},
 	{
 		"slug": "peter-lochakapong",
@@ -5385,7 +5385,7 @@
 			"WHOLE HOUSE 8th October 2025 NATIONAL ASSEMBLY DEBATES 81 [The Temporary Speaker (Hon. Farah Maalim) left the Chair] IN THE",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:02.797Z"
+		"fetchedAt": "2026-07-16T14:03:56.693Z"
 	},
 	{
 		"slug": "reuben-kiborek",
@@ -5396,14 +5396,14 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Reuben Kiborek is the Member of Parliament for Mogotio Constituency, Baringo County, serving in the 13th Parliament (National Assembly) as a member of the United Democratic Alliance (UDA). He is serving his first term, having been elected in the 2022 Kenyan general election, in which he defeated Dr. Daniel Tuitoek and Professor Sambili with 17,364 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Reuben_Kiborek.min-320x400.jpg",
 		"committees": [
 			"Decentralized Funds Accounts",
 			"Health",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:04.557Z"
+		"fetchedAt": "2026-07-16T14:03:58.486Z"
 	},
 	{
 		"slug": "iraya-joseph-wainaina",
@@ -5420,7 +5420,7 @@
 			"Environment, Forestry and Mining",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T05:01:05.766Z"
+		"fetchedAt": "2026-07-16T14:03:59.739Z"
 	},
 	{
 		"slug": "mwangi-teresia-wanjiru",
@@ -5436,7 +5436,7 @@
 		"committees": [
 			"Constitutional Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T05:01:07.127Z"
+		"fetchedAt": "2026-07-16T14:04:01.103Z"
 	},
 	{
 		"slug": "musa-sirma-cherutich",
@@ -5467,7 +5467,7 @@
 			"Committee on National Government Constituencies Development Fund on the nominees to the National Government Constituencies Development Fund",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:08.968Z"
+		"fetchedAt": "2026-07-16T14:04:03.158Z"
 	},
 	{
 		"slug": "john-makali-okwisia",
@@ -5485,7 +5485,7 @@
 			"Justice and Legal Affairs",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:10.636Z"
+		"fetchedAt": "2026-07-16T14:04:04.916Z"
 	},
 	{
 		"slug": "mukunji-john-gitonga-mwaniki",
@@ -5502,7 +5502,7 @@
 			"Constitutional Implementation Oversight",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:12.678Z"
+		"fetchedAt": "2026-07-16T14:04:07.259Z"
 	},
 	{
 		"slug": "shinali-bernard-masaka",
@@ -5521,7 +5521,7 @@
 			"Departmental",
 			"Majority Party. Hon. Speaker, as you have directed and the Hon. Leader of the 14th April 2026 NATIONAL ASSEMBLY DEBATES 21 Hon. Bernard Shinali (Ikolomani, ODM)Majority Party has also alluded to it, the"
 		],
-		"fetchedAt": "2026-07-16T05:01:14.427Z"
+		"fetchedAt": "2026-07-16T14:04:09.185Z"
 	},
 	{
 		"slug": "mugabe-innocent-miano",
@@ -5539,7 +5539,7 @@
 			"Tourism and Wildlife",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:16.046Z"
+		"fetchedAt": "2026-07-16T14:04:10.913Z"
 	},
 	{
 		"slug": "kemei-beatrice-chepngeno",
@@ -5557,7 +5557,7 @@
 			"Departmental",
 			"Select"
 		],
-		"fetchedAt": "2026-07-16T05:01:17.787Z"
+		"fetchedAt": "2026-07-16T14:04:12.623Z"
 	},
 	{
 		"slug": "kagombe-gabriel-gathuka",
@@ -5575,7 +5575,7 @@
 			"Public Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:19.356Z"
+		"fetchedAt": "2026-07-16T14:04:13.854Z"
 	},
 	{
 		"slug": "mnyazi-amina-laura",
@@ -5586,7 +5586,7 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Amina Laura Mnyazi is the sitting Member of the National Assembly for Malindi Constituency in Kilifi County, elected on an Orange Democratic Movement (ODM) ticket in August 2022. A first-term member of the 13th Parliament (2022–2027), she serves on the Departmental Committee on Blue Economy and Irrigation.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mnyazi_Amina_Laura.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Malindi Constituency in Kilifi County, elected on an Orange Democratic Movement (ODM) ticket in August 2022. A first-term member of the 13th Parliament (2022–2027), she serves on the Departmental",
@@ -5594,7 +5594,7 @@
 			"Delegated Legislation",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:21.658Z"
+		"fetchedAt": "2026-07-16T14:04:15.651Z"
 	},
 	{
 		"slug": "barongo-nolfason-obadiah",
@@ -5613,7 +5613,7 @@
 			"Departmental",
 			"ad hoc"
 		],
-		"fetchedAt": "2026-07-16T05:01:23.332Z"
+		"fetchedAt": "2026-07-16T14:04:17.333Z"
 	},
 	{
 		"slug": "nyakundi-japheth-mokaya",
@@ -5631,7 +5631,7 @@
 			"Regional Integration",
 			"Constitution and Standing Order 150(3), this House adopts the Report of the Mediation"
 		],
-		"fetchedAt": "2026-07-16T05:01:24.996Z"
+		"fetchedAt": "2026-07-16T14:04:19.085Z"
 	},
 	{
 		"slug": "daniel-manduku-ogwoka",
@@ -5650,7 +5650,7 @@
 			"Members of Parliament who accompanied the",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:27.066Z"
+		"fetchedAt": "2026-07-16T14:04:20.843Z"
 	},
 	{
 		"slug": "ruth-adhiambo-odinga-busia",
@@ -5669,7 +5669,7 @@
 			"Members Service and Facilities",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:28.780Z"
+		"fetchedAt": "2026-07-16T14:04:22.794Z"
 	},
 	{
 		"slug": "ahmed-shakeel-ahmed-shabbir",
@@ -5687,7 +5687,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Parliamentary Powers and Privileges"
 		],
-		"fetchedAt": "2026-07-16T05:01:30.787Z"
+		"fetchedAt": "2026-07-16T14:04:24.582Z"
 	},
 	{
 		"slug": "nyikal-james-wambura",
@@ -5706,7 +5706,7 @@
 			"Departmental",
 			"Whole\">"
 		],
-		"fetchedAt": "2026-07-16T05:01:33.949Z"
+		"fetchedAt": "2026-07-16T14:04:27.905Z"
 	},
 	{
 		"slug": "makali-benson-mulu",
@@ -5726,7 +5726,7 @@
 			"Select",
 			"Public Debt and Privatization"
 		],
-		"fetchedAt": "2026-07-16T05:01:36.377Z"
+		"fetchedAt": "2026-07-16T14:04:31.173Z"
 	},
 	{
 		"slug": "nyenze-edith-vethi",
@@ -5744,7 +5744,7 @@
 			"Social Protection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:37.992Z"
+		"fetchedAt": "2026-07-16T14:04:32.869Z"
 	},
 	{
 		"slug": "kiunjuri-festus-mwangi-maina",
@@ -5764,7 +5764,7 @@
 			"Departmental",
 			"said roads? (To be replied before the Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:39.617Z"
+		"fetchedAt": "2026-07-16T14:04:34.592Z"
 	},
 	{
 		"slug": "musau-robert-mbui",
@@ -5787,7 +5787,7 @@
 			"House of Thursday, 27th October, 2022 appointing Members into various",
 			"Public Petitions"
 		],
-		"fetchedAt": "2026-07-16T05:01:42.117Z"
+		"fetchedAt": "2026-07-16T14:04:37.196Z"
 	},
 	{
 		"slug": "mbalu-jessica-nduku-kiko",
@@ -5798,7 +5798,7 @@
 		"party": "Wiper Democratic Movement - Kenya",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Jessica Nduku Kiko Mbalu is the sitting Member of the National Assembly for Kibwezi East Constituency in Makueni County. She serves in the 13th Parliament under the Wiper Democratic Movement–Kenya (WDM-K).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Mbalu_Jessica_Nduku_Kiko.min-320x400.jpg",
 		"committees": [
 			"Committee on Implementation",
@@ -5807,7 +5807,7 @@
 			"Selection",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:43.776Z"
+		"fetchedAt": "2026-07-16T14:04:39.071Z"
 	},
 	{
 		"slug": "abuor-paul",
@@ -5828,7 +5828,7 @@
 			"Departmental",
 			"Budget and Appropriations"
 		],
-		"fetchedAt": "2026-07-16T05:01:45.459Z"
+		"fetchedAt": "2026-07-16T14:04:41.108Z"
 	},
 	{
 		"slug": "bady-bady-twalib",
@@ -5839,13 +5839,13 @@
 		"party": "Orange Democratic Movement",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Bady Bady Twalib is the sitting Member of the National Assembly for Jomvu constituency, Mombasa County, elected on the ODM ticket in the 13th Parliament (2022-2027). He won the 2022 general election with 13,850 votes, defeating Renson Thoya of Jubilee. First elected in 2013, he is now serving his third consecutive term.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Bady_Bady_Twalib.min-320x400.jpg",
 		"committees": [
 			"Transport and Infrastructure",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:47.116Z"
+		"fetchedAt": "2026-07-16T14:04:43.490Z"
 	},
 	{
 		"slug": "muriu-wakili-edward",
@@ -5862,7 +5862,7 @@
 			"Parliamentary Broadcasting and Library",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:48.958Z"
+		"fetchedAt": "2026-07-16T14:04:45.507Z"
 	},
 	{
 		"slug": "munyoro-joseph-kamau",
@@ -5879,7 +5879,7 @@
 			"Delegated Legislation",
 			"Regional Development"
 		],
-		"fetchedAt": "2026-07-16T05:01:50.889Z"
+		"fetchedAt": "2026-07-16T14:04:47.683Z"
 	},
 	{
 		"slug": "mejjadonk-benjamin-gathiru",
@@ -5896,7 +5896,7 @@
 			"Constitutional Implementation Oversight",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:52.480Z"
+		"fetchedAt": "2026-07-16T14:04:49.382Z"
 	},
 	{
 		"slug": "karauri-ronald-kamwiko",
@@ -5913,7 +5913,7 @@
 			"Housing, Urban Planning and Public Works",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:01:54.046Z"
+		"fetchedAt": "2026-07-16T14:04:50.673Z"
 	},
 	{
 		"slug": "kajwang-francis-tom-joseph",
@@ -5934,7 +5934,7 @@
 			"whole House in the said report. I request Hon. Komingoi to second the Motion in agreement with the Report of the",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:01:59.106Z"
+		"fetchedAt": "2026-07-16T14:04:52.871Z"
 	},
 	{
 		"slug": "orero-peter-ochieng",
@@ -5951,7 +5951,7 @@
 			"Education",
 			"National Cohesion and Equal Opportunity"
 		],
-		"fetchedAt": "2026-07-16T05:02:02.766Z"
+		"fetchedAt": "2026-07-16T14:04:54.810Z"
 	},
 	{
 		"slug": "mutai-kipronoh-alfred",
@@ -5968,7 +5968,7 @@
 			"National Government Constituencies Development",
 			"Trade, Industry and Cooperatives"
 		],
-		"fetchedAt": "2026-07-16T05:02:04.458Z"
+		"fetchedAt": "2026-07-16T14:04:56.184Z"
 	},
 	{
 		"slug": "honcpa-kimani-francis-kuria",
@@ -5992,7 +5992,7 @@
 			"Joint",
 			"National Assembly Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:08.947Z"
+		"fetchedAt": "2026-07-16T14:04:59.630Z"
 	},
 	{
 		"slug": "chelule-liza-chepkorir",
@@ -6011,7 +6011,7 @@
 			"National Cohesion and Equal Opportunity",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:10.587Z"
+		"fetchedAt": "2026-07-16T14:05:01.520Z"
 	},
 	{
 		"slug": "biego-paul-kibichiy",
@@ -6030,7 +6030,7 @@
 			"Departmental",
 			"Special Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T05:02:12.337Z"
+		"fetchedAt": "2026-07-16T14:05:03.530Z"
 	},
 	{
 		"slug": "lelmengit-josses-kiptoo-kosgey",
@@ -6050,7 +6050,7 @@
 			"de-gazettement of the land exchange programmes. I also thank the Public Petitions",
 			"Mediation"
 		],
-		"fetchedAt": "2026-07-16T05:02:14.056Z"
+		"fetchedAt": "2026-07-16T14:05:05.426Z"
 	},
 	{
 		"slug": "gisairo-clive-ombane",
@@ -6068,7 +6068,7 @@
 			"National Government Constituencies Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:15.866Z"
+		"fetchedAt": "2026-07-16T14:05:07.528Z"
 	},
 	{
 		"slug": "pkosing-david",
@@ -6089,7 +6089,7 @@
 			"House: Third Report of the Public Investments",
 			"following Motion: THAT, this House adopts the Third Report of the Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:02:17.480Z"
+		"fetchedAt": "2026-07-16T14:05:09.272Z"
 	},
 	{
 		"slug": "namuar-joseph-emathe",
@@ -6109,7 +6109,7 @@
 			"Departmental",
 			"Petition regarding the variation of boundaries for three specified forests. As I do so, allow me to add my voice to the matter. I thank the Chairperson of the"
 		],
-		"fetchedAt": "2026-07-16T05:02:19.166Z"
+		"fetchedAt": "2026-07-16T14:05:11.178Z"
 	},
 	{
 		"slug": "ariko-john-namoit",
@@ -6129,7 +6129,7 @@
 			"Departmental",
 			"following Motion: THAT, this House adopts the Report of the Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:02:20.968Z"
+		"fetchedAt": "2026-07-16T14:05:13.159Z"
 	},
 	{
 		"slug": "sloya-clement-logova",
@@ -6147,7 +6147,7 @@
 			"Public Petitions",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:22.426Z"
+		"fetchedAt": "2026-07-16T14:05:14.801Z"
 	},
 	{
 		"slug": "adagala-beatrice-kahai",
@@ -6158,7 +6158,7 @@
 		"party": "Amani National Congress",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Adagala Beatrice Kahai is the County Woman Representative for Vihiga in the National Assembly, serving in the 13th Parliament (2022-2027) as a member of the Amani National Congress (ANC). She was first elected in 2017 and re-elected in 2022, winning the Vihiga Woman Representative seat with 52,507 votes.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Adagala_Beatrice_Kahai.min-320x400.jpg",
 		"committees": [
 			"Public Investments",
@@ -6169,7 +6169,7 @@
 			"form and extent of public participation and interviews conducted before appointing members of the Council and the",
 			"members of the Talanta Hela Council and its"
 		],
-		"fetchedAt": "2026-07-16T05:02:24.116Z"
+		"fetchedAt": "2026-07-16T14:05:16.720Z"
 	},
 	{
 		"slug": "chumel-moroto-samuel",
@@ -6187,7 +6187,7 @@
 			"Parliamentary Powers and Privileges",
 			"Social Protection"
 		],
-		"fetchedAt": "2026-07-16T05:02:25.749Z"
+		"fetchedAt": "2026-07-16T14:05:18.443Z"
 	},
 	{
 		"slug": "kasiwai-rael-kasiwai",
@@ -6205,7 +6205,7 @@
 			"Regional Integration",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:27.449Z"
+		"fetchedAt": "2026-07-16T14:05:20.222Z"
 	},
 	{
 		"slug": "jackson-kipkemoi-kosgei",
@@ -6222,7 +6222,7 @@
 			"Public Investments",
 			"Sports and Culture"
 		],
-		"fetchedAt": "2026-07-16T05:02:29.666Z"
+		"fetchedAt": "2026-07-16T14:05:22.080Z"
 	},
 	{
 		"slug": "abubakar-talib-ahmed",
@@ -6241,7 +6241,7 @@
 			"Departmental",
 			"Departmental 3rd March 2026 NATIONAL ASSEMBLY DEBATES 23"
 		],
-		"fetchedAt": "2026-07-16T05:02:31.418Z"
+		"fetchedAt": "2026-07-16T14:05:23.833Z"
 	},
 	{
 		"slug": "ali-abdisirat-khalif",
@@ -6258,7 +6258,7 @@
 			"Communication, Information and Innovation",
 			"Constitutional Implementation Oversight"
 		],
-		"fetchedAt": "2026-07-16T05:02:33.107Z"
+		"fetchedAt": "2026-07-16T14:05:25.496Z"
 	},
 	{
 		"slug": "sabina-wanjiru-chege",
@@ -6269,7 +6269,7 @@
 		"party": "Jubilee Party",
 		"status": "Nominated",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Sabina Wanjiru Chege is a Nominated Member of the National Assembly of Kenya in the 13th Parliament, nominated by the Jubilee Party (JP). She previously served as the inaugural Murang&#x27;a County Woman Representative from 2013 to 2022. She was removed from the office of National Assembly Deputy Minority Whip but remains a sitting nominated MP.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Sabina_Wanjiru_Chege.min-320x400.jpg",
 		"committees": [
 			"Agriculture and Livestock",
@@ -6278,7 +6278,7 @@
 			"following Motion: THAT, pursuant to the provisions of Article 113 (2) of the Constitution and Standing Order 150 (3) , this House adopts the Report of the Mediation",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:34.748Z"
+		"fetchedAt": "2026-07-16T14:05:27.512Z"
 	},
 	{
 		"slug": "ikiara-dorothy-muthoni",
@@ -6297,7 +6297,7 @@
 			"Decentralised Funds Accounts",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:36.720Z"
+		"fetchedAt": "2026-07-16T14:05:29.556Z"
 	},
 	{
 		"slug": "dena-joseph-hamisi",
@@ -6308,12 +6308,12 @@
 		"party": "Amani National Congress",
 		"status": "Nominated",
 		"term": "Present",
-		"bio": null,
+		"bio": "The late Hon. Denar Joseph Hamisi was a Nominated Member of the National Assembly for the Amani National Congress (ANC) in the 13th Parliament, nominated in 2022 under Article 97(1)(c). He served on the Departmental Committee on Sports and Culture and the Select Committee on National Cohesion and Equal Opportunities. He died on 6 December 2025 in a road crash near his home in Karen.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Dena_Joseph_Hamisi.min-320x400.jpg",
 		"committees": [
 			"National Assembly for the Amani National Congress (ANC) in the 13th Parliament, nominated in 2022 under Article 97(1)(c). He served on the Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:38.256Z"
+		"fetchedAt": "2026-07-16T14:05:31.358Z"
 	},
 	{
 		"slug": "mohamed-umulkher-harun",
@@ -6333,7 +6333,7 @@
 			"Departmental",
 			"House Business"
 		],
-		"fetchedAt": "2026-07-16T05:02:40.347Z"
+		"fetchedAt": "2026-07-16T14:05:33.538Z"
 	},
 	{
 		"slug": "mayaka-irene-nyakerario",
@@ -6354,7 +6354,7 @@
 			"Select",
 			"Special Funds Accounts"
 		],
-		"fetchedAt": "2026-07-16T05:02:42.638Z"
+		"fetchedAt": "2026-07-16T14:05:35.605Z"
 	},
 	{
 		"slug": "suleka-hulbale-harun",
@@ -6373,7 +6373,7 @@
 			"Departmental",
 			"Bill, the"
 		],
-		"fetchedAt": "2026-07-16T05:02:44.336Z"
+		"fetchedAt": "2026-07-16T14:05:37.429Z"
 	},
 	{
 		"slug": "boss-gladys-jepkosgei",
@@ -6393,7 +6393,7 @@
 			"Procedure and House Rules",
 			"2017-2021 Collective Bargaining Agreement (CBA) Referred to the Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:46.340Z"
+		"fetchedAt": "2026-07-16T14:05:39.822Z"
 	},
 	{
 		"slug": "wetangula-moses-masika",
@@ -6414,7 +6414,7 @@
 			"Procedure and House Rules",
 			"Nairobi Rivers Commission Project in Kangemi and Dagoretti Referred to the Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:47.787Z"
+		"fetchedAt": "2026-07-16T14:05:41.589Z"
 	},
 	{
 		"slug": "wanjiku-muhia",
@@ -6425,7 +6425,7 @@
 		"party": "United Democratic Alliance",
 		"status": "Elected",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Wanjiku Muhia is the Member of the National Assembly for Kipipiri Constituency, Nyandarua County, in the 13th Parliament (2022-2027), where she serves as a member of the Regional Integration Committee. She won the seat in the 2022 general election on a UDA ticket, defeating incumbent Amos Kimunya. She previously served in the East African Legislative Assembly (4th EALA, 2018-2022).",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Wanjiku_Muhia.min-320x400.jpg",
 		"committees": [
 			"National Assembly for Kipipiri Constituency, Nyandarua County, in the 13th Parliament (2022-2027), where she serves as a member of the Regional Integration",
@@ -6433,7 +6433,7 @@
 			"Select",
 			"Joint Select"
 		],
-		"fetchedAt": "2026-07-16T05:02:49.588Z"
+		"fetchedAt": "2026-07-16T14:05:44.032Z"
 	},
 	{
 		"slug": "joseph-kimutai-cherorot",
@@ -6451,7 +6451,7 @@
 			"Special Funds Account",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:02:51.278Z"
+		"fetchedAt": "2026-07-16T14:05:46.835Z"
 	},
 	{
 		"slug": "mohamed-dekow-barrow",
@@ -6469,7 +6469,7 @@
 			"Lands",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:03:14.787Z"
+		"fetchedAt": "2026-07-16T14:06:11.875Z"
 	},
 	{
 		"slug": "leo-muthende-njeru",
@@ -6483,7 +6483,7 @@
 		"bio": null,
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Leo_Muthende_Njeru.min-320x400.jpg",
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:03:27.273Z"
+		"fetchedAt": "2026-07-16T14:06:24.549Z"
 	},
 	{
 		"slug": "ahmed-maalim-hassan",
@@ -6501,7 +6501,7 @@
 			"Regional Development",
 			"Departmental"
 		],
-		"fetchedAt": "2026-07-16T05:03:28.539Z"
+		"fetchedAt": "2026-07-16T14:06:25.982Z"
 	},
 	{
 		"slug": "boyd-were-ongondo",
@@ -6517,7 +6517,7 @@
 		"committees": [
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:03:29.817Z"
+		"fetchedAt": "2026-07-16T14:06:27.312Z"
 	},
 	{
 		"slug": "david-athman-ndakwa",
@@ -6531,7 +6531,7 @@
 		"bio": null,
 		"photoUrl": "https://mzalendo.com/media/images-rendered/David_Athman_Ndakwa.min-320x400.jpg",
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:03:31.200Z"
+		"fetchedAt": "2026-07-16T14:06:28.742Z"
 	},
 	{
 		"slug": "moses-okoth-omondi",
@@ -6547,7 +6547,7 @@
 		"committees": [
 			"Majority Party. I take this opportunity to second the Motion. (Question proposed) (Question put and agreed to) LIMITATION OF DEBATE ON REPORTS OF AUDIT"
 		],
-		"fetchedAt": "2026-07-16T05:03:32.446Z"
+		"fetchedAt": "2026-07-16T14:06:30.226Z"
 	},
 	{
 		"slug": "sheikh-umul-ker-kassim",
@@ -6558,7 +6558,7 @@
 		"party": "United Democratic Movement",
 		"status": "Women's Representative",
 		"term": "Present",
-		"bio": null,
+		"bio": "Hon. Sheikh Umul Ker Kassim is the County Woman Representative for Mandera County in the National Assembly, serving in the 13th Parliament (2022-2027). She was elected on the UDM ticket in 2022 and is a current sitting member.",
 		"photoUrl": "https://mzalendo.com/media/images-rendered/Sheikh_Umul_Ker_Kassim.min-320x400.jpg",
 		"committees": [
 			"Finance and National Planning",
@@ -6567,7 +6567,7 @@
 			"following Motion: THAT, taking into consideration the findings of the Departmental",
 			"Public Investments"
 		],
-		"fetchedAt": "2026-07-16T05:03:34.207Z"
+		"fetchedAt": "2026-07-16T14:06:32.020Z"
 	},
 	{
 		"slug": "mugambi-murwithania-rindikiri",
@@ -6585,7 +6585,7 @@
 			"Departmental",
 			"debate which has been presented by the"
 		],
-		"fetchedAt": "2026-07-16T05:03:36.677Z"
+		"fetchedAt": "2026-07-16T14:06:35.187Z"
 	},
 	{
 		"slug": "harold-kimuge",
@@ -6601,7 +6601,7 @@
 		"committees": [
 			"Justice and Legal Affairs"
 		],
-		"fetchedAt": "2026-07-16T05:03:38.646Z"
+		"fetchedAt": "2026-07-16T14:06:36.971Z"
 	},
 	{
 		"slug": "assembly-committees",
@@ -6615,7 +6615,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:23.768Z"
+		"fetchedAt": "2026-07-16T14:07:19.742Z"
 	},
 	{
 		"slug": "finance-and-national-planning",
@@ -6629,7 +6629,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:25.356Z"
+		"fetchedAt": "2026-07-16T14:07:21.114Z"
 	},
 	{
 		"slug": "administration-and-internal-security",
@@ -6643,7 +6643,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:27.138Z"
+		"fetchedAt": "2026-07-16T14:07:22.537Z"
 	},
 	{
 		"slug": "agriculture-and-livestock",
@@ -6657,7 +6657,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:28.446Z"
+		"fetchedAt": "2026-07-16T14:07:23.942Z"
 	},
 	{
 		"slug": "blue-economy-water-and-irrigation",
@@ -6671,7 +6671,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:29.871Z"
+		"fetchedAt": "2026-07-16T14:07:25.474Z"
 	},
 	{
 		"slug": "communication-information-and-innovation",
@@ -6685,7 +6685,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:31.275Z"
+		"fetchedAt": "2026-07-16T14:07:26.872Z"
 	},
 	{
 		"slug": "defence-intelligence-and-foreign-relations",
@@ -6699,7 +6699,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:32.635Z"
+		"fetchedAt": "2026-07-16T14:07:28.357Z"
 	},
 	{
 		"slug": "education",
@@ -6713,7 +6713,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:33.965Z"
+		"fetchedAt": "2026-07-16T14:07:29.754Z"
 	},
 	{
 		"slug": "energy",
@@ -6727,7 +6727,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:35.280Z"
+		"fetchedAt": "2026-07-16T14:07:31.138Z"
 	},
 	{
 		"slug": "environment-forestry-and-mining",
@@ -6741,7 +6741,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:36.566Z"
+		"fetchedAt": "2026-07-16T14:07:32.541Z"
 	},
 	{
 		"slug": "social-protection",
@@ -6755,7 +6755,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:37.866Z"
+		"fetchedAt": "2026-07-16T14:07:33.974Z"
 	},
 	{
 		"slug": "labour",
@@ -6769,7 +6769,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:39.196Z"
+		"fetchedAt": "2026-07-16T14:07:35.389Z"
 	},
 	{
 		"slug": "health",
@@ -6783,7 +6783,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:40.665Z"
+		"fetchedAt": "2026-07-16T14:07:36.842Z"
 	},
 	{
 		"slug": "lands",
@@ -6797,7 +6797,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:42.046Z"
+		"fetchedAt": "2026-07-16T14:07:38.275Z"
 	},
 	{
 		"slug": "justice-and-legal-affairs",
@@ -6811,7 +6811,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:43.555Z"
+		"fetchedAt": "2026-07-16T14:07:39.694Z"
 	},
 	{
 		"slug": "regional-development",
@@ -6825,7 +6825,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:45.135Z"
+		"fetchedAt": "2026-07-16T14:07:41.245Z"
 	},
 	{
 		"slug": "sports-and-culture",
@@ -6839,7 +6839,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:46.561Z"
+		"fetchedAt": "2026-07-16T14:07:42.818Z"
 	},
 	{
 		"slug": "tourism-and-wildlife",
@@ -6853,7 +6853,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:48.085Z"
+		"fetchedAt": "2026-07-16T14:07:44.422Z"
 	},
 	{
 		"slug": "trade-industry-and-cooperatives",
@@ -6867,7 +6867,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:49.394Z"
+		"fetchedAt": "2026-07-16T14:07:45.997Z"
 	},
 	{
 		"slug": "transport-and-infrastructure",
@@ -6881,7 +6881,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:50.715Z"
+		"fetchedAt": "2026-07-16T14:07:47.798Z"
 	},
 	{
 		"slug": "housing-urban-planning-and-public-works",
@@ -6895,7 +6895,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:52.025Z"
+		"fetchedAt": "2026-07-16T14:07:49.437Z"
 	},
 	{
 		"slug": "house-business",
@@ -6909,7 +6909,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:53.305Z"
+		"fetchedAt": "2026-07-16T14:07:50.987Z"
 	},
 	{
 		"slug": "selection",
@@ -6923,7 +6923,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:54.686Z"
+		"fetchedAt": "2026-07-16T14:07:52.694Z"
 	},
 	{
 		"slug": "appointments",
@@ -6937,7 +6937,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:56.055Z"
+		"fetchedAt": "2026-07-16T14:07:54.663Z"
 	},
 	{
 		"slug": "public-accounts",
@@ -6951,7 +6951,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:57.326Z"
+		"fetchedAt": "2026-07-16T14:07:56.357Z"
 	},
 	{
 		"slug": "special-funds-account",
@@ -6965,7 +6965,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:04:58.635Z"
+		"fetchedAt": "2026-07-16T14:07:57.899Z"
 	},
 	{
 		"slug": "decentralized-funds-accounts",
@@ -6979,7 +6979,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:00.176Z"
+		"fetchedAt": "2026-07-16T14:07:59.477Z"
 	},
 	{
 		"slug": "public-investments-committee-on-governance-and-education",
@@ -6993,7 +6993,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:01.756Z"
+		"fetchedAt": "2026-07-16T14:08:01.115Z"
 	},
 	{
 		"slug": "public-investments-committee-on-commercial-affairs-and-energy",
@@ -7007,7 +7007,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:03.125Z"
+		"fetchedAt": "2026-07-16T14:08:02.751Z"
 	},
 	{
 		"slug": "public-investments-committee-on-social-services-administration-and-agriculture",
@@ -7021,7 +7021,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:04.481Z"
+		"fetchedAt": "2026-07-16T14:08:04.190Z"
 	},
 	{
 		"slug": "budget-and-appropriations",
@@ -7035,7 +7035,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:06.026Z"
+		"fetchedAt": "2026-07-16T14:08:05.827Z"
 	},
 	{
 		"slug": "public-debt-and-privatisation",
@@ -7049,7 +7049,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:07.406Z"
+		"fetchedAt": "2026-07-16T14:08:07.257Z"
 	},
 	{
 		"slug": "procedure-and-house-rules",
@@ -7063,7 +7063,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:08.786Z"
+		"fetchedAt": "2026-07-16T14:08:08.799Z"
 	},
 	{
 		"slug": "public-petitions",
@@ -7077,7 +7077,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:10.216Z"
+		"fetchedAt": "2026-07-16T14:08:11.729Z"
 	},
 	{
 		"slug": "diaspora-affairs-and-migrant-workers",
@@ -7091,7 +7091,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:11.566Z"
+		"fetchedAt": "2026-07-16T14:08:13.203Z"
 	},
 	{
 		"slug": "committee-on-implementation",
@@ -7105,7 +7105,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:12.995Z"
+		"fetchedAt": "2026-07-16T14:08:15.045Z"
 	},
 	{
 		"slug": "delegated-legislation",
@@ -7119,7 +7119,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:14.376Z"
+		"fetchedAt": "2026-07-16T14:08:16.890Z"
 	},
 	{
 		"slug": "regional-integration",
@@ -7133,7 +7133,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:15.875Z"
+		"fetchedAt": "2026-07-16T14:08:18.528Z"
 	},
 	{
 		"slug": "members-service-and-facilities",
@@ -7147,7 +7147,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:17.215Z"
+		"fetchedAt": "2026-07-16T14:08:20.065Z"
 	},
 	{
 		"slug": "national-cohesion-and-equal-opportunity",
@@ -7161,7 +7161,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:18.626Z"
+		"fetchedAt": "2026-07-16T14:08:21.631Z"
 	},
 	{
 		"slug": "parliamentary-broadcasting-and-library",
@@ -7175,7 +7175,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:20.216Z"
+		"fetchedAt": "2026-07-16T14:08:23.164Z"
 	},
 	{
 		"slug": "national-government-constituencies-development",
@@ -7189,7 +7189,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:21.696Z"
+		"fetchedAt": "2026-07-16T14:08:24.980Z"
 	},
 	{
 		"slug": "liaison",
@@ -7203,7 +7203,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:23.467Z"
+		"fetchedAt": "2026-07-16T14:08:26.722Z"
 	},
 	{
 		"slug": "constitutional-implementation-oversight",
@@ -7217,7 +7217,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:24.896Z"
+		"fetchedAt": "2026-07-16T14:08:28.254Z"
 	},
 	{
 		"slug": "parliamentary-powers-and-privileges",
@@ -7231,7 +7231,7 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:26.446Z"
+		"fetchedAt": "2026-07-16T14:08:29.751Z"
 	},
 	{
 		"slug": "parliamentary-pensions-management",
@@ -7245,6 +7245,6 @@
 		"bio": null,
 		"photoUrl": null,
 		"committees": [],
-		"fetchedAt": "2026-07-16T05:05:27.706Z"
+		"fetchedAt": "2026-07-16T14:08:31.208Z"
 	}
 ]

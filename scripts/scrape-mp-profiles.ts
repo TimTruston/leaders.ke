@@ -75,14 +75,16 @@ function parseProfile(html: string, url: string): MpProfile {
 	const slug = url.replace(/\/$/, '').split('/').pop() as string;
 	const name = stripTags(html.match(/profile-hero__name">([\s\S]*?)<\/h1>/)?.[1] ?? '');
 
-	// "Official Background" section: a profile-note paragraph means Mzalendo has no
-	// verified biography yet; otherwise the section's paragraphs are the bio.
+	// "Official Background" section: the verified biography sits in a
+	// biography-content div (the section ALSO carries a profile-note — either
+	// "not yet available" or a "Verified against source" citation, so the note's
+	// presence says nothing about whether a bio exists).
 	const bioSection = html.match(/member-background[\s\S]*?<\/section>/)?.[0] ?? '';
-	let bio: string | null = null;
-	if (bioSection && !/profile-note/.test(bioSection)) {
-		const paragraphs = [...bioSection.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((m) => stripTags(m[1])).filter(Boolean);
-		bio = paragraphs.join('\n\n') || null;
-	}
+	const bio =
+		[...bioSection.matchAll(/<div class="biography-content">([\s\S]*?)<\/div>/g)]
+			.map((m) => stripTags(m[1]))
+			.filter(Boolean)
+			.join('\n\n') || null;
 
 	const photoPath = html.match(/<img src="(\/media\/images-rendered\/[^"]+)"/)?.[1];
 
@@ -119,11 +121,19 @@ async function memberUrlsByParliament(): Promise<Map<string, string[]>> {
 		if (segments.length < 6) continue; // the chamber index itself
 		const [, parliament, slug] = [segments[3], segments[5], segments[6]];
 		let key: string;
-		if (slug && /^1[123]th-parliament$/.test(parliament)) key = parliament.replace('-parliament', '');
-		else if (!slug) key = 'earlier'; // top-level member page (8th-10th stragglers)
-		else continue;
-		if (key === 'earlier' && /^1[123]th-parliament$/.test(segments[5])) continue; // parliament listing pages
-		groups.set(key, [...(groups.get(key) ?? []), url]);
+		let memberUrl = url;
+		if (slug && /^1[123]th-parliament$/.test(parliament)) {
+			key = parliament.replace('-parliament', '');
+		} else if (!slug && /^member-.*-(8|9|10)th$/.test(parliament)) {
+			// 8th-10th members are listed top-level in the sitemap, but the live pages
+			// sit under their parliament segment: member-x-8th -> /8th-parliament-na/member-x-8th/
+			const n = parliament.match(/-(8|9|10)th$/)![1];
+			key = 'earlier';
+			memberUrl = url.replace(`/national-assembly/${parliament}`, `/national-assembly/${n}th-parliament-na/${parliament}`);
+		} else {
+			continue; // listing pages and non-member strays
+		}
+		groups.set(key, [...(groups.get(key) ?? []), memberUrl]);
 	}
 	return groups;
 }

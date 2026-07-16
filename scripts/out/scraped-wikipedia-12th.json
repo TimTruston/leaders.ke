@@ -1,0 +1,3382 @@
+[
+	{
+		"name": "1",
+		"seat": "MP",
+		"region": "6",
+		"party": "173",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.273Z"
+	},
+	{
+		"name": "William Chepkut",
+		"seat": "MP",
+		"region": "Ainabkoi",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/William_Chepkut",
+		"bio": "\n\nWilliam Kamuren Chirchir Chepkut was a Kenyan politician who served as member of the National Assembly for the Ainabkoi Constituency between 2017 and 2022. He lost his seat to Samuel Chepkonga in the 2022 Kenyan general election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.276Z"
+	},
+	{
+		"name": "Sylvanus Maritim",
+		"seat": "MP",
+		"region": "Ainamoi",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Sylvanus_Maritim",
+		"bio": "\nSylvanus Maritim is a Kenyan politician who was a member of the National Assembly from Ainamoi Constituency. He was a member of the ruling JP prior to the 2022, and now he belongs to the UDA.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.276Z"
+	},
+	{
+		"name": "Cornelly Serem",
+		"seat": "MP",
+		"region": "Aldai",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Cornelly_Serem",
+		"bio": "\nCornelly Serem is a Kenyan politician who is a former member of the National Assembly for Aldai Constituency. He was a member of the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Samuel Atandi",
+		"seat": "MP",
+		"region": "Alego Usonga",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Samuel_Atandi",
+		"bio": "Samuel Atandi is a Kenyan politician from the Orange Democratic Movement who has been Member of the National Assembly for Alego Usonga since 2017. He was re-elected at the 2022 general election.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Samuel_Atandi.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "John Owino",
+		"seat": "MP",
+		"region": "Awendo",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Owino",
+		"bio": "\nHon. John Walter Owino is a Kenyan politician and member of the Felix Chimbly for Awendo Constituency. He is a member of the Orange Democratic Movement.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Hon._Walter_Owino_%28cropped%29.jpg/330px-Hon._Walter_Owino_%28cropped%29.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Onesmas Ngunjiri",
+		"seat": "MP",
+		"region": "Bahati",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Onesmas_Ngunjiri",
+		"bio": "\nOnesmas Kìmani Ngūnjiri is a Kenyan politician who was a member of the National Assembly for Bahati Constituency under the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Abdi Omar Shurie",
+		"seat": "MP",
+		"region": "Balamballa",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Abdi_Omar_Shurie",
+		"bio": "Abdi Omar Shurie is a Kenyan politician from the Jubilee Party. In the elections of 2017 and 2022, he was elected to the National Assembly in Balambala Constituency. The constituency is in Garissa County.\nIn 2024 Hon Shurie was awarded 1st Class Honours Chief of the Order of the Burning spear, CBS by President William Ruto.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Kulow Maalim Hassan",
+		"seat": "MP",
+		"region": "Banissa",
+		"party": "Economic Freedom Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Kulow_Maalim_Hassan",
+		"bio": "Kulow Maalim Hassan was a Kenyan politician from the United Democratic Movement (UDM). In 2017 and 2022 he was elected Member of Parliament for Banissa Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Joshua Chepyegon Kandie",
+		"seat": "MP",
+		"region": "Baringo Central",
+		"party": "Maendeleo Chap Chap Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joshua_Chepyegon_Kandie",
+		"bio": "Joshua Chepyegon Kandie is a Kenyan politician from the United Democratic Alliance (UDA), formerly from the Maendeleo Chap Chap Party. In the elections of 2017 and 2022, he was elected to the National Assembly in Baringo Central Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "William Kipkorir",
+		"seat": "MP",
+		"region": "Baringo North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/William_Kipkorir",
+		"bio": "William Kipkorir was a Kenyan politician. He belonged to the United Democratic Alliance party and was elected to represent the Baringo County in the Senate of Kenya from the 2022 General election onwards. He managed to win against Gideon Moi. He was a member of parliament for Baringo North. Kipkorir died on 15 February 2025, at the age of 57.\nHe was member of parliament of Baringo North for three terms.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Grace Jelagat Kipchoim (2017–18)",
+		"seat": "MP",
+		"region": "Baringo South",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Grace_Jelagat_Kipchoim",
+		"bio": "Grace Jelagat Kimoi Kipchoim was a Kenyan representative in the National Assembly of Kenya for Baringo South Constituency constituency. She was a coalition member of the Jubilee Alliance and a member of the United Republican Party (URP). She won the legislative seat while ill and did very few mobile campaigns compared to her main challenger, Charles Kamuren (KANU) who garnered 8,905 votes versus her 9,299 votes. Early in 2018, rumours on social media claimed that she had died, but she came out to defend herself and said they were being peddled by her detractors to tarnish her name. However, on 20 April 2018, she died of cancer while under treatment at Nairobi Hospital.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Nelson Koech",
+		"seat": "MP",
+		"region": "Belgut",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Innocent Obiri",
+		"seat": "MP",
+		"region": "Bobasi",
+		"party": "Peoples Democratic Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Innocent_Momanyi_Obiri",
+		"bio": "Innocent Momanyi Obiri is a Kenyan politician who is currently a member of the National Assembly for the Bobasi constituency, representing the Peoples Democratic Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Zadoc Abel Ogutu",
+		"seat": "MP",
+		"region": "Bomachoge Borabu",
+		"party": "Independent",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Miruka Ondieki Alfah",
+		"seat": "MP",
+		"region": "Bomachoge Chache",
+		"party": "Kenya National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Ronald Kiprotich Tonui",
+		"seat": "MP",
+		"region": "Bomet Central",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "Beatrice Pauline Cherono Kones",
+		"seat": "MP",
+		"region": "Bomet East",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Beatrice_Pauline_Cherono_Kones",
+		"bio": "Beatrice Pauline Cherono Kones was a Kenyan politician and a Member of the National Assembly representing Bomet East constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.277Z"
+	},
+	{
+		"name": "John Oyioka",
+		"seat": "MP",
+		"region": "Bonchari",
+		"party": "Peoples Democratic Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Oyioka",
+		"bio": "\n\nJohn Oroo Oyioka was a Kenyan politician who served as a Member of Parliament for the Peoples Democratic Party from 2017 till his death in 2021 from COVID-19.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Gideon Ochanda Ogolla",
+		"seat": "MP",
+		"region": "Bondo",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Ben George Orori Momanyi",
+		"seat": "MP",
+		"region": "Borabu",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Raphael Bitta Sauti Wanjala",
+		"seat": "MP",
+		"region": "Budalangi",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Moses Wekesa Mwambu Mabonga",
+		"seat": "MP",
+		"region": "Bumula",
+		"party": "Independent",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Ali Wario",
+		"seat": "MP",
+		"region": "Bura",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Ali_Wario",
+		"bio": "Ali Wario is a Kenyan politician and a member of the 9th and 11th Parliament of Kenya. He was an assistant minister for Home Affairs from 2003 to 2006. Wario joined politics in 2002 and won Bura Constituency seat to the 9th Kenyan national assembly on the ticket of Kenya African National Union (KANU) party ticket in 2002. He lost his reelection to Nassir Nuh Abdi in 2007 but reclaimed the seat in the 2013 election to the 11th parliament on the ticket of The National Alliance (TNA) in the Jubilee Coalition. He was appointed Assistant Minister of Home Affairs in 2003 and served until 2006 when he was redeployed as an Assistant Minister for Special Programmes. He was a member of Departmental Committee on Public Works, Roads & Transport in the 11th parliament.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Japheth Kiplangat Mutai",
+		"seat": "MP",
+		"region": "Bureti",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Nicholas Scott Tindi Mwale",
+		"seat": "MP",
+		"region": "Butere",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Joseph H. Maero Oyula",
+		"seat": "MP",
+		"region": "Butula",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Mugambi Murwithania Rindikiri",
+		"seat": "MP",
+		"region": "Buuri",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Moses Nguchine Kirima",
+		"seat": "MP",
+		"region": "Central Imenti",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Omar Mwinyi",
+		"seat": "MP",
+		"region": "Changamwe",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Omar_Mwinyi",
+		"bio": "Omar Mwinyi Shimbwa is a Kenyan politician and member of the Kenyan Parliament. He was elected as a member (MP) of the National Assembly of Kenya in 2013. He has been re-elected twice during the 2017 and 2022 Kenyan general election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Gideon Kimutai Koske",
+		"seat": "MP",
+		"region": "Chepalungu",
+		"party": "Chama Cha Mashinani",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Joshua Kutuny Serem",
+		"seat": "MP",
+		"region": "Cherangany",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Wilson Kipngetich Kogo",
+		"seat": "MP",
+		"region": "Chesumei",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Patrick Munene Ntwiga",
+		"seat": "MP",
+		"region": "Chuka Igambang'ombe",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Mohamed Dahir Duale",
+		"seat": "MP",
+		"region": "Dadaab",
+		"party": "Kenya African National Union",
+		"articleUrl": "https://en.wikipedia.org/wiki/Mohamed_Duale",
+		"bio": "Mohamed Dahir Duale is a Kenyan health professional and politician. He is a member of the Kenyan national Assembly from Dadaab Constituency elected on the ticket of Orange Democratic Movement (ODM). Before joining politics, he worked in various capacities with Kenyan Ministry of Health and World Health Organization (WHO).",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Paul Simba Arati",
+		"seat": "MP",
+		"region": "Dagoretti North",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "John Kiarie Waweru",
+		"seat": "MP",
+		"region": "Dagoretti South",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Kiarie_Waweru",
+		"bio": "John Kìarie Wawerū, commonly known as KJ, is a Kenyan politician, comedian, media and communications professional, and educator. He has represented Dagoretti South Constituency in Nairobi County since 2017. Before entering politics, he was a co‑founder of the satirical comedy troupe Redykyulass and had a distinguished career across journalism, advertising, public campaigns, and board governance.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/John_Kiarie_Waweru.jpg/330px-John_Kiarie_Waweru.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Moses Lessonet",
+		"seat": "MP",
+		"region": "Eldama Ravine",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Moses_Lessonet",
+		"bio": "\nMoses K. Lessonet is a Kenyan politician. He was elected to represent the Eldama Ravine Constituency in the National Assembly of Kenya in the 2007 Kenyan parliamentary election as a member of the Orange Democratic Movement.He is an accountant by profession, having graduated at the University of Nairobi 1993 with Bachelor of Commerce (Accounting). In 2013, he ran for Parliament as a member of the United Republican Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Adan Keynan Wehliye",
+		"seat": "MP",
+		"region": "Eldas",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Adan_Keynan_Wehliye",
+		"bio": "Aden Keynan Wehliye is a Member of the National Assembly of Kenya. He served Wajir West constituency from 1997 to 2002 and 2007 to 2013. He then moved to Eldas constituency which was carved from Wajir West. Keynan served as the MP of Eldas in the 11th and 12th parliaments. He represented the Orange Democratic Movement until 2017 when he switched to the Jubilee Party. Keynan was re-elected on the Jubilee ticket in the 2022 elections. He is the longest-serving MP of the 13th Parliament of Kenya.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Wehiye%2C_Adan_Keynan_cropped.jpg/330px-Wehiye%2C_Adan_Keynan_cropped.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Benjamin Gathiru Mwangi",
+		"seat": "MP",
+		"region": "Embakasi Central",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Babu Owino",
+		"seat": "MP",
+		"region": "Embakasi East",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Babu_Owino",
+		"bio": "Paul Ongili Owino, also known as Babu Owino, is a Kenyan politician and member of parliament for Embakasi East Constituency. He gained media recognition as the chairperson of Students Organisation of Nairobi University (SONU). He is also an Advocate of the High Court of Kenya.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "James Mwangi Gakuya",
+		"seat": "MP",
+		"region": "Embakasi North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/James_Mwangi_Gakuya",
+		"bio": "James Mwangi Gakuya is a Kenyan politician serving as the Member of Parliament for Embakasi North Constituency in Nairobi County. He was first elected in the 2013 Kenyan general election and has been re-elected in subsequent elections.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/James_Gakuya.jpg/330px-James_Gakuya.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Julius Musili Mawathe",
+		"seat": "MP",
+		"region": "Embakasi South",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "George Theuri",
+		"seat": "MP",
+		"region": "Embakasi West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Alexander Kimutai Kigen Kosgey",
+		"seat": "MP",
+		"region": "Emgwen",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Jeremiah Omboko Milemba",
+		"seat": "MP",
+		"region": "Emuhaya",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Johana Ngeno Kipyegon",
+		"seat": "MP",
+		"region": "Emurua Dikirr",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Robert Pukose",
+		"seat": "MP",
+		"region": "Endebess",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Robert_Pukose",
+		"bio": "\nDr. Robert Pukose is a Kenyan politician. He was elected a member of Parliament Endebess in the Trans Nzoia county in the year 2013 to date. He was the First MP after 2010 Constitution and formation of Endebess constituency. The Watlrd is made up of Sabaot, Nandi, Bukusu, Turkana, and Pokot ethnic groups. He vied on a URP (URP) ticket and emerged victorious after beating his closest rival. He is a trained Medical Doctor by Profession.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Abdikhaim Osman Mohamed",
+		"seat": "MP",
+		"region": "Fafi",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Wilberforce Ojiambo Oundo",
+		"seat": "MP",
+		"region": "Funyula",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Said Buya Hiribae",
+		"seat": "MP",
+		"region": "Galole",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Teddy Ngumbao Mwambire",
+		"seat": "MP",
+		"region": "Ganze",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Aden Duale",
+		"seat": "MP",
+		"region": "Garissa Township",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Aden_Duale",
+		"bio": "Aden Bare Duale is a Kenyan politician who serves as the Cabinet Secretary of Health since his 2025. He previously served as the Cabinet Secretary for Defence in the cabinet of President William Ruto, having assumed the position on 31 October 2022. He was dismissed on 11 July 2024 and then reinstated on 19 July 2024 in a different capacity as Cabinet Secretary Ministry of Environment, Climate Change and Forestry before being moved to Ministry of Health. He hails from the Ogaden - AbudWaaq branch of the greater Darod clan.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kenya_Defense_Cabinet_Secretary_Aden_Duale_at_the_Kenya_Ministry_of_Defense_in_Nairobi%2C_Kenya_on_September_25%2C_2023_-_230925-D-PM193-2018_%28cropped%29.jpg/330px-Kenya_Defense_Cabinet_Secretary_Aden_Duale_at_the_Kenya_Ministry_of_Defense_in_Nairobi%2C_Kenya_on_September_25%2C_2023_-_230925-D-PM193-2018_%28cropped%29.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Ali Wario Guyo",
+		"seat": "MP",
+		"region": "Garsen",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Joseph Nduati Ngugi",
+		"seat": "MP",
+		"region": "Gatanga",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Annie Wanjiku Kibeh",
+		"seat": "MP",
+		"region": "Gatundu North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Annie_Wanjiku_Kibeh",
+		"bio": "Annie Wanjiku Kibeh is a Kenyan politician and former media practitioner who served as the Member of the National Assembly for Gatundu North Constituency from 2017 to 2022. She was elected during the 2017 Kenyan general elections on a Jubilee Party ticket.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Moses Kiarie Kuria",
+		"seat": "MP",
+		"region": "Gatundu South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Elisha Ochieng Odhiambo",
+		"seat": "MP",
+		"region": "Gem",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Robert Gichimu Githinji",
+		"seat": "MP",
+		"region": "Gichugu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Robert_Gichimu_Githinji",
+		"bio": "Robert Gìchimū Gìthìnji is a Kenyan lawyer and politician who has served in the National Assembly of Kenya since 2017, representing the Gichugu Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Martha Wangari Wanjira",
+		"seat": "MP",
+		"region": "Gilgil",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Martha_Wangari_Wanjira",
+		"bio": "Martha Wangarì Wanjìra is a Kenyan politician from the United Democratic Alliance. She represents the Gilgil Constituency in the National Assembly.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.278Z"
+	},
+	{
+		"name": "Gabriel Kago Mukuha",
+		"seat": "MP",
+		"region": "Githunguri",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Charles Gumini Gimose",
+		"seat": "MP",
+		"region": "Hamisi",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "George Peter Opondo Kaluma",
+		"seat": "MP",
+		"region": "Homa Bay Town",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Cyprian Kubai Iringo",
+		"seat": "MP",
+		"region": "Igembe Central",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Kubai_Iringo",
+		"bio": "Kubai Cyprian Iringo is a Kenyan politician and diplomat currently serving as Kenyan ambassador to Somalia. He was a member of the 11th parliament of Kennya elected from Igembe Central Constituency on the Orange Democratic Movement (ODM) and with the support of CORD Coalition. He served on the house committee on Finance, Planning and Trade and spoke 462 times on the floor of the house during the 11th parliament. In December 2013, his party, ODM threatened to expel him and a fellow MP Mpuru Aburi from the party for expressing willingness to work with Jubilee Coalition government. He was appointed Kenyan ambassador to Somalia in October 2023. Iringo is a recipient of Shujaa Parliamentarian Award for “Championing Wananchi in matters of health” (2015) given by Mzalendo Trust.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Richard Maore Maoka",
+		"seat": "MP",
+		"region": "Igembe North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "John Paul Mwirigi",
+		"seat": "MP",
+		"region": "Igembe South",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Paul_Mwirigi",
+		"bio": "John Paul Mwirigi is the Member of Parliament for Igembe South Constituency, Meru County, in the Kenya National Assembly. He was elected in August 2017 at the age of 23 years, the youngest ever Kenyan member of parliament. He was re-elected on 9 August 2022 as Igembe South Constituency MP with a total of 34,561 votes. His closest opponent garnered 10,000 votes.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Sophia Abdi Noor",
+		"seat": "MP",
+		"region": "Ijara",
+		"party": "Party for Development and Reform",
+		"articleUrl": "https://en.wikipedia.org/wiki/Sophia_Abdi_Noor",
+		"bio": "Sophia Abdi Noor is a Kenyan Politician serving as a Member of Parliament Ijara Constituency. She is the first woman to be elected as a Member of the 10th Parliament of Kenya from the North Eastern Region of Kenya.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Benard Masaka Shinali",
+		"seat": "MP",
+		"region": "Ikolomani",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Hassan Oda Hulufo",
+		"seat": "MP",
+		"region": "Isiolo North",
+		"party": "Kenya Patriots Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Abdi Koropu Tepo",
+		"seat": "MP",
+		"region": "Isiolo South",
+		"party": "Kenya Patriots Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Bady Twalib Bady",
+		"seat": "MP",
+		"region": "Jomvu",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Francis Munyua Waititu",
+		"seat": "MP",
+		"region": "Juja",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "James Githua Kamau Wamacukuru",
+		"seat": "MP",
+		"region": "Kabete",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Eve Akinyi Obara",
+		"seat": "MP",
+		"region": "Kabondo Kasipul",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Eve_Akinyi_Obara",
+		"bio": "Eve Akinyi Obara is a Kenyan politician and the current Member of Parliament for Kabondo Kasipul Constituency in Homabay County. She has been a member of the Orange Democratic Movement (ODM) since 2017.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "James Lusweti Mukwe",
+		"seat": "MP",
+		"region": "Kabuchai",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Mark Lomunokol",
+		"seat": "MP",
+		"region": "Kacheliba",
+		"party": "Party for Development and Reform",
+		"articleUrl": "https://en.wikipedia.org/wiki/Mark_Lomunokol",
+		"bio": "Mark Lomunokol is a Kenyan politician who is currently a member of the National Assembly for Kacheliba Constituency. He is a member of the United Democratic Alliance.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Joshua Kivinda Kimilu",
+		"seat": "MP",
+		"region": "Kaiti",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Elijah Memusi Kanchory",
+		"seat": "MP",
+		"region": "Kajiado Central",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Peris Pesi Tobiko",
+		"seat": "MP",
+		"region": "Kajiado East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Joseph Manje",
+		"seat": "MP",
+		"region": "Kajiado North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joseph_Manje",
+		"bio": "Joseph Wathigo Manje is a Kenyan politician, a teacher, and an entrepreneur, and currently the Member of Parliament for Kajiado North Constituency in Kajiado County. He is a member of the ruling Jubilee Party under President Uhuru Kenyatta. He previously served as a Commissioner at the Teachers Service Commission (TSC) as well as the Electoral Commission of Kenya's (ECK) South Rift Presidential Election Zonal Coordinator. He also served as a teacher employed by Kenya's Teachers Service Commission. He has business interests in the leather and construction industries.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Hon_Manje.jpg/330px-Hon_Manje.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Katoo Judah Katoo",
+		"seat": "MP",
+		"region": "Kajiado South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "George Risa Sunkuyia",
+		"seat": "MP",
+		"region": "Kajiado West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Paul Kahindi Katana",
+		"seat": "MP",
+		"region": "Kaloleni",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Yusuf Hassan Abdi",
+		"seat": "MP",
+		"region": "Kamukunji",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Yusuf_Hassan_Abdi",
+		"bio": "Yusuf Hassan Abdi is a Kenyan politician, diplomat, social activist and former journalist. After working many years with the United Nations, he joined the Kenya parliament as a legislator in 2011.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Yusuf_Hassan.jpg/330px-Yusuf_Hassan.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Alice Muthoni Wahome",
+		"seat": "MP",
+		"region": "Kandara",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Alice_Muthoni_Wahome",
+		"bio": "Alice Mūthoni Wahome is a Kenyan politician. She served as cabinet secretary for Lands, Public Works, Housing and Urban Development. Wahome was the elected as Member of Parliament for the Kandara Constituency in the March 2013 general elections and successfully defended her seat in 2017 and 2022 prior to resigning her seat to join cabinet. Wahome is a member of UDA. She was later dismissed as a cabinet secretary in July 2024.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Alice_Wahome_-_2023_%28cropped%29.jpg/330px-Alice_Wahome_-_2023_%28cropped%29.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Wafula Wamunyinyi",
+		"seat": "MP",
+		"region": "Kanduyi",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Wafula_Wamunyinyi",
+		"bio": "Athanas Misiko Wafula Wamunyinyi is a Kenyan politician who is leader of the Democratic Action Party. He began his career in politics when he was elected as MP for Kanduyi Constituency in 1997. He was in his twenties at the time. Wamunyinyi was re-elected for the same seat in 2002. In the infamous 2007 elections he lost his seat but later re-emerged to serve another 2 consecutive terms from 2013 to 2022.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Deputy_Special_Representative_of_the_Chairperson_of_the_African_Union_Commission_for_Somalia_Wafula_Wamunyinyi.jpg/330px-Deputy_Special_Representative_of_the_Chairperson_of_the_African_Union_Commission_for_Somalia_Wafula_Wamunyinyi.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Clement Muturi Kigano",
+		"seat": "MP",
+		"region": "Kangema",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Fabian Kyule Muli",
+		"seat": "MP",
+		"region": "Kangundo",
+		"party": "Muungano Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Fabian_Kyule_Muli",
+		"bio": "Fabian Kyule Muli is a Kenyan politician and businessman currently serving as the member of Parliament for Kangundo Constituency since 2017. He is also the party leader of the Grand Dream Development Party. Before joining politics, Muli worked in the United States Army and later ventured into business.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Samwel Moroto",
+		"seat": "MP",
+		"region": "Kapenguria",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Samuel_Moroto",
+		"bio": "\n\nSamuel Chumel Moroto is a Kenyan politician. He represents Kapenguria Constituency in the Kenyan National Assembly of the Kenyan parliament. He belongs to the Kenya African National Union (KANU) party. He is a career teacher and trade unionist. He was first elected to parliament in 2002. He hails from the Pokot community which mainly inhabits West Pokot County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Oscar Sudi",
+		"seat": "MP",
+		"region": "Kapseret",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Oscar_Sudi",
+		"bio": "Oscar Kipchumba Sudi is a Kenyan politician who is currently a member of the National Assembly representing Kapseret constituency, found in Uasin Gishu county. He is a member of the ruling party, United Democratic Alliance (UDA), and a close ally to the fifth President of Kenya, William Ruto.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Andrew Adipo Okuome",
+		"seat": "MP",
+		"region": "Karachuonyo",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Mercy Gakuya",
+		"seat": "MP",
+		"region": "Kasarani",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Mercy_Gakuya",
+		"bio": "\n\nMercy Gakuya is a Kenyan politician. She is a member of the Jubilee Party and the Member of Parliament for Kasarani Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Charles Ong'ondo",
+		"seat": "MP",
+		"region": "Kasipul",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Charles_Ong'ondo",
+		"bio": "Charles Ong'ondo Were was a Kenyan politician who was a Member of Parliament. He was the Member of Parliament for Kasipul Constituency in Homa Bay County. He became the second Member of parliament for Kasipul to die while in office after Peter Owidi, who died in the evening of 23 November 2005.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Robert Mbui",
+		"seat": "MP",
+		"region": "Kathiani",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Robert_Mbui",
+		"bio": "Robert Mbui, CBS is a Kenyan politician. He is currently a member of the National Assembly representing Kathiani Constituency and Deputy Leader of Minority in the National Assembly. He is the fifth member of parliament to represent the constituency since its inception in 1988. He holds a Master's in Strategic Management from the Kenya Institute of Management.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "James Kipkosgei Murgor",
+		"seat": "MP",
+		"region": "Keiyo North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Daniel Kipkogei Rono",
+		"seat": "MP",
+		"region": "Keiyo South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Swarup Ranjan Mishra",
+		"seat": "MP",
+		"region": "Kesses",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Swarup_Ranjan_Mishra",
+		"bio": "Swarup Ranjan Mishra is an Indian-born Kenyan doctor, entrepreneur, and politician. He is a gynaecologist and the founder and chairman of Mediheal Group of Hospitals. He has served as a Member of Parliament for Kesses Constituency in Kenya from 2017 to 2022.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Swarup-ranjan-mishra.png/330px-Swarup-ranjan-mishra.png",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Christopher Aseka Wangaya",
+		"seat": "MP",
+		"region": "Khwisero",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "John Njuguna Wanjiku",
+		"seat": "MP",
+		"region": "Kiambaa",
+		"party": "United Democratic Alliance",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Jude L. Kangethe Njomo",
+		"seat": "MP",
+		"region": "Kiambu",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Benard Otieno Okoth",
+		"seat": "MP",
+		"region": "Kibra",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Benard_Otieno_Okoth",
+		"bio": "\nBenard Otieno Okoth is a Kenyan politician. He is a Member of Parliament of Kenya, representing Kibra Constituency, Nairobi County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Jessica Nduku Kiko Mbalu",
+		"seat": "MP",
+		"region": "Kibwezi East",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jessica_Nduku_Kiko_Mbalu",
+		"bio": "Jessica Nduku Kiko Mbalu is a Kenyan politician from the WDM-K. She represents the Kibwezi East Constituency in the National Assembly. She is a member of the Kenya Women Parliamentary Association (KEWOPA). The association includes parliamentary women from the National Assembly and the Senate.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Patrick Mweu Musimba",
+		"seat": "MP",
+		"region": "Kibwezi West",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Patrick_Mweu_Musimba",
+		"bio": "The Hon. Dr. Patrick Musimba MP is a Kenyan politician and Member of the National Assembly representing the Kibwezi West Constituency in Makueni County.He is now vying for the gubernatorial seat of Makueni county in the 2022 elections. He was first elected to Parliament in March 2013 as an independent candidate, but announced in June 2019 that he was joining the Wiper party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Mathenge James Kanini Kega",
+		"seat": "MP",
+		"region": "Kieni",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Ruth Wangari Mwaniki",
+		"seat": "MP",
+		"region": "Kigumo",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Ruth_Wangari_Mwaniki",
+		"bio": "Ruth Wangarì Mwanìki is a Kenyan politician who served in the National Assembly of Kenya from 2017 until 2022. A member of the Jubilee Party, she represented the Kigumo Constituency. During her tenure, Mwanìki was a prominent supporter of President Uhuru Kenyatta and was an advocate for the Building Bridges Initiative.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Ndindi Nyoro",
+		"seat": "MP",
+		"region": "Kiharu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Ndindi_Nyoro",
+		"bio": "Ndindi Nyoro is a Kenyan politician currently serving as member of parliament (MP) for Kiharu Constituency in Murang'a County. He is also a businessman and entrepreneur. Nyoro belongs to United Democratic Alliance (UDA), a political party under the Kenya Kwanza alliance led by the president of Kenya, William Ruto. He is a graduate of Kenyatta University with a Bachelor of Arts (Economics) and was a student leader at the same university. Similarly, he holds two Master’s degrees; a Master of Arts in Economics, and a Master of Economics from the University of Nairobi and Kenyatta University respectively, which he pursued concurrently and successfully completed in 2025.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/NDINDINYORO.jpg/330px-NDINDINYORO.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Anthony Kimani Ichung'wah",
+		"seat": "MP",
+		"region": "Kikuyu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Anthony_Kimani_Ichung'wah",
+		"bio": "Anthony Kĩmani Ichũng'wah is a Kenyan politician from the United Democratic Alliance. He is the majority leader in the National Assembly of the 13th Parliament of Kenya.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Gideon Sitelu Konchela",
+		"seat": "MP",
+		"region": "Kilgoris",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Owen Yaa Baya",
+		"seat": "MP",
+		"region": "Kilifi North",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Richard Ken Chonga Kiti",
+		"seat": "MP",
+		"region": "Kilifi South",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Thuddeus Kithua Nzambia",
+		"seat": "MP",
+		"region": "Kilome",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Didmus Wekesa Barasa Mutua",
+		"seat": "MP",
+		"region": "Kimilili",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Chrisantus Wamalwa Wakhungu",
+		"seat": "MP",
+		"region": "Kiminini",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Benjamin Dalu Stephen Tayari",
+		"seat": "MP",
+		"region": "Kinango",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Zachary Kwenya Thuku",
+		"seat": "MP",
+		"region": "Kinangop",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Amos Kimunya",
+		"seat": "MP",
+		"region": "Kipipiri",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Amos_Kimunya",
+		"bio": "Amos Mūhìnga Kìmunya is a Kenyan politician and a former Majority Leader of the National Assembly of Kenya under the Jubilee Party and former Member of Parliament for Kipipiri Constituency. He also previously served as Kenya's Minister of Trade. He was Minister of Finance from 2006 to July 2008, when he resigned due to the Grand Regency Hotel scandal. Previously, he was the Minister of Lands and Settlement. In 2019, Amos Kìmunya graduated from the United States International University (Nairobi) with a PhD in Business Administration. On June 22, Kìmunya replaced Aden Duale as the majority leader of the National Assembly.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Amos_Kimonya%2C_IMF_2006.jpg/330px-Amos_Kimonya%2C_IMF_2006.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Kirui Joseph Limo",
+		"seat": "MP",
+		"region": "Kipkelion East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Hilary Kiplang’at Kosgei",
+		"seat": "MP",
+		"region": "Kipkelion West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "John Munene Wambugu",
+		"seat": "MP",
+		"region": "Kirinyaga Central",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Ali Menza Mbogo",
+		"seat": "MP",
+		"region": "Kisauni",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Fred Odhiambo Ouda",
+		"seat": "MP",
+		"region": "Kisumu Central",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Shakeel Shabbir",
+		"seat": "MP",
+		"region": "Kisumu East",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Shakeel_Shabbir",
+		"bio": "Shakeel Shabbir Ahmed is a Kenyan politician. He belongs to the Orange Democratic Movement and was elected to represent the Kisumu Town East Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "John Olago Aluoch",
+		"seat": "MP",
+		"region": "Kisumu West",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Olago_Aluoch",
+		"bio": "\nJohn Olago Aluoch is a Kenyan politician. He started out in the Orange Democratic Movement and was elected to represent the Kisumu Town West Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary election. He currently is the Member of Parliament for Kisumu West Constituency on a Ford-Kenya ticket following the 2013 General Elections.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Benson Makali Mulu",
+		"seat": "MP",
+		"region": "Kitui Central",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Nimrod Mbithuka Mbai",
+		"seat": "MP",
+		"region": "Kitui East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "David Mwalika Mboni",
+		"seat": "MP",
+		"region": "Kitui Rural",
+		"party": "Chama Cha Uzalendo",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Rachael Kaki Nyamai",
+		"seat": "MP",
+		"region": "Kitui South",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Rachael_Kaki_Nyamai",
+		"bio": "Rachael Kaki Nyamai is a Kenyan politician. She is a member of parliament for Kitui south constituency in Kitui County under Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Edith Vethi Nyenze",
+		"seat": "MP",
+		"region": "Kitui West",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Edith_Vethi_Nyenze",
+		"bio": "Edith Vethi Nyenze is a Kamba Kenyan politician who is the incumbent Member of Parliament for Kitui West Constituency. She was elected to succeed her late husband Francis Nyenze as the 7th Member of Parliament for Kitui West Constituency. She belongs to the WDM.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Jimmy Nuru Ondieki Angwenyi",
+		"seat": "MP",
+		"region": "Kitutu Chache North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Richard Momoima Onyonka {{cite news |url=https://www.nation.co.ke/counties/kisii/Richard-Onyonka-wins-Kitutu-Chache-South-MP/1183286-4177630-7lbomn/index.html |title=Richard Onyonka re-elected in Kitutu Chache South |last1=Mbula |first1=Ruth |last2=Kiage |first2=Nyaboga |work=Nation |date=2017-11-08 |access-date=2020-09-10}}&lt;/ref>\"}},\"i\":0}}]}'>",
+		"seat": "MP",
+		"region": "Kitutu Chache South",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Richard_Momoima_Onyonka",
+		"bio": "\nRichard Momoima is a Kenyan senator. He belonged to the People's Democratic Party and was elected to represent the Kitutu Chache Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary election. He is now a Ford Kenya Party member and retained his seat through this seat in the August 2017 elections.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Shadrack John Mose",
+		"seat": "MP",
+		"region": "Kitutu Masaba",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Yegon Brighton Leonard",
+		"seat": "MP",
+		"region": "Konoin",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Moses Kipkemboi Cheboi",
+		"seat": "MP",
+		"region": "Kuresoi North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Joseph Tonui Kipkosgei",
+		"seat": "MP",
+		"region": "Kuresoi South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Marwa Kemero Maisori Kitayama",
+		"seat": "MP",
+		"region": "Kuria East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Mathias Nyamabe Robi",
+		"seat": "MP",
+		"region": "Kuria West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Ferdinard Kevin Wanyonyi",
+		"seat": "MP",
+		"region": "Kwanza",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Abdi Mude Ibrahim",
+		"seat": "MP",
+		"region": "Lafey",
+		"party": "Economic Freedom Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Mohamed Hire Garane",
+		"seat": "MP",
+		"region": "Lagdera",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.279Z"
+	},
+	{
+		"name": "Amin Deddy Mohamed Ali",
+		"seat": "MP",
+		"region": "Laikipia East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Sarah Paulata Korere",
+		"seat": "MP",
+		"region": "Laikipia North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Sarah_Paulata_Korere",
+		"bio": "\n\nSara Paulata Korere is a Kenyan politician. She is the member of parliament for Laikipia North constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Patrick Kariuki Mariru",
+		"seat": "MP",
+		"region": "Laikipia West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Marselino Malimo Arballe",
+		"seat": "MP",
+		"region": "Laisamis",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Sharif Athman Ali",
+		"seat": "MP",
+		"region": "Lamu East",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Ali_Sharif_Athman",
+		"bio": "Ali Sharif Athman is a Kenyan politician and a member of the 11th parliament of Kenya elected from Lamu East on the ticket of United Democratic Forum Party (UDF) and with support of Amani Coalition in 2013.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Stanley Muiruri Muthama",
+		"seat": "MP",
+		"region": "Lamu West",
+		"party": "Maendeleo Chap Chap Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Nixon Kiprotich Korir",
+		"seat": "MP",
+		"region": "Langata",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Nixon_Kiprotich_Korir",
+		"bio": "Nixon Korir is a Kenyan politician and serves as the nominated principal secretary for State Department for Lands and Physical Planning in Kenya.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Langata_mp.jpg/330px-Langata_mp.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Jonah Mburu Mwangi",
+		"seat": "MP",
+		"region": "Lari",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Mishi Juma Khamisi Mboko",
+		"seat": "MP",
+		"region": "Likoni",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Enoch Wamalwa Kibunguchy",
+		"seat": "MP",
+		"region": "Likuyani",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Peter Mungai Mwathi",
+		"seat": "MP",
+		"region": "Limuru",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Jeremiah Ekamais Lomorukai",
+		"seat": "MP",
+		"region": "Loima",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Christopher Omulele",
+		"seat": "MP",
+		"region": "Luanda",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Ayub Savula Angatia",
+		"seat": "MP",
+		"region": "Lugari",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Khatib Abdallah Mwashetani",
+		"seat": "MP",
+		"region": "Lunga Lunga",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Khatib_Abdallah_Mwashetani",
+		"bio": "\nKhatib Abdalla Mwashetani is a Kenyan politician and former MP of Lunga Lunga Constituency in Kwale County, Kenya. He was first elected in the 2013 Kenyan General Elections as a member of the FORD-Kenya party. He was re-elected in the 2017 elections under the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Titus Khamala Mukhwana",
+		"seat": "MP",
+		"region": "Lurambi",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Japhet Miriti Kareke Mbiuki",
+		"seat": "MP",
+		"region": "Maara",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Victor Kioko Munyaka",
+		"seat": "MP",
+		"region": "Machakos Town",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Michael Thoyah Kingi",
+		"seat": "MP",
+		"region": "Magarini",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "George Aladwa Omwera",
+		"seat": "MP",
+		"region": "Makadara",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Daniel Kitonga Maanzo",
+		"seat": "MP",
+		"region": "Makueni",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Moses Malulu Injendi",
+		"seat": "MP",
+		"region": "Malava",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Aisha Jumwa Karisa Katana",
+		"seat": "MP",
+		"region": "Malindi",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Aisha_Jumwa_Karisa_Katana",
+		"bio": "Aisha Jumwa Karisa Katana is the immediate former Cabinet Secretary for Gender, fired by President William Ruto on 11th July 2024. She previously served as a Member of Parliament representing Malindi Constituency in Kilifi County and Commissioner of the Parliamentary Service Commission (PSC) from 2017 to 2022. She also served as the Woman Representative for Kilifi County from 2013 to 2017, and as Councillor for Takaungu Ward from 1997 to 2007. She holds a Bachelor's Degree in Leadership and Management from International Leadership University [ILU] and Executive Diploma in Governance from the Jomo Kenyatta University of Agriculture and Technology.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Omar Mohamed Maalim Hassan",
+		"seat": "MP",
+		"region": "Mandera East",
+		"party": "Economic Freedom Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Bashir S. Abdullah",
+		"seat": "MP",
+		"region": "Mandera North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Adan Haji Ali",
+		"seat": "MP",
+		"region": "Mandera South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Adan Haji Yussuf",
+		"seat": "MP",
+		"region": "Mandera West",
+		"party": "Economic Freedom Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "John Muchiri Nyaga",
+		"seat": "MP",
+		"region": "Manyatta",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/John_Muchiri",
+		"bio": "John Muchiri is a Kenyan politician and a member of the 11th parliament of Kenya for Manyatta Constituency, Embu County on the ticket of The National Alliance and with support of Jubilee Coalition. Elected in 2013, Muchiri served on the house committee on Public Investment and Departmental Committee on Health. According to Mzalendo Trust, Muchiri is one of the “lazy MPs” in the parliament haven spoken only nine times during his term in the lowerhouse.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Mary Wamaua Waithira Njoroge",
+		"seat": "MP",
+		"region": "Maragwa",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Mary_Wamaua_Waithira_Njoroge",
+		"bio": "\nMary Wamaua Waithìra Njoroge is a Kenyan politician. She is currently a Member of Parliament for Maragua Constituency in Murang’a County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "David Kangogo Bowen",
+		"seat": "MP",
+		"region": "Marakwet East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "William Kipkemoi Kisang",
+		"seat": "MP",
+		"region": "Marakwet West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Joshua Mbithi Mwalyo",
+		"seat": "MP",
+		"region": "Masinga",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Geoffrey Makokha Odanga",
+		"seat": "MP",
+		"region": "Matayos",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Anthony Tom Oluoch",
+		"seat": "MP",
+		"region": "Mathare",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Peter Kimari Kihara",
+		"seat": "MP",
+		"region": "Mathioya",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Rigathi Gachagua",
+		"seat": "MP",
+		"region": "Mathira",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Rigathi_Gachagua",
+		"bio": "Geoffrey Rigathi Gachagua is a Kenyan politician who served as the 2nd deputy president of Kenya. He served from 13 September 2022 until his impeachment in October 2024. As a member of the Jubilee Party, Gachagua served as Member of Parliament for Mathira from 2017 to 2022. He is also the Party leader of Democracy for the Citizens (DCP) Party. which was launched on May 15, 2025.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Rigathi_Gachagua_October_2023_%28cropped%29.jpg/330px-Rigathi_Gachagua_October_2023_%28cropped%29.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Kassim Sawa Tandaza",
+		"seat": "MP",
+		"region": "Matuga",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Justus Murunga Makokha",
+		"seat": "MP",
+		"region": "Matungu",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Stephen Mutinda Mule",
+		"seat": "MP",
+		"region": "Matungulu",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Patrick Makau King'ola",
+		"seat": "MP",
+		"region": "Mavoko",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Patrick_Makau_(politician)",
+		"bio": "Patrick Makau King'ola is a Kenyan politician who serves as Wiper Democratic Movement – Kenya Member of the National Assembly representing Mavoko Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Charles Muriuki Njagagua",
+		"seat": "MP",
+		"region": "Mbeere North",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Muriuki_Njagagua",
+		"bio": "Muriuki Charles Njagagua is a Kenyan lawyer and politician who was a member of the 11th parliament of Kenya for Mbeere North Constituency on the ticket of Alliance Party of Kenya (APK).",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Geoffrey Kingagi Muturi",
+		"seat": "MP",
+		"region": "Mbeere South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Erastus Kivasu Nzioka",
+		"seat": "MP",
+		"region": "Mbooni",
+		"party": "New Democrats",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Daniel Kamuren Tuitoek",
+		"seat": "MP",
+		"region": "Mogotio",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Silas Kipkoech Tiren",
+		"seat": "MP",
+		"region": "Moiben",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Francis Kuria Kimani",
+		"seat": "MP",
+		"region": "Molo",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Vincent Kipkurui Tuwei",
+		"seat": "MP",
+		"region": "Mosop",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Qalicha Gufu Wario",
+		"seat": "MP",
+		"region": "Moyale",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Suleiman Dori (2017–20) {{cite news |url=https://www.standardmedia.co.ke/politics/article/2001363488/who-was-suleiman-dori-ramadhani |title= What you didn&apos;t know about Suleiman Dori Ramadhani |last=George |first=Brian |work=The Standard |date=2020-03-09 |access-date=2020-09-10}}&lt;/ref>\"}},\"i\":0}}]}'>",
+		"seat": "MP",
+		"region": "Msambweni",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Suleiman_Dori",
+		"bio": "Suleiman Dori was a Kenyan politician who served as a member of parliament from Msambweni.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Fred Kapondi Chesebe",
+		"seat": "MP",
+		"region": "Mt. Elgon",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "James Onyango Oyoo",
+		"seat": "MP",
+		"region": "Muhoroni",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Anthony Githiaka Kiai",
+		"seat": "MP",
+		"region": "Mukurweini",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.280Z"
+	},
+	{
+		"name": "Benjamin Jomo Washiali",
+		"seat": "MP",
+		"region": "Mumias East",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Benjamin_Jomo_Washiali",
+		"bio": "\nBenjamin Jomo Washiali is a Kenyan politician. He belonged to the Orange Democratic Movement and was elected to represent the Mumias East Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary electionbut was later elected in 2017 to represent the constituent through a jubilee party which is headed by H.E Uhuru Kenyatta",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Johnson Manya Naicca",
+		"seat": "MP",
+		"region": "Mumias West",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Abdullswamad Sherrif Nassir",
+		"seat": "MP",
+		"region": "Mvita",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Abdullswamad_Sherrif_Nassir",
+		"bio": "Abdullswamad Sheriff Nassir is a Kenyan politician. He is the governor of Mombasa County. He was elected on an ODM ticket under Azimio la Umoja, One Kenya Alliance in the 2022 General Election. He earlier served as Member of Parliament (MP) for Mvita Constituency from 2012 to 2022. He is currently the deputy party leader of ODM.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Vincent Musyoka Musau",
+		"seat": "MP",
+		"region": "Mwala",
+		"party": "Maendeleo Chap Chap Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Andrew Mwadima",
+		"seat": "MP",
+		"region": "Mwatate",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Josphat Kabinga Wachira",
+		"seat": "MP",
+		"region": "Mwea",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Gideon Mutemi Mulyungi",
+		"seat": "MP",
+		"region": "Mwingi Central",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Paul Musyimi Nzengu",
+		"seat": "MP",
+		"region": "Mwingi North",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Charles Ngusya Nguna",
+		"seat": "MP",
+		"region": "Mwingi West",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Jayne Njeri Wanjiru Kihara",
+		"seat": "MP",
+		"region": "Naivasha",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jayne_Njeri_Wanjiru_Kihara",
+		"bio": "Jayne Njeri Wanjikū Kìhara is a Kenyan politician. She is currently the only member of parliament for Naivasha Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "David Gikaria",
+		"seat": "MP",
+		"region": "Nakuru Town East",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/David_Gikaria",
+		"bio": "\nDavid Gikaria is a Kenyan politician from the United Democratic Alliance. In the 2022 Kenyan general election, he was elected to a third term as Member of Parliament for Nakuru Town East.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Samuel Arama",
+		"seat": "MP",
+		"region": "Nakuru Town West",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Samuel_Arama",
+		"bio": "Samuel Arama is a Kenyan politician who has served as a member of the National Assembly for the Nakuru Town West constituency since 2013. He is a member of the Jubilee Party, having previously represented the Orange Democratic Movement.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Sakwa John Bunyasi",
+		"seat": "MP",
+		"region": "Nambale",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Alfred Kiptoo Keter",
+		"seat": "MP",
+		"region": "Nandi Hills",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Lemanken Aramat",
+		"seat": "MP",
+		"region": "Narok East",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Richard Moitalel Kenta",
+		"seat": "MP",
+		"region": "Narok North",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Korei Lemein",
+		"seat": "MP",
+		"region": "Narok South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Gabriel Koshal Tongoyo",
+		"seat": "MP",
+		"region": "Narok West",
+		"party": "Chama Cha Mashinani",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Emmanuel Wangwe",
+		"seat": "MP",
+		"region": "Navakholo",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Emmanuel_Wangwe",
+		"bio": null,
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Wangwe_Emmanuel.jpg/330px-Wangwe_Emmanuel.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Jeremiah Ngayu Kioni",
+		"seat": "MP",
+		"region": "Ndaragwa",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jeremiah_Ngayu_Kioni",
+		"bio": "Jeremiah Ngayu Kioni is a Kenyan politician. He was elected to represent the Ndaragwa Constituency until 2013 in the National Assembly of Kenya in the 2007 Kenyan parliamentary election. He was re-elected in 2017. Jeremiah Kioni issued a threat of PNU pulling out of the Grand Coalition because of what he termed continued frustration by the ODM party over Mwai Kibaki judiciary nominations.\nHe is a friend of Jamleck Irungu Kamau.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Martin Peters Owino",
+		"seat": "MP",
+		"region": "Ndhiwa",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "George Macharia Kariuki",
+		"seat": "MP",
+		"region": "Ndia",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Charity Kathambi Chepkwony",
+		"seat": "MP",
+		"region": "Njoro",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Charity_Kathambi_Chepkwony",
+		"bio": "Charity Kathambi Chepkwony is a Kenyan politician. She is the member of parliament for Njoro Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Francis Chachu Ganya",
+		"seat": "MP",
+		"region": "North Horr",
+		"party": "Frontier Alliance Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Francis_Chachu_Ganya",
+		"bio": "\nFrancis Chachu is a Kenyan politician. He belongs to the Orange Democratic Movement and was elected to represent the North Horr Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Abdul Rahim Dawood",
+		"seat": "MP",
+		"region": "North Imenti",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Abdul_Rahim_Dawood",
+		"bio": "Abdul Rahim Dawood is a Kenyan businessman who was elected as a member of the Kenyan Parliament in the 2013 parliamentary elections.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Joash Nyamache Nyamoko",
+		"seat": "MP",
+		"region": "North Mugirango",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Joshua Aduma Owuor",
+		"seat": "MP",
+		"region": "Nyakach",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joshua_Aduma_Owuor",
+		"bio": "\nHon. Joshua Aduma Owuor is a Kenyan politician and lawyer. He is currently the Member of Parliament for Nyakach Constituency, serving since 2013 after being re-elected for another five-year term in the 2017 general elections.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Mohamed Ali Mohammed",
+		"seat": "MP",
+		"region": "Nyali",
+		"party": "Independent",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Jared Odoyo Okelo",
+		"seat": "MP",
+		"region": "Nyando",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Richard Nyagaka Tongi",
+		"seat": "MP",
+		"region": "Nyaribari Chache",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Ezekiel Machogu Ombaki",
+		"seat": "MP",
+		"region": "Nyaribari Masaba",
+		"party": "National Agenda Party of Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Ezekiel_Machogu_Ombaki",
+		"bio": "Ezekiel Machogu Ombaki is a Kenyan politician who served as the Cabinet Secretary for the Ministry of Education after being nominated by President William Ruto.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Tom Mboya Odege",
+		"seat": "MP",
+		"region": "Nyatike",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Martin Deric Ngunjiri Wambugu",
+		"seat": "MP",
+		"region": "Nyeri Town",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Michael Mwangi Muchira",
+		"seat": "MP",
+		"region": "Ol Jorok",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "David Njuguna Kiaraho",
+		"seat": "MP",
+		"region": "Ol Kalou",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "James Gichuki Mugambi",
+		"seat": "MP",
+		"region": "Othaya",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "David Losiakou Pkosing",
+		"seat": "MP",
+		"region": "Pokot South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "William Kamoti Mwamkale",
+		"seat": "MP",
+		"region": "Rabai",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/William_Kamoti",
+		"bio": "William Kamoti was a Kenyan lawyer and politician who was a member of the 11th and 12th parliament elected from Rabai Constituency in Kilifi County on the ticket of Orange Democratic Movement (ODM) in 2013. He was the first MP of Rabai Constituency following its creation under the new constitution of Kenya. In the parliament, Kamoti was a member of the Departmental Committee on Justice and Legal Affairs. He sponsored 2014 Rabai Supper Cup football tournament to promote peace among his constituents.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Lillian Gogo",
+		"seat": "MP",
+		"region": "Rangwe",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Lillian_Gogo",
+		"bio": "Lilian Achieng Gogo is a Kenyan politician from the Orange Democratic Movement (ODM). She represents the Rangwe Constituency in the National Assembly.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Otiende Amollo",
+		"seat": "MP",
+		"region": "Rarieda",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Kipruto Moi",
+		"seat": "MP",
+		"region": "Rongai",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Paul Abuor",
+		"seat": "MP",
+		"region": "Rongo",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Isaac Waihenya Ndirangu",
+		"seat": "MP",
+		"region": "Roysambu",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Kajwang Tom Joseph Francis",
+		"seat": "MP",
+		"region": "Ruaraka",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Simon Nganga Kingara",
+		"seat": "MP",
+		"region": "Ruiru",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Eric Muchangi Njiru",
+		"seat": "MP",
+		"region": "Runyenjes",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Alfred Agoi Masadia",
+		"seat": "MP",
+		"region": "Sabatia",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Caleb Amisi Luyai",
+		"seat": "MP",
+		"region": "Saboti",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Dido Ali Raso",
+		"seat": "MP",
+		"region": "Saku",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Lentoi Joni L. Jackson Lekumontare",
+		"seat": "MP",
+		"region": "Samburu East",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Alois Musa Lentoimaga",
+		"seat": "MP",
+		"region": "Samburu North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Josephine Naisula Lesuuda",
+		"seat": "MP",
+		"region": "Samburu West",
+		"party": "Kenya African National Union",
+		"articleUrl": "https://en.wikipedia.org/wiki/Josephine_Naisula_Lesuuda",
+		"bio": "Naisula Josephine Lesuuda is a Kenyan politician and women's rights activist. She is a Member of the Parliament of Kenya.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Naisula_lesuuda.jpg/330px-Naisula_lesuuda.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "James Wambura Nyikal",
+		"seat": "MP",
+		"region": "Seme",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Justus Gesito Mugali M'mbaya",
+		"seat": "MP",
+		"region": "Shinyalu",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Peter Lochakapong",
+		"seat": "MP",
+		"region": "Sigor",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Kipsengeret Koros",
+		"seat": "MP",
+		"region": "Sigowet Soin",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Kipsengeret_Koros",
+		"bio": "Hon. Kipsengeret Koros is a Kenyan Politician and a Member of Parliament for Sigowet-Soin Constituency in Kericho County, Kenya. He was elected in 2017 on an Independent ticket where he garnered 20,284 votes against the outgoing's 13,068 votes. Koros is the second Member of Parliament since the inception of Sigowet-Soin Constituency in the year 2013. He won the seat after defeating Justice Kemei.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "John Waluke Koyi",
+		"seat": "MP",
+		"region": "Sirisia",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Dominic Kipkoech Koskei",
+		"seat": "MP",
+		"region": "Sotik",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Kathuri Murungi",
+		"seat": "MP",
+		"region": "South Imenti",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Kathuri_Murungi",
+		"bio": "Kathuri Murungi is a Kenyan politician and senator for Meru County currently serving as deputy senate speaker of the Kenyan Senate. Previously, he was a member of the lower house of parliament of Kenya for South Imenti Constituency. He is rated by Politrack Africa as the second best performing senator with a percentage point of 72.8.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Silvanus Osoro Onyiego",
+		"seat": "MP",
+		"region": "South Mugirango",
+		"party": "Kenya National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Caleb Kipkemei Kositany",
+		"seat": "MP",
+		"region": "Soy",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Charles Kanyi Njagua",
+		"seat": "MP",
+		"region": "Starehe",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Millie Grace Akoth Odhiambo",
+		"seat": "MP",
+		"region": "Suba North",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Mbadi John Ng'ongo",
+		"seat": "MP",
+		"region": "Suba South",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo",
+		"bio": "Mbadi John Ng'ongo is a Kenyan politician who has been serving as the Cabinet Secretary for the National Treasury and Economic Planning since August 8, 2024.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.281Z"
+	},
+	{
+		"name": "Samuel Kinuthia Gachobe",
+		"seat": "MP",
+		"region": "Subukia",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Junet Sheikh Nuh",
+		"seat": "MP",
+		"region": "Suna East",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Peter Francis Masara",
+		"seat": "MP",
+		"region": "Suna West",
+		"party": "Independent",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ahmed Bashane Gaal",
+		"seat": "MP",
+		"region": "Tarbaj",
+		"party": "Party for Development and Reform",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Naomi Shaban",
+		"seat": "MP",
+		"region": "Taveta",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Naomi_Shaban",
+		"bio": "Naomi Namsi Shaban is a Kenyan politician from the border town of Taveta. Born of Taveta descent, she became the first woman elected to represent the Taveta Constituency in Parliament in 2002 through a Kenya African National Union (KANU) ticket. She defended the seat in 2007 election through KANU and won. Later she joined the National Alliance Party (TNA) and was re-elected to represent Taveta Constituency in the National Assembly of Kenya in 2013. In 2017 she was re-elected for a record fourth term in a controversial manner as her main opponent Morris Mutiso cried foul play and sought for the results to be annulled on grounds of irregularities and illegalities.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Edward Oku Kaunya",
+		"seat": "MP",
+		"region": "Teso North",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Geoffrey Omuse",
+		"seat": "MP",
+		"region": "Teso South",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "James Gichuhi Mwangi",
+		"seat": "MP",
+		"region": "Tetu",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "George Gitonga Murugara",
+		"seat": "MP",
+		"region": "Tharaka",
+		"party": "Democratic Party of Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Patrick Kimani Wainaina Jungle",
+		"seat": "MP",
+		"region": "Thika Town",
+		"party": "Independent",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "William Kamket Kassait",
+		"seat": "MP",
+		"region": "Tiaty",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Josphat Gichunge Mwirabua Kabeabea",
+		"seat": "MP",
+		"region": "Tigania East",
+		"party": "Party of National Unity",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "John Kanyuithia Mutunga",
+		"seat": "MP",
+		"region": "Tigania West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Julius Kibiwott Melly",
+		"seat": "MP",
+		"region": "Tinderet",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Julius_Kibiwott_Melly",
+		"bio": "\nJulius Kibiwott Melly is the member of the National Assembly of Kenya for Tinderet Constituency elected in the 2013 general election. He was the principal of Meteitei Boys Secondary School before joining politics. He is the chairman of Education Committee at the National Assembly of Kenya. \nCurrently serving a third term first elected into office in 2013, re-elected in 2017 and 2022 respectively.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "David Eseli Simiyu",
+		"seat": "MP",
+		"region": "Tongaren",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/David_Eseli_Simiyu",
+		"bio": "\nDavid Eseli Simiyu is a Kenyan politician. He belongs to FORD-Kenya and was elected to represent the Kimilili Constituency in the National Assembly of Kenya since the 2007 Kenyan parliamentary election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Janet Jepkemboi Sitienei",
+		"seat": "MP",
+		"region": "Turbo",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Janet_Jepkemboi_Sitienei",
+		"bio": "Janet Jepkemboi Sitienei is a Kenyan politician who was elected to the National Assembly in 2017 for the Jubilee Party and in 2022 for the United Democratic Alliance. In 2024 she became a Chief of the Order of the Burning Spear of Kenya in an award by President Ruto.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "John Lodepe Nakara",
+		"seat": "MP",
+		"region": "Turkana Central",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Lokiru Ali Mohammed",
+		"seat": "MP",
+		"region": "Turkana East",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Christopher Doye Nakuleu",
+		"seat": "MP",
+		"region": "Turkana North",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ekomwa Lomenen James",
+		"seat": "MP",
+		"region": "Turkana South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Daniel Epuyo Nanok",
+		"seat": "MP",
+		"region": "Turkana West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Chris Karan (2017–18) {{cite web|url=https://www.standardmedia.co.ke/politics/article/2001307036/supreme-court-orders-fresh-elections-in-ugenya|title=Supreme Court orders fresh elections in Ugenya|publisher=The Standard|access-date=2020-08-04}}&lt;/ref> David Ochieng was elected in a by-election in 2019&lt;ref>{{cite web|url=https://www.nation.co.ke/kenya/news/politics/david-ochieng-wins-ugenya-by-election-155532|title=David Ochieng wins Ugenya by-election|publisher=Daily Nation|access-date=2020-08-04}}&lt;/ref>\"}},\"i\":0}}]}'>",
+		"seat": "MP",
+		"region": "Ugenya",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "James Opiyo Wandayi",
+		"seat": "MP",
+		"region": "Ugunja",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Mark Ogolla Nyamita",
+		"seat": "MP",
+		"region": "Uriri",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ernest Ogesi Kivai",
+		"seat": "MP",
+		"region": "Vihiga",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Jones Mwagogo Mlolwa",
+		"seat": "MP",
+		"region": "Voi",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jones_Mlolwa",
+		"bio": "Jones Mwagogo Mlolwa is a Kenyan politician and a member of the 11th parliament of Kenya from Voi Constituency, Taita Taveta County. He was elected on the ticket of Orange Democratic Movement in 2013 defeating the incumbent MP Danson Mwazo Mwakulegwa. In the parliament, Mlolwa served on the Departmental Committee on Finance, Planning and Trade. He was one of the coastal politicians who proposed formation of a Coastal Political Party in 2014 to have a bargaining power with the national government for the benefit of the coastal people. Mlolwa was elected secretary of New Coast Parliamentary Group (CPG) in 2016. He lost his reelection in 2017 and was defeated again in the 2022 parliamentary election by Khamis Chome who polled 9,418 while Mlolwa scored 8,426.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Rashid Kassim Amin",
+		"seat": "MP",
+		"region": "Wajir East",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ahmed Abdisalan Ibrahim",
+		"seat": "MP",
+		"region": "Wajir North",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Mohamud Sheikh Mohamed",
+		"seat": "MP",
+		"region": "Wajir South",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ahmed Kolosh Mohamed",
+		"seat": "MP",
+		"region": "Wajir West",
+		"party": "Orange Democratic Movement (2017–19)",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Bernard Alfred Wekesa Sambu",
+		"seat": "MP",
+		"region": "Webuye East",
+		"party": "Amani National Congress",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Daniel Wanyama Sitati",
+		"seat": "MP",
+		"region": "Webuye West",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Vincent Kemosi Mogaka",
+		"seat": "MP",
+		"region": "West Mugirango",
+		"party": "Forum for Restoration of Democracy - Kenya",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Tim Wanyonyi",
+		"seat": "MP",
+		"region": "Westlands",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Tim_Wanyonyi",
+		"bio": "Timothy Wanyonyi Wetangula is a Kenyan lawyer and politician serving as a member of parliament representing Westlands Constituency. He was first elected as a councillor for the defunct Nairobi City Council in 2007 election, before being elected Westlands MP during 2013 elections and defended his seat in the 2017 and 2022 general elections held on 8 August 2017 and 9 August 2022 respectively. He is a brother to Moses Wetangula, the Speaker of the National Assembly of Kenya and former senator for Bungoma County. He is a member of the Orange Democratic Movement.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/HON._TIM_WANYONYI.jpg/330px-HON._TIM_WANYONYI.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Danson Mwashako Mwakuwona",
+		"seat": "MP",
+		"region": "Wundanyi",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Danson_Mwashako_Mwakuwona",
+		"bio": "Danson Mwashako Mwakuwona is a Kenyan economist and politician. He is currently serving as the Member of Parliament for Wundanyi Constituency.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Charles Kilonzo",
+		"seat": "MP",
+		"region": "Yatta",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Charles_Kilonzo",
+		"bio": "Mutavi Charles Kilonzo is a Kenyan politician. He belongs to the Orange Democratic Movement-Kenya and was elected to represent the Yatta Constituency in the National Assembly of Kenya since the 2007 Kenyan general election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Lilian Tomitom",
+		"seat": "Woman Rep",
+		"region": "West Pokot",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Lilian_Tomitom",
+		"bio": "Lilian Cheptoo Tomitom is a Kenyan Jubilee Party politician who is currently a member of the National Assembly as county woman representative for West Pokot County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Fatuma Gedi Ali",
+		"seat": "Woman Rep",
+		"region": "Wajir",
+		"party": "Party of Development and Reforms",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Beatrice Adagala",
+		"seat": "Woman Rep",
+		"region": "Vihiga",
+		"party": "Amani National Congress",
+		"articleUrl": "https://en.wikipedia.org/wiki/Beatrice_Adagala",
+		"bio": "Beatrice Kahai Adagala is a Kenyan politician who currently serves in the Kenya National Assembly as a county woman representative for Vihiga.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Gladys Boss Shollei",
+		"seat": "Woman Rep",
+		"region": "Uasin Gishu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Gladys_Boss_Shollei",
+		"bio": "Gladys Jepkosgei Boss is a Kenyan politician who is currently the Deputy Speaker of the Kenya National Assembly and woman representative for Uasin Gishu County She is a member of the United Democratic Alliance.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Joyce Emanikor",
+		"seat": "Woman Rep",
+		"region": "Turkana",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joyce_Emanikor",
+		"bio": "Joyce Akai Emanikor is a Kenyan politician who is currently a member of the National Assembly as the county woman representative for Turkana County. She is a member of the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Janet Nangabo Wanyama",
+		"seat": "Woman Rep",
+		"region": "Trans Nzoia",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Beatrice Nkatha",
+		"seat": "Woman Rep",
+		"region": "Tharaka–Nithi",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Beatrice_Nkatha",
+		"bio": "Beatrice Nkatha Nyaga was a Kenyan politician from the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Rehema Hassan",
+		"seat": "Woman Rep",
+		"region": "Tana River",
+		"party": "Maendeleo Chap Chap Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Lydia Haika Mnene Mizighi",
+		"seat": "Woman Rep",
+		"region": "Taita Taveta",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Lydia_Haika",
+		"bio": "Lydia Haika Mnene Mizighi is a Kenyan politician from the United Democratic Alliance. She is women's representative in the National Assembly from Taita–Taveta County.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Lydia_Haika.jpg/330px-Lydia_Haika.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Christine Ombaka Oduor",
+		"seat": "Woman Rep",
+		"region": "Siaya",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Christine_Ombaka",
+		"bio": "Christine Ombaka Oduor is a Kenyan politician from the Orange Democratic Movement.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Maison Leshoomo",
+		"seat": "Woman Rep",
+		"region": "Samburu",
+		"party": "Kenya African National Union",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Rahab Mukami Wachira",
+		"seat": "Woman Rep",
+		"region": "Nyeri",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Faith Wairimu Gitau",
+		"seat": "Woman Rep",
+		"region": "Nyandarua",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Faith_Gitau",
+		"bio": "Faith Wairimū Gitaū is a Kenyan politician. She is a member of the United Democratic Alliance (UDA).",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Faith_Gitau.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Jerusha Mongina Momanyi",
+		"seat": "Woman Rep",
+		"region": "Nyamira",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jerusha_Mongina_Momanyi",
+		"bio": "Jerusha Mongina Momanyi is a Kenyan politician who was elected to parliament in 2017.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Roselinda Soipan Tuiya",
+		"seat": "Woman Rep",
+		"region": "Narok",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Roselinda_Soipan_Tuiya",
+		"bio": "Roselinda Soipan Tuya is a Kenyan politician and parliamentarian who serves as the Cabinet Secretary for Defence of Kenya, having been sworn into office by President William Ruto on 8 August 2024. Prior to this role, Tuya served as the Cabinet Secretary for Environment, Climate Change, and Forestry.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Soipan_latest_photo.jpg/330px-Soipan_latest_photo.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Tecla Tum",
+		"seat": "Woman Rep",
+		"region": "Nandi",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Tecla_Tum",
+		"bio": "Tecla Chebet Tum is a Kenyan politician who is currently Director of gender in the office of the President, She is a Former member of the National Assembly as county woman representative for Nandi County. She was a member of the Jubilee Party and currently UDA party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Chelule Liza",
+		"seat": "Woman Rep",
+		"region": "Nakuru",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Chelule_Liza",
+		"bio": "\nChelule Chepkorir Liza is a Kenyan politician who currently sits in the National Assembly as the county woman representative for Nakuru County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Esther Muthoni Rosanna Passaris",
+		"seat": "Woman Rep",
+		"region": "Nairobi City",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Maitu Sabina Wanjiru Chege",
+		"seat": "Woman Rep",
+		"region": "Muranga",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Sabina_Wanjiru_Chege",
+		"bio": "Sabina Wanjirū Chege is a Kenyan politician and former television actress and radio presenter who is a member of the Kenyan Parliament.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Sabina_Chege_at_John_De%27Mathew_Memorial.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Asha Hussein Mohamed",
+		"seat": "Woman Rep",
+		"region": "Mombasa",
+		"party": "Orange Democratic Movement",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Pamela Awuor Ochieng",
+		"seat": "Woman Rep",
+		"region": "Migori",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Pamela_Awuor_Ochieng",
+		"bio": "Pamela Awuor Ochieng was a Kenyan female politician, who represented the county of Migori as the Woman Representative to the National Assembly of Kenya from 2017 to 2022, under the Orange Democratic Movement (ODM).",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Kawira Mwangaza",
+		"seat": "Woman Rep",
+		"region": "Meru",
+		"party": "Independent",
+		"articleUrl": "https://en.wikipedia.org/wiki/Kawira_Mwangaza",
+		"bio": "Kawira Mwangaza is a Kenyan politician, who served as the Governor of Meru County from August 2022 until 14th March, 2025 when her impeachment case was upheld by the High Court of Kenya. Previously she served as the Women's Representative for Meru County in the 12th Parliament of Kenya. She was the 3rd Governor of Meru County from August 2022 to 21 August, 2024. She was impeached by the MCAs on 21 August, 2024 despite a spirited attempt by her legal team to convince the Senate of Kenya of her innocence in light of the multiple allegations of abuse of office and incompetence against her. The High Court of Kenya upheld Kawira Mwangaza's impeachment on 15th March, 2025 and Her deputy, Isaac Mutuma was sworn in as the 4th Governor of Meru County on 17th March, 2025.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Safia Sheikh Adan",
+		"seat": "Woman Rep",
+		"region": "Marsabit",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Amina Gedow Hassan",
+		"seat": "Woman Rep",
+		"region": "Mandera",
+		"party": "Economic Freedom Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Rose Museo Mumo",
+		"seat": "Woman Rep",
+		"region": "Makueni",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Rose_Museo_Mumo",
+		"bio": "Rose Museo Mumo is a Kenyan politician serving as the Woman Representative for Makueni County in the National Assembly of Kenya. She was first elected in the 2013 Kenya General Election under the Wiper Democratic Movement and has subsequently been re-elected in 2017 and 2022.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Joyce Kamene",
+		"seat": "Woman Rep",
+		"region": "Machakos",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joyce_Kamene",
+		"bio": "Joyce Kamene Kasimbi is a Kenyan politician serving as the Woman Representative for Machakos County, having been elected in 2017 and re-elected in 2022 under the Wiper Democratic Movement. She is a member of the National Assembly.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Ruweida Mohamed Obo",
+		"seat": "Woman Rep",
+		"region": "Lamu",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Catherine Wanjiku Waruguru",
+		"seat": "Woman Rep",
+		"region": "Laikipia",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Catherine_Wanjiku_Waruguru",
+		"bio": "Catherine Wanjiku Waruguru is a Kenyan politician from Laikipia County. She was elected the women's representative for Laikipia County in the 12th Parliament, and a Nominated member of the first Laikipia County Assembly.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.282Z"
+	},
+	{
+		"name": "Zuleikha Juma Hassan",
+		"seat": "Woman Rep",
+		"region": "Kwale",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Zuleikha_Juma_Hassan",
+		"bio": "\nZuleikha Hassan is a Kenyan politician. She is a member of the Orange Democratic Movement and the Kwale County Woman Representative and Member of Parliament.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Irene Muthoni Kasalu",
+		"seat": "Woman Rep",
+		"region": "Kitui",
+		"party": "Wiper Democratic Movement - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Irene_Muthoni_Kasalu",
+		"bio": "Irene Muthoni Kasalu is a Kenya Politician. She is the Woman Representative for Kitui County in Kenya and has been serving in this position since 2017 and was re-elected in 2022.\nShe is also a Wiper Democratic Movement party member. Kasalu worked as a Lecturer before her political career.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Rozaah Akinyi Buyu",
+		"seat": "Woman Rep",
+		"region": "Kisumu",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Rozaah_Akinyi_Buyu",
+		"bio": "Rozaah Akinyi Buyu is a Kenyan politician from the Orange Democratic Movement (ODM). She represents the Kisumu West Constituency in the National Assembly.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Janet Ong'era",
+		"seat": "Woman Rep",
+		"region": "Kisii",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Janet_Ong'era",
+		"bio": "Janet Ong'era is the immediate former Kisii County Woman Member of the National Assembly (2017-2022) in the Republic of Kenya. She is the Chairperson of the Eastern Africa Region at the Pan African Parliament.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Janet_ongera_picture.jpg/330px-Janet_ongera_picture.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Purity Wangui Ngirici",
+		"seat": "Woman Rep",
+		"region": "Kirinyaga",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Purity_Wangui_Ngirici",
+		"bio": "Hon. Purity Wangūi Ngìricì is the second Women Representative of Kìrìnyaga County. She has been in office since August 2017 after the 8th August general elections. She was elected into office with a Jubilee Party ticket replacing the first Kìrìnyaga Woman Representative Hon. Winnie Karìmi Njūgūna.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Gertrude Mbeyu Mwanyanje",
+		"seat": "Woman Rep",
+		"region": "Kilifi",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Gertrude_Mbeyu_Mwanyanje",
+		"bio": "Gertrude Mbeyu Mwanyanje is a Kenyan politician who is currently a member of the Kenya National Assembly as the woman representative for Kilifi. She is a member of the Orange Democratic Movement.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Gathoni Wa Muchomba",
+		"seat": "Woman Rep",
+		"region": "Kiambu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Gathoni_Wa_Muchomba",
+		"bio": "Peninnah Gathoni Mūchomba, also popularly known as Gathoni Wa Mūchomba, is a Kenyan journalist, entrepreneur and politician. She is the Member of Parliament for Githunguri Constituency in the bicameral Kenyan parliament since 2022 and a member of the ruling party, the UDA.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Florence C.K. Bore",
+		"seat": "Woman Rep",
+		"region": "Kericho",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Florence_Bore",
+		"bio": "Florence Chepngetich Koskey Bore is a Kenyan politician from the United Democratic Alliance (Kenya) who is a former Minister of Labour and Social Protection since 2022. She was sacked from her Cabinet position on July 11, 2024, when President Ruto sacked every one of the country's cabinet ministers. \nShe previously worked as Cabinet Secretary. She was elected County woman representative for Kericho County in the 2017 Kenyan general election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Elsie Busihile Muhanda",
+		"seat": "Woman Rep",
+		"region": "Kakamega",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Elsie_Busihile_Muhanda",
+		"bio": "Elsie Busihile Muhanda is a Kenyan politician who has served as the Woman Representative for Kakamenga County in the National Assembly Since 2017. She is a member of the Orange Democratic Movement.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Janet Marania Teyiaa",
+		"seat": "Woman Rep",
+		"region": "Kajiado",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Janet_Marania_Teyiaa",
+		"bio": "Janet Marania Teyiaa was a Kenyan politician who served as a nominated Member of Parliament from 2013 to 2017, representing persons with disabilities, and as the Woman Representative for Kajiado County from 2017 to 2022. She was a member of the Jubilee Party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Rehema Dida Jaldesa",
+		"seat": "Woman Rep",
+		"region": "Isiolo",
+		"party": "Jubilee Party",
+		"articleUrl": null,
+		"bio": null,
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Gladys Wanga",
+		"seat": "Woman Rep",
+		"region": "Homa Bay",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Gladys_Wanga",
+		"bio": "Gladys Atieno Wanga is a Kenyan politician who is the current Governor of Homa Bay County. She is the first female Governor from the Western Region of the Country and one of the seven female governors elected during the 2022 Kenyan General Election. She previously served as the County Woman Representative of Homa Bay County from 2013 to 2022.\nShe is married to the former non-Executive Chairperson of the Energy and Petroleum Regulatory Authority (EPRA), George Wanga.",
+		"photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Wanga_in_2024.jpg/330px-Wanga_in_2024.jpg",
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Anab Mohamed Gure",
+		"seat": "Woman Rep",
+		"region": "Garissa",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Anab_Mohamed_Gure",
+		"bio": "Anab Mohamed Gure is a Kenyan politician and a former Women's Representative for Garissa country in the Kenya National Assembly from 31st August, 2017 to 2022. She previously served as a Research Assistant at the Kenya Bureau of Statistics and also a Civic Education Officer with the Independent Electoral and Boundaries Commission (IEBC).",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Jane Wanjuki Njiru",
+		"seat": "Woman Rep",
+		"region": "Embu",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jane_Wanjuki_Njiru",
+		"bio": "Jane Wanjūki Njirū is a Kenyan politician. She served as the Embu County women representative(2017-2022) and a member of the ruling political party, the jubilee party of Kenya. She vied and won the Embu woman representative post in the 2017 General election.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Jane Jepkorir Kiptoo Chebaibai",
+		"seat": "Woman Rep",
+		"region": "Elgeyo/Marakwet",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Jane_Jepkorir_Kiptoo_Chebaibai",
+		"bio": "Jane Jepkorir Kiptoo Chebaibai is a Kenyan politician who served as the Woman Representative for Elgeyo Marakwet County in the National Assembly. She previously worked in the public service and was appointed chairperson of the Board of Directors of Bomas of Kenya.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Florence Mwikali Mutua",
+		"seat": "Woman Rep",
+		"region": "Busia",
+		"party": "Orange Democratic Movement",
+		"articleUrl": "https://en.wikipedia.org/wiki/Florence_Mwikali_Mutua",
+		"bio": "Florence Mwikali Mutua is a Kenyan politician from Busia town. A former member of the National Assembly of Kenya. A former Women representative for Busia county. She was the Women Representative for Busia county for two terms, from August 2013 to August 2022. Under the reign of the fourth president of Kenya, Uhuru Muigai Kenyatta. She served the two terms through Orange Democratic Movement. In the latest Kenyan election, the 2022 general election, she vied for the governor seat though she lost it to Paul Otuoma. Mutua is the only woman to vie for the gubernatorial race in Busia during the 2022 general election. If she had won, she would have become the first woman governor in Busia county.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Catherine Wambilianga",
+		"seat": "Woman Rep",
+		"region": "Bungoma",
+		"party": "FORD - Kenya",
+		"articleUrl": "https://en.wikipedia.org/wiki/Catherine_Wambilianga",
+		"bio": "Catherine Nanjala Wambilianga is a Kenyan politician. She is a member of the FORD–Kenya party.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Joyce Korir Chepkoech",
+		"seat": "Woman Rep",
+		"region": "Bomet",
+		"party": "Jubilee Party",
+		"articleUrl": "https://en.wikipedia.org/wiki/Joyce_Chepkoech_Korir",
+		"bio": "Joyce Chepkoech Korir is a Kenyan politician who was the Women Representative for Bomet County in the 12th Parliament of Kenya from 2017 to 2022. She was also the first female mayor of Bomet Municipality and served in this position between 2007 and 2013.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	},
+	{
+		"name": "Gladwell Jesire Cheruiyot",
+		"seat": "Woman Rep",
+		"region": "Baringo",
+		"party": "Kenya African National Union",
+		"articleUrl": "https://en.wikipedia.org/wiki/Gladwell_Jesire_Cheruiyot",
+		"bio": "Gladwell Jesire Cheruiyot is a Kenyan politician and a current member of the Kenyan Africa National Union (KANU) party since 2017. She is the former Women Representative for Baringo County.",
+		"photoUrl": null,
+		"fetchedAt": "2026-07-16T14:01:34.283Z"
+	}
+]

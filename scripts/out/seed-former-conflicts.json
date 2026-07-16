@@ -1,0 +1,595 @@
+{
+	"summary": [
+		"Terms to add: 0",
+		"New people: 0",
+		"Repeat people matched: 6 by mzalendo slug, 668 by seed email, 149 by name",
+		"Bios backfilled: 0",
+		"Party memberships: 0",
+		"ambiguous-person: 14",
+		"nominated: 24",
+		"position-missing: 45"
+	],
+	"findings": [
+		{
+			"category": "ambiguous-person",
+			"name": "Ahmed Shakeel Ahmed Shabbir",
+			"parliament": "12th",
+			"region": "Kisumu East",
+			"detail": "8 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "nominated",
+			"name": "Gideon Keter",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Cecily Mbarire",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Mohamed Ali Mohamed",
+			"parliament": "12th",
+			"region": "Nyali",
+			"detail": "28 existing people share 3 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Amin Deddy Mohamed Ali",
+			"parliament": "12th",
+			"region": "Laikipia East",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "position-missing",
+			"name": "Khatib Abdallah Mwashetani",
+			"parliament": "12th",
+			"region": "Lunga Lunga",
+			"detail": "no MP position matches \"Lunga Lunga\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Patrick Munene Ntwiga",
+			"parliament": "12th",
+			"region": "Chuka/Igambang&#x27;ombe",
+			"detail": "no MP position matches \"Chuka/Igambang&#x27;ombe\""
+		},
+		{
+			"category": "nominated",
+			"name": "Jacquiline Adhiambo Oduol",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "David Ole Sankok",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Godfrey Osotsi",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Sammy Kipkorir Seroney",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Jeniffer Shamala",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "wilson sossion",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Halima Yussuf Mucheke",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "position-missing",
+			"name": "Fred Kapondi Chesebe",
+			"parliament": "12th",
+			"region": "Mount Elgon",
+			"detail": "no MP position matches \"Mount Elgon\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "David Ochieng Odhiambo",
+			"parliament": "12th",
+			"region": "Ugenya",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "nominated",
+			"name": "Dennitah Ghati",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Omar Mohamed Maalim Hassan",
+			"parliament": "12th",
+			"region": "Mandera East",
+			"detail": "3 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Abdi Mude Ibrahim",
+			"parliament": "12th",
+			"region": "Lafey",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "nominated",
+			"name": "Nasri Sahal Ibrahim",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Maina Kamanda",
+			"parliament": "12th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "position-missing",
+			"name": "Khatib Abdallah Mwashetani",
+			"parliament": "11th",
+			"region": "Lunga Lunga",
+			"detail": "no MP position matches \"Lunga Lunga\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Hassan Abdi Dukicha",
+			"parliament": "11th",
+			"region": "Galole",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Adan Mohamed Nooru",
+			"parliament": "11th",
+			"region": "Mandera North",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Mohamed Adan Huka",
+			"parliament": "11th",
+			"region": "Mandera South",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "position-missing",
+			"name": "Onesmus Muthomi Njuki",
+			"parliament": "11th",
+			"region": "Chuka/Igambang&#x27;ombe",
+			"detail": "no MP position matches \"Chuka/Igambang&#x27;ombe\""
+		},
+		{
+			"category": "position-missing",
+			"name": "John Serut",
+			"parliament": "11th",
+			"region": "Mount Elgon",
+			"detail": "no MP position matches \"Mount Elgon\""
+		},
+		{
+			"category": "position-missing",
+			"name": "William Odhiambo Oduol",
+			"parliament": "11th",
+			"region": "Mbita",
+			"detail": "no MP position matches \"Mbita\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "John Njoroge Chege",
+			"parliament": "11th",
+			"region": "Kasarani",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Fatuma Ibrahim Ali",
+			"parliament": "11th",
+			"region": "Wajir",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "nominated",
+			"name": "Patrick Wangamati",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Oburu Odinga",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Isaac Maigua Mwaura",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Zuleikha Juma Hassan",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Amina Abdalla",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Johnson Sakaja",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Janet Marania Teyiaa",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Hassan Aden Osman",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Sarah Paulata Korere",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Abdi Noor Mohammed Ali",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Sunjeev Kour Birdi",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Robert Mutemi Mutua",
+			"parliament": "11th",
+			"region": "—",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "position-missing",
+			"name": "Beth Wambui Mugo",
+			"parliament": "9th",
+			"region": "Dagoretti",
+			"detail": "no MP position matches \"Dagoretti\""
+		},
+		{
+			"category": "position-missing",
+			"name": "David S Kamau Mwenje",
+			"parliament": "9th",
+			"region": "Embakasi",
+			"detail": "no MP position matches \"Embakasi\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Joseph Matano Khamisi",
+			"parliament": "9th",
+			"region": "Bahari",
+			"detail": "no MP position matches \"Bahari\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Hussein Maalim Mohamed",
+			"parliament": "9th",
+			"region": "Dujis",
+			"detail": "no MP position matches \"Dujis\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Adan Kerow Billow",
+			"parliament": "9th",
+			"region": "Mandera Central",
+			"detail": "no MP position matches \"Mandera Central\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Raphael Muriungi",
+			"parliament": "9th",
+			"region": "Igembe",
+			"detail": "no MP position matches \"Igembe\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Richard Maore Maoka",
+			"parliament": "9th",
+			"region": "Ntonyiri",
+			"detail": "no MP position matches \"Ntonyiri\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Petkay Shen Munkiria Miriti",
+			"parliament": "9th",
+			"region": "Nithi",
+			"detail": "no MP position matches \"Nithi\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Joseph William Nthiga Nyagah",
+			"parliament": "9th",
+			"region": "Gachoka",
+			"detail": "no MP position matches \"Gachoka\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Justin Bedan Njoka Muturi",
+			"parliament": "9th",
+			"region": "Siakago",
+			"detail": "no MP position matches \"Siakago\""
+		},
+		{
+			"category": "position-missing",
+			"name": "David Musila",
+			"parliament": "9th",
+			"region": "Mwingi South",
+			"detail": "no MP position matches \"Mwingi South\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Julius Kiema Kilonzo",
+			"parliament": "9th",
+			"region": "Mutito",
+			"detail": "no MP position matches \"Mutito\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Richard Kalembe Ndile",
+			"parliament": "9th",
+			"region": "Kibwezi",
+			"detail": "no MP position matches \"Kibwezi\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Karue Muriuki Muriuki",
+			"parliament": "9th",
+			"region": "Ol Kalou",
+			"detail": "3 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Martha Wangari Karua",
+			"parliament": "9th",
+			"region": "Gichugu",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "position-missing",
+			"name": "Daniel Dickson Karaba",
+			"parliament": "9th",
+			"region": "Kerugoya/Kutus",
+			"detail": "no MP position matches \"Kerugoya/Kutus\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Samuel Chumel Moroto",
+			"parliament": "9th",
+			"region": "Kapenguria",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "position-missing",
+			"name": "William Samoei Ruto",
+			"parliament": "9th",
+			"region": "Eldoret North",
+			"detail": "no MP position matches \"Eldoret North\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Joseph Lagat Kipchumba",
+			"parliament": "9th",
+			"region": "Eldoret East",
+			"detail": "no MP position matches \"Eldoret East\""
+		},
+		{
+			"category": "position-missing",
+			"name": "David Kiptanui Koros",
+			"parliament": "9th",
+			"region": "Eldoret South",
+			"detail": "no MP position matches \"Eldoret South\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Asman Abongotum Kamama",
+			"parliament": "9th",
+			"region": "Baringo East",
+			"detail": "no MP position matches \"Baringo East\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Kimburi Kariuki",
+			"parliament": "9th",
+			"region": "Nakuru Town",
+			"detail": "no MP position matches \"Nakuru Town\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Moses Kikemboi Cheboi",
+			"parliament": "9th",
+			"region": "Kuresoi",
+			"detail": "no MP position matches \"Kuresoi\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Nicholas Kiptoo Korir Salat",
+			"parliament": "9th",
+			"region": "Bomet",
+			"detail": "no MP position matches \"Bomet\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Sammy Kipkemoi Rutto",
+			"parliament": "9th",
+			"region": "Kipkelion",
+			"detail": "no MP position matches \"Kipkelion\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Wycliffe Osundwa",
+			"parliament": "9th",
+			"region": "Mumias",
+			"detail": "no MP position matches \"Mumias\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Moses Epainitous Akaranga",
+			"parliament": "9th",
+			"region": "Saratia",
+			"detail": "no MP position matches \"Saratia\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Musikari Nazi Kombo",
+			"parliament": "9th",
+			"region": "Webuye",
+			"detail": "no MP position matches \"Webuye\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Sospeter Odeke Ojaamongson",
+			"parliament": "9th",
+			"region": "Amagoro",
+			"detail": "no MP position matches \"Amagoro\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Samuel Arthur Weya",
+			"parliament": "9th",
+			"region": "Alego",
+			"detail": "no MP position matches \"Alego\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Eric Gor Sungu",
+			"parliament": "9th",
+			"region": "Kisumu Town East",
+			"detail": "no MP position matches \"Kisumu Town East\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Joab Henry Omino Onyango",
+			"parliament": "9th",
+			"region": "Kisumu Town West",
+			"detail": "no MP position matches \"Kisumu Town West\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Peter Anyang' Nyong'o",
+			"parliament": "9th",
+			"region": "Kisumu Rural",
+			"detail": "no MP position matches \"Kisumu Rural\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Peter Otieno Owidi",
+			"parliament": "9th",
+			"region": "Kasipul Kabondo",
+			"detail": "no MP position matches \"Kasipul Kabondo\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Charles Oyugi Owino",
+			"parliament": "9th",
+			"region": "Migori",
+			"detail": "no MP position matches \"Migori\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Gerald Otieno Kajwan'g",
+			"parliament": "9th",
+			"region": "Mbita",
+			"detail": "no MP position matches \"Mbita\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Zaddock Madiri Syongoh",
+			"parliament": "9th",
+			"region": "Gwasi",
+			"detail": "no MP position matches \"Gwasi\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Wilfred Gisuka Machage",
+			"parliament": "9th",
+			"region": "Kuria",
+			"detail": "no MP position matches \"Kuria\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Joel Omagwa Onyancha",
+			"parliament": "9th",
+			"region": "Bomachoge",
+			"detail": "no MP position matches \"Bomachoge\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Jimmy Nuru Ondieki Angwenyi",
+			"parliament": "9th",
+			"region": "Kitutu Chache",
+			"detail": "no MP position matches \"Kitutu Chache\""
+		},
+		{
+			"category": "position-missing",
+			"name": "Godfrey Okeri Masanya",
+			"parliament": "9th",
+			"region": "North Mugirango Borabu",
+			"detail": "no MP position matches \"North Mugirango Borabu\""
+		}
+	]
+}
