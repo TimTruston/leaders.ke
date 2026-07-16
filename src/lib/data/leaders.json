@@ -1,3259 +1,3359 @@
 [
-  {
-    "name": "William Ruto",
-    "party": "United Democratic Alliance",
-    "title": "President",
-    "region": "Kenya",
-    "status": "current",
-    "education": [
-      {
-        "title": "Bachelor of Science in Botany and Zoology",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1990-01-01"
-      },
-      {
-        "title": "Master of Science in Plant Ecology",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "2011-01-01"
-      },
-      {
-        "title": "Doctor of Philosophy (Ph.D.) in Plant Ecology",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "2018-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Assistant Minister for Home Affairs",
-        "institution": "Government of Kenya",
-        "startAt": "1998-01-01",
-        "endAt": "2002-01-01"
-      },
-      {
-        "title": "Minister for Agriculture",
-        "institution": "Government of Kenya",
-        "startAt": "2008-01-01",
-        "endAt": "2010-01-01"
-      },
-      {
-        "title": "Minister for Higher Education, Science and Technology",
-        "institution": "Government of Kenya",
-        "startAt": "2010-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "Vice President of Kenya",
-        "institution": "Government of Kenya",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Email",
-        "value": "president@statehouse.go.ke"
-      },
-      {
-        "title": "Phone",
-        "value": "+254 20 3247000/1/2/3/4/5"
-      },
-      {
-        "title": "Office",
-        "value": "Office of the President, Harambee Avenue"
-      }
-    ],
-    "social": [
-      {
-        "title": "twitter",
-        "value": "x.com/WilliamsRuto",
-        "href": "https://x.com/WilliamsRuto"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Soy",
-        "description": "Former Eldoret North",
-        "startAt": "1997-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "President",
-        "region": "Kenya",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Martha Karua",
-    "party": "People's Liberation Party",
-    "title": "President",
-    "region": "Kenya",
-    "status": "aspirant",
-    "bio": "Martha Wangari Karua is a Kenyan lawyer, politician, and democracy advocate known for her long-standing commitment to constitutionalism, good governance, and the rule of law, and has been a prominent figure in Kenyan politics for more than three decades. Born on 22 September 1957 in Gichugu, Kirinyaga County, to Jackson Karua and Josephine Wanjiru Karua, she studied law at the University of Nairobi, graduating in 1980, before proceeding to the Kenya School of Law, and undertook further studies at the United States International University-Africa (USIU-Africa). Karua entered elective politics in 1992 as Member of Parliament for Gichugu Constituency, serving until 2013 and earning recognition as a strong advocate for democratic reforms, women's rights, and accountability in public service. During her career, she held senior government positions including Minister for Water Resources Management and Development and Minister for Justice, National Cohesion and Constitutional Affairs, and played a significant role in Kenya's constitutional reform efforts. She is currently affiliated with the People's Liberation Party (PLP), and in the 2022 Kenyan General Election was nominated as running mate to presidential candidate Raila Odinga, becoming one of the few women in Kenya's history to contest for the office of Deputy President. Widely respected for her principled leadership and advocacy for justice and democracy, she remains an influential voice in Kenyan public affairs.",
-    "education": [
-      {
-        "title": "Bachelor of Laws (LL.B.)",
-        "institution": "University of Nairobi",
-        "startAt": "1977-01-01",
-        "endAt": "1980-01-01"
-      },
-      {
-        "title": "Master of Business Administration (MBA)",
-        "institution": "Kenya School of Law",
-        "startAt": "1980-01-01",
-        "endAt": "1981-01-01"
-      },
-      {
-        "title": "Diploma in Law (Advocates Training Programme)",
-        "institution": "Kenya School of Law",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Advocate",
-        "institution": "High Court of Kenya",
-        "startAt": "1981-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Minister for Justice, National Cohesion and Constitutional Affairs",
-        "institution": "Government of Kenya",
-        "startAt": "2005-01-01",
-        "endAt": "2009-01-01"
-      },
-      {
-        "title": "Party Leader",
-        "institution": "People's Liberation Party",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Email",
-        "value": "gichugu@parliament.go.ke"
-      },
-      {
-        "title": "Phone",
-        "value": "0721 623 342.  0733 747551 ."
-      },
-      {
-        "title": "Office",
-        "value": "Nairobi Liberation House, Woodlands Road, off Lenana Road."
-      }
-    ],
-    "social": [
-      {
-        "title": "x",
-        "value": "x.com/MarthaKarua",
-        "href": "https://x.com/MarthaKarua"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Gichugu",
-        "startAt": "1992-01-01",
-        "endAt": "2013-01-01"
-      }
-    ]
-  },
-  {
-    "name": "Kalonzo Musyoka",
-    "party": "Wiper Patriotic Front",
-    "title": "President",
-    "region": "Kenya",
-    "status": "aspirant",
-    "bio": "Kalonzo Musyoka is a Kenyan politician born on 24 December 1953 in Mwingi District, Kenya, and a prominent leader in Kenyan politics as a member of the Wiper Patriotic Front party. He studied at the Kenya School of Law, completing his studies in 1978, before entering politics and serving in various government positions, most notably as Deputy President of Kenya from 2008 to 2013. He married Pauline Kalonzo in 1985, and they have four children: Damaris Musenya, Kennedy Musyoka Kalonzo, Klein Kalonzo, and Kevin Muasya Musyoka. He remains an influential figure in Kenya's political landscape.",
-    "education": [
-      {
-        "title": "Bachelor of Laws (LL.B.) degree",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1977-01-01"
-      },
-      {
-        "title": "Bachelor of Laws (LL.B.) degree",
-        "institution": "Kenya School of Law",
-        "startAt": null,
-        "endAt": "1978-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Minister for Foreign Affairs",
-        "institution": "Government of Kenya",
-        "startAt": "1993-01-01",
-        "endAt": "1998-01-01"
-      },
-      {
-        "title": "Minister of Education",
-        "institution": "Government of Kenya",
-        "startAt": "2003-01-01",
-        "endAt": "2005-01-01"
-      },
-      {
-        "title": "Vice President of Kenya",
-        "institution": "Government of Kenya",
-        "startAt": "2008-01-01",
-        "endAt": "2013-01-01"
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Email",
-        "value": "musyoka@swiftkenya.com"
-      },
-      {
-        "title": "Phone",
-        "value": "0722711261"
-      },
-      {
-        "title": "Office",
-        "value": "Sunrise Court on Kufuga Road, off Langata Road in the Karen neighborhood of Nairobi, Kenya."
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Mwingi North",
-        "startAt": "1983-01-01",
-        "endAt": "2007-01-01"
-      }
-    ]
-  },
-  {
-    "name": "Fred Matiang'i",
-    "party": "Jubilee Party",
-    "title": "President",
-    "region": "Kenya",
-    "status": "aspirant",
-    "bio": "Fred Matiang'i is a Kenyan politician and public servant born on 22 April 1968 in Nyamira County, associated with the Jubilee Party. He studied at Kenyatta University and the University of Nairobi, earning a Bachelor's degree in Education, a Master's degree in English, and a PhD in Communication and Comparative Literature. He served as Cabinet Secretary for ICT (2013-2015), Education (2015-2017), and Interior and Coordination of National Government (2017-2022), playing a key role in coordinating government operations and national security. After leaving office in 2022, he worked with the World Bank before returning to active politics.",
-    "education": [
-      {
-        "title": "Bachelor's Degree in Education",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master's Degree in English",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "PhD in Communication and Comparative Literature",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Cabinet Secretary for ICT",
-        "institution": "Government of Kenya",
-        "startAt": "2013-01-01",
-        "endAt": "2015-01-01"
-      },
-      {
-        "title": "Cabinet Secretary for Education",
-        "institution": "Government of Kenya",
-        "startAt": "2015-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Cabinet Secretary for Interior and Coordination of National Government",
-        "institution": "Government of Kenya",
-        "startAt": "2017-01-01",
-        "endAt": "2022-01-01"
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Office",
-        "value": "Kileleshwa area of Nairobi, off Mandera Road."
-      }
-    ],
-    "social": [
-      {
-        "title": "x",
-        "value": "x.com/RealMatiangi",
-        "href": "https://x.com/RealMatiangi"
-      }
-    ]
-  },
-  {
-    "name": "Boniface Mwangi",
-    "party": "Ukweli Party",
-    "title": "President",
-    "region": "Kenya",
-    "status": "aspirant",
-    "bio": "Boniface Mwangi is a Kenyan activist, photojournalist, and politician born on 10 July 1983 in Taveta, Kenya, widely known for his work in human rights advocacy, social justice, and civic engagement. He holds a Diploma in Bible Studies from The Kingdom Academy, a Diploma in Print Journalism from the East African School of Journalism, and completed a program in Human Rights and Documentary Photography at New York University. He began his career as a photojournalist with The Standard Group before becoming a full-time activist focused on accountability, transparency, and good governance, and founded the Courage Movement, a civic organization encouraging citizens to demand better leadership. In 2017, he contested the Starehe parliamentary seat as an independent candidate on an anti-corruption and youth-empowerment platform. He is married to Hellen Njeri Mwangi, with three children: Nalia Sifa, Nate Simphiwe, and Jabali Mboya.",
-    "education": [
-      {
-        "title": "Diploma in Bible Studies",
-        "institution": "The Kingdom Academy",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Diploma in Print Journalism",
-        "institution": "East African School of Journalism",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Human Rights and Documentary Photography (non-degree program)",
-        "institution": "New York University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE), private candidate",
-        "institution": "Private candidate",
-        "startAt": null,
-        "endAt": "2016-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Photojournalist",
-        "institution": "The Standard Group",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Founder",
-        "institution": "Courage Movement",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Parliamentary Candidate, Starehe Constituency (Independent)",
-        "institution": "Independent Electoral and Boundaries Commission",
-        "startAt": "2017-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Founder",
-        "institution": "PAWA254",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Office",
-        "value": "Nairobi, Kenya (PAWA 254 Headquarters)"
-      }
-    ],
-    "social": [
-      {
-        "title": "x",
-        "value": "x.com/bonifacemwangi",
-        "href": "https://x.com/bonifacemwangi"
-      }
-    ]
-  },
-  {
-    "name": "David Maraga",
-    "party": "United Green Movement",
-    "title": "President",
-    "region": "Kenya",
-    "status": "aspirant",
-    "bio": "David Maraga is a Kenyan lawyer, jurist, and politician born on 12 January 1951 in South Nyanza District, widely respected for his distinguished judicial career and commitment to the rule of law. He studied law at the University of Nairobi and served in various judicial roles, beginning as a Resident Magistrate in 1987 and rising through Principal Magistrate, Senior Resident Magistrate, and Judge of the High Court (2003), before his appointment to the Court of Appeal in 2012. He served as Chief Justice and President of the Supreme Court of Kenya from 2016 to 2021, notably leading the Supreme Court's landmark 2017 ruling that annulled the presidential election results. He is married to Yucabeth Nyaboke, with a daughter, Vashti Kemuma, and is associated with the United Green Movement party.",
-    "education": [
-      {
-        "title": "Bachelor of Laws (LLB)",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Resident Magistrate",
-        "institution": "Judiciary of Kenya",
-        "startAt": "1987-01-01",
-        "endAt": "2003-01-01"
-      },
-      {
-        "title": "Principal Magistrate / Senior Resident Magistrate",
-        "institution": "Judiciary of Kenya",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Judge of the High Court",
-        "institution": "Judiciary of Kenya",
-        "startAt": "2003-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "Judge, Court of Appeal",
-        "institution": "Judiciary of Kenya",
-        "startAt": "2012-01-01",
-        "endAt": "2016-01-01"
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Office",
-        "value": "82 Westlands Road, Nairobi, Kenya"
-      }
-    ],
-    "social": [
-      {
-        "title": "x",
-        "value": "x.com/dkmaraga",
-        "href": "https://x.com/dkmaraga"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "President",
-        "region": "Kenya",
-        "startAt": "2016-01-01",
-        "endAt": "2021-01-01"
-      }
-    ]
-  },
-  {
-    "name": "Abdullswamad Sherrif Nassir",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Mombasa",
-    "status": "current",
-    "bio": "Abdullswamad Sherrif Nassir is a Kenyan politician serving as the second Governor of Mombasa County. Born in Majengo, Mombasa, he previously represented Mvita Constituency as Member of Parliament. Affiliated with the Orange Democratic Movement (ODM), he emphasizes coastal economic development, enhanced security, and preservation of cultural heritage.",
-    "education": [
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE)",
-        "institution": "Lenana School",
-        "startAt": "1989-01-01",
-        "endAt": "1992-01-01"
-      },
-      {
-        "title": "Bachelor's degree in Commerce",
-        "institution": "Inoorero University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master's degree in Commerce",
-        "institution": "Mount Kenya University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "CEO",
-        "institution": "Radio Rahma",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Mvita",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Mombasa",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Mohammed Faki",
-    "title": "Senator",
-    "region": "Mombasa",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Fatuma Achani",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Kwale",
-    "status": "current",
-    "bio": "Fatuma Achani is a Kenyan politician who made history as the first female governor in the Coast region, winning the Kwale gubernatorial election as a member of the United Democratic Alliance (UDA) party.",
-    "professional": [
-      {
-        "title": "Deputy Governor",
-        "institution": "Kwale County",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Lawyer",
-        "institution": "FIDA – Kenya",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Lawyer and Advocate",
-        "institution": "High Court",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Issa Juma Boy",
-    "title": "Senator",
-    "region": "Kwale",
-    "status": "current",
-    "bio": "Senator for Kwale County.",
-    "education": [
-      {
-        "title": "Certificate of Primary Education (CPE)",
-        "institution": "Aga Khan Primary School",
-        "startAt": null,
-        "endAt": "1975-01-01"
-      },
-      {
-        "title": "East African Certificate of Education (EACE)",
-        "institution": "Aga Khan Secondary School",
-        "startAt": null,
-        "endAt": "1979-01-01"
-      },
-      {
-        "title": "Bachelor of Commerce (B.Com)",
-        "institution": "Jabalpur University",
-        "startAt": null,
-        "endAt": "1986-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Head of Delegation",
-        "institution": "Kwale County",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kwale",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Gideon Mung'aro",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Kilifi",
-    "status": "current",
-    "bio": "Gideon Mung'aro is a Kenyan politician who has served as Governor of Kilifi County since August 2022. He previously represented Kilifi North Constituency in the National Assembly following the 2013 election, and is a former Mayor of Malindi, having also represented Malindi Constituency in parliament before it was split.",
-    "professional": [
-      {
-        "title": "Mayor of Malindi",
-        "institution": "Malindi",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Chairman",
-        "institution": "JKP",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/GideonMungaroM/",
-        "href": "https://www.facebook.com/GideonMungaroM/"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Kilifi North",
-        "startAt": "2007-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Governor",
-        "region": "Kilifi",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Stewart Madzayo",
-    "title": "Senator",
-    "region": "Kilifi",
-    "status": "current",
-    "bio": "Stewart Madzayo is a Kenyan politician born in Chonyi, Bahari Constituency, Kilifi County. He is the Senator for Kilifi County and a member of the Orange Democratic Movement.",
-    "professional": [],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kilifi",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Dhadho Godhana",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Tana River",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Danson Mungatana",
-    "title": "Senator",
-    "region": "Tana River",
-    "status": "current",
-    "bio": "Danson Mungatana is a Kenyan lawyer and politician serving as Senator for Tana River County, born on 9 August 1970. He has served in various roles, including Member of Parliament for Garsen Constituency.",
-    "education": [
-      {
-        "title": "LL.B.",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1993-01-01"
-      },
-      {
-        "title": "postgraduate diploma",
-        "institution": "Kenya School of Law",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Commissioner",
-        "institution": "COMESA Competition Commission",
-        "startAt": "2018-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Chairman",
-        "institution": "Kenya Ports Authority",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "National Secretary General",
-        "institution": "Narc Kenya",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Garsen",
-        "startAt": "2002-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "Tana River",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Issa Timamy",
-    "party": "ANC",
-    "title": "Governor",
-    "region": "Lamu",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Joseph Githuku",
-    "title": "Senator",
-    "region": "Lamu",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Andrew Mwadime",
-    "title": "Governor",
-    "region": "Taita Taveta",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Johnes Mwaruma",
-    "title": "Senator",
-    "region": "Taita Taveta",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Nadhif Jama",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Garissa",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Abdulkadir Haji",
-    "title": "Senator",
-    "region": "Garissa",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Ahmed Abdullahi Jiir",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Wajir",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Abass Sheikh Mohammed",
-    "title": "Senator",
-    "region": "Wajir",
-    "status": "current",
-    "bio": "Abass Sheikh Mohamed is a Kenyan politician serving as Senator for Wajir County. He previously served in the 11th Parliament of Kenya and has held various roles, including CEO of the Kenya Livestock Marketing Council.",
-    "education": [
-      {
-        "title": "Diploma in Range Management and Degree in Natural Resource Management",
-        "institution": "Egerton University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Post-graduate Diploma in Sustainable Local Economic Development and MBA in Strategic Marketing",
-        "institution": "Erasmus University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Branch Manager",
-        "institution": "Agricultural Finance Office",
-        "startAt": "1991-01-01",
-        "endAt": "1999-01-01"
-      },
-      {
-        "title": "Chief Executive Officer",
-        "institution": "Kenya Livestock Marketing Council (KLMC)",
-        "startAt": "2002-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "Member of the 11th Parliament of Kenya",
-        "institution": "Wajir East Constituency",
-        "startAt": "2013-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Managing Director",
-        "institution": "Red Sea Co. Ltd",
-        "startAt": "2018-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Member of the Senate",
-        "institution": "Wajir County",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Mohamed Adan Khalif",
-    "party": "UDM",
-    "title": "Governor",
-    "region": "Mandera",
-    "status": "current",
-    "bio": "Mohamed Adan Khalif is the governor-elect of Mandera County, having previously served as speaker of the Mandera County Assembly. He won the election with 53,185 votes.",
-    "professional": [
-      {
-        "title": "Mandera County Assembly speaker",
-        "institution": "Mandera County Assembly",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Councillor",
-        "institution": "Mandera Township",
-        "startAt": "1998-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Mayor",
-        "institution": "Mandera Town Council",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Mandera",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Capt. Ali Roba",
-    "title": "Senator",
-    "region": "Mandera",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Mohamed Muhammad Ali",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Marsabit",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Mohamed Said Chute",
-    "title": "Senator",
-    "region": "Marsabit",
-    "status": "current",
-    "bio": "Chute Mohamed Said is a Kenyan politician serving as Senator for Marsabit County, elected in the August 2022 general election under the UDA banner. He chairs the Standing Committee on National Cohesion, Equal Opportunity and Regional Integration.",
-    "education": [
-      {
-        "title": "Masters - Business Administration",
-        "institution": "University of Cumbria",
-        "startAt": "2020-01-01",
-        "endAt": "2021-01-01"
-      },
-      {
-        "title": "Private Pilot license",
-        "institution": "Kenya School of Flying",
-        "startAt": null,
-        "endAt": "2001-01-01"
-      },
-      {
-        "title": "KCSE",
-        "institution": "Moyale Boys Highschool",
-        "startAt": "1976-01-01",
-        "endAt": "1977-01-01"
-      },
-      {
-        "title": "KCPE",
-        "institution": "Marsabit Primary School",
-        "startAt": "1968-01-01",
-        "endAt": "1977-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "CEO",
-        "institution": "Blue Nile Aviation",
-        "startAt": "2002-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "MD & Chairman",
-        "institution": "Blue Nile EA Ltd",
-        "startAt": "1996-01-01",
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Marsabit",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Hassan Abdi Ibrahim Guyo",
-    "party": "Jubilee Party",
-    "title": "Governor",
-    "region": "Isiolo",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Fatuma Dullo",
-    "title": "Senator",
-    "region": "Isiolo",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Kawira Mwangaza",
-    "title": "Governor",
-    "region": "Meru",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Kathuri Murungi",
-    "title": "Senator",
-    "region": "Meru",
-    "status": "current",
-    "bio": "Kathuri Murungi is a Kenyan politician and Member of Parliament for South Imenti Constituency in Meru County. He has served on several parliamentary departmental committees and declared his interest in the Senatorial seat ahead of the 2022 general election.",
-    "education": [
-      {
-        "title": "Kenya Certificate of Primary Education (KCPE)",
-        "institution": "Machikine Primary School",
-        "startAt": null,
-        "endAt": "1987-01-01"
-      },
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE)",
-        "institution": "Ndagene High School",
-        "startAt": null,
-        "endAt": "1992-01-01"
-      },
-      {
-        "title": "Bachelor of Science in Natural Resources Management",
-        "institution": "Egerton University",
-        "startAt": null,
-        "endAt": "1998-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Project Coordinator",
-        "institution": "Conserve International",
-        "startAt": "1999-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Environmental Consultant",
-        "institution": "Econsults",
-        "startAt": "2000-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Property Manager",
-        "institution": "Maiteih Enterprises Limited",
-        "startAt": "2002-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Director",
-        "institution": "Kenface Econsults (Africa)",
-        "startAt": "2003-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Deputy Senate Speaker",
-        "institution": "Kenyan Senate",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/Kathuri-Murungi-Kamashinani",
-        "href": "https://www.facebook.com/Kathuri-Murungi-Kamashinani"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "South Imenti",
-        "startAt": "2013-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "Meru",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Muthomi Njuki",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Tharaka-Nithi",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Gataya Mwenda",
-    "title": "Senator",
-    "region": "Tharaka-Nithi",
-    "status": "current",
-    "bio": "Gataya Mwenda is the current Senator for Tharaka Nithi County, elected in August 2022 on the United Democratic Alliance ticket. He served as Member of the County Assembly for Tharaka Nithi from 2013 to 2022, with a professional background in the civil service from 1990 to 2007.",
-    "education": [
-      {
-        "title": "Bachelor of Education (Arts)",
-        "institution": "University of Nairobi",
-        "startAt": "1995-01-01",
-        "endAt": "2005-01-01"
-      },
-      {
-        "title": "Master's degree in Governance & Ethics",
-        "institution": "Mount Kenya University",
-        "startAt": null,
-        "endAt": "2015-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Civil Service",
-        "institution": "O.OP",
-        "startAt": "1990-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "Member of the County Assembly (MCA)",
-        "institution": "Tharaka Nithi County Assembly",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/Mwenda-FB",
-        "href": "https://www.facebook.com/Mwenda-FB"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Tharaka-Nithi",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Cecily Mbarire",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Embu",
-    "status": "current",
-    "bio": "Cecily Mutitu Mbarire is the Governor of Embu County and Chairperson of the UDA Party, having served in various roles including Member of Parliament and Deputy Minister for Tourism and Transport.",
-    "education": [
-      {
-        "title": "Global Executive Masters in Business Administration",
-        "institution": "United States International University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Bachelors of Arts in Economics and Sociology",
-        "institution": "Egerton University, Kenya",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Bachelor of Arts in Economics and Sociology",
-        "institution": "Egerton University",
-        "startAt": null,
-        "endAt": "1996-01-01"
-      },
-      {
-        "title": "Post-graduate Diploma in Gender and Development Studies",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Member of Parliament",
-        "institution": "National Assembly of Kenya",
-        "startAt": "2003-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Deputy Minister for Tourism and Transport",
-        "institution": "Government of Kenya",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Nominated MP",
-        "institution": "Jubilee Party",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Runyenjes",
-        "startAt": "2002-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "Governor",
-        "region": "Embu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Alexander Mundigi",
-    "title": "Senator",
-    "region": "Embu",
-    "status": "current",
-    "bio": "Alexander Mundigi Munyi is the Senator for Embu County, elected in 2022 on a Democratic Party ticket, having defied the odds to win the seat against candidates from more dominant political parties.",
-    "education": [
-      {
-        "title": "Diploma in Biblical Studies",
-        "institution": "International School of Ministries",
-        "startAt": "2018-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Bachelor’s degree in biblical studies",
-        "institution": "Covenant Theology Seminary in North Carolina",
-        "startAt": "2019-01-01",
-        "endAt": "2022-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Building and Construction Administrator",
-        "institution": "Kenya Electricity Generating Company (KenGen)",
-        "startAt": "1987-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Executive Director",
-        "institution": "Hydros Investment Ltd",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Embu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Julius Malombe",
-    "party": "Wiper Patriotic Front",
-    "title": "Governor",
-    "region": "Kitui",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Enock Kiio Wambua",
-    "title": "Senator",
-    "region": "Kitui",
-    "status": "current",
-    "bio": "Enoch Wambua Kiio is a Kenyan politician and Senator for Kitui County, born on 31 October 1972, with a background in journalism and education from Moi University and other institutions.",
-    "education": [
-      {
-        "title": "Bachelor of Education in English Literature",
-        "institution": "Moi University",
-        "startAt": "1992-01-01",
-        "endAt": "1996-01-01"
-      },
-      {
-        "title": "Diploma in Planning and Management of Development Studies",
-        "institution": "Catholic University of Eastern Africa (CUEA)",
-        "startAt": "1996-01-01",
-        "endAt": "1997-01-01"
-      },
-      {
-        "title": "Certificate in Mass Communication",
-        "institution": "Union of African Journalists",
-        "startAt": null,
-        "endAt": "2001-01-01"
-      },
-      {
-        "title": "Postgraduate Diploma in American Studies",
-        "institution": "Smith College, Massachusetts, USA",
-        "startAt": "2007-01-01",
-        "endAt": "2008-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Trainee sub-editor",
-        "institution": "Kenya Times Media",
-        "startAt": "1999-01-01",
-        "endAt": "2005-01-01"
-      },
-      {
-        "title": "Sub-editor, Associate editor",
-        "institution": "Nation Media Group",
-        "startAt": "2005-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Production Management Assistant",
-        "institution": "BBC, Bristol",
-        "startAt": "2011-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Senior editor, Managing editor",
-        "institution": "The Standard Group",
-        "startAt": "2013-01-01",
-        "endAt": "2018-01-01"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kitui",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Wavinya Ndeti",
-    "party": "Wiper Patriotic Front",
-    "title": "Governor",
-    "region": "Machakos",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Agnes Kavindu",
-    "title": "Senator",
-    "region": "Machakos",
-    "status": "current",
-    "bio": "Agnes Kavindu is a Kenyan politician and the current Senator for Machakos County. Born in Ngonda Village, Matungulu, Machakos County, in the early 1960s, she began her education at Ngonda Primary School before joining a local secondary school in Machakos.",
-    "education": [
-      {
-        "title": "Kenya Certificate of Primary Education (KCPE)",
-        "institution": "Ngonda Primary School",
-        "startAt": null,
-        "endAt": "1975-01-01"
-      },
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE)",
-        "institution": "Local secondary school in Machakos",
-        "startAt": null,
-        "endAt": "1979-01-01"
-      },
-      {
-        "title": "Degree in biblical studies",
-        "institution": "Outreach International Bible College",
-        "startAt": null,
-        "endAt": "2018-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Host of religious program",
-        "institution": "Biblia Husema Broadcasting Studios",
-        "startAt": "2010-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Director",
-        "institution": "Tanathi Water Service Board",
-        "startAt": "2018-01-01",
-        "endAt": "2021-01-01"
-      },
-      {
-        "title": "Member",
-        "institution": "Building Bridges Initiative (BBI) Taskforce",
-        "startAt": "2018-01-01",
-        "endAt": "2020-01-01"
-      },
-      {
-        "title": "Member of the County Public Investments & Special Funds Committee",
-        "institution": "Senate",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Machakos",
-        "startAt": "2021-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Mutula Kilonzo Jr",
-    "party": "Wiper Patriotic Front",
-    "title": "Governor",
-    "region": "Makueni",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Dan Maanzo",
-    "title": "Senator",
-    "region": "Makueni",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Moses Badilisha Kiarie",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Nyandarua",
-    "status": "current",
-    "bio": "Dr. Moses Ndirangu Kiarie Badilisha is the Governor of Nyandarua County, elected in August 2022 on a United Democratic Alliance ticket. Born in Munyeki village, he has a background in engineering and energy development.",
-    "professional": [
-      {
-        "title": "CEO",
-        "institution": "Kenya Independent Power Producers Association (KIPPA)",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/Dr.%20Kiarie%20Badilisha",
-        "href": "https://facebook.com/Dr.%20Kiarie%20Badilisha"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Nyandarua",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "John Methu",
-    "title": "Senator",
-    "region": "Nyandarua",
-    "status": "current",
-    "bio": "John Methu Muhia is a Kenyan politician and the current Senator of Nyandarua County. Born on 14 February 1991 in Kinangop Constituency and raised by his grandmother, he pursued a bachelor's degree in Political Science from Pwani University and developed a strong interest in governance, leadership, and public policy.",
-    "education": [
-      {
-        "title": "Bachelor's degree in Political Science",
-        "institution": "Pwani University",
-        "startAt": null,
-        "endAt": "2017-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Personal Secretary to the Speaker of the Nyandarua County Assembly",
-        "institution": "Nyandarua County Assembly",
-        "startAt": "2018-01-01",
-        "endAt": "2022-01-01"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Nyandarua",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Mutahi Kahiga",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Nyeri",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Wahome Wamatinga",
-    "title": "Senator",
-    "region": "Nyeri",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Anne Waiguru",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Kirinyaga",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "James Murango",
-    "title": "Senator",
-    "region": "Kirinyaga",
-    "status": "current",
-    "bio": "James Kamau Murango is the Senator for Kirinyaga County, elected in 2022, and chairs the Senate's Agriculture, Livestock and Fisheries Committee.",
-    "education": [
-      {
-        "title": "Kenya Certificate of Primary Education (KCPE)",
-        "institution": "Kiandieni Primary School",
-        "startAt": null,
-        "endAt": "1994-01-01"
-      },
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE)",
-        "institution": "Secondary institution within Kirinyaga County",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Plant Engineering",
-        "institution": "Technical University of Mombasa (TUM)",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Business Management",
-        "institution": "Kenya Institute of Management (KIM)",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Material Handling and Advanced Equipment",
-        "institution": "Sweden",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Project Management",
-        "institution": "Miami, United States",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Member of the County Assembly (MCA)",
-        "institution": "Kirinyaga",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Technical director",
-        "institution": "Self-employed ventures",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kirinyaga",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Irungu Kang'ata",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Murang'a",
-    "status": "current",
-    "bio": "Irungu Kang'ata is the Governor of Murang'a County, born in 1980 in Murang'a town. He previously served as Murang'a County Senator and Majority Chief Whip for the Jubilee party in the Kenya Senate.",
-    "professional": [
-      {
-        "title": "Majority Chief Whip",
-        "institution": "Jubilee party in the Kenya Senate",
-        "startAt": "2020-01-01",
-        "endAt": "2021-01-01"
-      },
-      {
-        "title": "Councilor",
-        "institution": "Defunct county council",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Murang'a",
-        "startAt": "2017-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Senator",
-        "region": "Murang'a",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "MP",
-        "region": "Kiharu",
-        "startAt": "2013-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "Murang'a",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Joe Nyutu",
-    "title": "Senator",
-    "region": "Murang'a",
-    "status": "current",
-    "bio": "Joe Nyutu is a Kenyan politician and the current Senator for Murang'a County under the United Democratic Alliance (UDA) party. Born in 1965 in Murang'a County, he has a background in education.",
-    "education": [
-      {
-        "title": "Kenya Advanced Certificate of Education (KACE)",
-        "institution": "Kijabe Boys High School",
-        "startAt": "1988-01-01",
-        "endAt": "1989-01-01"
-      },
-      {
-        "title": "Bachelor of Education",
-        "institution": "Moi University",
-        "startAt": "1990-01-01",
-        "endAt": "1994-01-01"
-      },
-      {
-        "title": "Certified Public Accountant (CPA)",
-        "institution": "Strathmore University",
-        "startAt": "1999-01-01",
-        "endAt": "2000-01-01"
-      },
-      {
-        "title": "Kenya Advanced Certificate of Education",
-        "institution": "Kijabe High School",
-        "startAt": "1988-01-01",
-        "endAt": "1989-01-01"
-      },
-      {
-        "title": "Master’s Degree in Business Administration",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "CRE and Kiswahili Teacher",
-        "institution": "Teachers Service Commission (TSC)",
-        "startAt": "1995-01-01",
-        "endAt": "2009-01-01"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Murang'a",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Kimani Wamatangi",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Kiambu",
-    "status": "current",
-    "bio": "Paul Kimani Wamatangi is a Kenyan politician serving as Governor of Kiambu County.",
-    "education": [
-      {
-        "title": "Diploma",
-        "institution": "Tred. P. College",
-        "startAt": "1983-01-01",
-        "endAt": "1984-01-01"
-      },
-      {
-        "title": "Degree in Leadership and Management",
-        "institution": "St Paul’s University",
-        "startAt": "2012-01-01",
-        "endAt": "2013-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Managing Director",
-        "institution": "Auto Bass Limited",
-        "startAt": "2004-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "Founder",
-        "institution": "Wamatangi Foundation",
-        "startAt": "2006-01-01",
-        "endAt": null
-      },
-      {
-        "title": "CEO",
-        "institution": "King Group Limited",
-        "startAt": "2010-01-01",
-        "endAt": "2012-01-01"
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/Kimani-FB",
-        "href": "https://www.facebook.com/Kimani-FB"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kiambu",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Governor",
-        "region": "Kiambu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Karungo wa Thang'wa",
-    "title": "Senator",
-    "region": "Kiambu",
-    "status": "current",
-    "bio": "Paul Karungo Wa Thang'wa is a Kenyan politician serving as Senator of Kiambu County. Born into a family of thirteen siblings, he began his education at Mitahato Primary School before graduating from the University of Nairobi with a bachelor's degree in development communication. His political career began in 2013 when he was elected MCA for Ngewa Ward.",
-    "education": [
-      {
-        "title": "Kenya Certificate of Primary Education (KCPE)",
-        "institution": "Mitahato Primary School",
-        "startAt": "1986-01-01",
-        "endAt": "1994-01-01"
-      },
-      {
-        "title": "Diploma in Journalism and Radio production",
-        "institution": "Media Network Training Institute",
-        "startAt": null,
-        "endAt": "2001-01-01"
-      },
-      {
-        "title": "Bachelor's degree in development communication",
-        "institution": "University of Nairobi",
-        "startAt": "2013-01-01",
-        "endAt": "2016-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Member of County Executive Committee (CEC)",
-        "institution": "Kiambu",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Part-time lecturer",
-        "institution": "NIBS College",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Radio presenter",
-        "institution": "China Radio International English department",
-        "startAt": "2007-01-01",
-        "endAt": "2010-01-01"
-      },
-      {
-        "title": "News editor, reporter, continuity presenter, and standby presenter",
-        "institution": "Kameme FM",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kiambu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "MCA",
-        "region": "Ngewa",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Jeremiah Lomorukai",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Turkana",
-    "status": "current",
-    "bio": "Jeremiah Ekamais Lomorukai is the Governor of Turkana County, elected in 2022, having previously served two terms as Member of Parliament for Loima Constituency.",
-    "professional": [],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Loima",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Turkana",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "James Lomenen Ekomwa",
-    "title": "Senator",
-    "region": "Turkana",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Simon Kachapin",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "West Pokot",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Julius Murgor",
-    "title": "Senator",
-    "region": "West Pokot",
-    "status": "current",
-    "bio": "Recha Julius Murgor is a Kenyan politician and the current Senator for West Pokot County. Born into the Pokot community, he founded the Pokot Outreach Ministry with his wife Rachel, entered formal politics in 2007, and has since focused on development, peace-building, and social welfare initiatives.",
-    "education": [
-      {
-        "title": "Bachelor of Arts",
-        "institution": "Washington Bible College",
-        "startAt": "1981-01-01",
-        "endAt": "1985-01-01"
-      },
-      {
-        "title": "Master of Arts in Religion and Philosophy",
-        "institution": "Trinity International University",
-        "startAt": "1985-01-01",
-        "endAt": "1987-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Executive Director",
-        "institution": "Pokot Outreach Ministry (POM)",
-        "startAt": "1988-01-01",
-        "endAt": "2021-01-01"
-      },
-      {
-        "title": "Member of the National Assembly",
-        "institution": "National Assembly of Kenya",
-        "startAt": "2007-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Chair",
-        "institution": "Kenyan Senate Committee on Labour and Social Welfare",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Kapenguria",
-        "startAt": "2007-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "West Pokot",
-        "startAt": "2017-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Senator",
-        "region": "West Pokot",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Jonathan Lati Lelelit",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Samburu",
-    "status": "current",
-    "bio": "Jonathan Lelelit Lati is the Governor of Samburu County, elected in 2022. He previously served two terms as Member of Parliament for Samburu West Constituency, from 2013 to 2022.",
-    "education": [
-      {
-        "title": "MBA(Finance)",
-        "institution": "Brandeis University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Bachelor of Science in Mathematics and Economics",
-        "institution": "St. Lawrence University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Portfolio Manager",
-        "institution": "Street Global Advisors",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Chairman",
-        "institution": "Kenya Industrial Research and Development Institute (KIRDI)",
-        "startAt": "2018-01-01",
-        "endAt": "2021-01-01"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Samburu West",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Governor",
-        "region": "Samburu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Lelegwe Ltumbesi",
-    "title": "Senator",
-    "region": "Samburu",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "George Natembeya",
-    "party": "DAP-K",
-    "title": "Governor",
-    "region": "Trans Nzoia",
-    "status": "current",
-    "bio": "George Natembeya is the Governor of Trans Nzoia County, having assumed office in October 2022. With a background in public service, he has also expressed interest in a future presidential bid.",
-    "education": [
-      {
-        "title": "Bachelor's degree",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Personal Assistant",
-        "institution": "Ministry of Security",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "District Officer",
-        "institution": "Kilgoris",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "District Commissioner",
-        "institution": "Murang’a and Kamukunji",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "County Commissioner",
-        "institution": "Isiolo and Narok",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Regional Commissioner",
-        "institution": "Rift Valley",
-        "startAt": "2019-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Personal Assistant",
-        "institution": "Minister for Security",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "District Commissioner",
-        "institution": "Isiolo, Narok",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Personal Assistant to Minister",
-        "institution": "John Michuki",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Trans Nzoia",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Trans Nzoia",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Allan Chesang",
-    "title": "Senator",
-    "region": "Trans Nzoia",
-    "status": "current",
-    "bio": "Allan Kiprotich Chesang is a Kenyan businessman and politician serving as the current Senator of Trans Nzoia County.",
-    "education": [
-      {
-        "title": "Business Management Purchasing and Supply",
-        "institution": "Moi University",
-        "startAt": "2008-01-01",
-        "endAt": "2012-01-01"
-      },
-      {
-        "title": "KCSE",
-        "institution": "Musingu High school",
-        "startAt": "2005-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "KCPE",
-        "institution": "Kitale Academy",
-        "startAt": "1995-01-01",
-        "endAt": "2002-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Parliamentary seat candidate",
-        "institution": "Kwanza",
-        "startAt": "2017-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "CEO",
-        "institution": "Transcentury Global and Uplift Group of companies",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Patron",
-        "institution": "KUSA (Kenya University Student Association)",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Chairperson",
-        "institution": "Standing Senate ICT Committee",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Member",
-        "institution": "Agriculture and Livestock Committee",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Trans Nzoia",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Jonathan Bii",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Uasin Gishu",
-    "status": "current",
-    "bio": "Jonathan Bii is the Governor of Uasin Gishu County and a member of the United Democratic Alliance (UDA) party, elected in 2022. He has a background in education and community development.",
-    "education": [
-      {
-        "title": "Diploma in Information Science",
-        "institution": "Sigalagal National Polytechnic",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Bachelor of Arts in Divinity (Counselling)",
-        "institution": "Shalom Bible College and Seminary",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master's degree in project planning and management",
-        "institution": "Kisii University",
-        "startAt": "2014-01-01",
-        "endAt": "2020-01-01"
-      }
-    ],
-    "professional": [],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Uasin Gishu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Uasin Gishu",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Jackson Mandago",
-    "title": "Senator",
-    "region": "Uasin Gishu",
-    "status": "current",
-    "bio": "Jackson Kiplagat Arap Mandago is a Kenyan politician who has served as Governor of Uasin Gishu and is currently the county's Senator. Born and raised in Uasin Gishu, he was educated at Kenyatta University and the Catholic University of Eastern Africa.",
-    "education": [
-      {
-        "title": "Bachelor's degree in Biochemistry",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master's degree in Procurement and Strategic Planning",
-        "institution": "Catholic University of Eastern Africa (CUEA)",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Uasin Gishu",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "Uasin Gishu",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Wisley Rotich",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Elgeyo/Marakwet",
-    "status": "current",
-    "bio": "Wisley Rotich is the second Governor of Elgeyo Marakwet County, having previously served as Deputy Governor from 2017 to 2022. He holds a master's and bachelor's degree in Economics from Moi University and has worked at the Kenya Wildlife Service and Equity Bank.",
-    "education": [
-      {
-        "title": "Masters and Bachelors Degree in Economics",
-        "institution": "Moi University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Deputy Governor",
-        "institution": "Elgeyo Marakwet County",
-        "startAt": "2017-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Budget Officer",
-        "institution": "Kenya Wildlife Service (KWS)",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Operations Officer",
-        "institution": "Equity Bank",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Elgeyo/Marakwet",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "William Kisang",
-    "title": "Senator",
-    "region": "Elgeyo/Marakwet",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Stephen Sang",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Nandi",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Samson Cherargei",
-    "title": "Senator",
-    "region": "Nandi",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Benjamin Cheboi",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Baringo",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "William Cheptumo Kipkorir",
-    "title": "Senator",
-    "region": "Baringo",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Joshua Irungu",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Laikipia",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "John Kinyua",
-    "title": "Senator",
-    "region": "Laikipia",
-    "status": "current",
-    "bio": "John Kinyua Nderitu is a Kenyan politician serving as Senator for Laikipia County, with a background in pharmaceuticals and business. He has been actively involved in politics since 2007.",
-    "education": [
-      {
-        "title": "Bachelor of Science in Chemistry & Botany",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "2000-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Medical Representative",
-        "institution": "Microlabs Pharmaceutical Company",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Medical Representative",
-        "institution": "C. Mehta Pharmaceutical Company",
-        "startAt": "2003-01-01",
-        "endAt": "2004-01-01"
-      },
-      {
-        "title": "Medical Representative",
-        "institution": "Europa Healthcare",
-        "startAt": "2002-01-01",
-        "endAt": "2003-01-01"
-      },
-      {
-        "title": "Key Accounts Manager",
-        "institution": "Laborex (Kenya) Ltd",
-        "startAt": "2004-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "Councillor",
-        "institution": "Laikipia County Council",
-        "startAt": "2007-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Councillor",
-        "institution": "Mutara Ward",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Laikipia",
-        "startAt": "2017-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Susan Kihika",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Nakuru",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Tabitha Keroche",
-    "title": "Senator",
-    "region": "Nakuru",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Patrick Ole Ntutu",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Narok",
-    "status": "current",
-    "bio": "Patrick Keturet Ole Ntutu is the Governor of Narok County, elected in 2022, following a long career in public service.",
-    "education": [
-      {
-        "title": "Bachelor's degree in Business Administration",
-        "institution": "Roosevelt University in Chicago",
-        "startAt": null,
-        "endAt": "1996-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Chief Administrative Secretary (CAS)",
-        "institution": "Ministry of Interior",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Narok West",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Narok",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Ledama Ole Kina",
-    "title": "Senator",
-    "region": "Narok",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Joseph Ole Lenku",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Kajiado",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Samuel Kanar Seki",
-    "title": "Senator",
-    "region": "Kajiado",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Erick Mutai",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Kericho",
-    "status": "current",
-    "bio": "Erick Kipkoech Mutai is a Kenyan academic and politician serving as Governor of Kericho County. Born on 28 December 1983, he worked as a university lecturer before entering politics.",
-    "education": [
-      {
-        "title": "Bachelor of Education",
-        "institution": "Maseno University",
-        "startAt": null,
-        "endAt": "2008-01-01"
-      },
-      {
-        "title": "Master's degree in Literature and Communication",
-        "institution": "University of Kabianga",
-        "startAt": null,
-        "endAt": "2014-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Lecturer",
-        "institution": "Embu University",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Kericho",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Aaron Cheruiyot",
-    "title": "Senator",
-    "region": "Kericho",
-    "status": "current",
-    "bio": "Aaron Cheruiyot is a Kenyan politician born on 23 February 1986 in Kapchebet, Kabianga. Elected Senator for Kericho County, he served as Majority Leader of the Senate from 2022. He is married to Linah Chesang Cheruiyot and has one child.",
-    "education": [
-      {
-        "title": "BA",
-        "institution": "Moi University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Diploma in Marketing",
-        "institution": "Kenya Institute of Management",
-        "startAt": null,
-        "endAt": "2010-01-01"
-      },
-      {
-        "title": "Master in Business Administration (MBA)",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": "2018-01-01"
-      },
-      {
-        "title": "KCSE",
-        "institution": "Kericho High School",
-        "startAt": null,
-        "endAt": "2004-01-01"
-      },
-      {
-        "title": "KCPE",
-        "institution": "Unity Primary",
-        "startAt": null,
-        "endAt": "2000-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Majority Leader",
-        "institution": "Senate",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Commissioner",
-        "institution": "Parliamentary Service Commission (PSC)",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Kericho",
-        "startAt": "2016-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Hillary Barchok",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Bomet",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Hillary Sigei",
-    "title": "Senator",
-    "region": "Bomet",
-    "status": "current",
-    "bio": "Hillary Kiprotich Sigei is a senatorial aspirant in Bomet County.",
-    "education": [
-      {
-        "title": "Master of Law (LLM)",
-        "institution": "The University of Nairobi",
-        "startAt": "2012-01-01",
-        "endAt": "2014-01-01"
-      },
-      {
-        "title": "Post Graduate Diploma in Law",
-        "institution": "The Kenya School of Law",
-        "startAt": null,
-        "endAt": "2006-01-01"
-      },
-      {
-        "title": "KCSE",
-        "institution": "Tenwek High School",
-        "startAt": "1996-01-01",
-        "endAt": "1999-01-01"
-      },
-      {
-        "title": "KCPE",
-        "institution": "Ndamichonik Primary School",
-        "startAt": "1987-01-01",
-        "endAt": "1995-01-01"
-      }
-    ],
-    "professional": [],
-    "social": [
-      {
-        "title": "x",
-        "value": "x.com/skhillary",
-        "href": "https://x.com/skhillary"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Bomet",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Fernandez Barasa",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Kakamega",
-    "status": "current",
-    "bio": "Fernandes Barasa is the Governor of Kakamega, having won the gubernatorial seat in the 2022 election. A member of the Orange Democratic Movement (ODM), he has a background in accounting and corporate leadership.",
-    "education": [
-      {
-        "title": "Bachelor of Commerce degree in Accounting",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": "1997-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Assistant Accountant",
-        "institution": "Kenya Airways (KQ)",
-        "startAt": "1997-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Chief Executive Officer and Managing Director",
-        "institution": "Kenya Electricity Transmission Company (KETRACO)",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Kakamega",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Boni Khalwale",
-    "title": "Senator",
-    "region": "Kakamega",
-    "status": "current",
-    "bio": "Boni Khalwale is a Kenyan politician and the current Senator of Kakamega, elected on a UDA party ticket, known as a chief critic of the Ruto administration.",
-    "education": [
-      {
-        "title": "A levels",
-        "institution": "Kakamega School",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Medicine",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1987-01-01"
-      }
-    ],
-    "professional": [],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Ikolomani",
-        "startAt": "2002-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Senator",
-        "region": "Kakamega",
-        "startAt": "2012-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Wilber Khasilwa Otichillo",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Vihiga",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Godfrey Osotsi",
-    "title": "Senator",
-    "region": "Vihiga",
-    "status": "current",
-    "bio": "Godfrey Atieno Osotsi is a Kenyan politician serving as Senator for Vihiga County, elected in August 2022. He previously served as a nominated Member of the National Assembly of Kenya from 2017 to 2022.",
-    "education": [
-      {
-        "title": "Bachelor of Science in Computer Science",
-        "institution": "Egerton University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master’s in Information Technology Management",
-        "institution": "University of Sunderland (UK)",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Executive MBA",
-        "institution": "Jomo Kenyatta University of Agriculture and Technology (JKUAT)",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "ICT Superintendent",
-        "institution": "Mumias Outgrowers Company Limited",
-        "startAt": "2001-01-01",
-        "endAt": "2003-01-01"
-      },
-      {
-        "title": "Group ICT Manager",
-        "institution": "Energy Regulatory Commission",
-        "startAt": "2003-01-01",
-        "endAt": "2007-01-01"
-      },
-      {
-        "title": "Head of ICT",
-        "institution": "Davis and Shartliff Company",
-        "startAt": "2007-01-01",
-        "endAt": "2009-01-01"
-      },
-      {
-        "title": "Head of ICT",
-        "institution": "Energy Regulatory Board",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Member of the National Assembly",
-        "institution": "National Assembly",
-        "startAt": "2013-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Chief Executive Officer/Chief Trainer",
-        "institution": "Bussinet Systems Limited",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Secretary General",
-        "institution": "Amani National Congress (ANC) party",
-        "startAt": "2015-01-01",
-        "endAt": "2017-01-01"
-      },
-      {
-        "title": "Nominated Member",
-        "institution": "National Assembly of Kenya",
-        "startAt": "2017-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Chairperson of the County Public Investments and Special Funds Committee",
-        "institution": "Parliament of Kenya",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Vihiga",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Kenneth Lusaka",
-    "party": "Forum for Restoration of Democracy- Kenya",
-    "title": "Governor",
-    "region": "Bungoma",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Moses Wetangula",
-    "title": "Senator",
-    "region": "Bungoma",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Paul Otuoma",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Busia",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Okiya Omtata",
-    "title": "Senator",
-    "region": "Busia",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "James Orengo",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Siaya",
-    "status": "current",
-    "bio": "James Aggrey Bob Orengo is a Kenyan lawyer, human rights activist, and politician who is the current Governor of Siaya County. Born in 1951 in Kasipul Kabondo, Homa Bay County, he has held several government positions, including Senator of Siaya County and Minister for Lands.",
-    "education": [
-      {
-        "title": "LLB",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1974-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Minority Leader of the Senate of Kenya",
-        "institution": "Senate of Kenya",
-        "startAt": "2018-01-01",
-        "endAt": "2022-01-01"
-      },
-      {
-        "title": "Minister for Lands",
-        "institution": "Kenya Government",
-        "startAt": "2008-01-01",
-        "endAt": "2013-01-01"
-      },
-      {
-        "title": "Minister for Lands",
-        "institution": "Kenyan Government",
-        "startAt": "2008-01-01",
-        "endAt": "2013-01-01"
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Siaya",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "MP",
-        "region": "Ugenya",
-        "startAt": "1980-01-01",
-        "endAt": "1997-01-01"
-      },
-      {
-        "title": "MP",
-        "region": "Ugenya",
-        "startAt": "1980-01-01",
-        "endAt": "1997-01-01"
-      },
-      {
-        "title": "Governor",
-        "region": "Siaya",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Oburu Oginga",
-    "title": "Senator",
-    "region": "Siaya",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Prof Anyang' Nyong'o",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Kisumu",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Tom Ojienda",
-    "title": "Senator",
-    "region": "Kisumu",
-    "status": "current",
-    "bio": "Tom Ojienda is a Senior Counsel and politician from Kisumu who won the Orange Democratic Movement (ODM) Senate ticket for Kisumu.",
-    "professional": []
-  },
-  {
-    "name": "Gladys Wanga",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Homa Bay",
-    "status": "current",
-    "bio": "Gladys Atieno Wanga is a Kenyan politician and the current Governor of Homa Bay County. A member of the Orange Democratic Movement (ODM), she served as Member of Parliament for Homa Bay Woman Representative from 2017 to 2022.",
-    "education": [
-      {
-        "title": "Bachelor's Degree in Health Management",
-        "institution": "Kenyatta University",
-        "startAt": null,
-        "endAt": "2004-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Secretary-General",
-        "institution": "Kenyatta University Student’s Union",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Woman Rep",
-        "region": "Homa Bay",
-        "startAt": "2013-01-01",
-        "endAt": "2022-01-01"
-      }
-    ]
-  },
-  {
-    "name": "Moses Kajwang",
-    "title": "Senator",
-    "region": "Homa Bay",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Ochillo Ayacko",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Migori",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Eddy Oketch",
-    "title": "Senator",
-    "region": "Migori",
-    "status": "current",
-    "bio": "Eddy Oketch Gicheru is a Kenyan politician and Senator for Migori County, born on 12 August 1991 and elected on an Orange Democratic Movement (ODM) ticket. He has a background in education and social entrepreneurship and has led initiatives promoting youth empowerment and environmental sustainability.",
-    "education": [
-      {
-        "title": "Diploma in Leadership, Entrepreneurship, African Studies, and Community Service Projects",
-        "institution": "African Leadership Academy (ALA)",
-        "startAt": "2008-01-01",
-        "endAt": "2010-01-01"
-      },
-      {
-        "title": "Bachelor's degree in Political Science",
-        "institution": "Trinity College",
-        "startAt": "2011-01-01",
-        "endAt": "2014-01-01"
-      },
-      {
-        "title": "Master's degree in Global Affairs",
-        "institution": "Yale University",
-        "startAt": "2014-01-01",
-        "endAt": "2016-01-01"
-      },
-      {
-        "title": "PhD in Philosophy",
-        "institution": "University of Nairobi",
-        "startAt": "2021-01-01",
-        "endAt": "2025-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Founder and Leader",
-        "institution": "Ongoza",
-        "startAt": "2012-01-01",
-        "endAt": "2015-01-01"
-      },
-      {
-        "title": "Member",
-        "institution": "Orange Democratic Movement",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Founder",
-        "institution": "The Oketch Gicheru Trust",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Migori",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Simba Arati",
-    "party": "ODM",
-    "title": "Governor",
-    "region": "Kisii",
-    "status": "current",
-    "bio": "Paul Simba Arati is a Kenyan politician and the current Governor of Kisii County, elected in 2022. A member of the Orange Democratic Movement, he previously served as Member of Parliament for Dagoretti North Constituency.",
-    "education": [
-      {
-        "title": "Master of Business Administration (MBA) in Strategic Management",
-        "institution": "Guangzhou University",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "BA (International Relations and Diplomacy)",
-        "institution": "Kenya Polytechnic University College",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Kenya Certificate of Secondary Education (KCSE)",
-        "institution": "Suneka High School",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Master's degree in International Relations",
-        "institution": "Jaramogi Oginga Odinga University of Science and Technology",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Managing Director",
-        "institution": "Aipa Safaris Limited",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "MP",
-        "region": "Dagoretti North",
-        "startAt": "2013-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Governor",
-        "region": "Kisii",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Richard Onyonka",
-    "title": "Senator",
-    "region": "Kisii",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Amos Nyaribo",
-    "party": "UPA",
-    "title": "Governor",
-    "region": "Nyamira",
-    "status": "current",
-    "professional": []
-  },
-  {
-    "name": "Erick Okong'o Omogeni",
-    "title": "Senator",
-    "region": "Nyamira",
-    "status": "current",
-    "bio": "Erick Okong'o Omogeni is a Kenyan politician who served as Nyamira County Senator from 2017 to 2022. Born in 1970 in Nyamira division, he holds a Bachelor of Law degree from the University of Nairobi.",
-    "education": [
-      {
-        "title": "CPE",
-        "institution": "Shauri Moyo",
-        "startAt": null,
-        "endAt": "1983-01-01"
-      },
-      {
-        "title": "'O' levels",
-        "institution": "Isabania Secondary School",
-        "startAt": null,
-        "endAt": "1987-01-01"
-      },
-      {
-        "title": "'A' levels",
-        "institution": "Kabianga High School",
-        "startAt": null,
-        "endAt": "1989-01-01"
-      },
-      {
-        "title": "Bachelor of Law",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": "1993-01-01"
-      },
-      {
-        "title": "Masters Degree in Governance and Leadership",
-        "institution": "Jomo Kenyatta University of Agriculture and Technology",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Member",
-        "institution": "Media Council of Kenya",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Chair",
-        "institution": "Kenya Anti-Corruption Commission Advisory Board",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "President",
-        "region": "Kenya",
-        "startAt": "2007-01-01",
-        "endAt": "2010-01-01"
-      },
-      {
-        "title": "Senator",
-        "region": "Nyamira",
-        "startAt": null,
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Johnson Sakaja",
-    "party": "UDA",
-    "title": "Governor",
-    "region": "Nairobi",
-    "status": "current",
-    "bio": "Johnson Sakaja is the current Governor of Nairobi City County, born on 2 February 1985. He previously served as Nairobi Senator and a nominated MP, and is a member of the United Democratic Alliance (UDA) party.",
-    "education": [
-      {
-        "title": "Actuarial Science",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "National Chairman of The National Alliance (TNA)",
-        "institution": "The National Alliance (TNA)",
-        "startAt": "2016-09-09",
-        "endAt": null
-      },
-      {
-        "title": "Chair",
-        "institution": "Kenya Young Parliamentarians Association",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Governor",
-        "region": "Nairobi",
-        "startAt": "2022-01-01",
-        "endAt": null
-      },
-      {
-        "title": "Senator",
-        "region": "Nairobi",
-        "startAt": "2017-01-01",
-        "endAt": "2022-01-01"
-      }
-    ]
-  },
-  {
-    "name": "Edwin Sifuna",
-    "title": "Senator",
-    "region": "Nairobi",
-    "party": "ODM",
-    "status": "current",
-    "bio": "Senator for Nairobi County focused on devolution oversight, affordable housing accountability and youth employment programs across all 17 sub-counties.",
-    "pillars": [
-      {
-        "title": "Devolution oversight",
-        "summary": "Track every shilling allocated to Nairobi County and publish quarterly scorecards."
-      },
-      {
-        "title": "Youth employment",
-        "summary": "Champion county-funded apprenticeships linking TVET graduates to city contracts."
-      },
-      {
-        "title": "Housing accountability",
-        "summary": "Public register of affordable housing allocations to end double-allocation fraud."
-      }
-    ],
-    "education": [
-      {
-        "title": "Bachelor of Laws",
-        "institution": "University of Nairobi",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Postgraduate Diploma in Law",
-        "institution": "Kenya School of Law",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "professional": [
-      {
-        "title": "Partner",
-        "institution": "E. Sifuna & Associates Advocates",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Technical/Advisory Committee Member",
-        "institution": "CORD",
-        "startAt": "2013-01-01",
-        "endAt": "2016-01-01"
-      },
-      {
-        "title": "Technical/Advisory Committee Member",
-        "institution": "NASA",
-        "startAt": null,
-        "endAt": null
-      },
-      {
-        "title": "Secretary-General",
-        "institution": "Orange Democratic Movement (ODM)",
-        "startAt": "2018-01-01",
-        "endAt": "2026-01-01"
-      },
-      {
-        "title": "Deputy Minority Whip",
-        "institution": "Senate of Kenya",
-        "startAt": null,
-        "endAt": null
-      }
-    ],
-    "leadership": [
-      {
-        "title": "Senator",
-        "region": "Nairobi",
-        "startAt": "2022-01-01",
-        "endAt": null
-      }
-    ]
-  },
-  {
-    "name": "Gabriel Amba",
+ {
+  "name": "William Ruto",
+  "party": "United Democratic Alliance",
+  "title": "President",
+  "region": "Kenya",
+  "status": "current",
+  "education": [
+   {
+    "title": "Bachelor of Science in Botany and Zoology",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1990-01-01"
+   },
+   {
+    "title": "Master of Science in Plant Ecology",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "2011-01-01"
+   },
+   {
+    "title": "Doctor of Philosophy (Ph.D.) in Plant Ecology",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "2018-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Assistant Minister for Home Affairs",
+    "institution": "Government of Kenya",
+    "startAt": "1998-01-01",
+    "endAt": "2002-01-01"
+   },
+   {
+    "title": "Minister for Agriculture",
+    "institution": "Government of Kenya",
+    "startAt": "2008-01-01",
+    "endAt": "2010-01-01"
+   },
+   {
+    "title": "Minister for Higher Education, Science and Technology",
+    "institution": "Government of Kenya",
+    "startAt": "2010-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "Vice President of Kenya",
+    "institution": "Government of Kenya",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Email",
+    "value": "president@statehouse.go.ke"
+   },
+   {
+    "title": "Phone",
+    "value": "+254 20 3247000/1/2/3/4/5"
+   },
+   {
+    "title": "Office",
+    "value": "Office of the President, Harambee Avenue"
+   }
+  ],
+  "social": [
+   {
+    "title": "twitter",
+    "value": "x.com/WilliamsRuto",
+    "href": "https://x.com/WilliamsRuto"
+   }
+  ],
+  "leadership": [
+   {
     "title": "MP",
-    "region": "Turbo",
-    "status": "aspirant",
-    "professional": []
-  },
-  {
-    "name": "Cyril Bill Mwoni",
+    "region": "Soy",
+    "description": "Former Eldoret North",
+    "startAt": "1997-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "President",
+    "region": "Kenya",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Martha Karua",
+  "party": "People's Liberation Party",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "Martha Wangari Karua is a Kenyan lawyer, politician, and democracy advocate known for her long-standing commitment to constitutionalism, good governance, and the rule of law, and has been a prominent figure in Kenyan politics for more than three decades. Born on 22 September 1957 in Gichugu, Kirinyaga County, to Jackson Karua and Josephine Wanjiru Karua, she studied law at the University of Nairobi, graduating in 1980, before proceeding to the Kenya School of Law, and undertook further studies at the United States International University-Africa (USIU-Africa). Karua entered elective politics in 1992 as Member of Parliament for Gichugu Constituency, serving until 2013 and earning recognition as a strong advocate for democratic reforms, women's rights, and accountability in public service. During her career, she held senior government positions including Minister for Water Resources Management and Development and Minister for Justice, National Cohesion and Constitutional Affairs, and played a significant role in Kenya's constitutional reform efforts. She is currently affiliated with the People's Liberation Party (PLP), and in the 2022 Kenyan General Election was nominated as running mate to presidential candidate Raila Odinga, becoming one of the few women in Kenya's history to contest for the office of Deputy President. Widely respected for her principled leadership and advocacy for justice and democracy, she remains an influential voice in Kenyan public affairs.",
+  "education": [
+   {
+    "title": "Bachelor of Laws (LL.B.)",
+    "institution": "University of Nairobi",
+    "startAt": "1977-01-01",
+    "endAt": "1980-01-01"
+   },
+   {
+    "title": "Master of Business Administration (MBA)",
+    "institution": "Kenya School of Law",
+    "startAt": "1980-01-01",
+    "endAt": "1981-01-01"
+   },
+   {
+    "title": "Diploma in Law (Advocates Training Programme)",
+    "institution": "Kenya School of Law",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Advocate",
+    "institution": "High Court of Kenya",
+    "startAt": "1981-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Minister for Justice, National Cohesion and Constitutional Affairs",
+    "institution": "Government of Kenya",
+    "startAt": "2005-01-01",
+    "endAt": "2009-01-01"
+   },
+   {
+    "title": "Party Leader",
+    "institution": "People's Liberation Party",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Email",
+    "value": "gichugu@parliament.go.ke"
+   },
+   {
+    "title": "Phone",
+    "value": "0721 623 342.  0733 747551 ."
+   },
+   {
+    "title": "Office",
+    "value": "Nairobi Liberation House, Woodlands Road, off Lenana Road."
+   }
+  ],
+  "social": [
+   {
+    "title": "x",
+    "value": "x.com/MarthaKarua",
+    "href": "https://x.com/MarthaKarua"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Gichugu",
+    "startAt": "1992-01-01",
+    "endAt": "2013-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Kalonzo Musyoka",
+  "party": "Wiper Patriotic Front",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "Kalonzo Musyoka is a Kenyan politician born on 24 December 1953 in Mwingi District, Kenya, and a prominent leader in Kenyan politics as a member of the Wiper Patriotic Front party. He studied at the Kenya School of Law, completing his studies in 1978, before entering politics and serving in various government positions, most notably as Deputy President of Kenya from 2008 to 2013. He married Pauline Kalonzo in 1985, and they have four children: Damaris Musenya, Kennedy Musyoka Kalonzo, Klein Kalonzo, and Kevin Muasya Musyoka. He remains an influential figure in Kenya's political landscape.",
+  "education": [
+   {
+    "title": "Bachelor of Laws (LL.B.) degree",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1977-01-01"
+   },
+   {
+    "title": "Bachelor of Laws (LL.B.) degree",
+    "institution": "Kenya School of Law",
+    "startAt": null,
+    "endAt": "1978-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Minister for Foreign Affairs",
+    "institution": "Government of Kenya",
+    "startAt": "1993-01-01",
+    "endAt": "1998-01-01"
+   },
+   {
+    "title": "Minister of Education",
+    "institution": "Government of Kenya",
+    "startAt": "2003-01-01",
+    "endAt": "2005-01-01"
+   },
+   {
+    "title": "Vice President of Kenya",
+    "institution": "Government of Kenya",
+    "startAt": "2008-01-01",
+    "endAt": "2013-01-01"
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Email",
+    "value": "musyoka@swiftkenya.com"
+   },
+   {
+    "title": "Phone",
+    "value": "0722711261"
+   },
+   {
+    "title": "Office",
+    "value": "Sunrise Court on Kufuga Road, off Langata Road in the Karen neighborhood of Nairobi, Kenya."
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Mwingi North",
+    "startAt": "1983-01-01",
+    "endAt": "2007-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Fred Matiang'i",
+  "party": "Jubilee Party",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "Fred Matiang'i is a Kenyan politician and public servant born on 22 April 1968 in Nyamira County, associated with the Jubilee Party. He studied at Kenyatta University and the University of Nairobi, earning a Bachelor's degree in Education, a Master's degree in English, and a PhD in Communication and Comparative Literature. He served as Cabinet Secretary for ICT (2013-2015), Education (2015-2017), and Interior and Coordination of National Government (2017-2022), playing a key role in coordinating government operations and national security. After leaving office in 2022, he worked with the World Bank before returning to active politics.",
+  "education": [
+   {
+    "title": "Bachelor's Degree in Education",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master's Degree in English",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "PhD in Communication and Comparative Literature",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Cabinet Secretary for ICT",
+    "institution": "Government of Kenya",
+    "startAt": "2013-01-01",
+    "endAt": "2015-01-01"
+   },
+   {
+    "title": "Cabinet Secretary for Education",
+    "institution": "Government of Kenya",
+    "startAt": "2015-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Cabinet Secretary for Interior and Coordination of National Government",
+    "institution": "Government of Kenya",
+    "startAt": "2017-01-01",
+    "endAt": "2022-01-01"
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Office",
+    "value": "Kileleshwa area of Nairobi, off Mandera Road."
+   }
+  ],
+  "social": [
+   {
+    "title": "x",
+    "value": "x.com/RealMatiangi",
+    "href": "https://x.com/RealMatiangi"
+   }
+  ]
+ },
+ {
+  "name": "Boniface Mwangi",
+  "party": "Ukweli Party",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "Boniface Mwangi is a Kenyan activist, photojournalist, and politician born on 10 July 1983 in Taveta, Kenya, widely known for his work in human rights advocacy, social justice, and civic engagement. He holds a Diploma in Bible Studies from The Kingdom Academy, a Diploma in Print Journalism from the East African School of Journalism, and completed a program in Human Rights and Documentary Photography at New York University. He began his career as a photojournalist with The Standard Group before becoming a full-time activist focused on accountability, transparency, and good governance, and founded the Courage Movement, a civic organization encouraging citizens to demand better leadership. In 2017, he contested the Starehe parliamentary seat as an independent candidate on an anti-corruption and youth-empowerment platform. He is married to Hellen Njeri Mwangi, with three children: Nalia Sifa, Nate Simphiwe, and Jabali Mboya.",
+  "education": [
+   {
+    "title": "Diploma in Bible Studies",
+    "institution": "The Kingdom Academy",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Diploma in Print Journalism",
+    "institution": "East African School of Journalism",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Human Rights and Documentary Photography (non-degree program)",
+    "institution": "New York University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE), private candidate",
+    "institution": "Private candidate",
+    "startAt": null,
+    "endAt": "2016-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Photojournalist",
+    "institution": "The Standard Group",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Founder",
+    "institution": "Courage Movement",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Parliamentary Candidate, Starehe Constituency (Independent)",
+    "institution": "Independent Electoral and Boundaries Commission",
+    "startAt": "2017-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Founder",
+    "institution": "PAWA254",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Office",
+    "value": "Nairobi, Kenya (PAWA 254 Headquarters)"
+   }
+  ],
+  "social": [
+   {
+    "title": "x",
+    "value": "x.com/bonifacemwangi",
+    "href": "https://x.com/bonifacemwangi"
+   }
+  ]
+ },
+ {
+  "name": "David Maraga",
+  "party": "United Green Movement",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "David Maraga is a Kenyan lawyer, jurist, and politician born on 12 January 1951 in South Nyanza District, widely respected for his distinguished judicial career and commitment to the rule of law. He studied law at the University of Nairobi and served in various judicial roles, beginning as a Resident Magistrate in 1987 and rising through Principal Magistrate, Senior Resident Magistrate, and Judge of the High Court (2003), before his appointment to the Court of Appeal in 2012. He served as Chief Justice and President of the Supreme Court of Kenya from 2016 to 2021, notably leading the Supreme Court's landmark 2017 ruling that annulled the presidential election results. He is married to Yucabeth Nyaboke, with a daughter, Vashti Kemuma, and is associated with the United Green Movement party.",
+  "education": [
+   {
+    "title": "Bachelor of Laws (LLB)",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Resident Magistrate",
+    "institution": "Judiciary of Kenya",
+    "startAt": "1987-01-01",
+    "endAt": "2003-01-01"
+   },
+   {
+    "title": "Principal Magistrate / Senior Resident Magistrate",
+    "institution": "Judiciary of Kenya",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Judge of the High Court",
+    "institution": "Judiciary of Kenya",
+    "startAt": "2003-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "Judge, Court of Appeal",
+    "institution": "Judiciary of Kenya",
+    "startAt": "2012-01-01",
+    "endAt": "2016-01-01"
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Office",
+    "value": "82 Westlands Road, Nairobi, Kenya"
+   }
+  ],
+  "social": [
+   {
+    "title": "x",
+    "value": "x.com/dkmaraga",
+    "href": "https://x.com/dkmaraga"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "President",
+    "region": "Kenya",
+    "startAt": "2016-01-01",
+    "endAt": "2021-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Abdullswamad Sherrif Nassir",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Mombasa",
+  "status": "current",
+  "bio": "Abdullswamad Sherrif Nassir is a Kenyan politician serving as the second Governor of Mombasa County. Born in Majengo, Mombasa, he previously represented Mvita Constituency as Member of Parliament. Affiliated with the Orange Democratic Movement (ODM), he emphasizes coastal economic development, enhanced security, and preservation of cultural heritage.",
+  "education": [
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE)",
+    "institution": "Lenana School",
+    "startAt": "1989-01-01",
+    "endAt": "1992-01-01"
+   },
+   {
+    "title": "Bachelor's degree in Commerce",
+    "institution": "Inoorero University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master's degree in Commerce",
+    "institution": "Mount Kenya University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "CEO",
+    "institution": "Radio Rahma",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Mvita",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Mombasa",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Mohammed Faki",
+  "title": "Senator",
+  "region": "Mombasa",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Fatuma Achani",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Kwale",
+  "status": "current",
+  "bio": "Fatuma Achani is a Kenyan politician who made history as the first female governor in the Coast region, winning the Kwale gubernatorial election as a member of the United Democratic Alliance (UDA) party.",
+  "professional": [
+   {
+    "title": "Deputy Governor",
+    "institution": "Kwale County",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Lawyer",
+    "institution": "FIDA \u2013 Kenya",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Lawyer and Advocate",
+    "institution": "High Court",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Issa Juma Boy",
+  "title": "Senator",
+  "region": "Kwale",
+  "status": "current",
+  "bio": "Senator for Kwale County.",
+  "education": [
+   {
+    "title": "Certificate of Primary Education (CPE)",
+    "institution": "Aga Khan Primary School",
+    "startAt": null,
+    "endAt": "1975-01-01"
+   },
+   {
+    "title": "East African Certificate of Education (EACE)",
+    "institution": "Aga Khan Secondary School",
+    "startAt": null,
+    "endAt": "1979-01-01"
+   },
+   {
+    "title": "Bachelor of Commerce (B.Com)",
+    "institution": "Jabalpur University",
+    "startAt": null,
+    "endAt": "1986-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Head of Delegation",
+    "institution": "Kwale County",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kwale",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Gideon Mung'aro",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Kilifi",
+  "status": "current",
+  "bio": "Gideon Mung'aro is a Kenyan politician who has served as Governor of Kilifi County since August 2022. He previously represented Kilifi North Constituency in the National Assembly following the 2013 election, and is a former Mayor of Malindi, having also represented Malindi Constituency in parliament before it was split.",
+  "professional": [
+   {
+    "title": "Mayor of Malindi",
+    "institution": "Malindi",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Chairman",
+    "institution": "JKP",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/GideonMungaroM/",
+    "href": "https://www.facebook.com/GideonMungaroM/"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Kilifi North",
+    "startAt": "2007-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Governor",
+    "region": "Kilifi",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Stewart Madzayo",
+  "title": "Senator",
+  "region": "Kilifi",
+  "status": "current",
+  "bio": "Stewart Madzayo is a Kenyan politician born in Chonyi, Bahari Constituency, Kilifi County. He is the Senator for Kilifi County and a member of the Orange Democratic Movement.",
+  "professional": [],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kilifi",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Dhadho Godhana",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Tana River",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Danson Mungatana",
+  "title": "Senator",
+  "region": "Tana River",
+  "status": "current",
+  "bio": "Danson Mungatana is a Kenyan lawyer and politician serving as Senator for Tana River County, born on 9 August 1970. He has served in various roles, including Member of Parliament for Garsen Constituency.",
+  "education": [
+   {
+    "title": "LL.B.",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1993-01-01"
+   },
+   {
+    "title": "postgraduate diploma",
+    "institution": "Kenya School of Law",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Commissioner",
+    "institution": "COMESA Competition Commission",
+    "startAt": "2018-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Chairman",
+    "institution": "Kenya Ports Authority",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "National Secretary General",
+    "institution": "Narc Kenya",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Garsen",
+    "startAt": "2002-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Senator",
+    "region": "Tana River",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Issa Timamy",
+  "party": "ANC",
+  "title": "Governor",
+  "region": "Lamu",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Joseph Githuku",
+  "title": "Senator",
+  "region": "Lamu",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Andrew Mwadime",
+  "title": "Governor",
+  "region": "Taita Taveta",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Johnes Mwaruma",
+  "title": "Senator",
+  "region": "Taita Taveta",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Nadhif Jama",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Garissa",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Abdulkadir Haji",
+  "title": "Senator",
+  "region": "Garissa",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Ahmed Abdullahi Jiir",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Wajir",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Abass Sheikh Mohammed",
+  "title": "Senator",
+  "region": "Wajir",
+  "status": "current",
+  "bio": "Abass Sheikh Mohamed is a Kenyan politician serving as Senator for Wajir County. He previously served in the 11th Parliament of Kenya and has held various roles, including CEO of the Kenya Livestock Marketing Council.",
+  "education": [
+   {
+    "title": "Diploma in Range Management and Degree in Natural Resource Management",
+    "institution": "Egerton University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Post-graduate Diploma in Sustainable Local Economic Development and MBA in Strategic Marketing",
+    "institution": "Erasmus University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Branch Manager",
+    "institution": "Agricultural Finance Office",
+    "startAt": "1991-01-01",
+    "endAt": "1999-01-01"
+   },
+   {
+    "title": "Chief Executive Officer",
+    "institution": "Kenya Livestock Marketing Council (KLMC)",
+    "startAt": "2002-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "Member of the 11th Parliament of Kenya",
+    "institution": "Wajir East Constituency",
+    "startAt": "2013-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Managing Director",
+    "institution": "Red Sea Co. Ltd",
+    "startAt": "2018-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Member of the Senate",
+    "institution": "Wajir County",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Mohamed Adan Khalif",
+  "party": "UDM",
+  "title": "Governor",
+  "region": "Mandera",
+  "status": "current",
+  "bio": "Mohamed Adan Khalif is the governor-elect of Mandera County, having previously served as speaker of the Mandera County Assembly. He won the election with 53,185 votes.",
+  "professional": [
+   {
+    "title": "Mandera County Assembly speaker",
+    "institution": "Mandera County Assembly",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Councillor",
+    "institution": "Mandera Township",
+    "startAt": "1998-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Mayor",
+    "institution": "Mandera Town Council",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Mandera",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Capt. Ali Roba",
+  "title": "Senator",
+  "region": "Mandera",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Mohamed Muhammad Ali",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Marsabit",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Mohamed Said Chute",
+  "title": "Senator",
+  "region": "Marsabit",
+  "status": "current",
+  "bio": "Chute Mohamed Said is a Kenyan politician serving as Senator for Marsabit County, elected in the August 2022 general election under the UDA banner. He chairs the Standing Committee on National Cohesion, Equal Opportunity and Regional Integration.",
+  "education": [
+   {
+    "title": "Masters - Business Administration",
+    "institution": "University of Cumbria",
+    "startAt": "2020-01-01",
+    "endAt": "2021-01-01"
+   },
+   {
+    "title": "Private Pilot license",
+    "institution": "Kenya School of Flying",
+    "startAt": null,
+    "endAt": "2001-01-01"
+   },
+   {
+    "title": "KCSE",
+    "institution": "Moyale Boys Highschool",
+    "startAt": "1976-01-01",
+    "endAt": "1977-01-01"
+   },
+   {
+    "title": "KCPE",
+    "institution": "Marsabit Primary School",
+    "startAt": "1968-01-01",
+    "endAt": "1977-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "CEO",
+    "institution": "Blue Nile Aviation",
+    "startAt": "2002-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "MD & Chairman",
+    "institution": "Blue Nile EA Ltd",
+    "startAt": "1996-01-01",
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Marsabit",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Hassan Abdi Ibrahim Guyo",
+  "party": "Jubilee Party",
+  "title": "Governor",
+  "region": "Isiolo",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Fatuma Dullo",
+  "title": "Senator",
+  "region": "Isiolo",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Kawira Mwangaza",
+  "title": "Governor",
+  "region": "Meru",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Kathuri Murungi",
+  "title": "Senator",
+  "region": "Meru",
+  "status": "current",
+  "bio": "Kathuri Murungi is a Kenyan politician and Member of Parliament for South Imenti Constituency in Meru County. He has served on several parliamentary departmental committees and declared his interest in the Senatorial seat ahead of the 2022 general election.",
+  "education": [
+   {
+    "title": "Kenya Certificate of Primary Education (KCPE)",
+    "institution": "Machikine Primary School",
+    "startAt": null,
+    "endAt": "1987-01-01"
+   },
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE)",
+    "institution": "Ndagene High School",
+    "startAt": null,
+    "endAt": "1992-01-01"
+   },
+   {
+    "title": "Bachelor of Science in Natural Resources Management",
+    "institution": "Egerton University",
+    "startAt": null,
+    "endAt": "1998-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Project Coordinator",
+    "institution": "Conserve International",
+    "startAt": "1999-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Environmental Consultant",
+    "institution": "Econsults",
+    "startAt": "2000-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Property Manager",
+    "institution": "Maiteih Enterprises Limited",
+    "startAt": "2002-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Director",
+    "institution": "Kenface Econsults (Africa)",
+    "startAt": "2003-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Deputy Senate Speaker",
+    "institution": "Kenyan Senate",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/Kathuri-Murungi-Kamashinani",
+    "href": "https://www.facebook.com/Kathuri-Murungi-Kamashinani"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "South Imenti",
+    "startAt": "2013-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Senator",
+    "region": "Meru",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Muthomi Njuki",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Tharaka-Nithi",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Gataya Mwenda",
+  "title": "Senator",
+  "region": "Tharaka-Nithi",
+  "status": "current",
+  "bio": "Gataya Mwenda is the current Senator for Tharaka Nithi County, elected in August 2022 on the United Democratic Alliance ticket. He served as Member of the County Assembly for Tharaka Nithi from 2013 to 2022, with a professional background in the civil service from 1990 to 2007.",
+  "education": [
+   {
+    "title": "Bachelor of Education (Arts)",
+    "institution": "University of Nairobi",
+    "startAt": "1995-01-01",
+    "endAt": "2005-01-01"
+   },
+   {
+    "title": "Master's degree in Governance & Ethics",
+    "institution": "Mount Kenya University",
+    "startAt": null,
+    "endAt": "2015-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Civil Service",
+    "institution": "O.OP",
+    "startAt": "1990-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "Member of the County Assembly (MCA)",
+    "institution": "Tharaka Nithi County Assembly",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/Mwenda-FB",
+    "href": "https://www.facebook.com/Mwenda-FB"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Tharaka-Nithi",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Cecily Mbarire",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Embu",
+  "status": "current",
+  "bio": "Cecily Mutitu Mbarire is the Governor of Embu County and Chairperson of the UDA Party, having served in various roles including Member of Parliament and Deputy Minister for Tourism and Transport.",
+  "education": [
+   {
+    "title": "Global Executive Masters in Business Administration",
+    "institution": "United States International University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Bachelors of Arts in Economics and Sociology",
+    "institution": "Egerton University, Kenya",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Bachelor of Arts in Economics and Sociology",
+    "institution": "Egerton University",
+    "startAt": null,
+    "endAt": "1996-01-01"
+   },
+   {
+    "title": "Post-graduate Diploma in Gender and Development Studies",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Member of Parliament",
+    "institution": "National Assembly of Kenya",
+    "startAt": "2003-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Deputy Minister for Tourism and Transport",
+    "institution": "Government of Kenya",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Nominated MP",
+    "institution": "Jubilee Party",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Runyenjes",
+    "startAt": "2002-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "Governor",
+    "region": "Embu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Alexander Mundigi",
+  "title": "Senator",
+  "region": "Embu",
+  "status": "current",
+  "bio": "Alexander Mundigi Munyi is the Senator for Embu County, elected in 2022 on a Democratic Party ticket, having defied the odds to win the seat against candidates from more dominant political parties.",
+  "education": [
+   {
+    "title": "Diploma in Biblical Studies",
+    "institution": "International School of Ministries",
+    "startAt": "2018-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Bachelor\u2019s degree in biblical studies",
+    "institution": "Covenant Theology Seminary in North Carolina",
+    "startAt": "2019-01-01",
+    "endAt": "2022-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Building and Construction Administrator",
+    "institution": "Kenya Electricity Generating Company (KenGen)",
+    "startAt": "1987-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Executive Director",
+    "institution": "Hydros Investment Ltd",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Embu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Julius Malombe",
+  "party": "Wiper Patriotic Front",
+  "title": "Governor",
+  "region": "Kitui",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Enock Kiio Wambua",
+  "title": "Senator",
+  "region": "Kitui",
+  "status": "current",
+  "bio": "Enoch Wambua Kiio is a Kenyan politician and Senator for Kitui County, born on 31 October 1972, with a background in journalism and education from Moi University and other institutions.",
+  "education": [
+   {
+    "title": "Bachelor of Education in English Literature",
+    "institution": "Moi University",
+    "startAt": "1992-01-01",
+    "endAt": "1996-01-01"
+   },
+   {
+    "title": "Diploma in Planning and Management of Development Studies",
+    "institution": "Catholic University of Eastern Africa (CUEA)",
+    "startAt": "1996-01-01",
+    "endAt": "1997-01-01"
+   },
+   {
+    "title": "Certificate in Mass Communication",
+    "institution": "Union of African Journalists",
+    "startAt": null,
+    "endAt": "2001-01-01"
+   },
+   {
+    "title": "Postgraduate Diploma in American Studies",
+    "institution": "Smith College, Massachusetts, USA",
+    "startAt": "2007-01-01",
+    "endAt": "2008-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Trainee sub-editor",
+    "institution": "Kenya Times Media",
+    "startAt": "1999-01-01",
+    "endAt": "2005-01-01"
+   },
+   {
+    "title": "Sub-editor, Associate editor",
+    "institution": "Nation Media Group",
+    "startAt": "2005-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Production Management Assistant",
+    "institution": "BBC, Bristol",
+    "startAt": "2011-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Senior editor, Managing editor",
+    "institution": "The Standard Group",
+    "startAt": "2013-01-01",
+    "endAt": "2018-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kitui",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Wavinya Ndeti",
+  "party": "Wiper Patriotic Front",
+  "title": "Governor",
+  "region": "Machakos",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Agnes Kavindu",
+  "title": "Senator",
+  "region": "Machakos",
+  "status": "current",
+  "bio": "Agnes Kavindu is a Kenyan politician and the current Senator for Machakos County. Born in Ngonda Village, Matungulu, Machakos County, in the early 1960s, she began her education at Ngonda Primary School before joining a local secondary school in Machakos.",
+  "education": [
+   {
+    "title": "Kenya Certificate of Primary Education (KCPE)",
+    "institution": "Ngonda Primary School",
+    "startAt": null,
+    "endAt": "1975-01-01"
+   },
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE)",
+    "institution": "Local secondary school in Machakos",
+    "startAt": null,
+    "endAt": "1979-01-01"
+   },
+   {
+    "title": "Degree in biblical studies",
+    "institution": "Outreach International Bible College",
+    "startAt": null,
+    "endAt": "2018-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Host of religious program",
+    "institution": "Biblia Husema Broadcasting Studios",
+    "startAt": "2010-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Director",
+    "institution": "Tanathi Water Service Board",
+    "startAt": "2018-01-01",
+    "endAt": "2021-01-01"
+   },
+   {
+    "title": "Member",
+    "institution": "Building Bridges Initiative (BBI) Taskforce",
+    "startAt": "2018-01-01",
+    "endAt": "2020-01-01"
+   },
+   {
+    "title": "Member of the County Public Investments & Special Funds Committee",
+    "institution": "Senate",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Machakos",
+    "startAt": "2021-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Mutula Kilonzo Jr",
+  "party": "Wiper Patriotic Front",
+  "title": "Governor",
+  "region": "Makueni",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Dan Maanzo",
+  "title": "Senator",
+  "region": "Makueni",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Moses Badilisha Kiarie",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Nyandarua",
+  "status": "current",
+  "bio": "Dr. Moses Ndirangu Kiarie Badilisha is the Governor of Nyandarua County, elected in August 2022 on a United Democratic Alliance ticket. Born in Munyeki village, he has a background in engineering and energy development.",
+  "professional": [
+   {
+    "title": "CEO",
+    "institution": "Kenya Independent Power Producers Association (KIPPA)",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/Dr.%20Kiarie%20Badilisha",
+    "href": "https://facebook.com/Dr.%20Kiarie%20Badilisha"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Nyandarua",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "John Methu",
+  "title": "Senator",
+  "region": "Nyandarua",
+  "status": "current",
+  "bio": "John Methu Muhia is a Kenyan politician and the current Senator of Nyandarua County. Born on 14 February 1991 in Kinangop Constituency and raised by his grandmother, he pursued a bachelor's degree in Political Science from Pwani University and developed a strong interest in governance, leadership, and public policy.",
+  "education": [
+   {
+    "title": "Bachelor's degree in Political Science",
+    "institution": "Pwani University",
+    "startAt": null,
+    "endAt": "2017-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Personal Secretary to the Speaker of the Nyandarua County Assembly",
+    "institution": "Nyandarua County Assembly",
+    "startAt": "2018-01-01",
+    "endAt": "2022-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Nyandarua",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Mutahi Kahiga",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Nyeri",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Wahome Wamatinga",
+  "title": "Senator",
+  "region": "Nyeri",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Anne Waiguru",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Kirinyaga",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "James Murango",
+  "title": "Senator",
+  "region": "Kirinyaga",
+  "status": "current",
+  "bio": "James Kamau Murango is the Senator for Kirinyaga County, elected in 2022, and chairs the Senate's Agriculture, Livestock and Fisheries Committee.",
+  "education": [
+   {
+    "title": "Kenya Certificate of Primary Education (KCPE)",
+    "institution": "Kiandieni Primary School",
+    "startAt": null,
+    "endAt": "1994-01-01"
+   },
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE)",
+    "institution": "Secondary institution within Kirinyaga County",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Plant Engineering",
+    "institution": "Technical University of Mombasa (TUM)",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Business Management",
+    "institution": "Kenya Institute of Management (KIM)",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Material Handling and Advanced Equipment",
+    "institution": "Sweden",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Project Management",
+    "institution": "Miami, United States",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Member of the County Assembly (MCA)",
+    "institution": "Kirinyaga",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Technical director",
+    "institution": "Self-employed ventures",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kirinyaga",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Irungu Kang'ata",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Murang'a",
+  "status": "current",
+  "bio": "Irungu Kang'ata is the Governor of Murang'a County, born in 1980 in Murang'a town. He previously served as Murang'a County Senator and Majority Chief Whip for the Jubilee party in the Kenya Senate.",
+  "professional": [
+   {
+    "title": "Majority Chief Whip",
+    "institution": "Jubilee party in the Kenya Senate",
+    "startAt": "2020-01-01",
+    "endAt": "2021-01-01"
+   },
+   {
+    "title": "Councilor",
+    "institution": "Defunct county council",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Murang'a",
+    "startAt": "2017-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Senator",
+    "region": "Murang'a",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "MP",
+    "region": "Kiharu",
+    "startAt": "2013-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Senator",
+    "region": "Murang'a",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Joe Nyutu",
+  "title": "Senator",
+  "region": "Murang'a",
+  "status": "current",
+  "bio": "Joe Nyutu is a Kenyan politician and the current Senator for Murang'a County under the United Democratic Alliance (UDA) party. Born in 1965 in Murang'a County, he has a background in education.",
+  "education": [
+   {
+    "title": "Kenya Advanced Certificate of Education (KACE)",
+    "institution": "Kijabe Boys High School",
+    "startAt": "1988-01-01",
+    "endAt": "1989-01-01"
+   },
+   {
+    "title": "Bachelor of Education",
+    "institution": "Moi University",
+    "startAt": "1990-01-01",
+    "endAt": "1994-01-01"
+   },
+   {
+    "title": "Certified Public Accountant (CPA)",
+    "institution": "Strathmore University",
+    "startAt": "1999-01-01",
+    "endAt": "2000-01-01"
+   },
+   {
+    "title": "Kenya Advanced Certificate of Education",
+    "institution": "Kijabe High School",
+    "startAt": "1988-01-01",
+    "endAt": "1989-01-01"
+   },
+   {
+    "title": "Master\u2019s Degree in Business Administration",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "CRE and Kiswahili Teacher",
+    "institution": "Teachers Service Commission (TSC)",
+    "startAt": "1995-01-01",
+    "endAt": "2009-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Murang'a",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Kimani Wamatangi",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Kiambu",
+  "status": "current",
+  "bio": "Paul Kimani Wamatangi is a Kenyan politician serving as Governor of Kiambu County.",
+  "education": [
+   {
+    "title": "Diploma",
+    "institution": "Tred. P. College",
+    "startAt": "1983-01-01",
+    "endAt": "1984-01-01"
+   },
+   {
+    "title": "Degree in Leadership and Management",
+    "institution": "St Paul\u2019s University",
+    "startAt": "2012-01-01",
+    "endAt": "2013-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Managing Director",
+    "institution": "Auto Bass Limited",
+    "startAt": "2004-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "Founder",
+    "institution": "Wamatangi Foundation",
+    "startAt": "2006-01-01",
+    "endAt": null
+   },
+   {
+    "title": "CEO",
+    "institution": "King Group Limited",
+    "startAt": "2010-01-01",
+    "endAt": "2012-01-01"
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/Kimani-FB",
+    "href": "https://www.facebook.com/Kimani-FB"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kiambu",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Governor",
+    "region": "Kiambu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Karungo wa Thang'wa",
+  "title": "Senator",
+  "region": "Kiambu",
+  "status": "current",
+  "bio": "Paul Karungo Wa Thang'wa is a Kenyan politician serving as Senator of Kiambu County. Born into a family of thirteen siblings, he began his education at Mitahato Primary School before graduating from the University of Nairobi with a bachelor's degree in development communication. His political career began in 2013 when he was elected MCA for Ngewa Ward.",
+  "education": [
+   {
+    "title": "Kenya Certificate of Primary Education (KCPE)",
+    "institution": "Mitahato Primary School",
+    "startAt": "1986-01-01",
+    "endAt": "1994-01-01"
+   },
+   {
+    "title": "Diploma in Journalism and Radio production",
+    "institution": "Media Network Training Institute",
+    "startAt": null,
+    "endAt": "2001-01-01"
+   },
+   {
+    "title": "Bachelor's degree in development communication",
+    "institution": "University of Nairobi",
+    "startAt": "2013-01-01",
+    "endAt": "2016-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Member of County Executive Committee (CEC)",
+    "institution": "Kiambu",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Part-time lecturer",
+    "institution": "NIBS College",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Radio presenter",
+    "institution": "China Radio International English department",
+    "startAt": "2007-01-01",
+    "endAt": "2010-01-01"
+   },
+   {
+    "title": "News editor, reporter, continuity presenter, and standby presenter",
+    "institution": "Kameme FM",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kiambu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
+    "title": "MCA",
+    "region": "Ngewa",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Jeremiah Lomorukai",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Turkana",
+  "status": "current",
+  "bio": "Jeremiah Ekamais Lomorukai is the Governor of Turkana County, elected in 2022, having previously served two terms as Member of Parliament for Loima Constituency.",
+  "professional": [],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Loima",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Turkana",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "James Lomenen Ekomwa",
+  "title": "Senator",
+  "region": "Turkana",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Simon Kachapin",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "West Pokot",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Julius Murgor",
+  "title": "Senator",
+  "region": "West Pokot",
+  "status": "current",
+  "bio": "Recha Julius Murgor is a Kenyan politician and the current Senator for West Pokot County. Born into the Pokot community, he founded the Pokot Outreach Ministry with his wife Rachel, entered formal politics in 2007, and has since focused on development, peace-building, and social welfare initiatives.",
+  "education": [
+   {
+    "title": "Bachelor of Arts",
+    "institution": "Washington Bible College",
+    "startAt": "1981-01-01",
+    "endAt": "1985-01-01"
+   },
+   {
+    "title": "Master of Arts in Religion and Philosophy",
+    "institution": "Trinity International University",
+    "startAt": "1985-01-01",
+    "endAt": "1987-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Executive Director",
+    "institution": "Pokot Outreach Ministry (POM)",
+    "startAt": "1988-01-01",
+    "endAt": "2021-01-01"
+   },
+   {
+    "title": "Member of the National Assembly",
+    "institution": "National Assembly of Kenya",
+    "startAt": "2007-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Chair",
+    "institution": "Kenyan Senate Committee on Labour and Social Welfare",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Kapenguria",
+    "startAt": "2007-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "Senator",
+    "region": "West Pokot",
+    "startAt": "2017-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Senator",
+    "region": "West Pokot",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Jonathan Lati Lelelit",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Samburu",
+  "status": "current",
+  "bio": "Jonathan Lelelit Lati is the Governor of Samburu County, elected in 2022. He previously served two terms as Member of Parliament for Samburu West Constituency, from 2013 to 2022.",
+  "education": [
+   {
+    "title": "MBA(Finance)",
+    "institution": "Brandeis University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Bachelor of Science in Mathematics and Economics",
+    "institution": "St. Lawrence University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Portfolio Manager",
+    "institution": "Street Global Advisors",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Chairman",
+    "institution": "Kenya Industrial Research and Development Institute (KIRDI)",
+    "startAt": "2018-01-01",
+    "endAt": "2021-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Samburu West",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Governor",
+    "region": "Samburu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Lelegwe Ltumbesi",
+  "title": "Senator",
+  "region": "Samburu",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "George Natembeya",
+  "party": "DAP-K",
+  "title": "Governor",
+  "region": "Trans Nzoia",
+  "status": "current",
+  "bio": "George Natembeya is the Governor of Trans Nzoia County, having assumed office in October 2022. With a background in public service, he has also expressed interest in a future presidential bid.",
+  "education": [
+   {
+    "title": "Bachelor's degree",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Personal Assistant",
+    "institution": "Ministry of Security",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "District Officer",
+    "institution": "Kilgoris",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "District Commissioner",
+    "institution": "Murang\u2019a and Kamukunji",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "County Commissioner",
+    "institution": "Isiolo and Narok",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Regional Commissioner",
+    "institution": "Rift Valley",
+    "startAt": "2019-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Personal Assistant",
+    "institution": "Minister for Security",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "District Commissioner",
+    "institution": "Isiolo, Narok",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Personal Assistant to Minister",
+    "institution": "John Michuki",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Trans Nzoia",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Trans Nzoia",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Allan Chesang",
+  "title": "Senator",
+  "region": "Trans Nzoia",
+  "status": "current",
+  "bio": "Allan Kiprotich Chesang is a Kenyan businessman and politician serving as the current Senator of Trans Nzoia County.",
+  "education": [
+   {
+    "title": "Business Management Purchasing and Supply",
+    "institution": "Moi University",
+    "startAt": "2008-01-01",
+    "endAt": "2012-01-01"
+   },
+   {
+    "title": "KCSE",
+    "institution": "Musingu High school",
+    "startAt": "2005-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "KCPE",
+    "institution": "Kitale Academy",
+    "startAt": "1995-01-01",
+    "endAt": "2002-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Parliamentary seat candidate",
+    "institution": "Kwanza",
+    "startAt": "2017-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "CEO",
+    "institution": "Transcentury Global and Uplift Group of companies",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Patron",
+    "institution": "KUSA (Kenya University Student Association)",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Chairperson",
+    "institution": "Standing Senate ICT Committee",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Member",
+    "institution": "Agriculture and Livestock Committee",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Trans Nzoia",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Jonathan Bii",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Uasin Gishu",
+  "status": "current",
+  "bio": "Jonathan Bii is the Governor of Uasin Gishu County and a member of the United Democratic Alliance (UDA) party, elected in 2022. He has a background in education and community development.",
+  "education": [
+   {
+    "title": "Diploma in Information Science",
+    "institution": "Sigalagal National Polytechnic",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Bachelor of Arts in Divinity (Counselling)",
+    "institution": "Shalom Bible College and Seminary",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master's degree in project planning and management",
+    "institution": "Kisii University",
+    "startAt": "2014-01-01",
+    "endAt": "2020-01-01"
+   }
+  ],
+  "professional": [],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Uasin Gishu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Uasin Gishu",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Jackson Mandago",
+  "title": "Senator",
+  "region": "Uasin Gishu",
+  "status": "current",
+  "bio": "Jackson Kiplagat Arap Mandago is a Kenyan politician who has served as Governor of Uasin Gishu and is currently the county's Senator. Born and raised in Uasin Gishu, he was educated at Kenyatta University and the Catholic University of Eastern Africa.",
+  "education": [
+   {
+    "title": "Bachelor's degree in Biochemistry",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master's degree in Procurement and Strategic Planning",
+    "institution": "Catholic University of Eastern Africa (CUEA)",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Uasin Gishu",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Senator",
+    "region": "Uasin Gishu",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Wisley Rotich",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Elgeyo/Marakwet",
+  "status": "current",
+  "bio": "Wisley Rotich is the second Governor of Elgeyo Marakwet County, having previously served as Deputy Governor from 2017 to 2022. He holds a master's and bachelor's degree in Economics from Moi University and has worked at the Kenya Wildlife Service and Equity Bank.",
+  "education": [
+   {
+    "title": "Masters and Bachelors Degree in Economics",
+    "institution": "Moi University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Deputy Governor",
+    "institution": "Elgeyo Marakwet County",
+    "startAt": "2017-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Budget Officer",
+    "institution": "Kenya Wildlife Service (KWS)",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Operations Officer",
+    "institution": "Equity Bank",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Elgeyo/Marakwet",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "William Kisang",
+  "title": "Senator",
+  "region": "Elgeyo/Marakwet",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Stephen Sang",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Nandi",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Samson Cherargei",
+  "title": "Senator",
+  "region": "Nandi",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Benjamin Cheboi",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Baringo",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "William Cheptumo Kipkorir",
+  "title": "Senator",
+  "region": "Baringo",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Joshua Irungu",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Laikipia",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "John Kinyua",
+  "title": "Senator",
+  "region": "Laikipia",
+  "status": "current",
+  "bio": "John Kinyua Nderitu is a Kenyan politician serving as Senator for Laikipia County, with a background in pharmaceuticals and business. He has been actively involved in politics since 2007.",
+  "education": [
+   {
+    "title": "Bachelor of Science in Chemistry & Botany",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "2000-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Medical Representative",
+    "institution": "Microlabs Pharmaceutical Company",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Medical Representative",
+    "institution": "C. Mehta Pharmaceutical Company",
+    "startAt": "2003-01-01",
+    "endAt": "2004-01-01"
+   },
+   {
+    "title": "Medical Representative",
+    "institution": "Europa Healthcare",
+    "startAt": "2002-01-01",
+    "endAt": "2003-01-01"
+   },
+   {
+    "title": "Key Accounts Manager",
+    "institution": "Laborex (Kenya) Ltd",
+    "startAt": "2004-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "Councillor",
+    "institution": "Laikipia County Council",
+    "startAt": "2007-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Councillor",
+    "institution": "Mutara Ward",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Laikipia",
+    "startAt": "2017-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Susan Kihika",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Nakuru",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Tabitha Keroche",
+  "title": "Senator",
+  "region": "Nakuru",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Patrick Ole Ntutu",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Narok",
+  "status": "current",
+  "bio": "Patrick Keturet Ole Ntutu is the Governor of Narok County, elected in 2022, following a long career in public service.",
+  "education": [
+   {
+    "title": "Bachelor's degree in Business Administration",
+    "institution": "Roosevelt University in Chicago",
+    "startAt": null,
+    "endAt": "1996-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Chief Administrative Secretary (CAS)",
+    "institution": "Ministry of Interior",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Narok West",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Narok",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Ledama Ole Kina",
+  "title": "Senator",
+  "region": "Narok",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Joseph Ole Lenku",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Kajiado",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Samuel Kanar Seki",
+  "title": "Senator",
+  "region": "Kajiado",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Erick Mutai",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Kericho",
+  "status": "current",
+  "bio": "Erick Kipkoech Mutai is a Kenyan academic and politician serving as Governor of Kericho County. Born on 28 December 1983, he worked as a university lecturer before entering politics.",
+  "education": [
+   {
+    "title": "Bachelor of Education",
+    "institution": "Maseno University",
+    "startAt": null,
+    "endAt": "2008-01-01"
+   },
+   {
+    "title": "Master's degree in Literature and Communication",
+    "institution": "University of Kabianga",
+    "startAt": null,
+    "endAt": "2014-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Lecturer",
+    "institution": "Embu University",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Kericho",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Aaron Cheruiyot",
+  "title": "Senator",
+  "region": "Kericho",
+  "status": "current",
+  "bio": "Aaron Cheruiyot is a Kenyan politician born on 23 February 1986 in Kapchebet, Kabianga. Elected Senator for Kericho County, he served as Majority Leader of the Senate from 2022. He is married to Linah Chesang Cheruiyot and has one child.",
+  "education": [
+   {
+    "title": "BA",
+    "institution": "Moi University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Diploma in Marketing",
+    "institution": "Kenya Institute of Management",
+    "startAt": null,
+    "endAt": "2010-01-01"
+   },
+   {
+    "title": "Master in Business Administration (MBA)",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": "2018-01-01"
+   },
+   {
+    "title": "KCSE",
+    "institution": "Kericho High School",
+    "startAt": null,
+    "endAt": "2004-01-01"
+   },
+   {
+    "title": "KCPE",
+    "institution": "Unity Primary",
+    "startAt": null,
+    "endAt": "2000-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Majority Leader",
+    "institution": "Senate",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Commissioner",
+    "institution": "Parliamentary Service Commission (PSC)",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Kericho",
+    "startAt": "2016-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Hillary Barchok",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Bomet",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Hillary Sigei",
+  "title": "Senator",
+  "region": "Bomet",
+  "status": "current",
+  "bio": "Hillary Kiprotich Sigei is a senatorial aspirant in Bomet County.",
+  "education": [
+   {
+    "title": "Master of Law (LLM)",
+    "institution": "The University of Nairobi",
+    "startAt": "2012-01-01",
+    "endAt": "2014-01-01"
+   },
+   {
+    "title": "Post Graduate Diploma in Law",
+    "institution": "The Kenya School of Law",
+    "startAt": null,
+    "endAt": "2006-01-01"
+   },
+   {
+    "title": "KCSE",
+    "institution": "Tenwek High School",
+    "startAt": "1996-01-01",
+    "endAt": "1999-01-01"
+   },
+   {
+    "title": "KCPE",
+    "institution": "Ndamichonik Primary School",
+    "startAt": "1987-01-01",
+    "endAt": "1995-01-01"
+   }
+  ],
+  "professional": [],
+  "social": [
+   {
+    "title": "x",
+    "value": "x.com/skhillary",
+    "href": "https://x.com/skhillary"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Bomet",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Fernandez Barasa",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Kakamega",
+  "status": "current",
+  "bio": "Fernandes Barasa is the Governor of Kakamega, having won the gubernatorial seat in the 2022 election. A member of the Orange Democratic Movement (ODM), he has a background in accounting and corporate leadership.",
+  "education": [
+   {
+    "title": "Bachelor of Commerce degree in Accounting",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": "1997-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Assistant Accountant",
+    "institution": "Kenya Airways (KQ)",
+    "startAt": "1997-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Chief Executive Officer and Managing Director",
+    "institution": "Kenya Electricity Transmission Company (KETRACO)",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Kakamega",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Boni Khalwale",
+  "title": "Senator",
+  "region": "Kakamega",
+  "status": "current",
+  "bio": "Boni Khalwale is a Kenyan politician and the current Senator of Kakamega, elected on a UDA party ticket, known as a chief critic of the Ruto administration.",
+  "education": [
+   {
+    "title": "A levels",
+    "institution": "Kakamega School",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Medicine",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1987-01-01"
+   }
+  ],
+  "professional": [],
+  "leadership": [
+   {
     "title": "MP",
     "region": "Ikolomani",
-    "status": "aspirant",
-    "bio": "A skilled youth leader with a servant-leadership mindset who puts people's interests first. Having served as a student leader on campus and worked with various community-based NGOs, he has gained the skills for impactful leadership.",
-    "contacts": [
-      {
-        "title": "Email",
-        "value": "mwonicyrilbill@gmail.com"
-      }
-    ],
-    "professional": []
-  },
-  {
-    "name": "Kevin Otieno",
-    "title": "MP",
-    "region": "Gem",
-    "status": "aspirant",
-    "bio": "Otieno Japeng' stands for a 50% reduction in secondary day school fees, equitable distribution of resources such as bursaries, economic transformation, free medication for senior citizens, and proper, inclusive leadership representation.",
-    "professional": []
-  },
-  {
-    "name": "Ephraim Omondi",
-    "title": "MP",
-    "region": "Embakasi East",
-    "status": "aspirant",
-    "bio": "Let's make Embakasi East great: let's work together.",
-    "professional": []
-  },
-  {
-    "name": "Keziah Karanja",
-    "title": "MP",
-    "region": "Kiambu",
-    "status": "aspirant",
-    "professional": []
-  },
-  {
-    "name": "Abdirizak Abdullah",
-    "title": "MP",
-    "region": "Westlands",
-    "status": "aspirant",
-    "professional": []
-  },
-  {
-    "name": "Irungu Maina",
-    "title": "MP",
-    "region": "Ndia",
-    "status": "aspirant",
-    "bio": "Douglas Irungu Maina, a son of Ndia, was shaped by the voices of a new generation during the 2024-2025 Gen Z demonstrations, which he describes as a call for justice, accountability, and a future for young people. As an MP aspirant for Ndia in 2027 under the Jubilee Party, he pledges to champion youth empowerment, economic opportunities, and leadership that truly listens.",
-    "professional": []
-  },
-  {
-    "name": "Robert Kipkirui Too",
-    "title": "MP",
-    "region": "Sotik",
-    "status": "aspirant",
-    "professional": []
-  },
-  {
-    "name": "Joel K Ngetich",
-    "title": "MP",
-    "region": "Kipkelion East",
-    "status": "aspirant",
-    "bio": "Committed to change by bringing cohesion to and developing Kipkelion East.",
-    "education": [
-      {
-        "title": "Degree",
-        "institution": "University of Aberdeen",
-        "startAt": "2020-01-01",
-        "endAt": "2024-01-01"
-      }
-    ],
-    "professional": [
-      {
-        "title": "Lecturer, Acting Academic Registrar",
-        "institution": "Adullam Bible Institute",
-        "startAt": "2025-01-01",
-        "endAt": "2026-01-01"
-      }
-    ],
-    "contacts": [
-      {
-        "title": "Phone",
-        "value": "0722282558"
-      },
-      {
-        "title": "Phone",
-        "value": "+254722282558"
-      }
-    ],
-    "social": [
-      {
-        "title": "facebook",
-        "value": "facebook.com/share/1DAi5TPnvR/",
-        "href": "https://www.facebook.com/share/1DAi5TPnvR/"
-      }
-    ]
-  },
-  {
-    "name": "Paul Nyongesa",
-    "title": "MP",
-    "region": "Sirisia",
-    "status": "aspirant",
-    "bio": "Paul Nyongesa is a trainee healthcare professional from the University of Nairobi and a former student leader. He founded the Sirisia Tunavyoitaka Movement, serves as elected chairman of the Bungoma West Alumni CBO (community-based organization), and is a youth leader in the Kabila La Vijana Movement at both constituency and county level. His vision for Sirisia Constituency is rooted in three key SDGs (Sustainable Development Goals): no poverty, quality education, and good health.",
-    "professional": []
-  },
-  {
-    "name": "Dennis Achimbo",
-    "title": "MP",
+    "startAt": "2002-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Senator",
+    "region": "Kakamega",
+    "startAt": "2012-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Wilber Khasilwa Otichillo",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Vihiga",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Godfrey Osotsi",
+  "title": "Senator",
+  "region": "Vihiga",
+  "status": "current",
+  "bio": "Godfrey Atieno Osotsi is a Kenyan politician serving as Senator for Vihiga County, elected in August 2022. He previously served as a nominated Member of the National Assembly of Kenya from 2017 to 2022.",
+  "education": [
+   {
+    "title": "Bachelor of Science in Computer Science",
+    "institution": "Egerton University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master\u2019s in Information Technology Management",
+    "institution": "University of Sunderland (UK)",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Executive MBA",
+    "institution": "Jomo Kenyatta University of Agriculture and Technology (JKUAT)",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "ICT Superintendent",
+    "institution": "Mumias Outgrowers Company Limited",
+    "startAt": "2001-01-01",
+    "endAt": "2003-01-01"
+   },
+   {
+    "title": "Group ICT Manager",
+    "institution": "Energy Regulatory Commission",
+    "startAt": "2003-01-01",
+    "endAt": "2007-01-01"
+   },
+   {
+    "title": "Head of ICT",
+    "institution": "Davis and Shartliff Company",
+    "startAt": "2007-01-01",
+    "endAt": "2009-01-01"
+   },
+   {
+    "title": "Head of ICT",
+    "institution": "Energy Regulatory Board",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Member of the National Assembly",
+    "institution": "National Assembly",
+    "startAt": "2013-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Chief Executive Officer/Chief Trainer",
+    "institution": "Bussinet Systems Limited",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Secretary General",
+    "institution": "Amani National Congress (ANC) party",
+    "startAt": "2015-01-01",
+    "endAt": "2017-01-01"
+   },
+   {
+    "title": "Nominated Member",
+    "institution": "National Assembly of Kenya",
+    "startAt": "2017-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Chairperson of the County Public Investments and Special Funds Committee",
+    "institution": "Parliament of Kenya",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
     "region": "Vihiga",
-    "status": "aspirant",
-    "bio": "A servant leader committed to integrity, opportunity, and progress, raised within the community he seeks to serve. His mission is to amplify constituents' voices in the Senate, champion accountable leadership, and push for practical solutions that create jobs and empower youth and women, building a future rooted in transparency, fairness, and shared prosperity.",
-    "professional": []
-  },
-  {
-    "name": "David Asunda",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Kenneth Lusaka",
+  "party": "Forum for Restoration of Democracy- Kenya",
+  "title": "Governor",
+  "region": "Bungoma",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Moses Wetangula",
+  "title": "Senator",
+  "region": "Bungoma",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Paul Otuoma",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Busia",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Okiya Omtata",
+  "title": "Senator",
+  "region": "Busia",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "James Orengo",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Siaya",
+  "status": "current",
+  "bio": "James Aggrey Bob Orengo is a Kenyan lawyer, human rights activist, and politician who is the current Governor of Siaya County. Born in 1951 in Kasipul Kabondo, Homa Bay County, he has held several government positions, including Senator of Siaya County and Minister for Lands.",
+  "education": [
+   {
+    "title": "LLB",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1974-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Minority Leader of the Senate of Kenya",
+    "institution": "Senate of Kenya",
+    "startAt": "2018-01-01",
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Minister for Lands",
+    "institution": "Kenya Government",
+    "startAt": "2008-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Minister for Lands",
+    "institution": "Kenyan Government",
+    "startAt": "2008-01-01",
+    "endAt": "2013-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Siaya",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
     "title": "MP",
-    "region": "Kasarani",
-    "status": "aspirant",
-    "bio": "Born in Kasarani Constituency, he began his primary education at Precious Hope Preparatory, where he excelled, before joining Paul Boit High School in Uasin Gishu. He later pursued tertiary education at St. Francis School of Nursing, and describes himself as hardworking and ambitious.",
-    "professional": []
-  },
-  {
-    "name": "Athuman Mwingo",
+    "region": "Ugenya",
+    "startAt": "1980-01-01",
+    "endAt": "1997-01-01"
+   },
+   {
     "title": "MP",
-    "region": "Jomvu",
-    "status": "aspirant",
-    "professional": []
-  }
+    "region": "Ugenya",
+    "startAt": "1980-01-01",
+    "endAt": "1997-01-01"
+   },
+   {
+    "title": "Governor",
+    "region": "Siaya",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Oburu Oginga",
+  "title": "Senator",
+  "region": "Siaya",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Prof Anyang' Nyong'o",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Kisumu",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Tom Ojienda",
+  "title": "Senator",
+  "region": "Kisumu",
+  "status": "current",
+  "bio": "Tom Ojienda is a Senior Counsel and politician from Kisumu who won the Orange Democratic Movement (ODM) Senate ticket for Kisumu.",
+  "professional": []
+ },
+ {
+  "name": "Gladys Wanga",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Homa Bay",
+  "status": "current",
+  "bio": "Gladys Atieno Wanga is a Kenyan politician and the current Governor of Homa Bay County. A member of the Orange Democratic Movement (ODM), she served as Member of Parliament for Homa Bay Woman Representative from 2017 to 2022.",
+  "education": [
+   {
+    "title": "Bachelor's Degree in Health Management",
+    "institution": "Kenyatta University",
+    "startAt": null,
+    "endAt": "2004-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Secretary-General",
+    "institution": "Kenyatta University Student\u2019s Union",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Woman Rep",
+    "region": "Homa Bay",
+    "startAt": "2013-01-01",
+    "endAt": "2022-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Moses Kajwang",
+  "title": "Senator",
+  "region": "Homa Bay",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Ochillo Ayacko",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Migori",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Eddy Oketch",
+  "title": "Senator",
+  "region": "Migori",
+  "status": "current",
+  "bio": "Eddy Oketch Gicheru is a Kenyan politician and Senator for Migori County, born on 12 August 1991 and elected on an Orange Democratic Movement (ODM) ticket. He has a background in education and social entrepreneurship and has led initiatives promoting youth empowerment and environmental sustainability.",
+  "education": [
+   {
+    "title": "Diploma in Leadership, Entrepreneurship, African Studies, and Community Service Projects",
+    "institution": "African Leadership Academy (ALA)",
+    "startAt": "2008-01-01",
+    "endAt": "2010-01-01"
+   },
+   {
+    "title": "Bachelor's degree in Political Science",
+    "institution": "Trinity College",
+    "startAt": "2011-01-01",
+    "endAt": "2014-01-01"
+   },
+   {
+    "title": "Master's degree in Global Affairs",
+    "institution": "Yale University",
+    "startAt": "2014-01-01",
+    "endAt": "2016-01-01"
+   },
+   {
+    "title": "PhD in Philosophy",
+    "institution": "University of Nairobi",
+    "startAt": "2021-01-01",
+    "endAt": "2025-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Founder and Leader",
+    "institution": "Ongoza",
+    "startAt": "2012-01-01",
+    "endAt": "2015-01-01"
+   },
+   {
+    "title": "Member",
+    "institution": "Orange Democratic Movement",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Founder",
+    "institution": "The Oketch Gicheru Trust",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Migori",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Simba Arati",
+  "party": "ODM",
+  "title": "Governor",
+  "region": "Kisii",
+  "status": "current",
+  "bio": "Paul Simba Arati is a Kenyan politician and the current Governor of Kisii County, elected in 2022. A member of the Orange Democratic Movement, he previously served as Member of Parliament for Dagoretti North Constituency.",
+  "education": [
+   {
+    "title": "Master of Business Administration (MBA) in Strategic Management",
+    "institution": "Guangzhou University",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "BA (International Relations and Diplomacy)",
+    "institution": "Kenya Polytechnic University College",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Kenya Certificate of Secondary Education (KCSE)",
+    "institution": "Suneka High School",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Master's degree in International Relations",
+    "institution": "Jaramogi Oginga Odinga University of Science and Technology",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Managing Director",
+    "institution": "Aipa Safaris Limited",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "MP",
+    "region": "Dagoretti North",
+    "startAt": "2013-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Governor",
+    "region": "Kisii",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Richard Onyonka",
+  "title": "Senator",
+  "region": "Kisii",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Amos Nyaribo",
+  "party": "UPA",
+  "title": "Governor",
+  "region": "Nyamira",
+  "status": "current",
+  "professional": []
+ },
+ {
+  "name": "Erick Okong'o Omogeni",
+  "title": "Senator",
+  "region": "Nyamira",
+  "status": "current",
+  "bio": "Erick Okong'o Omogeni is a Kenyan politician who served as Nyamira County Senator from 2017 to 2022. Born in 1970 in Nyamira division, he holds a Bachelor of Law degree from the University of Nairobi.",
+  "education": [
+   {
+    "title": "CPE",
+    "institution": "Shauri Moyo",
+    "startAt": null,
+    "endAt": "1983-01-01"
+   },
+   {
+    "title": "'O' levels",
+    "institution": "Isabania Secondary School",
+    "startAt": null,
+    "endAt": "1987-01-01"
+   },
+   {
+    "title": "'A' levels",
+    "institution": "Kabianga High School",
+    "startAt": null,
+    "endAt": "1989-01-01"
+   },
+   {
+    "title": "Bachelor of Law",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": "1993-01-01"
+   },
+   {
+    "title": "Masters Degree in Governance and Leadership",
+    "institution": "Jomo Kenyatta University of Agriculture and Technology",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Member",
+    "institution": "Media Council of Kenya",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Chair",
+    "institution": "Kenya Anti-Corruption Commission Advisory Board",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "President",
+    "institution": "Law Society of Kenya",
+    "startAt": "2007-01-01",
+    "endAt": "2010-01-01"
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Nyamira",
+    "startAt": null,
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Johnson Sakaja",
+  "party": "UDA",
+  "title": "Governor",
+  "region": "Nairobi",
+  "status": "current",
+  "bio": "Johnson Sakaja is the current Governor of Nairobi City County, born on 2 February 1985. He previously served as Nairobi Senator and a nominated MP, and is a member of the United Democratic Alliance (UDA) party.",
+  "education": [
+   {
+    "title": "Actuarial Science",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "National Chairman of The National Alliance (TNA)",
+    "institution": "The National Alliance (TNA)",
+    "startAt": "2016-09-09",
+    "endAt": null
+   },
+   {
+    "title": "Chair",
+    "institution": "Kenya Young Parliamentarians Association",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Governor",
+    "region": "Nairobi",
+    "startAt": "2022-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Senator",
+    "region": "Nairobi",
+    "startAt": "2017-01-01",
+    "endAt": "2022-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Edwin Sifuna",
+  "title": "Senator",
+  "region": "Nairobi",
+  "party": "ODM",
+  "status": "current",
+  "bio": "Senator for Nairobi County focused on devolution oversight, affordable housing accountability and youth employment programs across all 17 sub-counties.",
+  "pillars": [
+   {
+    "title": "Devolution oversight",
+    "summary": "Track every shilling allocated to Nairobi County and publish quarterly scorecards."
+   },
+   {
+    "title": "Youth employment",
+    "summary": "Champion county-funded apprenticeships linking TVET graduates to city contracts."
+   },
+   {
+    "title": "Housing accountability",
+    "summary": "Public register of affordable housing allocations to end double-allocation fraud."
+   }
+  ],
+  "education": [
+   {
+    "title": "Bachelor of Laws",
+    "institution": "University of Nairobi",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Postgraduate Diploma in Law",
+    "institution": "Kenya School of Law",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Partner",
+    "institution": "E. Sifuna & Associates Advocates",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Technical/Advisory Committee Member",
+    "institution": "CORD",
+    "startAt": "2013-01-01",
+    "endAt": "2016-01-01"
+   },
+   {
+    "title": "Technical/Advisory Committee Member",
+    "institution": "NASA",
+    "startAt": null,
+    "endAt": null
+   },
+   {
+    "title": "Secretary-General",
+    "institution": "Orange Democratic Movement (ODM)",
+    "startAt": "2018-01-01",
+    "endAt": "2026-01-01"
+   },
+   {
+    "title": "Deputy Minority Whip",
+    "institution": "Senate of Kenya",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "leadership": [
+   {
+    "title": "Senator",
+    "region": "Nairobi",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ]
+ },
+ {
+  "name": "Gabriel Amba",
+  "title": "MP",
+  "region": "Turbo",
+  "status": "aspirant",
+  "professional": []
+ },
+ {
+  "name": "Cyril Bill Mwoni",
+  "title": "MP",
+  "region": "Ikolomani",
+  "status": "aspirant",
+  "bio": "A skilled youth leader with a servant-leadership mindset who puts people's interests first. Having served as a student leader on campus and worked with various community-based NGOs, he has gained the skills for impactful leadership.",
+  "contacts": [
+   {
+    "title": "Email",
+    "value": "mwonicyrilbill@gmail.com"
+   }
+  ],
+  "professional": []
+ },
+ {
+  "name": "Kevin Otieno",
+  "title": "MP",
+  "region": "Gem",
+  "status": "aspirant",
+  "bio": "Otieno Japeng' stands for a 50% reduction in secondary day school fees, equitable distribution of resources such as bursaries, economic transformation, free medication for senior citizens, and proper, inclusive leadership representation.",
+  "professional": []
+ },
+ {
+  "name": "Ephraim Omondi",
+  "title": "MP",
+  "region": "Embakasi East",
+  "status": "aspirant",
+  "bio": "Let's make Embakasi East great: let's work together.",
+  "professional": []
+ },
+ {
+  "name": "Keziah Karanja",
+  "title": "MP",
+  "region": "Kiambu",
+  "status": "aspirant",
+  "professional": []
+ },
+ {
+  "name": "Abdirizak Abdullah",
+  "title": "MP",
+  "region": "Westlands",
+  "status": "aspirant",
+  "professional": []
+ },
+ {
+  "name": "Irungu Maina",
+  "title": "MP",
+  "region": "Ndia",
+  "status": "aspirant",
+  "bio": "Douglas Irungu Maina, a son of Ndia, was shaped by the voices of a new generation during the 2024-2025 Gen Z demonstrations, which he describes as a call for justice, accountability, and a future for young people. As an MP aspirant for Ndia in 2027 under the Jubilee Party, he pledges to champion youth empowerment, economic opportunities, and leadership that truly listens.",
+  "professional": []
+ },
+ {
+  "name": "Robert Kipkirui Too",
+  "title": "MP",
+  "region": "Sotik",
+  "status": "aspirant",
+  "professional": []
+ },
+ {
+  "name": "Joel K Ngetich",
+  "title": "MP",
+  "region": "Kipkelion East",
+  "status": "aspirant",
+  "bio": "Committed to change by bringing cohesion to and developing Kipkelion East.",
+  "education": [
+   {
+    "title": "Degree",
+    "institution": "University of Aberdeen",
+    "startAt": "2020-01-01",
+    "endAt": "2024-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Lecturer, Acting Academic Registrar",
+    "institution": "Adullam Bible Institute",
+    "startAt": "2025-01-01",
+    "endAt": "2026-01-01"
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Phone",
+    "value": "0722282558"
+   },
+   {
+    "title": "Phone",
+    "value": "+254722282558"
+   }
+  ],
+  "social": [
+   {
+    "title": "facebook",
+    "value": "facebook.com/share/1DAi5TPnvR/",
+    "href": "https://www.facebook.com/share/1DAi5TPnvR/"
+   }
+  ]
+ },
+ {
+  "name": "Paul Nyongesa",
+  "title": "MP",
+  "region": "Sirisia",
+  "status": "aspirant",
+  "bio": "Paul Nyongesa is a trainee healthcare professional from the University of Nairobi and a former student leader. He founded the Sirisia Tunavyoitaka Movement, serves as elected chairman of the Bungoma West Alumni CBO (community-based organization), and is a youth leader in the Kabila La Vijana Movement at both constituency and county level. His vision for Sirisia Constituency is rooted in three key SDGs (Sustainable Development Goals): no poverty, quality education, and good health.",
+  "professional": []
+ },
+ {
+  "name": "Dennis Achimbo",
+  "title": "MP",
+  "region": "Vihiga",
+  "status": "aspirant",
+  "bio": "A servant leader committed to integrity, opportunity, and progress, raised within the community he seeks to serve. His mission is to amplify constituents' voices in the Senate, champion accountable leadership, and push for practical solutions that create jobs and empower youth and women, building a future rooted in transparency, fairness, and shared prosperity.",
+  "professional": []
+ },
+ {
+  "name": "David Asunda",
+  "title": "MP",
+  "region": "Kasarani",
+  "status": "aspirant",
+  "bio": "Born in Kasarani Constituency, he began his primary education at Precious Hope Preparatory, where he excelled, before joining Paul Boit High School in Uasin Gishu. He later pursued tertiary education at St. Francis School of Nursing, and describes himself as hardworking and ambitious.",
+  "professional": []
+ },
+ {
+  "name": "Athuman Mwingo",
+  "title": "MP",
+  "region": "Jomvu",
+  "status": "aspirant",
+  "professional": []
+ },
+ {
+  "name": "Jimi Richard Wanjigi",
+  "party": "Safina Party",
+  "title": "President",
+  "region": "Kenya",
+  "status": "aspirant",
+  "bio": "Jimi Richard Wanjigi (born 1 September 1962) is a Kenyan businessman, corporate executive, and political strategist, and the party leader of the Safina Party. As chief executive of the Nanosol Africa Group of Companies, a family office spanning agri-business, financial services, industrials, and real estate, he built his reputation as one of Kenya's most influential behind-the-scenes political kingmakers: a strategist and financier in Mwai Kibaki's 2002 NARC victory, the broker of the Uhuru Kenyatta and William Ruto alliance in 2013, and chief strategist for Raila Odinga's 2017 NASA campaign. In 2021 he stepped from the back room to the front line, launching his own presidential bid, and now leads Safina toward the 2027 election.",
+  "education": [
+   {
+    "title": "High School Certificate",
+    "institution": "St. Mary's School, Nairobi",
+    "startAt": null,
+    "endAt": "1982-01-01"
+   },
+   {
+    "title": "Business Studies",
+    "institution": "York University, Canada",
+    "startAt": "1982-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Bachelor's Degree",
+    "institution": "Daystar University",
+    "startAt": null,
+    "endAt": "2022-01-01"
+   },
+   {
+    "title": "Master's in Diplomacy, Development and International Studies",
+    "institution": "Daystar University",
+    "startAt": "2022-01-01",
+    "endAt": null
+   }
+  ],
+  "professional": [
+   {
+    "title": "Co-Founder & Director",
+    "institution": "BINS Limited",
+    "startAt": "1986-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Director",
+    "institution": "Tyl Limited",
+    "startAt": "1998-01-01",
+    "endAt": null
+   },
+   {
+    "title": "Chief Political Strategist & Financier",
+    "institution": "National Rainbow Coalition (NARC)",
+    "startAt": "2002-01-01",
+    "endAt": "2003-01-01"
+   },
+   {
+    "title": "Lead Broker & Campaign Financier",
+    "institution": "Jubilee Coalition",
+    "startAt": "2012-01-01",
+    "endAt": "2013-01-01"
+   },
+   {
+    "title": "Chief Campaign Strategist",
+    "institution": "National Super Alliance (NASA)",
+    "startAt": "2017-01-01",
+    "endAt": "2018-01-01"
+   },
+   {
+    "title": "Chief Executive Officer",
+    "institution": "Nanosol Africa Group of Companies",
+    "startAt": null,
+    "endAt": null
+   }
+  ],
+  "contacts": [
+   {
+    "title": "Email",
+    "value": "info@wanjigi.co.ke"
+   }
+  ],
+  "social": [
+   {
+    "title": "twitter",
+    "value": "@JimiWanjigi",
+    "href": "https://x.com/JimiWanjigi"
+   },
+   {
+    "title": "facebook",
+    "value": "facebook.com/wanjigijimi",
+    "href": "https://facebook.com/wanjigijimi/"
+   },
+   {
+    "title": "instagram",
+    "value": "instagram.com/jimi.wanjigi",
+    "href": "https://instagram.com/jimi.wanjigi/"
+   },
+   {
+    "title": "website",
+    "value": "join-safina.ke",
+    "href": "https://join-safina.ke/"
+   }
+  ]
+ }
 ]

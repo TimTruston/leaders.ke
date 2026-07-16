@@ -1,0 +1,26 @@
+[
+	{
+		"slug": "patrick-ole-ntutu",
+		"name": "Patrick Ole Ntutu",
+		"county": "Narok",
+		"photoUrl": "https://narok.go.ke/wp-content/uploads/2022/11/gvn_ntutu_round_portrait.jpg",
+		"publisher": "narok.go.ke",
+		"fetchedAt": "2026-07-16T17:50:00.000Z"
+	},
+	{
+		"slug": "fernandez-barasa",
+		"name": "Fernandes Barasa",
+		"county": "Kakamega",
+		"photoUrl": "https://web.archive.org/web/2024id_/https://kakamega.go.ke/wp-content/uploads/2023/05/IMG-20220916-WA0001-768x999-1.jpg",
+		"publisher": "kakamega.go.ke (via web.archive.org — live uploads 404 to non-browser clients)",
+		"fetchedAt": "2026-07-16T17:52:00.000Z"
+	},
+	{
+		"slug": "kawira-mwangaza",
+		"name": "Kawira Mwangaza",
+		"county": "Meru",
+		"photoUrl": "https://web.archive.org/web/20230302213115im_/https://meru.go.ke/assets/image/gallery/1663448400_2177650663_2888509297.jpg",
+		"publisher": "meru.go.ke (archived profile — live site now shows her successor Isaac Mutuma)",
+		"fetchedAt": "2026-07-16T17:55:00.000Z"
+	}
+]

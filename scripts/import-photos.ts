@@ -70,6 +70,19 @@ const db = drizzle(client);
 const mz13: Mz13Entry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-mps-13th.json'), 'utf8'));
 const mzSenate13: Mz13Entry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-mps-senate-13th.json'), 'utf8'));
 const wiki: WikiEntry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-13th.json'), 'utf8'));
+const executive: { name: string; seat: string; region: string; status: string; photoUrl: string | null }[] = JSON.parse(
+	readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-executive.json'), 'utf8')
+);
+// Dossier photos (any parliament's render) as the last resort, matched by platform slug —
+// several governors are ex-MPs whose only photo is their old member page.
+const dossierPhotoBySlug = new Map<string, { name: string; photoUrl: string }>();
+for (const d of JSON.parse(readFileSync(join(import.meta.dir, 'out', 'dossiers.json'), 'utf8')).dossiers as {
+	platformSlug: string | null;
+	canonicalName: string;
+	photos: { url: string }[];
+}[]) {
+	if (d.platformSlug && d.photos.length) dossierPhotoBySlug.set(d.platformSlug, { name: d.canonicalName, photoUrl: d.photos[0].url });
+}
 
 // Photo source lookup by seat: MPs/Woman Reps from mzalendo's NA renders,
 // Senators from its senate renders, Wikipedia as the fallback for everyone.
@@ -85,6 +98,26 @@ const mzSenatorByCounty = new Map(
 const wikiBySeatRegion = new Map(
 	wiki.filter((e) => e.photoUrl).map((e) => [`${e.seat}|${slugify(e.region)}`, e])
 );
+const executiveBySeatRegion = new Map(
+	executive.filter((e) => e.photoUrl && e.status !== 'former').map((e) => [`${e.seat}|${slugify(e.region)}`, e])
+);
+// Council of Governors official portraits — county-labeled, covers every governor.
+const cog: { county: string; name: string; photoUrl: string }[] = JSON.parse(
+	readFileSync(join(import.meta.dir, 'out', 'scraped-cog-governors.json'), 'utf8')
+);
+const cogByCounty = new Map(cog.map((e) => [slugify(e.county), e]));
+// Hand-curated county-government-site portraits for governors no bulk source covers
+// (cog parse gaps, missing Wikipedia lead images) — matched by platform slug.
+const countyPortraitBySlug = new Map(
+	(JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-county-portraits.json'), 'utf8')) as {
+		slug: string;
+		name: string;
+		photoUrl: string;
+	}[]).map((e) => [e.slug, e])
+);
+const formerPresidentByName = new Map(
+	executive.filter((e) => e.photoUrl && e.status === 'former').map((e) => [slugify(e.name), e])
+);
 
 const rows = await db
 	.select({
@@ -99,7 +132,9 @@ const rows = await db
 	.from(leaders)
 	.innerJoin(users, eq(leaders.userId, users.id))
 	.innerJoin(positions, eq(leaders.positionId, positions.id))
-	.where(and(eq(leaders.status, 'current'), isNull(leaders.photoUrl), isNull(leaders.deletedAt)));
+	// All photo-less rows, former terms included: the name check below stops a seat's
+	// CURRENT photo from landing on a different person's former term for that seat.
+	.where(and(isNull(leaders.photoUrl), isNull(leaders.deletedAt)));
 
 mkdirSync(ORIGINALS_DIR, { recursive: true });
 mkdirSync(OUT_DIR, { recursive: true });
@@ -116,7 +151,13 @@ for (const row of rows) {
 		(row.title === 'MP' ? mzByConstituency.get(regionSlug) : undefined) ??
 		(row.title === 'Woman Rep' ? mzWomanRepByCounty.get(regionSlug) : undefined) ??
 		(row.title === 'Senator' ? mzSenatorByCounty.get(regionSlug) : undefined) ??
-		wikiBySeatRegion.get(`${row.title}|${regionSlug}`);
+		// Person-name lookups outrank the seat lookup: a former president's seat key
+		// points at the CURRENT holder's photo, which the name guard would reject.
+		formerPresidentByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
+		countyPortraitBySlug.get(row.slug) ??
+		(row.title === 'Governor' ? cogByCounty.get(regionSlug) : undefined) ??
+		executiveBySeatRegion.get(`${row.title}|${regionSlug}`) ??
+		dossierPhotoBySlug.get(row.slug);
 	if (!source?.photoUrl) {
 		noSource++;
 		continue;

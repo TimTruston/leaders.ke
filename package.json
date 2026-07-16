@@ -20,7 +20,7 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "bun run scripts/seed.ts",
-		"db:seed:scraped": "bun run scripts/seed-scraped.ts --apply && bun run scripts/seed-former-mps.ts --apply && bun run scripts/seed-photos.ts && bun run scripts/seed-agentic.ts --apply",
+		"db:seed:scraped": "bun run scripts/seed-scraped.ts --apply && bun run scripts/seed-former-mps.ts --apply && bun run scripts/seed-executive.ts --apply && bun run scripts/seed-photos.ts && bun run scripts/seed-agentic.ts --apply",
 		"db:seed:full": "bun run scripts/seed.ts && bun run db:seed:scraped",
 		"auth:schema": "better-auth generate --config src/lib/server/auth.ts --output src/lib/server/db/auth.schema.ts --yes"
 	},

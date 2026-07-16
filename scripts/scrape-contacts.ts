@@ -128,6 +128,7 @@ function cellText(rowHtml: string, headersAttr: string): string {
 
 async function scrapeMps(): Promise<RosterEntry[]> {
 	const entries: RosterEntry[] = [];
+	const seenMembers = new Set<string>(); // the listing occasionally repeats a member under a spelling variant
 	for (let page = 0; ; page++) {
 		const url = `${PARLIAMENT}/the-national-assembly/mps?page=${page}`;
 		const html = await fetchText(url);
@@ -136,14 +137,20 @@ async function scrapeMps(): Promise<RosterEntry[]> {
 		for (const row of rows) {
 			const rawName = cellText(row, 'view-field-name-table-column');
 			if (!rawName) continue; // placeholder rows with an image but no data
+			if (/^vacant\b/i.test(rawName)) continue; // seats between holders carry a literal "Vacant" row
 			const memberPath = row.match(/href="(\/the-national-assembly\/[^"]+)"/)?.[1] ?? '/the-national-assembly/mps';
+			if (memberPath !== '/the-national-assembly/mps') {
+				if (seenMembers.has(memberPath)) continue;
+				seenMembers.add(memberPath);
+			}
 			const status = cellText(row, 'view-field-status-table-column');
 			entries.push({
 				name: cleanName(rawName),
 				seat: 'MP',
 				region: titleCasePlace(cellText(row, 'view-field-constituency-table-column')),
 				county: titleCasePlace(cellText(row, 'view-field-county-table-column')),
-				party: cellText(row, 'view-field-party-table-column'),
+				// The cell sometimes carries a coalition suffix ("ODM | Azimio La Umoja…") — party only.
+				party: cellText(row, 'view-field-party-table-column').split('|')[0].trim(),
 				elected: !/nominat/i.test(status),
 				sourceUrl: `${PARLIAMENT}${memberPath}`
 			});
@@ -166,7 +173,8 @@ async function scrapeSenators(): Promise<RosterEntry[]> {
 		for (const row of rows) {
 			const rawName = cellText(row, 'view-field-senator-table-column');
 			if (!rawName) continue;
-			const county = titleCasePlace(cellText(row, 'view-field-county-senator-table-column'));
+			// One row writes "Bungoma County" where every other writes "Bungoma".
+			const county = titleCasePlace(cellText(row, 'view-field-county-senator-table-column')).replace(/\s+County$/i, '');
 			const status = cellText(row, 'view-field-status-senator-table-column');
 			entries.push({
 				name: cleanName(rawName),
