@@ -17,7 +17,7 @@
 		parties?: { id: number; name: string }[];
 		photoUrl?: string | null;
 		iebcCertificateUrl?: string | null;
-		existingExperience: { id: number; type: string; title: string; institution: string; from: number | null; to: number | null }[];
+		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
 		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { missing: string[] }; documentation?: { missing: string[] } } | null;
@@ -85,6 +85,7 @@
 		type: 'education' | 'professional';
 		title: string;
 		institution: string;
+		description: string;
 		from: string; // ISO date (YYYY-MM-DD)
 		to: string | null;
 	};
@@ -117,6 +118,7 @@
 	// Inline "add" form fields — cleared after each staged entry.
 	let expTitle = $state('');
 	let expInstitution = $state('');
+	let expDescription = $state('');
 	let expFrom = $state('');
 	let expTo = $state('');
 
@@ -144,10 +146,11 @@
 			type: adding,
 			title: expTitle.trim(),
 			institution: expInstitution.trim(),
+			description: expDescription.trim(),
 			from: expFrom,
 			to: expTo || null
 		});
-		expTitle = expInstitution = expFrom = expTo = '';
+		expTitle = expInstitution = expDescription = expFrom = expTo = '';
 		adding = null;
 	}
 
@@ -441,6 +444,7 @@
 							<ExperienceBlock
 								title={item.title}
 								subtitle={item.institution}
+								description={item.description}
 								dateLabel="{item.from}{item.to ? `–${item.to}` : ''}"
 								onRemove={() => removeExistingExperience(item.id)}
 							/>
@@ -450,6 +454,7 @@
 								<ExperienceBlock
 									title={item.title}
 									subtitle={item.institution}
+									description={item.description}
 									dateLabel="{formatDate(item.from)}{item.to ? `–${formatDate(item.to)}` : ''}"
 									unsaved
 									pending
@@ -467,6 +472,7 @@
 							<ExperienceBlock
 								title={item.title}
 								subtitle={item.institution}
+								description={item.description}
 								dateLabel="{item.from}{item.to ? `–${item.to}` : ''}"
 								onRemove={() => removeExistingExperience(item.id)}
 							/>
@@ -476,6 +482,7 @@
 								<ExperienceBlock
 									title={item.title}
 									subtitle={item.institution}
+									description={item.description}
 									dateLabel="{formatDate(item.from)}{item.to ? `–${formatDate(item.to)}` : ''}"
 									unsaved
 									pending
@@ -595,6 +602,16 @@
 								placeholder={adding === 'education' ? 'University of Nairobi' : 'Government of Kenya'}
 								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 							/>
+						</label>
+						<label class="block">
+							<span class="text-sm font-medium text-heading">Description</span>
+							<textarea
+								bind:value={expDescription}
+								maxlength="500"
+								rows="3"
+								placeholder="Optional: what the role or study involved and achieved"
+								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+							></textarea>
 						</label>
 						<div class="grid grid-cols-2 gap-3">
 							<label class="block">

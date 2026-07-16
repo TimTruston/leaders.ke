@@ -26,9 +26,7 @@
 		<p class="font-medium text-heading">{title}</p>
 	{/if}
 	<p class="flex mt-1 text-muted space-between">
-		{#if description}
-		<span class="italic">{description}</span>
-		{:else if subtitle}
+		{#if subtitle}
 		{subtitle}
 		{/if}
 		<span class="ml-auto shrink-0 text-xs whitespace-nowrap">
@@ -36,6 +34,9 @@
 			{#if unsaved}<span class="font-semibold text-primary">· unsaved</span>{/if}
 		</span>
 	</p>
+	{#if description}
+		<p class="mt-1 text-muted italic">{description}</p>
+	{/if}
 
 	{#if onRemove}
 		<button

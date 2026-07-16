@@ -154,6 +154,7 @@
 								<ExperienceBlock
 									title={item.title}
 									subtitle={item.institution}
+									description={item.description}
 									dateLabel={item.from ? `${item.from}${item.to ? `–${item.to}` : ''}` : ''}
 								/>
 							{/each}

@@ -1,0 +1,125 @@
+[
+ {
+  "name": "Jomo Kenyatta",
+  "bio": "Jomo Kenyatta was Kenya's founding father: the anthropologist-agitator tried at Kapenguria who walked from a colonial prison to lead his country into independence and its first fifteen years. From Kenya African Union president to Prime Minister at independence in 1963 and President from 1964, he preached Harambee self-help, kept Kenya capitalist amid Cold War currents and drove rapid Africanization of the economy. His LSE-honed book Facing Mount Kenya remains a classic rebuttal of colonial anthropology. Critics weigh one-party drift, land-settlement inequities and silenced rivals against him; admirers answer with stability and growth rare among post-colonial states. He died in office in 1978, having stamped his family's name on Kenyan politics for generations.",
+  "education": [
+   {
+    "title": "Social Anthropology (postgraduate diploma)",
+    "institution": "London School of Economics",
+    "description": "Studied social anthropology under Bronislaw Malinowski at the London School of Economics during his long stay in Britain, producing Facing Mount Kenya in 1938, a landmark ethnography of the Gikuyu people that doubled as a defence of African culture against colonial narratives.",
+    "startAt": "1935-01-01",
+    "endAt": "1938-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "President",
+    "institution": "Kenya African Union (KAU)",
+    "description": "Led the Kenya African Union from 1947, building it into the main vehicle for constitutional agitation against colonial rule until his 1952 arrest and the Kapenguria trial, which turned him into the imprisoned face of the independence cause.",
+    "startAt": "1947-01-01",
+    "endAt": "1952-01-01"
+   },
+   {
+    "title": "Prime Minister of Kenya",
+    "institution": "Government of Kenya",
+    "description": "Kenya's first Prime Minister, leading the KANU government from internal self-rule through independence in December 1963 until the country became a republic a year later and the office was folded into the executive presidency he then assumed.",
+    "startAt": "1963-06-01",
+    "endAt": "1964-12-12"
+   }
+  ]
+ },
+ {
+  "name": "Daniel arap Moi",
+  "bio": "Daniel arap Moi was Kenya's longest-ruling president: the Rift Valley schoolteacher whose 24-year Nyayo era mixed iron one-party control with a genius for survival that outlasted coups and cold wars. He rose from a Baringo classroom through KADU leadership, the home affairs ministry and eleven loyal years as Kenyatta's Vice President before inheriting power in 1978. He crushed the 1982 coup attempt and tightened one-party rule, then conceded multipartyism in 1991 and still won two more elections against a divided opposition. School milk, literacy drives and infrastructure ran alongside detentions, the Nyayo House torture chambers and the Goldenberg scandal. He handed power peacefully to Kibaki in 2002 and died in 2020, a colossus Kenyans argue over to this day.",
+  "education": [
+   {
+    "title": "Teacher training",
+    "institution": "Tambach Teachers Training College",
+    "description": "Trained as a teacher at Tambach after mission schooling in Baringo, then taught and headed Rift Valley schools for over a decade, a classroom career that ended when colonial authorities tapped him for the Legislative Council in 1955.",
+    "startAt": "1945-01-01",
+    "endAt": "1947-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Minister for Home Affairs",
+    "institution": "Government of Kenya",
+    "description": "Ran the home affairs docket in the first post-independence cabinet after leading KADU into its 1964 merger with KANU, administering internal security and the provincial administration during the young state's consolidation.",
+    "startAt": "1964-01-01",
+    "endAt": "1967-01-01"
+   },
+   {
+    "title": "Vice President of Kenya",
+    "institution": "Government of Kenya",
+    "description": "Kenyatta's Vice President for eleven years, balancing his KADU roots with loyalty to the KANU state and quietly building the national networks that carried him to the presidency when Kenyatta died in office in August 1978.",
+    "startAt": "1967-01-01",
+    "endAt": "1978-08-22"
+   }
+  ]
+ },
+ {
+  "name": "Mwai Kibaki",
+  "bio": "Mwai Kibaki was Kenya's gentleman economist: the Makerere- and LSE-trained finance minister who waited four decades for the presidency, then used it to rebuild the economy and deliver a new constitution. Kenya's longest-serving finance minister and for a decade Moi's Vice President, he founded the Democratic Party when multipartyism returned, lost twice, and finally swept to power in 2002 on the NARC wave that ended KANU's forty-year rule. His decade brought free primary education, landmark roads, the mobile-money take-off and growth Kenya had not seen in a generation, but also the disputed 2007 election and its bloody aftermath, healed only by a power-sharing accord. He signed the 2010 Constitution into law, retired in 2013 and died in 2022, remembered as the quiet builder.",
+  "education": [
+   {
+    "title": "BA Economics, History and Political Science",
+    "institution": "Makerere University",
+    "description": "Read economics, history and political science at Makerere University in Kampala, graduating best in his class in 1955 and earning the scholarship that took him on to the London School of Economics for postgraduate work in public finance.",
+    "startAt": "1951-01-01",
+    "endAt": "1955-01-01"
+   },
+   {
+    "title": "BSc Public Finance",
+    "institution": "London School of Economics",
+    "description": "Took a first-class degree in public finance at the London School of Economics on a scholarship, then returned to Makerere as an economics lecturer, a post he gave up in 1960 to go home and help draft KANU's founding constitution.",
+    "startAt": "1956-01-01",
+    "endAt": "1958-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Minister for Finance",
+    "institution": "Government of Kenya",
+    "description": "Kenya's longest-serving finance minister, steering the economy through the coffee boom and the first oil shocks across twelve years, a stewardship that earned him a reputation as one of the ablest economic managers of his era in Africa.",
+    "startAt": "1969-01-01",
+    "endAt": "1981-01-01"
+   },
+   {
+    "title": "Vice President of Kenya",
+    "institution": "Government of Kenya",
+    "description": "Moi's first Vice President for a decade while also holding the home affairs docket, before being dropped in 1988 and demoted to the health ministry, the slight that pushed him to found the Democratic Party when multipartyism returned.",
+    "startAt": "1978-01-01",
+    "endAt": "1988-01-01"
+   }
+  ]
+ },
+ {
+  "name": "Uhuru Kenyatta",
+  "bio": "Uhuru Kenyatta, son of Kenya's founding president, served two terms as its fourth: the princeling who won power under the shadow of ICC charges and left it at peace with his fiercest rival. Moi's chosen heir in 2002, he lost graciously, then won in 2013 alongside William Ruto as the cases against both men collapsed. His presidency built at scale: the SGR railway, expanded electricity, the Big Four agenda, and a mountain of infrastructure debt to match. The 2018 handshake with Raila Odinga steadied a country rattled by the annulled 2017 election but shattered his alliance with Ruto, whose 2022 victory over Uhuru's preferred candidate ended the family's direct hold on power. He remains an influential elder statesman of the opposition camp.",
+  "education": [
+   {
+    "title": "BA Political Science and Economics",
+    "institution": "Amherst College",
+    "description": "Studied political science and economics at Amherst College in Massachusetts, returning home to run family businesses and a horticultural export venture before President Moi drew him into national politics in the late 1990s.",
+    "startAt": "1981-01-01",
+    "endAt": "1985-01-01"
+   }
+  ],
+  "professional": [
+   {
+    "title": "Minister for Local Government",
+    "institution": "Government of Kenya",
+    "description": "Nominated to parliament and appointed local government minister in President Moi's final cabinet, his first national office and the springboard for his surprise selection as KANU's presidential candidate in the 2002 election.",
+    "startAt": "2001-01-01",
+    "endAt": "2002-01-01"
+   },
+   {
+    "title": "Deputy Prime Minister",
+    "institution": "Government of Kenya",
+    "description": "One of two Deputy Prime Ministers in the grand-coalition government, concurrently running the trade and then finance dockets, where he oversaw post-crisis fiscal stimulus and the budgeting groundwork for the new devolved system.",
+    "startAt": "2008-01-01",
+    "endAt": "2013-01-01"
+   }
+  ]
+ }
+]

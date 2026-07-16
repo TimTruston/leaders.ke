@@ -136,6 +136,7 @@ export const experience = pgTable('experience', {
   positionId: integer('position_id').references(() => positions.id), // set when type = 'leadership'
   title: varchar('title', { length: 255 }).notNull(),
   institution: varchar('institution', { length: 255 }).notNull(),
+  description: varchar('description', { length: 500 }), // free-text detail of what the role involved or achieved
   startAt: timestamp('start_at', { withTimezone: true }), // null when the source only gave a free-text/unparseable range
   endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

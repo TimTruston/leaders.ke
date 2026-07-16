@@ -75,7 +75,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Education + professional history spans every term (attached to whichever
 			// leaderId existed when it was seeded, not necessarily the current one).
 			db
-				.select({ type: experience.type, title: experience.title, institution: experience.institution, from: experience.startAt, to: experience.endAt })
+				.select({ type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
 				.from(experience)
 				.where(and(inArray(experience.leaderId, allLeaderIds), isNull(experience.deletedAt)))
 				.orderBy(desc(experience.startAt)),
@@ -154,7 +154,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		experience: {
 			education: experienceRows
 				.filter((e) => e.type === 'education')
-				.map((e) => ({ title: e.title, institution: e.institution, from: e.from?.getFullYear() ?? null, to: e.to?.getFullYear() ?? null })),
+				.map((e) => ({ title: e.title, institution: e.institution, description: e.description, from: e.from?.getFullYear() ?? null, to: e.to?.getFullYear() ?? null })),
 			// Prior/current elective or nominated seats (Track Record rows) and plain career
 			// history (Cabinet posts, jobs, etc.) read oddly split into two blocks — a
 			// Vice President or Minister sits right alongside a President or MP in real
@@ -175,7 +175,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 						title: e.title,
 						institution: e.institution as string | undefined,
 						href: undefined as string | undefined,
-						description: null as string | null,
+						description: e.description,
 						badge: undefined as string | undefined,
 						from: e.from?.getFullYear() ?? null,
 						to: e.to?.getFullYear() ?? null

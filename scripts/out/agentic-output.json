@@ -11572,12 +11572,6 @@
 		"education": [],
 		"professional": [
 			{
-				"title": "Vice-President of Kenya",
-				"institution": "Government of Kenya",
-				"startAt": "2008-01-01",
-				"endAt": "2013-01-01"
-			},
-			{
 				"title": "Secretary",
 				"institution": "Kenya African National Union",
 				"startAt": "1980-01-01",
@@ -11602,22 +11596,10 @@
 				"endAt": "1998-01-01"
 			},
 			{
-				"title": "Minister of Education",
-				"institution": "Government of Kenya",
-				"startAt": "1998-01-01",
-				"endAt": "2001-01-01"
-			},
-			{
 				"title": "Minister for Foreign Affairs",
 				"institution": "Government of Kenya",
 				"startAt": "2003-01-01",
 				"endAt": "2004-01-01"
-			},
-			{
-				"title": "Minister of Environment",
-				"institution": "Government of Kenya",
-				"startAt": "2004-01-01",
-				"endAt": "2005-01-01"
 			}
 		]
 	},
@@ -14379,18 +14361,6 @@
 		"education": [],
 		"professional": [
 			{
-				"title": "Vice-President of Kenya",
-				"institution": "Government of Kenya",
-				"startAt": "1978-01-01",
-				"endAt": "1988-01-01"
-			},
-			{
-				"title": "Minister for Finance",
-				"institution": "Government of Kenya",
-				"startAt": "1969-01-01",
-				"endAt": "1981-01-01"
-			},
-			{
 				"title": "Minister for Home Affairs",
 				"institution": "Government of Kenya",
 				"startAt": "1982-01-01",
@@ -14407,12 +14377,6 @@
 				"institution": "National Assembly of Kenya",
 				"startAt": "1998-01-01",
 				"endAt": "2002-01-01"
-			},
-			{
-				"title": "President of Kenya",
-				"institution": "Government of Kenya",
-				"startAt": "2002-12-01",
-				"endAt": "2013-04-01"
 			}
 		]
 	},
@@ -19933,38 +19897,7 @@
 			"https://en.wikipedia.org/wiki/William_Samoei_Ruto"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "President",
-				"institution": "Government of Kenya",
-				"startAt": "2022-09-13",
-				"endAt": null
-			},
-			{
-				"title": "Deputy President",
-				"institution": "Government of Kenya",
-				"startAt": "2013-01-01",
-				"endAt": "2022-01-01"
-			},
-			{
-				"title": "Minister for Home Affairs",
-				"institution": "Government of Kenya",
-				"startAt": null,
-				"endAt": null
-			},
-			{
-				"title": "Minister of Agriculture",
-				"institution": "Government of Kenya",
-				"startAt": null,
-				"endAt": null
-			},
-			{
-				"title": "Minister for Higher Education",
-				"institution": "Government of Kenya",
-				"startAt": null,
-				"endAt": null
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "wilson-kipngetich-kogo",

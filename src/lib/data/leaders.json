@@ -9,18 +9,21 @@
    {
     "title": "Bachelor of Science in Botany and Zoology",
     "institution": "University of Nairobi",
+    "description": "Undergraduate science degree in botany and zoology, completed in 1990. He worked his way through university from a modest Kamagut upbringing and was a leader in Christian student groups, where his organizing talent first surfaced before politics.",
     "startAt": null,
     "endAt": "1990-01-01"
    },
    {
     "title": "Master of Science in Plant Ecology",
     "institution": "University of Nairobi",
+    "description": "Returned to the University of Nairobi mid-career for graduate research in plant ecology, completing the degree in 2011 while a senior national politician and reviving the scientific track he had set aside for two decades.",
     "startAt": null,
     "endAt": "2011-01-01"
    },
    {
     "title": "Doctor of Philosophy (Ph.D.) in Plant Ecology",
     "institution": "University of Nairobi",
+    "description": "Doctoral research on how human activity shapes plant diversity in the Saiwa swamp ecosystem of western Kenya, completed in 2018, making him the first sitting Deputy President to earn a PhD from a Kenyan public university.",
     "startAt": null,
     "endAt": "2018-01-01"
    }
@@ -29,24 +32,28 @@
    {
     "title": "Assistant Minister for Home Affairs",
     "institution": "Government of Kenya",
+    "description": "First executive post after capturing the Eldoret North seat in 1997. Under President Moi he handled internal administration and security matters, learning government from the inside while still in his early thirties.",
     "startAt": "1998-01-01",
     "endAt": "2002-01-01"
    },
    {
     "title": "Minister for Agriculture",
     "institution": "Government of Kenya",
+    "description": "Ran the agriculture docket in the grand-coalition cabinet formed after the 2007 election crisis, overseeing fertilizer subsidy programmes and the maize sector during a severe food-price squeeze before a 2010 reshuffle.",
     "startAt": "2008-01-01",
     "endAt": "2010-01-01"
    },
    {
     "title": "Minister for Higher Education, Science and Technology",
     "institution": "Government of Kenya",
+    "description": "Held the higher education, science and technology portfolio during the coalition government's final stretch, supervising university expansion before leaving to build the United Republican Party for the 2013 race.",
     "startAt": "2010-01-01",
     "endAt": "2012-01-01"
    },
    {
-    "title": "Vice President of Kenya",
+    "title": "Deputy President of Kenya",
     "institution": "Government of Kenya",
+    "description": "Kenya's first Deputy President under the 2010 Constitution, elected on a joint ticket with Uhuru Kenyatta in 2013 and re-elected in 2017. The pair's later falling-out set up the underdog campaign that won him the presidency in 2022.",
     "startAt": "2013-01-01",
     "endAt": "2022-01-01"
    }
@@ -86,7 +93,8 @@
     "startAt": "2022-01-01",
     "endAt": null
    }
-  ]
+  ],
+  "bio": "William Ruto is Kenya's fifth President, a chicken-seller-turned-plant-ecologist who rode a hustler movement from the Kamagut roadside to State House in one of Africa's great political climbs. Elected Eldoret North MP in 1997, he mastered the inside game under Moi, ran the agriculture and higher education dockets in the grand coalition, then became the 2010 Constitution's first Deputy President on a joint ticket with Uhuru Kenyatta. When the handshake left him isolated, he recast himself as the outsider of bottom-up economics and won the 2022 election against the establishment that made him. In office he has pushed the housing levy, a universal health rollout and aggressive tax reform, drawing credit for boldness and street protests over the cost of living in equal measure. A University of Nairobi PhD in plant ecology, he remains the most relentless campaigner of his generation."
  },
  {
   "name": "Martha Karua",
@@ -94,43 +102,49 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "Martha Wangari Karua is a Kenyan lawyer, politician, and democracy advocate known for her long-standing commitment to constitutionalism, good governance, and the rule of law, and has been a prominent figure in Kenyan politics for more than three decades. Born on 22 September 1957 in Gichugu, Kirinyaga County, to Jackson Karua and Josephine Wanjiru Karua, she studied law at the University of Nairobi, graduating in 1980, before proceeding to the Kenya School of Law, and undertook further studies at the United States International University-Africa (USIU-Africa). Karua entered elective politics in 1992 as Member of Parliament for Gichugu Constituency, serving until 2013 and earning recognition as a strong advocate for democratic reforms, women's rights, and accountability in public service. During her career, she held senior government positions including Minister for Water Resources Management and Development and Minister for Justice, National Cohesion and Constitutional Affairs, and played a significant role in Kenya's constitutional reform efforts. She is currently affiliated with the People's Liberation Party (PLP), and in the 2022 Kenyan General Election was nominated as running mate to presidential candidate Raila Odinga, becoming one of the few women in Kenya's history to contest for the office of Deputy President. Widely respected for her principled leadership and advocacy for justice and democracy, she remains an influential voice in Kenyan public affairs.",
+  "bio": "Martha Karua is the iron lady of Kenyan politics: magistrate turned second-liberation lawyer, reforming justice minister and party leader now making her boldest bid yet for the presidency. She defended political prisoners when doing so was dangerous, held the Gichugu seat for two decades, and steered the justice docket through the 2005 referendum and the National Accord talks before resigning on principle over stalled reforms. The 2022 cycle made her Azimio's running mate and the first woman on a leading Kenyan presidential ticket. Uncompromising on the rule of law and graft, she has built her 2027 bid around constitutionalism, women's leadership and restoring an accountable state.",
   "education": [
    {
     "title": "Bachelor of Laws (LL.B.)",
     "institution": "University of Nairobi",
+    "description": "Read law at the University of Nairobi from 1977 to 1980. Her legal training carried her through a magistracy and into the human rights litigation of the 1990s that made her one of the second-liberation movement's leading lawyers.",
     "startAt": "1977-01-01",
     "endAt": "1980-01-01"
    },
    {
     "title": "Master of Business Administration (MBA)",
-    "institution": "Kenya School of Law",
-    "startAt": "1980-01-01",
-    "endAt": "1981-01-01"
+    "institution": "United States International University Africa (USIU-Africa)",
+    "description": "Mid-career business administration degree from USIU-Africa in Nairobi, taken to add management depth to a public career spent in courtrooms, cabinet and party leadership rather than in business or the academy.",
+    "startAt": null,
+    "endAt": null
    },
    {
     "title": "Diploma in Law (Advocates Training Programme)",
     "institution": "Kenya School of Law",
-    "startAt": null,
-    "endAt": null
+    "description": "Completed the advocates training programme at the Kenya School of Law and was admitted to the roll of advocates in 1981, the professional gateway to her long courtroom career and later stewardship of the justice ministry.",
+    "startAt": "1980-01-01",
+    "endAt": "1981-01-01"
    }
   ],
   "professional": [
    {
     "title": "Advocate",
     "institution": "High Court of Kenya",
+    "description": "Served as a district magistrate through most of the 1980s, then opened her own practice in 1987, taking on political and human rights briefs, including landmark election petitions, that put her at the heart of the multiparty struggle.",
     "startAt": "1981-01-01",
     "endAt": null
    },
    {
     "title": "Minister for Justice, National Cohesion and Constitutional Affairs",
     "institution": "Government of Kenya",
+    "description": "Ran the justice, national cohesion and constitutional affairs docket through the 2005 constitutional referendum and the 2008 crisis talks that produced the National Accord, resigning in 2009 over stalled judicial reforms.",
     "startAt": "2005-01-01",
     "endAt": "2009-01-01"
    },
    {
     "title": "Party Leader",
     "institution": "People's Liberation Party",
+    "description": "Leads the People's Liberation Party, the renamed NARC-Kenya she has fronted since 2008. She was Azimio's deputy-presidential running mate in 2022 and now carries the party's banner into the 2027 presidential race.",
     "startAt": null,
     "endAt": null
    }
@@ -171,17 +185,19 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "Kalonzo Musyoka is a Kenyan politician born on 24 December 1953 in Mwingi District, Kenya, and a prominent leader in Kenyan politics as a member of the Wiper Patriotic Front party. He studied at the Kenya School of Law, completing his studies in 1978, before entering politics and serving in various government positions, most notably as Deputy President of Kenya from 2008 to 2013. He married Pauline Kalonzo in 1985, and they have four children: Damaris Musenya, Kennedy Musyoka Kalonzo, Klein Kalonzo, and Kevin Muasya Musyoka. He remains an influential figure in Kenya's political landscape.",
+  "bio": "Kalonzo Musyoka is Kenya's patient man of diplomacy, a former Vice President and long-serving foreign minister whose Wiper machine has made him the perennial bridge-builder of opposition politics. A lawyer who entered parliament at 32 through a Kitui North by-election, he chaired regional peace talks on Somalia and Sudan and earned the mediator's reputation he has traded on ever since. He broke with Kibaki over the 2005 referendum, co-founded the Orange movement, then served as Vice President through the grand-coalition years. Several times a presidential-ticket principal or deputy, he now leads the Wiper Patriotic Front into 2027 arguing that his steadiness is the antidote to Kenya's turbulence.",
   "education": [
    {
     "title": "Bachelor of Laws (LL.B.) degree",
     "institution": "University of Nairobi",
+    "description": "Studied law at the University of Nairobi after his schooling in present-day Kitui County, graduating in 1977. The degree launched a career that moved quickly from legal practice into elective politics and diplomacy.",
     "startAt": null,
     "endAt": "1977-01-01"
    },
    {
-    "title": "Bachelor of Laws (LL.B.) degree",
+    "title": "Postgraduate Diploma in Law (Advocates Training Programme)",
     "institution": "Kenya School of Law",
+    "description": "Completed the advocates training programme at the Kenya School of Law in 1978 and was admitted to the bar, practising only briefly before winning the Kitui North parliamentary seat in a 1985 by-election.",
     "startAt": null,
     "endAt": "1978-01-01"
    }
@@ -190,18 +206,28 @@
    {
     "title": "Minister for Foreign Affairs",
     "institution": "Government of Kenya",
+    "description": "Kenya's top diplomat under President Moi, chairing regional peace initiatives on Somalia and Sudan and building the mediator's reputation that has anchored his public image through every campaign since.",
     "startAt": "1993-01-01",
     "endAt": "1998-01-01"
    },
    {
-    "title": "Minister of Education",
+    "title": "Minister for Foreign Affairs (second tenure)",
     "institution": "Government of Kenya",
+    "description": "Returned to the foreign affairs docket in President Kibaki's first cabinet, representing the new NARC government abroad during the optimism of the post-KANU transition before moving to the environment ministry.",
     "startAt": "2003-01-01",
+    "endAt": "2004-01-01"
+   },
+   {
+    "title": "Minister for the Environment and Natural Resources",
+    "institution": "Government of Kenya",
+    "description": "Ran the environment and natural resources ministry in the Kibaki government, a short tenure that ended when he broke with the administration over the 2005 constitutional referendum and joined the Orange rebellion.",
+    "startAt": "2004-01-01",
     "endAt": "2005-01-01"
    },
    {
     "title": "Vice President of Kenya",
     "institution": "Government of Kenya",
+    "description": "Appointed Vice President after the disputed 2007 election, serving through the grand-coalition years and the 2010 constitutional transition as President Kibaki's principal assistant and the government's senior diplomat.",
     "startAt": "2008-01-01",
     "endAt": "2013-01-01"
    }
@@ -235,23 +261,26 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "Fred Matiang'i is a Kenyan politician and public servant born on 22 April 1968 in Nyamira County, associated with the Jubilee Party. He studied at Kenyatta University and the University of Nairobi, earning a Bachelor's degree in Education, a Master's degree in English, and a PhD in Communication and Comparative Literature. He served as Cabinet Secretary for ICT (2013-2015), Education (2015-2017), and Interior and Coordination of National Government (2017-2022), playing a key role in coordinating government operations and national security. After leaving office in 2022, he worked with the World Bank before returning to active politics.",
+  "bio": "Fred Matiang'i is the technocrat's technocrat: the literature don turned Jubilee enforcer-in-chief who cleaned up national exams and ran the interior ministry with unapologetic firmness. He came to cabinet from lecture halls, publishing houses and governance programmes rather than campaign rallies, and it showed: digital TV migration delivered over industry protest, exam cheating crushed in a single cycle, and a security docket run so assertively that colleagues dubbed him the 'super CS'. After a spell abroad following the 2022 transition, he returned to mount a presidential bid promising competence without drama: a state that simply works. His doctorate in comparative literature makes him the rare contender happier citing delivery reports than slogans.",
   "education": [
    {
     "title": "Bachelor's Degree in Education",
     "institution": "Kenyatta University",
+    "description": "Trained as a teacher at Kenyatta University and taught English and literature before moving into university lecturing, publishing and governance consulting, the technocratic route through which he eventually reached the cabinet.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "Master's Degree in English",
     "institution": "University of Nairobi",
+    "description": "Graduate study in English at the University of Nairobi, deepening the language and communication specialism he taught at Kenyan universities and applied in education-sector and publishing work across East Africa.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "PhD in Communication and Comparative Literature",
     "institution": "University of Nairobi",
+    "description": "Doctorate in communication and comparative literature from the University of Nairobi. Before joining government he lectured, served with university regulators and ran governance programmes for international development organisations.",
     "startAt": null,
     "endAt": null
    }
@@ -260,18 +289,21 @@
    {
     "title": "Cabinet Secretary for ICT",
     "institution": "Government of Kenya",
+    "description": "First cabinet post in the Jubilee administration, where he drove Kenya's digital television migration against fierce industry resistance and pushed early e-government platforms, marking him out as a forceful implementer.",
     "startAt": "2013-01-01",
     "endAt": "2015-01-01"
    },
    {
     "title": "Cabinet Secretary for Education",
     "institution": "Government of Kenya",
+    "description": "Took over the education docket and crushed industrial-scale cheating in national examinations within a single cycle, overhauling exam administration and KNEC governance in a crackdown that made him a household name.",
     "startAt": "2015-01-01",
     "endAt": "2017-01-01"
    },
    {
     "title": "Cabinet Secretary for Interior and Coordination of National Government",
     "institution": "Government of Kenya",
+    "description": "Ran the interior ministry for five years, coordinating security operations, national administration and the Huduma Namba registration drive, and chaired cabinet delivery committees that earned him the informal 'super CS' tag.",
     "startAt": "2017-01-01",
     "endAt": "2022-01-01"
    }
@@ -296,29 +328,33 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "Boniface Mwangi is a Kenyan activist, photojournalist, and politician born on 10 July 1983 in Taveta, Kenya, widely known for his work in human rights advocacy, social justice, and civic engagement. He holds a Diploma in Bible Studies from The Kingdom Academy, a Diploma in Print Journalism from the East African School of Journalism, and completed a program in Human Rights and Documentary Photography at New York University. He began his career as a photojournalist with The Standard Group before becoming a full-time activist focused on accountability, transparency, and good governance, and founded the Courage Movement, a civic organization encouraging citizens to demand better leadership. In 2017, he contested the Starehe parliamentary seat as an independent candidate on an anti-corruption and youth-empowerment platform. He is married to Hellen Njeri Mwangi, with three children: Nalia Sifa, Nate Simphiwe, and Jabali Mboya.",
+  "bio": "Boniface Mwangi is Kenya's loudest conscience: the award-winning photojournalist who put down his camera to fight impunity in the streets and now wants to carry that fight into the presidency itself. His unflinching images of the 2007-08 post-election violence twice won him the CNN Multichoice Africa Photojournalist of the Year award and changed how Kenya saw itself. He founded PAWA254 to weaponize creativity for civic causes, led protests that cost him arrests and beatings, and ran for Starehe MP in 2017 on a crowd-funded Ukweli Party ticket. Schooled by hardship before NYU's documentary programme polished the craft, he frames his presidential bid as the ordinary hustler's revolt against a captured state.",
   "education": [
    {
     "title": "Diploma in Bible Studies",
     "institution": "The Kingdom Academy",
+    "description": "Theological study at a Nairobi bible college in his youth, taken during years of hardship in which he sold books on the street; he credits the period with the discipline that later carried him into journalism training.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "Diploma in Print Journalism",
     "institution": "East African School of Journalism",
+    "description": "Journalism training at the East African School of Journalism that took him straight into newsroom photography, where his images of Kenyan politics were soon running on front pages and international wire services.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "Human Rights and Documentary Photography (non-degree program)",
     "institution": "New York University",
+    "description": "Selected for a human rights and documentary photography programme at New York University after his post-election violence archive drew global attention; the fellowship shaped the activist turn his work took back home.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "Kenya Certificate of Secondary Education (KCSE), private candidate",
     "institution": "Private candidate",
+    "description": "Sat the national secondary examination as an adult private candidate, completing formal schooling that poverty had interrupted in his teens and publicly making the point that education can be reclaimed at any age.",
     "startAt": null,
     "endAt": "2016-01-01"
    }
@@ -327,25 +363,29 @@
    {
     "title": "Photojournalist",
     "institution": "The Standard Group",
+    "description": "Staff photographer whose unflinching images of the 2007-08 post-election violence became defining records of the crisis and twice won him the CNN Multichoice Africa Photojournalist of the Year award before he left news for activism.",
     "startAt": null,
     "endAt": null
    },
    {
     "title": "Founder",
     "institution": "Courage Movement",
+    "description": "Civic movement he founded to organize young Kenyans around accountability, documentation of police brutality and voter mobilization, turning his street-protest activism into a structured national outfit.",
     "startAt": null,
     "endAt": null
    },
    {
-    "title": "Parliamentary Candidate, Starehe Constituency (Independent)",
+    "title": "Parliamentary Candidate, Starehe Constituency (Ukweli Party)",
     "institution": "Independent Electoral and Boundaries Commission",
+    "description": "Contested Nairobi's Starehe parliamentary seat in 2017 on the Ukweli Party ticket, running a crowd-funded grassroots campaign that finished third yet marked his shift from protest activism to electoral politics.",
     "startAt": "2017-01-01",
     "endAt": null
    },
    {
-    "title": "Founder",
+    "title": "Founder, PAWA254",
     "institution": "PAWA254",
-    "startAt": "2017-01-01",
+    "description": "Founded PAWA254, the Nairobi creative-activism hub where photographers, artists and organizers collaborate on civic campaigns; it incubated protest art and documentary projects across the 2013 and 2017 election cycles.",
+    "startAt": "2011-01-01",
     "endAt": null
    }
   ],
@@ -369,39 +409,44 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "David Maraga is a Kenyan lawyer, jurist, and politician born on 12 January 1951 in South Nyanza District, widely respected for his distinguished judicial career and commitment to the rule of law. He studied law at the University of Nairobi and served in various judicial roles, beginning as a Resident Magistrate in 1987 and rising through Principal Magistrate, Senior Resident Magistrate, and Judge of the High Court (2003), before his appointment to the Court of Appeal in 2012. He served as Chief Justice and President of the Supreme Court of Kenya from 2016 to 2021, notably leading the Supreme Court's landmark 2017 ruling that annulled the presidential election results. He is married to Yucabeth Nyaboke, with a daughter, Vashti Kemuma, and is associated with the United Green Movement party.",
+  "bio": "David Maraga is the judge who said no: the former Chief Justice who led Africa's first nullification of a sitting president's re-election and now asks voters to send that rectitude to State House. Admitted to the bar in 1978, he built a Nakuru practice over a quarter-century, rose through the High Court and Court of Appeal, and captained the Supreme Court through the historic 2017 annulment. A devout Seventh-day Adventist who never sat on Saturdays, he defended judicial independence against budget cuts and open defiance until his 2021 retirement. His campaign rests on a simple promise: the constitution, enforced without fear or favour.",
   "education": [
    {
     "title": "Bachelor of Laws (LLB)",
     "institution": "University of Nairobi",
+    "description": "Law degree from the University of Nairobi followed by the advocates course at the Kenya School of Law; he was admitted to the bar in 1978, the start of a legal career that ran from provincial practice to the country's top judicial office.",
     "startAt": null,
     "endAt": null
    }
   ],
   "professional": [
    {
-    "title": "Resident Magistrate",
-    "institution": "Judiciary of Kenya",
-    "startAt": "1987-01-01",
+    "title": "Advocate",
+    "institution": "Maraga & Company Advocates, Nakuru",
+    "description": "Ran Maraga & Company Advocates in Nakuru for a quarter-century, specializing in civil and commercial litigation and rising through the Law Society ranks before his elevation to the High Court bench in 2003.",
+    "startAt": "1978-01-01",
     "endAt": "2003-01-01"
-   },
-   {
-    "title": "Principal Magistrate / Senior Resident Magistrate",
-    "institution": "Judiciary of Kenya",
-    "startAt": null,
-    "endAt": null
    },
    {
     "title": "Judge of the High Court",
     "institution": "Judiciary of Kenya",
+    "description": "Appointed a High Court judge in 2003, serving in Mombasa and Nakuru. A devout Seventh-day Adventist who declined to sit on Saturdays, he built a reputation for strict case management and personal incorruptibility.",
     "startAt": "2003-01-01",
     "endAt": "2012-01-01"
    },
    {
     "title": "Judge, Court of Appeal",
     "institution": "Judiciary of Kenya",
+    "description": "Elevated to the Court of Appeal in 2012, presiding over its Kisumu bench and chairing the judiciary's committee on election preparations, the assignment that made him the courts' electoral-law specialist.",
     "startAt": "2012-01-01",
     "endAt": "2016-01-01"
+   },
+   {
+    "title": "Chief Justice & President of the Supreme Court",
+    "institution": "Judiciary of Kenya",
+    "description": "Kenya's Chief Justice and President of the Supreme Court from 2016 to 2021. He led the bench that nullified the 2017 presidential election, a first in Africa, and defended judicial independence against sustained executive pressure.",
+    "startAt": "2016-01-01",
+    "endAt": "2021-01-01"
    }
   ],
   "contacts": [
@@ -3262,29 +3307,33 @@
   "title": "President",
   "region": "Kenya",
   "status": "aspirant",
-  "bio": "Jimi Richard Wanjigi (born 1 September 1962) is a Kenyan businessman, corporate executive, and political strategist, and the party leader of the Safina Party. As chief executive of the Nanosol Africa Group of Companies, a family office spanning agri-business, financial services, industrials, and real estate, he built his reputation as one of Kenya's most influential behind-the-scenes political kingmakers: a strategist and financier in Mwai Kibaki's 2002 NARC victory, the broker of the Uhuru Kenyatta and William Ruto alliance in 2013, and chief strategist for Raila Odinga's 2017 NASA campaign. In 2021 he stepped from the back room to the front line, launching his own presidential bid, and now leads Safina toward the 2027 election.",
+  "bio": "Jimi Wanjigi is the kingmaker who wants the crown: the billionaire dealmaker behind three Kenyan presidencies who has stepped out of the back rooms to lead the Safina Party's own bid for State House. Heir to a political-business dynasty and chief executive of the Kwacha Group family office, he bankrolled Kibaki's 2002 NARC triumph, brokered the Uhuru-Ruto Jubilee ticket of 2013, then masterminded Raila Odinga's 2017 NASA campaign, a defection that brought police sieges to his Muthaiga home. His 2022 presidential bid collapsed over degree requirements; he answered by finishing the degree and doubling down. Pitching himself as the insider who knows where the money hides, he fronts Safina's 2027 campaign on jobs, debt sanity and ending state predation.",
   "education": [
    {
     "title": "High School Certificate",
     "institution": "St. Mary's School, Nairobi",
+    "description": "Completed secondary school at St. Mary's School Nairobi, the elite Catholic school whose alumni include Uhuru Kenyatta; the friendships and networks formed there foreshadowed the political circles he later moved in.",
     "startAt": null,
     "endAt": "1982-01-01"
    },
    {
     "title": "Business Studies",
     "institution": "York University, Canada",
+    "description": "Left for Toronto in 1982 to study business at York University. Accounts differ on whether he finished the degree before returning to Kenya to build businesses alongside his father, former cabinet minister Maina Wanjigi.",
     "startAt": "1982-01-01",
     "endAt": null
    },
    {
     "title": "Bachelor's Degree",
     "institution": "Daystar University",
+    "description": "Undergraduate degree completed at Daystar University decades into his business career; the timing of his graduation became a contested point in his 2022 presidential clearance dispute with the electoral commission.",
     "startAt": null,
     "endAt": "2022-01-01"
    },
    {
     "title": "Master's in Diplomacy, Development and International Studies",
     "institution": "Daystar University",
+    "description": "Postgraduate study in diplomacy, development and international studies at Daystar University, with a heavy security-studies component, pursued while mounting his first presidential campaign ahead of the 2022 election.",
     "startAt": "2022-01-01",
     "endAt": null
    }
@@ -3293,36 +3342,42 @@
    {
     "title": "Co-Founder & Director",
     "institution": "BINS Limited",
+    "description": "Co-founded one of Kenya's first private garbage collection and waste management companies soon after returning from Canada, an early-mover venture that introduced him to Nairobi's procurement world and seeded later businesses.",
     "startAt": "1986-01-01",
     "endAt": null
    },
    {
     "title": "Director",
     "institution": "Tyl Limited",
+    "description": "Directs a private financial services and international cash transfer venture handling cross-border commercial transactions, one strand of the discreet web of companies through which he manages his family's interests.",
     "startAt": "1998-01-01",
     "endAt": null
    },
    {
     "title": "Chief Political Strategist & Financier",
     "institution": "National Rainbow Coalition (NARC)",
+    "description": "Worked the back rooms of the 2002 NARC campaign as mobilizer, strategist and financier, helping end KANU's four-decade rule and earning the kingmaker reputation that followed him through two more election cycles.",
     "startAt": "2002-01-01",
     "endAt": "2003-01-01"
    },
    {
     "title": "Lead Broker & Campaign Financier",
     "institution": "Jubilee Coalition",
+    "description": "Brokered and bankrolled the 2013 alliance between Uhuru Kenyatta and William Ruto, hosting the negotiations that fused their parties into the Jubilee ticket which captured the presidency in the March 2013 election.",
     "startAt": "2012-01-01",
     "endAt": "2013-01-01"
    },
    {
     "title": "Chief Campaign Strategist",
     "institution": "National Super Alliance (NASA)",
+    "description": "Crossed to the opposition as chief strategist and financier of Raila Odinga's 2017 NASA campaign, a switch that made him a state target and saw police twice lay siege to his Muthaiga home during the post-election standoff.",
     "startAt": "2017-01-01",
     "endAt": "2018-01-01"
    },
    {
     "title": "Chief Executive Officer",
-    "institution": "Nanosol Africa Group of Companies",
+    "institution": "Kwacha Group of Companies",
+    "description": "Runs the Wanjigi family office, a holding group spanning agribusiness, real estate, financial services and industrials, and the commercial platform from which he has financed successive national political campaigns.",
     "startAt": null,
     "endAt": null
    }

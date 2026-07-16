@@ -118,6 +118,16 @@ const countyPortraitBySlug = new Map(
 const formerPresidentByName = new Map(
 	executive.filter((e) => e.photoUrl && e.status === 'former').map((e) => [slugify(e.name), e])
 );
+// kiongozi.online civic profiles: portraits for the 2027 presidential candidates,
+// matched by platform slug (the DB name is the guard, so carry it as `name`).
+const kiongoziBySlug = new Map<string, { name: string; photoUrl: string }>();
+for (const e of JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-kiongozi.json'), 'utf8')) as {
+	platformSlug: string;
+	kiongoziSlug: string;
+	photoUrl: string | null;
+}[]) {
+	if (e.photoUrl) kiongoziBySlug.set(e.platformSlug, { name: e.kiongoziSlug.replace(/-/g, ' '), photoUrl: e.photoUrl });
+}
 
 const rows = await db
 	.select({
@@ -155,6 +165,7 @@ for (const row of rows) {
 		// points at the CURRENT holder's photo, which the name guard would reject.
 		formerPresidentByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
 		countyPortraitBySlug.get(row.slug) ??
+		kiongoziBySlug.get(row.slug) ??
 		(row.title === 'Governor' ? cogByCounty.get(regionSlug) : undefined) ??
 		executiveBySeatRegion.get(`${row.title}|${regionSlug}`) ??
 		dossierPhotoBySlug.get(row.slug);

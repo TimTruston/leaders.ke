@@ -55,7 +55,7 @@ export const load: PageServerLoad = async (event) => {
 	const [existingExperience, otherLeadershipRows] = ctx
 		? await Promise.all([
 				db
-					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, from: experience.startAt, to: experience.endAt })
+					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
 					.from(experience)
 					.where(and(eq(experience.leaderId, ctx.leader.id), isNull(experience.deletedAt)))
 					.orderBy(experience.startAt),
@@ -83,6 +83,7 @@ export const load: PageServerLoad = async (event) => {
 			type: e.type,
 			title: e.title,
 			institution: e.institution,
+			description: e.description,
 			from: e.from?.getFullYear() ?? null,
 			to: e.to?.getFullYear() ?? null
 		})),
@@ -111,7 +112,7 @@ export const load: PageServerLoad = async (event) => {
 	};
 };
 
-type PendingExperience = { type: 'education' | 'professional'; title: string; institution: string; from: string; to: string | null };
+type PendingExperience = { type: 'education' | 'professional'; title: string; institution: string; description?: string; from: string; to: string | null };
 type PendingLeadership = { positionId: number; description: string; from: string; to: string | null };
 
 export const actions: Actions = {
@@ -171,6 +172,9 @@ export const actions: Actions = {
 			if (!e.from) return fail(400, { error: 'Every added experience entry needs a start date.' });
 			if (e.to && e.to < e.from) {
 				return fail(400, { error: '"To" can\'t be before "From" for one of the added experience entries.' });
+			}
+			if (e.description && e.description.trim().length > 500) {
+				return fail(400, { error: 'Experience descriptions are limited to 500 characters.' });
 			}
 		}
 		const leadershipPositions = new Map<number, typeof position>();
@@ -283,6 +287,7 @@ export const actions: Actions = {
 				type: e.type,
 				title: e.title.trim(),
 				institution: e.institution.trim(),
+				description: e.description?.trim() || null,
 				startAt: new Date(`${e.from}T00:00:00+03:00`),
 				endAt: e.to ? new Date(`${e.to}T00:00:00+03:00`) : null
 			});

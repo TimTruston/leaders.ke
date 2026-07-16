@@ -1,0 +1,309 @@
+[
+	{
+		"kiongoziSlug": "martha-karua",
+		"platformSlug": "martha-karua",
+		"url": "https://kiongozi.online/candidate/martha-karua",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/b91a3676-5850-494a-8cfb-0803457add44/volunteer-submissions/photo/315dc2ed-d371-4ada-b90f-ebdf345baf1a/1782233774331_images_1_.jfif",
+		"education": [
+			{
+				"id": "08c178ce-8a5c-4006-b4d0-fba9f08877da",
+				"years": "(1977–1980) ,(1980–1981)",
+				"degree": "Bachelor of Laws (LL.B. , Master of Business Administration (MBA)",
+				"created_at": "2026-06-23T18:32:59.365513+00:00",
+				"updated_at": "2026-06-23T18:32:59.365513+00:00",
+				"description": "Martha Karua studied Law at the University of Nairobi, where she earned a Bachelor of Laws (LL.B.) degree. She then attended the Kenya School of Law and obtained a Postgraduate Diploma in Legal Practice, qualifying her as an advocate. Later, she earned a Master of Business Administration (MBA) from USIU-Africa, expanding her knowledge in leadership and management.",
+				"institution": "University of Nairobi ,Kenya School of Law (1978)",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "b2adcdf8-8a2e-45bd-ae04-6152119099eb",
+				"years": "1981–Present.",
+				"position": "Martha Karua",
+				"created_at": "2026-06-23T18:32:59.651+00:00",
+				"updated_at": "2026-06-23T18:32:59.651+00:00",
+				"description": "Martha Karua has over 40 years of professional experience as a lawyer, human rights advocate, and politician. Since qualifying as an advocate in 1981, she has served in various leadership roles, including Member of Parliament for Gichugu Constituency (1992–2013) and Minister for Justice, National Cohesion and Constitutional Affairs (2005–2009). Throughout her career, she has championed democracy, constitutionalism, good governance, and the rights of women and marginalized groups.",
+				"order_index": 0,
+				"organization": "People's Liberation Party (Party Leader) Parliament of Kenya (Former Member of Parliament) Ministry of Justice, National Cohesion and Constitutional Affairs (Former Minister)"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:10.388Z"
+	},
+	{
+		"kiongoziSlug": "kalonzo-musyoka",
+		"platformSlug": "kalonzo-musyoka",
+		"url": "https://kiongozi.online/candidate/kalonzo-musyoka",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/8f354834-627b-475a-8afc-feb6f4ac3230/volunteer-submissions/photo/315dc2ed-d371-4ada-b90f-ebdf345baf1a/1782233973690_download.jfif",
+		"education": [
+			{
+				"id": "f37227c0-4c34-454b-a0e9-84d10986fbac",
+				"years": "(1977),(1978)",
+				"degree": "Bachelor of Laws (LL.B.) degree",
+				"created_at": "2026-06-23T18:32:55.431871+00:00",
+				"updated_at": "2026-06-23T18:32:55.431871+00:00",
+				"description": "Kalonzo Musyoka studied in Kenya before pursuing higher education in law. He attended Kyai Primary School and later Kisasi Secondary School, where he completed his early academic foundation. He proceeded to University of Nairobi, where he studied law and earned a Bachelor of Laws (LL.B.) degree. After his undergraduate studies, he joined the Kenya School of Law for professional legal training and was admitted as an advocate of the High Court of Kenya. His education in law provided him with strong skills in governance, justice, and leadership, which later shaped his political career. Kalonzo’s academic background helped him serve effectively in public office, including roles in diplomacy, legal reform, and national leadership. His education remains a key foundation for his long service in Kenyan politics and government, especially in constitutional matters and conflict resolution.",
+				"institution": "University of Nairobi ,Kenya School of Law (1978)",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "aad4dd5a-18bd-435f-8f2c-b99dd35eb9b2",
+				"years": null,
+				"position": "Kalonzo Musyoka",
+				"created_at": "2026-06-23T18:32:55.717719+00:00",
+				"updated_at": "2026-06-23T18:32:55.717719+00:00",
+				"description": "Kalonzo Musyoka has had a long and active career in Kenyan politics and public service. He has served as Member of Parliament for Mwingi North (1983–2007), where he represented his constituency for many years. He held several senior government positions, including Minister for Foreign Affairs (1993–1998), where he represented Kenya in international relations and diplomacy. He also served as Minister of Education (2003–2005), contributing to reforms in Kenya’s education sector. Later, he became Vice President of Kenya (2008–2013), playing a key role in national unity and government coordination. In addition, he has been involved in coalition politics and presidential campaigns, remaining an influential figure in Kenya’s political landscape. His experience spans law, diplomacy, governance, and leadership at the highest levels of government.",
+				"order_index": 0,
+				"organization": "Peace / Leadership icon"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:12.036Z"
+	},
+	{
+		"kiongoziSlug": "fred-matiangi",
+		"platformSlug": "fred-matiangi",
+		"url": "https://kiongozi.online/candidate/fred-matiangi",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/91b21a29-db01-4d1b-95f8-8a0fed131992/volunteer-submissions/photo/315dc2ed-d371-4ada-b90f-ebdf345baf1a/1782234331753_download_1_.jfif",
+		"education": [
+			{
+				"id": "5b29b43d-536f-46c5-ab4d-f4ec910c125b",
+				"years": null,
+				"degree": "PhD in Comparative Literature",
+				"created_at": "2026-06-23T18:32:50.088058+00:00",
+				"updated_at": "2026-06-23T18:32:50.088058+00:00",
+				"description": "Fred Matiang'i has a strong academic background in education, language, communication, and literature. He earned a Bachelor's Degree in Education from Kenyatta University, which provided him with teaching and educational management skills. He later obtained a Master's Degree in English from University of Nairobi, where he specialized in language, communication, and literary studies. He further advanced his studies by earning a PhD in Communication and Comparative Literature from the University of Nairobi. His education equipped him with expertise in research, policy analysis, communication, and leadership, which contributed to his successful career as a lecturer, governance expert, and Cabinet Secretary in various government ministries.",
+				"institution": "University of Nairobi",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "44d881de-fe86-421b-887f-67c140a41798",
+				"years": "(2017–2022)",
+				"position": "Cabinet Secretary",
+				"created_at": "2026-06-23T18:32:50.379113+00:00",
+				"updated_at": "2026-06-23T18:32:50.379113+00:00",
+				"description": "Cabinet Secretary for ICT (2013–2015)\nCabinet Secretary for Education (2015–2017)\nCabinet Secretary for Interior and Coordination of National Government (2017–2022)\n\nAfter leaving office in 2022, he worked with the World Bank for a period and later returned to active politics.",
+				"order_index": 0,
+				"organization": "Jubilee Party"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:13.656Z"
+	},
+	{
+		"kiongoziSlug": "boniface-mwangi",
+		"platformSlug": "boniface-mwangi",
+		"url": "https://kiongozi.online/candidate/boniface-mwangi",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/e5ac1c2b-9e17-459e-8bc4-172e32ad98b9/photo/1783709233857_Boniface.jpg",
+		"education": [
+			{
+				"id": "e31d1a29-e8c5-4c83-a784-e45f381ec517",
+				"years": null,
+				"degree": "Not publicly reported",
+				"created_at": "2026-06-23T18:32:34.588642+00:00",
+				"updated_at": "2026-06-23T18:32:34.588642+00:00",
+				"description": "Boniface Mwangi's education journey was marked by many challenges, but he persevered and continued learning throughout his life. He earned a Diploma in Bible Studies from The Kingdom Academy, a Diploma in Print Journalism from the East African School of Journalism, and later completed a program in Human Rights and Documentary Photography at New York University. He also completed his KCSE as a private candidate in 2016 after earlier disruptions to his schooling. His education helped him build skills in journalism, photography, human rights advocacy, communication, and civic leadership, which have played a major role in his work as a photojournalist, activist, and politician.",
+				"institution": "New York University",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "c3eb27dc-b7c4-4460-918c-b31cb02ec851",
+				"years": "2017",
+				"position": "Non",
+				"created_at": "2026-06-23T18:32:34.879558+00:00",
+				"updated_at": "2026-06-23T18:32:34.879558+00:00",
+				"description": "Boniface Mwangi is a Kenyan photojournalist, human rights activist, and civic leader. He began his career as a photojournalist with The Standard Group, documenting major political and social events and exposing issues such as corruption, injustice, and human rights violations. He later became a full-time activist focusing on accountability, transparency, and good governance. Mwangi is the founder of the Courage Movement, a civic organization that encourages citizens to demand better leadership and participate in governance. In 2017, he contested the Starehe parliamentary seat as an independent candidate, campaigning on anti-corruption and youth empowerment. He has led civic education programs, protests, and campaigns promoting justice and equality. His experience spans journalism, activism, political participation, and community",
+				"order_index": 0,
+				"organization": "PAWA 254"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:15.255Z"
+	},
+	{
+		"kiongoziSlug": "david-maraga",
+		"platformSlug": "david-maraga",
+		"url": "https://kiongozi.online/candidate/david-maraga",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/c7636c24-c2b3-4aa0-ae43-837bb364702e/volunteer-submissions/photo/315dc2ed-d371-4ada-b90f-ebdf345baf1a/1782234446502_download_3_.jfif",
+		"education": [
+			{
+				"id": "f4ab3fc5-4dfc-4bc6-863a-f90b053781ac",
+				"years": "2016 -2021",
+				"degree": "Bachelor of Laws (LLB)",
+				"created_at": "2026-06-23T18:32:05.460552+00:00",
+				"updated_at": "2026-06-23T18:32:05.460552+00:00",
+				"description": "David Maraga studied law at the University of Nairobi, where he earned a Bachelor of Laws degree. He then proceeded to the Kenya School of Law for professional legal training, obtaining a Diploma in Legal Practice, which qualified him to practice as an advocate in Kenya. His legal education laid the foundation for his judicial career, eventually leading him to serve as Chief Justice and President of the Supreme Court of Kenya from 2016 to 2021.",
+				"institution": "University of Nairobi",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "b709aecd-11cf-4906-8840-a80ad12791c5",
+				"years": "(2016–2021)",
+				"position": "Former Chief Justice (Retired)",
+				"created_at": "2026-06-23T18:32:05.752769+00:00",
+				"updated_at": "2026-06-23T18:32:05.752769+00:00",
+				"description": "David Maraga is a Kenyan jurist who served as the Chief Justice and President of the Supreme Court of Kenya (2016–2021). Before this, he worked in the judiciary for many years, beginning as a Resident Magistrate in 1987 and rising through various judicial roles including Principal Magistrate, Senior Resident Magistrate, and Judge of the High Court (2003). He was later appointed to the Court of Appeal in 2012, where he served until his elevation to Chief Justice. As Chief Justice, he is widely known for leading the Supreme Court in the landmark 2017 presidential election petition ruling, which annulled the presidential election results, emphasizing judicial independence and constitutionalism. His career reflects extensive experience in judicial leadership, constitutional law, and public service in Kenya’s justice system.",
+				"order_index": 0,
+				"organization": "Judiciary of Kenya"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:18.386Z"
+	},
+	{
+		"kiongoziSlug": "william-ruto",
+		"platformSlug": "william-ruto",
+		"url": "https://kiongozi.online/candidate/william-ruto",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/7ef04f25-2980-4e7d-8330-1c25377bc436/photo/1782150518480_william_ruto.jpg",
+		"education": [
+			{
+				"id": "136adf1b-da33-4a7e-86d2-87496d5d6542",
+				"years": "2018, 2011",
+				"degree": "Bachelor of Science in Botany and Zoology: Graduated in 1990.Master of Science in Plant Ecology: Graduated in 2011.Doctor of Philosophy (Ph.D.) in Plant Ecology:",
+				"created_at": "2026-06-22T17:45:51.479989+00:00",
+				"updated_at": "2026-06-22T17:45:51.479989+00:00",
+				"description": "William Ruto is a Kenyan politician and the current President of Kenya. He was born in Uasin Gishu County in the Rift Valley region. He studied at the University of Nairobi, where he earned a Bachelor of Science degree in Botany and Zoology, and later a Master’s degree in Plant Ecology. He began his political career in the 1990s and has held several key government positions, including Member of Parliament, Minister for Agriculture, Minister for Higher Education, and Vice President of Kenya (2013–2022). In 2022, he was elected President. Throughout his career, he has focused on economic development, agriculture, education, and empowering ordinary citizens under his “Bottom-Up” economic model.",
+				"institution": "University of Nairobi",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "813003ad-1842-4be6-84ff-8418c614fc02",
+				"years": "2022–Present",
+				"position": "William Ruto",
+				"created_at": "2026-06-22T17:45:51.770877+00:00",
+				"updated_at": "2026-06-22T17:45:51.770877+00:00",
+				"description": "Served as Assistant Minister for Home Affairs (1998–2002), where he was involved in public administration and security matters.\nElected as Member of Parliament for Eldoret North (1997–2013), representing his constituency for multiple terms.\nServed as Minister for Agriculture (2008–2010), where he supported agricultural reforms and food security initiatives.\nAppointed Minister for Higher Education, Science and Technology (2010–2012), focusing on education development and university reforms.\nHeld office as Vice President of Kenya (2013–2022), assisting in national governance and policy implementation.\nBecame the President of Kenya in 2022, currently leading the country.",
+				"order_index": 0,
+				"organization": "United Democratic Alliance (UDA)"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:22.476Z"
+	},
+	{
+		"kiongoziSlug": "jimi-wanjigi",
+		"platformSlug": "jimi-richard-wanjigi",
+		"url": "https://kiongozi.online/candidate/jimi-wanjigi",
+		"photoUrl": "https://tijgdecaqzycggjbnaot.supabase.co/storage/v1/object/public/candidate-photos/88f0f540-343b-4c81-ab32-4f6d3085c552/photo/1783708244919_Jimi.jpg",
+		"education": [
+			{
+				"id": "eb0f08db-20b6-4040-a14c-dee8e3e7b50e",
+				"years": "Pre-1982",
+				"degree": "High School Certificate",
+				"created_at": "2026-07-10T18:37:25.05369+00:00",
+				"updated_at": "2026-07-10T18:37:25.05369+00:00",
+				"description": "Elite secondary school in Nairobi. He studied alongside notable Kenyan figures like Uhuru Kenyatta and Jeff Koinange.",
+				"institution": "St. Mary’s School, Nairobi",
+				"order_index": 0
+			},
+			{
+				"id": "38366ccb-6322-4a41-a023-b76c84304fba",
+				"years": "1982 – 198",
+				"degree": "Business Studies",
+				"created_at": "2026-07-10T18:37:28.19188+00:00",
+				"updated_at": "2026-07-10T18:37:28.19188+00:00",
+				"description": "He matriculated at this Toronto institution to study business. Reports differ on whether he completed the full degree here before returning to Kenya.",
+				"institution": "York University (Canada)",
+				"order_index": 0
+			},
+			{
+				"id": "5028d4bb-4712-4bde-a18c-a0f5c6387ee7",
+				"years": "Ongoing (As of 2022)",
+				"degree": "Master's in Diplomacy, Development, and International Studies",
+				"created_at": "2026-07-10T18:37:36.85619+00:00",
+				"updated_at": "2026-07-10T18:37:36.85619+00:00",
+				"description": "A postgraduate program focusing heavily on security studies, which he was actively pursuing during his presidential bid.",
+				"institution": "Daystar University",
+				"order_index": 0
+			},
+			{
+				"id": "3b2d2707-82a4-43ec-8b15-96292730f0d7",
+				"years": "Completed by 2022",
+				"degree": "Bachelor's Degree",
+				"created_at": "2026-07-10T18:37:32.185676+00:00",
+				"updated_at": "2026-07-10T18:37:32.185676+00:00",
+				"description": "Enrolled to complete his undergraduate higher education studies. His graduation status here was a focal point of his 2022 IEBC clearance dispute.",
+				"institution": "Daystar University",
+				"order_index": 0
+			}
+		],
+		"experience": [
+			{
+				"id": "4312586f-43aa-4514-973f-ca67f204dbed",
+				"years": "1986 – 1990s",
+				"position": "Co-Founder & Director",
+				"created_at": "2026-07-10T18:42:01.555004+00:00",
+				"updated_at": "2026-07-10T18:42:01.555004+00:00",
+				"description": "Co-founded Kenya’s very first private waste management and garbage collection company right after returning from university.",
+				"order_index": 0,
+				"organization": "BINS Limited"
+			},
+			{
+				"id": "0a91ce63-e449-4af2-8a12-b5a50d37b5dd",
+				"years": "Late 1990s – Present",
+				"position": "Director / Owner",
+				"created_at": "2026-07-10T18:42:07.572009+00:00",
+				"updated_at": "2026-07-10T18:42:07.572009+00:00",
+				"description": "Operates a private international cash transfer and financial consulting entity used for foreign commercial transactions.",
+				"order_index": 0,
+				"organization": "Tyl Limited"
+			},
+			{
+				"id": "212426d6-2fcb-476d-b7de-b7c0adce19ff",
+				"years": "2002",
+				"position": "Chief Political Strategist & Financier",
+				"created_at": "2026-07-10T18:42:12.336752+00:00",
+				"updated_at": "2026-07-10T18:42:12.336752+00:00",
+				"description": "Worked behind the scenes as a critical campaign mobilizer and strategist to help secure Mwai Kibaki's presidential election victory.",
+				"order_index": 0,
+				"organization": "National Rainbow Coalition (NARC)"
+			},
+			{
+				"id": "f4d75c15-0b2c-464b-b7dc-b775a5879d62",
+				"years": "2012 - 2013",
+				"position": "Lead Broker & Campaign Financier",
+				"created_at": "2026-07-10T18:42:15.294736+00:00",
+				"updated_at": "2026-07-10T18:42:15.294736+00:00",
+				"description": "Played a central kingmaker role by brokering the political alliance between Uhuru Kenyatta and William Ruto, heavily financing their 2013 joint presidential campaign.",
+				"order_index": 0,
+				"organization": "Jubilee Coalition"
+			},
+			{
+				"id": "d367ec4b-be1e-4c11-8ab6-8766eba87303",
+				"years": "2017",
+				"position": "Chief Campaign Strategist",
+				"created_at": "2026-07-10T18:42:19.220765+00:00",
+				"updated_at": "2026-07-10T18:42:19.220765+00:00",
+				"description": "Shifted political allegiance to serve as the main strategist and financial backer for Raila Odinga’s 2017 opposition presidential campaign.",
+				"order_index": 0,
+				"organization": "National Super Alliance (NASA)"
+			},
+			{
+				"id": "a4998fb0-5988-494d-bcab-69a74195ce5e",
+				"years": "2021 - present",
+				"position": "Presidential Candidate",
+				"created_at": "2026-07-10T18:42:23.209359+00:00",
+				"updated_at": "2026-07-10T18:42:23.209359+00:00",
+				"description": "Launched his first formal bid for elective politics, running for the Presidency of Kenya before being disqualified over degree certificate logistics.",
+				"order_index": 0,
+				"organization": "Safina Party"
+			},
+			{
+				"id": "ea1252d0-86fb-4ae1-b62e-701628dcab86",
+				"years": "1990s – Present",
+				"position": "CEO",
+				"created_at": "2026-07-10T18:42:04.273839+00:00",
+				"updated_at": "2026-07-10T18:42:04.273839+00:00",
+				"description": "Leads the primary Wanjigi family office holding firm. Oversees diverse multi-sector investments including agribusiness, real estate, financial services, and industrials.",
+				"order_index": 0,
+				"organization": "Kwacha Group of Companies"
+			}
+		],
+		"fetchedAt": "2026-07-16T18:37:25.958Z"
+	}
+]

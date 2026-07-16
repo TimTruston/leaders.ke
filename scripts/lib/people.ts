@@ -11,7 +11,7 @@ import { campaigns, contacts, experience, leaders, parties, partyMemberships, pi
 import { user as authUsers, account } from '../../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName, type AnyDb } from './names';
 
-export type ExperienceRow = { title: string; institution: string; startAt: string | null; endAt: string | null };
+export type ExperienceRow = { title: string; institution: string; description?: string; startAt: string | null; endAt: string | null };
 // A prior/current elective or nominated term nested on a person's leaders.json row (e.g. an
 // ex-MP seat before their current one) — seeded as its own `leaders` row, not `experience`,
 // since it's the same "held/holds a position" fact the top-level row represents.
@@ -79,7 +79,7 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 	]) {
 		for (const expRow of rows ?? []) {
 			const [existing] = await db
-				.select({ id: experience.id })
+				.select({ id: experience.id, description: experience.description })
 				.from(experience)
 				.where(
 					and(
@@ -89,12 +89,19 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 						eq(experience.institution, expRow.institution)
 					)
 				);
-			if (existing) continue;
+			if (existing) {
+				// Backfill a description added to the seed file after the row shipped.
+				if (expRow.description && !existing.description) {
+					await db.update(experience).set({ description: expRow.description }).where(eq(experience.id, existing.id));
+				}
+				continue;
+			}
 			await db.insert(experience).values({
 				leaderId,
 				type,
 				title: expRow.title,
 				institution: expRow.institution,
+				description: expRow.description ?? null,
 				startAt: toDate(expRow.startAt),
 				endAt: toDate(expRow.endAt)
 			});
