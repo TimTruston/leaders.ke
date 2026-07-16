@@ -93,8 +93,8 @@ whole card is clickable, while the party name stays its own separate link on top
 		{/if}
 	</button>
 	<div class="flex items-center gap-3">
-		<Avatar {name} {initials} {photoUrl} sizeClass="size-16" textClass="text-xl" />
-		<div class="min-w-0">
+		<Avatar {name} {initials} {photoUrl} sizeClass="size-24" textClass="text-xl" />
+		<div class="w-full">
 			<a href={path} class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary">
 				<span class="truncate">{name}</span>
 				{#if verified}
@@ -118,35 +118,36 @@ whole card is clickable, while the party name stays its own separate link on top
 			{:else if status}
 				<p class="truncate text-xs text-muted capitalize">{status}</p>
 			{/if}
+			{#if positionTitle || region}
+				{@const seat = seatPath(positionTitle, region)}
+				<p class="mt-2 text-xs">
+					{#if seat}
+						<!-- z-10 keeps the seat link clickable above the card's stretched link. -->
+						<a href={seat} class="relative z-10 hover:text-primary">
+							{positionTitle}{positionTitle && region ? ', ' : ''}{region}
+						</a>
+					{:else}
+						{positionTitle}{positionTitle && region ? ', ' : ''}{region}
+					{/if}
+				</p>
+			{/if}
+			{#if (!compact && status) || followers !== undefined}
+				<div class="mt-2 flex w-full items-center gap-2 text-xs text-muted justify-between">
+					{#if !compact && status}
+						<span class="rounded-full bg-surface-2 px-2 py-0.5 font-medium capitalize {status === 'current' ? 'text-primary' : ''}">
+							{status}
+						</span>
+					{/if}
+					{#if followers !== undefined}
+						<span>{fmt.format(followers)} followers</span>
+					{/if}
+				</div>
+			{/if}
 		</div>
 	</div>
 
 	{#if !compact}
-		{#if positionTitle || region}
-			{@const seat = seatPath(positionTitle, region)}
-			<p class="mt-4 text-sm">
-				{#if seat}
-					<!-- z-10 keeps the seat link clickable above the card's stretched link. -->
-					<a href={seat} class="relative z-10 hover:text-primary">
-						{positionTitle}{positionTitle && region ? ', ' : ''}{region}
-					</a>
-				{:else}
-					{positionTitle}{positionTitle && region ? ', ' : ''}{region}
-				{/if}
-			</p>
-		{/if}
 		{#if bio}<p class="mt-2 line-clamp-2 text-sm">{plainText(bio)}</p>{/if}
 	{/if}
-	{#if (!compact && status) || followers !== undefined}
-		<div class="mt-2 flex items-center gap-2 text-xs text-muted justify-between">
-			{#if !compact && status}
-				<span class="rounded-full bg-surface-2 px-2 py-0.5 font-medium capitalize {status === 'current' ? 'text-primary' : ''}">
-					{status}
-				</span>
-			{/if}
-			{#if followers !== undefined}
-				<span>{fmt.format(followers)} followers</span>
-			{/if}
-		</div>
-	{/if}
+	
 </div>

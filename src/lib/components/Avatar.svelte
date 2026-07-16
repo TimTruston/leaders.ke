@@ -15,9 +15,9 @@
 </script>
 
 {#if photoUrl}
-	<img src={photoUrl} alt={name} loading="lazy" class="{sizeClass} shrink-0 rounded-full border border-border object-cover" />
+	<img src={photoUrl} alt={name} loading="lazy" class="{sizeClass} shrink-0 rounded-xl border border-border object-cover" />
 {:else}
-	<span class="grid {sizeClass} shrink-0 place-items-center rounded-full bg-primary-soft {textClass} font-bold text-on-primary">
+	<span class="grid {sizeClass} shrink-0 place-items-center rounded-xl bg-primary-soft {textClass} font-bold text-on-primary">
 		{initials}
 	</span>
 {/if}

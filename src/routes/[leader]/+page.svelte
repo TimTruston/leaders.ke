@@ -56,7 +56,7 @@
 			<!-- Identity card -->
 			<div class="rounded-3xl border border-border bg-surface p-6 sm:p-8">
 				<div class="flex flex-col gap-5 sm:flex-row sm:items-center">
-					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-28" textClass="text-4xl" />
+					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-30" textClass="text-4xl" />
 					<div class="min-w-0">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.name}
