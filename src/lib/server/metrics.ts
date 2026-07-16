@@ -1,18 +1,20 @@
 // Public leader metrics shared by /ranks, /compare and dashboards.
 // The engagement score is deliberately transparent: citizens can recompute it.
-import { and, count, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	campaigns,
 	followers,
 	leaders,
+	parties,
+	partyMemberships,
 	pillars,
 	pledges,
 	positions,
 	posts,
 	users
 } from '$lib/server/db/schema';
-import { fullName, leaderPath } from '$lib/server/leader';
+import { fullName, leaderPath, slugify } from '$lib/server/leader';
 
 export type LeaderMetrics = {
 	name: string;
@@ -21,6 +23,7 @@ export type LeaderMetrics = {
 	positionTitle: string;
 	regionLabel: string;
 	party: string | null;
+	partyPath: string | null;
 	status: string;
 	verified: boolean;
 	followers: number;
@@ -51,6 +54,18 @@ export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
+
+	// Current party per leader in one batched query (same rule as seat hubs:
+	// a live membership is one with no end date).
+	const leaderIds = rows.map((r) => r.leaders.id);
+	const partyRows = leaderIds.length
+		? await db
+				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
+				.from(partyMemberships)
+				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
+				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+		: [];
+	const partyByLeaderId = new Map(partyRows.map((p) => [p.leaderId, p.partyName]));
 
 	const dbMetrics = await Promise.all(
 		rows.map(async (r) => {
@@ -101,13 +116,15 @@ export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
 				postCount: postRow.n,
 				delivered
 			};
+			const party = partyByLeaderId.get(leaderId) ?? null;
 			return {
 				name: fullName(r.users),
 				path: leaderPath(r.users),
 				photoUrl: r.leaders.photoUrl,
 				positionTitle: r.positions.title,
 				regionLabel: r.positions.region,
-				party: null,
+				party,
+				partyPath: party ? `/parties/${slugify(party)}` : null,
 				status: r.leaders.status,
 				verified: !!r.leaders.verifiedAt,
 				pillarCount: pillarRows.length,

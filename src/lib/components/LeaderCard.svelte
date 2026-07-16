@@ -19,6 +19,8 @@
 		followers?: number;
 		bio?: string | null;
 		compact?: boolean;
+		/** Header-card variant (e.g. /compare): card-height photo, bio in the right column. */
+		large?: boolean;
 	};
 
 	let {
@@ -34,7 +36,8 @@
 		status,
 		followers,
 		bio,
-		compact = false
+		compact = false,
+		large = false
 	}: Props = $props();
 
 	const fmt = new Intl.NumberFormat('en-KE');
@@ -61,7 +64,7 @@
 
 <!-- The leader name uses a stretched link (after:absolute after:inset-0) so the
 whole card is clickable, while the party name stays its own separate link on top. -->
-<div class="group relative rounded-2xl border border-border bg-surface p-5 transition hover:border-primary hover:shadow-sm">
+<div class="group relative rounded-2xl border border-border bg-surface transition hover:border-primary hover:shadow-sm {large ? 'p-6' : 'p-5'}">
 	<!-- Compare trigger: z-10 keeps it clickable above the card's stretched link. -->
 	<button
 		type="button"
@@ -92,9 +95,10 @@ whole card is clickable, while the party name stays its own separate link on top
 			&lt;&gt;
 		{/if}
 	</button>
-	<div class="flex items-center gap-3">
-		<Avatar {name} {initials} {photoUrl} sizeClass="size-24" textClass="text-xl" />
-		<div class="w-full">
+	<div class="flex items-center {large ? 'gap-5' : 'gap-3'}">
+		<!-- In the large variant the photo spans the card's height. -->
+		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-40' : 'size-24'} textClass={large ? 'text-4xl' : 'text-xl'} />
+		<div class="w-full min-w-0">
 			<a href={path} class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary">
 				<span class="truncate">{name}</span>
 				{#if verified}
@@ -115,12 +119,15 @@ whole card is clickable, while the party name stays its own separate link on top
 						{party}
 					{/if}
 				</p>
-			{:else if status}
-				<p class="truncate text-xs text-muted capitalize">{status}</p>
 			{/if}
 			{#if positionTitle || region}
 				{@const seat = seatPath(positionTitle, region)}
-				<p class="mt-2 text-xs">
+				<p class="mt-2 text-xs flex items-center gap-2">
+					{#if !compact && status}
+						<span class="rounded-full bg-surface-2 px-2 py-0.5 font-medium capitalize {status === 'current' ? 'text-primary' : ''}">
+							{status}
+						</span>
+					{/if}
 					{#if seat}
 						<!-- z-10 keeps the seat link clickable above the card's stretched link. -->
 						<a href={seat} class="relative z-10 hover:text-primary">
@@ -131,23 +138,24 @@ whole card is clickable, while the party name stays its own separate link on top
 					{/if}
 				</p>
 			{/if}
-			{#if (!compact && status) || followers !== undefined}
+			{#if !compact || followers !== undefined}
 				<div class="mt-2 flex w-full items-center gap-2 text-xs text-muted justify-between">
-					{#if !compact && status}
-						<span class="rounded-full bg-surface-2 px-2 py-0.5 font-medium capitalize {status === 'current' ? 'text-primary' : ''}">
-							{status}
-						</span>
-					{/if}
+					
 					{#if followers !== undefined}
 						<span>{fmt.format(followers)} followers</span>
 					{/if}
 				</div>
 			{/if}
+			{#if large && bio}
+				<!-- Large variant: the bio sits in the right column, under name/seat/party. -->
+				{@const text = plainText(bio)}
+				<p class="mt-3 text-sm leading-relaxed">{text.slice(0, 200)}{text.length > 200 ? '…' : ''}</p>
+			{/if}
 		</div>
 	</div>
 
-	{#if !compact}
+	{#if !compact && !large}
 		{#if bio}<p class="mt-2 line-clamp-2 text-sm">{plainText(bio)}</p>{/if}
 	{/if}
-	
+
 </div>
