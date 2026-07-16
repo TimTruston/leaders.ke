@@ -3,7 +3,7 @@
 // until an admin approves the claim.
 import { randomBytes } from 'node:crypto';
 import { fail } from '@sveltejs/kit';
-import { and, asc, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, positions } from '$lib/server/db/schema';
 import { deletePendingClaim, resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
@@ -81,17 +81,15 @@ export const actions: Actions = {
 		const nationalId = (claim?.evidence as ClaimEvidence | null)?.signoff?.nationalId;
 		if (!nationalId) return fail(400, { claimError: 'Complete the Signoff tab before submitting.' });
 
-		const [leaderEmail] = await db
-			.select({ value: contacts.value })
+		// Any live email works as the leader's inbox: a verified one first, else one
+		// harvested from a public directory (contacts.source, e.g. Mzalendo) — sourced
+		// emails exist precisely so this link has somewhere to go. The link only grants
+		// review of THIS claim, so a stale sourced address fails safe (nobody clicks).
+		const emailRows = await db
+			.select({ value: contacts.value, verifiedAt: contacts.verifiedAt, source: contacts.source })
 			.from(contacts)
-			.where(
-				and(
-					eq(contacts.userId, resolved.row.users.id),
-					eq(contacts.channel, 'email'),
-					isNotNull(contacts.verifiedAt),
-					isNull(contacts.deletedAt)
-				)
-			);
+			.where(and(eq(contacts.userId, resolved.row.users.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
+		const leaderEmail = emailRows.find((row) => row.verifiedAt) ?? emailRows.find((row) => row.source);
 		const leaderToken = leaderEmail ? randomBytes(16).toString('hex') : undefined;
 
 		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {

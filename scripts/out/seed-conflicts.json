@@ -1,0 +1,692 @@
+{
+	"generatedAt": "2026-07-16T05:52:28.604Z",
+	"rosterTotal": 415,
+	"planned": {
+		"creates": 0,
+		"createSplit": {
+			"MP": 0,
+			"Woman Rep": 0,
+			"Senator": 0
+		},
+		"enriches": 0,
+		"emailsPlanned": 0,
+		"phonesPlanned": 0,
+		"biosPlanned": 0
+	},
+	"photosAvailableButSkipped": {
+		"wikipedia": 33,
+		"mzalendo": 347
+	},
+	"conflictCounts": {
+		"nominated": 29,
+		"missing-region": 6,
+		"vacant-seat": 2,
+		"duplicate-roster-row": 1,
+		"region-unmatched": 4,
+		"seat-conflict": 1,
+		"source-name-conflict": 10,
+		"party-mismatch": 6,
+		"party-not-in-db": 33
+	},
+	"suggestions": {
+		"nominated": "Needs a non-geographic position model (e.g. a \"Nominated MP/Senator\" position with a national region) — a product decision, not a data fix.",
+		"missing-region": "Parliament's listing omits the constituency for Speakers/leadership rows — scrape the member's own page for the seat, or hand-fill these few rows in the roster JSON.",
+		"vacant-seat": "Drop placeholder rows at scrape time (filter name == \"Vacant\" in scrape-contacts.ts).",
+		"duplicate-roster-row": "Dedupe the roster scraper on the member-page URL; the duplicate carried a spelling variant of the same name.",
+		"region-unmatched": "Add a small alias map (parliament spelling to positions.region) in the scraper/importer; only slug-exact matches are auto-accepted.",
+		"seat-conflict": "Manual review: the existing DB holder (from leaders.json) shares zero name tokens with the authoritative roster — likely stale seed data to retire by hand.",
+		"source-name-conflict": "Manual review: at least one of parliament/wikipedia/mzalendo is stale for this seat (by-elections, court rulings).",
+		"party-mismatch": "Informational — parliament.go.ke party was seeded; review for post-election defections if party accuracy matters.",
+		"party-not-in-db": "Add the missing party (or an abbreviation alias) to the parties seed, then re-run to backfill memberships."
+	},
+	"findings": [
+		{
+			"category": "nominated",
+			"name": "Jackson Kipkemoi Kosgei",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "region-unmatched",
+			"name": "Abdi Yusuf Hassan",
+			"seat": "MP",
+			"region": "Kamkunji",
+			"detail": "no MP/Woman Rep position slug-matches \"Kamkunji\" — closest positions row: \"MP Kamukunji\" (edit distance 1)"
+		},
+		{
+			"category": "nominated",
+			"name": "Abubakar Talib Ahmed",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (WDM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Ali Abdisirat Khalif",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Chege Sabina Wanjiru",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (JP) — no geographic seat to attach to"
+		},
+		{
+			"category": "region-unmatched",
+			"name": "Chiforomodo Mangale Munga",
+			"seat": "MP",
+			"region": "Lunga Lunga",
+			"detail": "no MP/Woman Rep position slug-matches \"Lunga Lunga\" — closest positions row: \"MP Lungalunga\" (edit distance 1)"
+		},
+		{
+			"category": "region-unmatched",
+			"name": "Gakuya James Mwangi",
+			"seat": "MP",
+			"region": "Embakassi North",
+			"detail": "no MP/Woman Rep position slug-matches \"Embakassi North\" — closest positions row: \"MP Embakasi North\" (edit distance 1)"
+		},
+		{
+			"category": "nominated",
+			"name": "Ikiara Dorothy Muthoni",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "missing-region",
+			"name": "Joseph Wainaina Iraya",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "missing-region",
+			"name": "Junet Sheikh Nuh Mohamed",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "missing-region",
+			"name": "Kajwang’ Francis Tom Joseph",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "nominated",
+			"name": "Kipchumba Harold Kimuge",
+			"seat": "MP",
+			"region": "Nominated",
+			"detail": "nominated MP (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "missing-region",
+			"name": "Mawathe Julius Musili",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "nominated",
+			"name": "Mayaka Irene Nyakerario",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Mohamed Umulkher Harun",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "missing-region",
+			"name": "Mwangi Teresia Wanjiru",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "nominated",
+			"name": "Suleka Hulbale Harun",
+			"seat": "MP",
+			"region": "",
+			"detail": "nominated MP (UDM) — no geographic seat to attach to"
+		},
+		{
+			"category": "missing-region",
+			"name": "Rt Moses Fm Wetang'Ula",
+			"seat": "MP",
+			"region": "",
+			"detail": "elected member but parliament.go.ke listed no constituency (e.g. Speaker/leadership rows)"
+		},
+		{
+			"category": "vacant-seat",
+			"name": "Vacant",
+			"seat": "MP",
+			"region": "Garissa Township",
+			"detail": "roster row is a placeholder for a vacant seat"
+		},
+		{
+			"category": "vacant-seat",
+			"name": "Vacant",
+			"seat": "MP",
+			"region": "Kandara",
+			"detail": "roster row is a placeholder for a vacant seat"
+		},
+		{
+			"category": "nominated",
+			"name": "Abdalla Shakilla Mohamed",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (WDM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Beatrice Akinyi Ogolla",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Beth Kalunda Syengo",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Betty Batuli Montet",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Catherine Muyeka Mumma",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Chimera Raphael Mwinzago",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Consolata Nabwire Wakwabubi",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Crystal Asige",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "region-unmatched",
+			"name": "David Wakoli Wafula",
+			"seat": "Senator",
+			"region": "Bungoma County",
+			"detail": "no Senator position for \"Bungoma County\" — closest positions row: \"Senator Bungoma\" (edit distance 7)"
+		},
+		{
+			"category": "nominated",
+			"name": "Essy Okenyuri Nyaituga Anyieni",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "George Mungai Mbugua",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Hamida Ali Kibwana",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Hezena M Lemaletian",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (ODM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Joyce Chepkoech Korir",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Miraj Abdillahi Abdulrahman",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Mutinda Maureen Tabitha",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Nyamu Karen Njeri",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Omar Mariam Sheikh",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDM) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Pesi Peris Tobiko",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Margaret Jepkoech Kamar",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (JP) — no geographic seat to attach to"
+		},
+		{
+			"category": "nominated",
+			"name": "Veronica Waheti Nduati",
+			"seat": "Senator",
+			"region": "Nominated",
+			"detail": "nominated Senator (UDA) — no geographic seat to attach to"
+		},
+		{
+			"category": "duplicate-roster-row",
+			"name": "Rasso Dido Ali",
+			"seat": "MP",
+			"region": "Saku",
+			"detail": "same person as \"Raso Dido Ali\" on MP Saku — kept the other row"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "King'Ola Patrick Makau",
+			"seat": "MP",
+			"region": "Mavoko",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Nzambia Kithua Thuddeus",
+			"seat": "MP",
+			"region": "Kilome",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Abdi Khamis Chome",
+			"seat": "MP",
+			"region": "Voi",
+			"detail": "roster says WDM, wikipedia says JP — seeding roster's"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Abdi Khamis Chome",
+			"seat": "MP",
+			"region": "Voi",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Aburi Donya Dorice",
+			"seat": "MP",
+			"region": "Kisii",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Alio Ahmed Maalim Hassan",
+			"seat": "MP",
+			"region": "Banissa",
+			"detail": "roster says UDA, wikipedia says UDM — seeding roster's"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Basil Robert Ngui",
+			"seat": "MP",
+			"region": "Yatta",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Bwire John Okano",
+			"seat": "MP",
+			"region": "Taveta",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Chege Njuguna",
+			"seat": "MP",
+			"region": "Kandara",
+			"detail": "wikipedia says MP Kandara is \"Alice Muthoni Wahome\" — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Chikati John Murumba",
+			"seat": "MP",
+			"region": "Tongaren",
+			"detail": "party \"FORD - K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Ikana Fredrick Lusuli",
+			"seat": "MP",
+			"region": "Shinyalu",
+			"detail": "wikipedia says MP Shinyalu is \"Fred Akana\" — skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Kagesi Ernest Ogesi Kivai",
+			"seat": "MP",
+			"region": "Vihiga",
+			"detail": "roster says ANC, wikipedia says JP — seeding roster's"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Kamene Joyce",
+			"seat": "MP",
+			"region": "Machakos",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Kasalu Irene Muthoni",
+			"seat": "MP",
+			"region": "Kitui",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Keter David Kipsang",
+			"seat": "MP",
+			"region": "Emurua Dikirr",
+			"detail": "wikipedia says MP Emurua Dikirr is \"Vacant\" — skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Keynan Wehliye Adan",
+			"seat": "MP",
+			"region": "Eldas",
+			"detail": "roster says JP, wikipedia says ODM — seeding roster's"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Kiamba Suzanne Ndunge",
+			"seat": "MP",
+			"region": "Makueni",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Kimilu Joshua Kivinda",
+			"seat": "MP",
+			"region": "Kaiti",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Maalim Farah",
+			"seat": "MP",
+			"region": "Dadaab",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Majimbo Joseph Kalasinga",
+			"seat": "MP",
+			"region": "Kabuchai",
+			"detail": "party \"FORD-K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Makali John Okwisia",
+			"seat": "MP",
+			"region": "Kanduyi",
+			"detail": "party \"FORD-K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mbalu Jessica Nduku Kiko",
+			"seat": "MP",
+			"region": "Kibwezi East",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mboni David Mwalika",
+			"seat": "MP",
+			"region": "Kitui Rural",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mbui Robert",
+			"seat": "MP",
+			"region": "Kathiani",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Mulanya Ekesa Geoffrey",
+			"seat": "MP",
+			"region": "Nambale",
+			"detail": "wikipedia says MP Nambale is \"Geoffey Mulanywa\" — skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Mule Caleb Mutiso",
+			"seat": "MP",
+			"region": "Machakos Town",
+			"detail": "roster says MCCP, wikipedia says Wiper — seeding roster's"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mule Stephen Mutinda",
+			"seat": "MP",
+			"region": "Matungulu",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mulu Makali",
+			"seat": "MP",
+			"region": "Kitui Central",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mulyungi Gideon Mutemi",
+			"seat": "MP",
+			"region": "Mwingi Central",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mumo Rose Museo",
+			"seat": "MP",
+			"region": "Makueni",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Mwakuwona Danson Mwashako",
+			"seat": "MP",
+			"region": "Wundanyi",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Ndakwa David Athman",
+			"seat": "MP",
+			"region": "Malava",
+			"detail": "wikipedia says MP Malava is \"Moses Malulu Injendi\" — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Nguna Ngusya Charles",
+			"seat": "MP",
+			"region": "Mwingi West",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Njeru Leo Wa Muthende",
+			"seat": "MP",
+			"region": "Mbeere North",
+			"detail": "wikipedia says MP Mbeere North is \"Geoffrey Kariuki Kiringa Ruku\" — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Nyenze Edith Vethi",
+			"seat": "MP",
+			"region": "Kitui West",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Nzengu Paul Musyimi",
+			"seat": "MP",
+			"region": "Mwingi North",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Nzioka Erastus Kivasu",
+			"seat": "MP",
+			"region": "Mbooni",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Obiri Innocent Momanyi",
+			"seat": "MP",
+			"region": "Bobasi",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Omondi Moses Okoth",
+			"seat": "MP",
+			"region": "Ugunja",
+			"detail": "wikipedia says MP Ugunja is \"Opiyo Wandayi\" — skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Sheikh Umul Ker Kassim",
+			"seat": "MP",
+			"region": "Mandera",
+			"detail": "wikipedia says Woman Rep Mandera is \"Ummul Kheir Khassim\" — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Wambilianga Catherine Nanjala",
+			"seat": "MP",
+			"region": "Bungoma",
+			"detail": "party \"FORD - K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Wanyonyi Kevin Ferdinand",
+			"seat": "MP",
+			"region": "Kwanza",
+			"detail": "party \"FORD - K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Wanyonyi Martin Pepela",
+			"seat": "MP",
+			"region": "Webuye East",
+			"detail": "party \"FORD-K\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Cheburet Kiprono Chemitei",
+			"seat": "Senator",
+			"region": "Baringo",
+			"detail": "wikipedia says Senator Baringo is \"William Cheptumo\" — skipped"
+		},
+		{
+			"category": "party-mismatch",
+			"name": "Ekomwa James Lomenen",
+			"seat": "Senator",
+			"region": "Turkana",
+			"detail": "roster says JP, wikipedia says Upya Party — seeding roster's"
+		},
+		{
+			"category": "source-name-conflict",
+			"name": "Kisang William Kipkemoi",
+			"seat": "Senator",
+			"region": "Elgeyo Marakwet",
+			"detail": "wikipedia says Senator Elgeyo/Marakwet is \"Kipchumba Murkomen\" — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Maanzo Daniel Kitonga",
+			"seat": "Senator",
+			"region": "Makueni",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Muthama Agnes Kavindu Mbuku",
+			"seat": "Senator",
+			"region": "Machakos",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		},
+		{
+			"category": "seat-conflict",
+			"name": "Okoiti Andrew Omtatah",
+			"seat": "Senator",
+			"region": "Busia",
+			"detail": "DB already has \"Okiya Omtata\" as current Senator for Busia — skipped"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Wambua Enoch Kiio",
+			"seat": "Senator",
+			"region": "Kitui",
+			"detail": "party \"WDM\" not in the parties table — membership will be skipped"
+		}
+	],
+	"plan": {
+		"creates": [],
+		"enriches": []
+	}
+}

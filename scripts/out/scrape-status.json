@@ -1,0 +1,88 @@
+{
+	"updatedAt": "2026-07-16T08:05:00+03:00",
+	"note": "Living log of every contact/profile source tried for Kenyan leaders. 'yield' says what the source actually produces; keep this current as sources are added or die.",
+	"sources": [
+		{
+			"id": "parliament-na-mps",
+			"url": "https://www.parliament.go.ke/the-national-assembly/mps?page=0..34",
+			"status": "yielding",
+			"yield": "348 current MPs: name, constituency, county, party, elected/nominated, member-page URL",
+			"noYield": "member pages list NO personal emails (only info@parliament.go.ke)",
+			"scraper": "scripts/scrape-contacts.ts --roster",
+			"output": "scripts/out/scraped-roster.json"
+		},
+		{
+			"id": "parliament-senate",
+			"url": "https://www.parliament.go.ke/the-senate/senators?page=0..6",
+			"status": "yielding",
+			"yield": "67 current Senators: name, county, party, elected/nominated",
+			"scraper": "scripts/scrape-contacts.ts --roster",
+			"output": "scripts/out/scraped-roster.json"
+		},
+		{
+			"id": "info-mzalendo-persons",
+			"url": "https://info.mzalendo.com/person/<slug>/ (found via /search/?q=)",
+			"status": "yielding-partial",
+			"yield": "personal Email + Telephone + social links from each person page's contact box; THE email source for leader-accepted claims",
+			"caveats": "final yield 53 emails + 53 phones across 415 members; 160 found on Mzalendo but with no contact box; 50 member pages 502 permanently (three passes over an hour); 46 emails + 47 phones imported to contacts with provenance",
+			"license": "CC BY-SA 4.0",
+			"scraper": "scripts/scrape-contacts.ts --emails [--redo-not-found]",
+			"output": "scripts/out/scraped-roster.json (mzalendo key per entry)"
+		},
+		{
+			"id": "mzalendo-mp-performance",
+			"url": "https://mzalendo.com/mps-performance/national-assembly/<parliament>/<slug>/ (sitemap-driven)",
+			"status": "yielding",
+			"yield": "per-parliament member profiles: name, constituency/county, party, status, term, photo URL, committees; final: 394 members/347 photos (13th), 346/314 (12th), 350/187 (11th)",
+			"noYield": "ZERO bios — every member page carries the 'verified biography not yet available' note (checked prominent MPs too); no emails/phones; 8th-10th parliament pages 404 (stale sitemap entries)",
+			"scraper": "scripts/scrape-mp-profiles.ts [--only 13th]",
+			"output": "scripts/out/scraped-mps-{13th,12th,11th}.json"
+		},
+		{
+			"id": "wikipedia-13th-parliament",
+			"url": "https://en.wikipedia.org/wiki/13th_Parliament_of_Kenya (+ REST /page/summary per member article)",
+			"status": "yielding",
+			"yield": "384 members (290 constituency MPs + 47 Woman Reps + 47 Senators) with party; 124 have Wikipedia articles yielding 123 bio extracts + 33 photos; cross-validates the parliament.go.ke roster",
+			"noYield": "no contact details",
+			"scraper": "scripts/scrape-wikipedia.ts",
+			"output": "scripts/out/scraped-wikipedia-13th.json"
+		},
+		{
+			"id": "iebc-candidate-register-2022",
+			"url": "https://www.iebc.or.ke/uploads/resources/bXagnO1P2C.pdf",
+			"status": "low-value",
+			"yield": "257-page text PDF of 2022 independent MCA-ward candidates: name, ID, county/constituency/ward codes — useful only for aspirant profiles",
+			"noYield": "no contacts; candidates, not elected members"
+		},
+		{
+			"id": "iebc-party-nominees-2022",
+			"url": "https://www.iebc.or.ke/uploads/resources/GDCkQUY7Ep.pdf",
+			"status": "dead",
+			"yield": null,
+			"noYield": "has Phone Number / ID columns but values are redacted with asterisks"
+		},
+		{
+			"id": "nairobi-assembly-gazette-mcas",
+			"url": "https://nairobiassembly.go.ke/ncca/wp-content/uploads/paperlaid/2022/GAZETTE-NOTICE-ON-ELECTED-MCAs.pdf",
+			"status": "dead",
+			"yield": null,
+			"noYield": "scanned image PDF, no text layer — would need OCR"
+		},
+		{
+			"id": "kenya-gazette-elected-mcas-2022",
+			"url": "https://gazettes.africa/gazettes/ke (mirror; Scribd copy is paywalled, iebc.or.ke t5KQ6O4YGp.pdf is the presidential-results notice, not this one)",
+			"status": "promising-untapped",
+			"yield": "the authoritative all-counties elected-MCA schedule (name, ward, party) — matches the 1450 MCA rows in the positions table",
+			"noYield": "no contacts",
+			"scraper": null,
+			"output": null
+		},
+		{
+			"id": "county-assembly-sites",
+			"url": "https://<county>assembly.go.ke (e.g. transnzoiaassembly.go.ke/downloads/MCAS_POLITICAL_PARTIES.pdf)",
+			"status": "promising-untapped",
+			"yield": "per-county MCA lists with ward + party; formats vary per county (HTML tables, PDFs)",
+			"noYield": "contact details rare"
+		}
+	]
+}

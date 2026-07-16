@@ -16,7 +16,10 @@ export type ExperienceRow = { title: string; institution: string; startAt: strin
 // ex-MP seat before their current one) — seeded as its own `leaders` row, not `experience`,
 // since it's the same "held/holds a position" fact the top-level row represents.
 export type LeadershipRow = { title: string; region: string; description?: string; startAt: string | null; endAt: string | null };
-export type ContactRow = { title: string; value: string };
+// `source` marks a contact harvested from a public directory (see contacts.source
+// in the schema): kept on the row so the claim mailer and admins can see provenance.
+export type ContactSource = { url: string; publisher: string; fetchedAt: string };
+export type ContactRow = { title: string; value: string; source?: ContactSource };
 export type SocialRow = { title: string; value: string; href?: string };
 export type PillarRow = { title: string; summary: string; deliveryStatus?: 'promised' | 'in_progress' | 'delivered'; evidence?: string };
 
@@ -64,7 +67,10 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 		const key = contactRow.title.trim().toLowerCase();
 		const channel = key === 'email' ? 'email' : key === 'phone' ? 'sms' : null;
 		if (!channel) continue; // freeform keys like "Office" aren't a reachable channel
-		await db.insert(contacts).values({ userId, channel, value: contactRow.value }).onConflictDoNothing();
+		await db
+			.insert(contacts)
+			.values({ userId, channel, value: contactRow.value, ...(contactRow.source ? { source: contactRow.source } : {}) })
+			.onConflictDoNothing();
 	}
 
 	for (const [type, rows] of [

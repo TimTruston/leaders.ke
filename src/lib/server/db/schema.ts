@@ -80,6 +80,11 @@ export const contacts = pgTable('contacts', {
   value: varchar('value', { length: 100 }).notNull(), // phone number or email address
   isPrimary: boolean('is_primary').default(false).notNull(),
   verifiedAt: timestamp('verified_at', { withTimezone: true }), // set once OTP succeeds
+  // Provenance for contacts harvested from public directories (parliament.go.ke,
+  // Mzalendo) rather than entered by the person themselves. A sourced-but-unverified
+  // email is good enough to SEND to (e.g. the leader-accepted-claims link) but never
+  // renders as "Verified" — only an OTP sets verifiedAt.
+  source: jsonb('source').$type<{ url: string; publisher: string; fetchedAt: string }>(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),

@@ -1,0 +1,5787 @@
+[
+	{
+		"name": "King'Ola Patrick Makau",
+		"seat": "MP",
+		"region": "Mavoko",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kingola-patrick-makau-cbs",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:13:46.944Z"
+		}
+	},
+	{
+		"name": "Mejjadonk Benjamin Gathiru",
+		"seat": "MP",
+		"region": "Embakasi Central",
+		"county": "Nairobi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mejjadonk-benjamin-gathiru",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:13:51.094Z"
+		}
+	},
+	{
+		"name": "Langat Benjamin Kipkirui",
+		"seat": "MP",
+		"region": "Ainamoi",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-amb-langat-benjamin-kipkirui",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/benjamin-kipkirui-langat/",
+			"name": "Benjamin Kipkirui Langat",
+			"fetchedAt": "2026-07-16T04:48:03.373Z"
+		}
+	},
+	{
+		"name": "Amollo Paul Otiende",
+		"seat": "MP",
+		"region": "Rarieda",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-amollo-paul-otiende-cs-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/paul-otiende-amollo/",
+			"name": "Paul Otiende Amollo",
+			"fetchedAt": "2026-07-16T04:48:06.352Z"
+		}
+	},
+	{
+		"name": "Gichuki Edwin Mugo",
+		"seat": "MP",
+		"region": "Mathioya",
+		"county": "Murangá",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-gichuki-edwin-mugo",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:13:55.264Z"
+		}
+	},
+	{
+		"name": "Jackson Kipkemoi Kosgei",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-jackson-kipkemoi-kosgei",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:13:59.394Z"
+		}
+	},
+	{
+		"name": "Mutunga John Kanyuithia",
+		"seat": "MP",
+		"region": "Tigania West",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-mutunga-john-kanyuithia",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-kanyuithia-mutunga/",
+			"name": "Dr. John Kanyuithia Mutunga",
+			"fetchedAt": "2026-07-16T04:48:12.313Z"
+		}
+	},
+	{
+		"name": "Onchoke Charles Mamwacha",
+		"seat": "MP",
+		"region": "Bonchari",
+		"county": "Kisii",
+		"party": "UPA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-onchoke-charles-mamwacha",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:03.534Z"
+		}
+	},
+	{
+		"name": "Pukose Robert",
+		"seat": "MP",
+		"region": "Endebess",
+		"county": "Trans Nzoia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-pukose-robert"
+	},
+	{
+		"name": "Nzambia Kithua Thuddeus",
+		"seat": "MP",
+		"region": "Kilome",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-eng-nzambia-kithua-thuddeus",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/thaddeus-kithua-nzambia/",
+			"name": "Eng. Thaddeus Kithua Nzambia",
+			"fetchedAt": "2026-07-16T04:48:31.032Z"
+		}
+	},
+	{
+		"name": "Bartoo Phylis Jepkemoi",
+		"seat": "MP",
+		"region": "Moiben",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-prof-bartoo-phylis-jepkemoi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:21.964Z"
+		}
+	},
+	{
+		"name": "Abdi Ali Abdi",
+		"seat": "MP",
+		"region": "Ijara",
+		"county": "Garissa",
+		"party": "NAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdi-ali-abdi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/abdi-ali/",
+			"name": "Abdi Ali",
+			"fetchedAt": "2026-07-16T04:48:35.602Z"
+		}
+	},
+	{
+		"name": "Abdi Khamis Chome",
+		"seat": "MP",
+		"region": "Voi",
+		"county": "Taita Taveta",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdi-khamis-chome",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/khamis-chome/",
+			"name": "Khamis Chome",
+			"fetchedAt": "2026-07-16T05:14:25.194Z"
+		}
+	},
+	{
+		"name": "Abdi Yusuf Hassan",
+		"seat": "MP",
+		"region": "Kamkunji",
+		"county": "Nairobi",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdi-yusuf-hassan"
+	},
+	{
+		"name": "Abdirahman Mohamed Abdi",
+		"seat": "MP",
+		"region": "Lafey",
+		"county": "Mandera",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdirahman-mohamed-abdi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:45.034Z"
+		}
+	},
+	{
+		"name": "Abdirahman Husseinweytan Mohamed",
+		"seat": "MP",
+		"region": "Mandera East",
+		"county": "Mandera",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdirahman-hussein-weytan-mohamed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:49.124Z"
+		}
+	},
+	{
+		"name": "Abdullahi Amina Dika",
+		"seat": "MP",
+		"region": "Tana River",
+		"county": "Tana River",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdullahi-amina-dika",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/amina-dika-abdullahi/",
+			"name": "Amina Dika Abdullahi",
+			"fetchedAt": "2026-07-16T04:48:57.313Z"
+		}
+	},
+	{
+		"name": "Abdullaih Bashir Sheikh",
+		"seat": "MP",
+		"region": "Mandera North",
+		"county": "Mandera",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abdullaih-bashir-sheikh",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/bashir-sheikh-abdullah/",
+			"name": "Bashir Sheikh Abdullah",
+			"fetchedAt": "2026-07-16T04:49:00.283Z"
+		}
+	},
+	{
+		"name": "Abubakar Talib Ahmed",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "WDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abubakar-talib-ahmed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:14:53.254Z"
+		}
+	},
+	{
+		"name": "Abuor Paul",
+		"seat": "MP",
+		"region": "Rongo",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-abuor-paul-0"
+	},
+	{
+		"name": "Aburi Donya Dorice",
+		"seat": "MP",
+		"region": "Kisii",
+		"county": "Kisii",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-aburi-donya-dorice",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/donya-dorice-aburi/",
+			"name": "Donya Dorice Aburi",
+			"fetchedAt": "2026-07-16T04:49:19.093Z"
+		}
+	},
+	{
+		"name": "Aburi Lawrence Mpuru",
+		"seat": "MP",
+		"region": "Tigania East",
+		"county": "Meru",
+		"party": "NOPEU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-aburi-lawrence-mpuru",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/lawrence-mpuru-aburi/",
+			"name": "Lawrence Mpuru Aburi",
+			"email": "mpuruaburi@yahoo.com",
+			"phone": "0722741731",
+			"links": [
+				"https://www.facebook.com/hon.aburi?fref=ts",
+				"http://twitter.com/tiganiaec"
+			],
+			"fetchedAt": "2026-07-16T04:49:22.037Z"
+		}
+	},
+	{
+		"name": "Adagala Beatrice Kahai",
+		"seat": "MP",
+		"region": "Vihiga",
+		"county": "Vihiga",
+		"party": "ANC",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-adagala-beatrice-kahai"
+	},
+	{
+		"name": "Adhe Wario Guyo",
+		"seat": "MP",
+		"region": "North Horr",
+		"county": "Marsabit",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-adhe-wario-guyo",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:15:26.345Z"
+		}
+	},
+	{
+		"name": "Adow Aden Mohammed",
+		"seat": "MP",
+		"region": "Wajir South",
+		"county": "Wajir",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-adow-aden-mohammed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:15:30.534Z"
+		}
+	},
+	{
+		"name": "Ahmed Shakeel Ahmed Shabbir",
+		"seat": "MP",
+		"region": "Kisumu East",
+		"county": "Kisumu",
+		"party": "IND.",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ahmed-shakeel-ahmed-shabbir",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T04:49:41.983Z"
+		}
+	},
+	{
+		"name": "Akujah Protus Ewesit",
+		"seat": "MP",
+		"region": "Loima",
+		"county": "Turkana",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-akujah-protus-ewesit",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/protus-ewesit-akujah/",
+			"name": "Protus Ewesit Akujah",
+			"email": "pakujah@yahoo.com",
+			"phone": "0722605820",
+			"fetchedAt": "2026-07-16T04:49:43.832Z"
+		}
+	},
+	{
+		"name": "Alfah Ondieki Miruka",
+		"seat": "MP",
+		"region": "Bomachoge Chache",
+		"county": "Kisii",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-alfah-ondieki-miruka-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/miruka-ondieki-alfah/",
+			"name": "Alfah Miruka Ondieki",
+			"fetchedAt": "2026-07-16T04:49:46.824Z"
+		}
+	},
+	{
+		"name": "Ali Abdisirat Khalif",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ali-abdisirat-khalif",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:15:50.574Z"
+		}
+	},
+	{
+		"name": "Alio Ahmed Maalim Hassan",
+		"seat": "MP",
+		"region": "Banissa",
+		"county": "Mandera",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-alio-ahmed-maalim-hassan",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kulow-maalim-hassan/",
+			"name": "Hon Kulow Maalim Hassan",
+			"fetchedAt": "2026-07-16T05:15:53.773Z"
+		}
+	},
+	{
+		"name": "Arama Samuel",
+		"seat": "MP",
+		"region": "Nakuru Town West",
+		"county": "Nakuru",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-arama-samuel"
+	},
+	{
+		"name": "Ariko John Namoit",
+		"seat": "MP",
+		"region": "Turkana South",
+		"county": "Turkana",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ariko-john-namoit",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ariko-john-namoit/",
+			"name": "Ariko John Namoit",
+			"fetchedAt": "2026-07-16T04:50:07.033Z"
+		}
+	},
+	{
+		"name": "Atandi Samuel Onunga",
+		"seat": "MP",
+		"region": "Alego Usonga",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-atandi-samuel-onunga-cbs"
+	},
+	{
+		"name": "Babu Owino Paul Ongili",
+		"seat": "MP",
+		"region": "Embakasi East",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-babu-owino-paul-ongili",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/owino-paul-ongili-babu/",
+			"name": "Owino Paul Ongili Babu",
+			"links": [
+				"http://twitter.com/HEBabuOwino"
+			],
+			"fetchedAt": "2026-07-16T04:50:24.513Z"
+		}
+	},
+	{
+		"name": "Bady Bady Twalib",
+		"seat": "MP",
+		"region": "Jomvu",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bady-bady-twalib-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/bady-twalib-bady/",
+			"name": "Bady Twalib Bady",
+			"email": "badibadi94@yahoo.com",
+			"phone": "0722346475",
+			"fetchedAt": "2026-07-16T04:50:27.484Z"
+		}
+	},
+	{
+		"name": "Barasa Patrick Simiyu",
+		"seat": "MP",
+		"region": "Cherangany",
+		"county": "Trans Nzoia",
+		"party": "DAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-barasa-patrick-simiyu",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:28.045Z"
+		}
+	},
+	{
+		"name": "Barongo Nolfason Obadiah",
+		"seat": "MP",
+		"region": "Bomachoge Borabu",
+		"county": "Kisii",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-barongo-nolfason-obadiah",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:32.185Z"
+		}
+	},
+	{
+		"name": "Barre Hussein Abdi",
+		"seat": "MP",
+		"region": "Tarbaj",
+		"county": "Wajir",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-barre-hussein-abdi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:36.545Z"
+		}
+	},
+	{
+		"name": "Basil Robert Ngui",
+		"seat": "MP",
+		"region": "Yatta",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-basil-robert-ngui",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:40.675Z"
+		}
+	},
+	{
+		"name": "Baya Owen Yaa",
+		"seat": "MP",
+		"region": "Kilifi North",
+		"county": "Kilifi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-baya-owen-yaa",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/owen-yaa-baya/",
+			"name": "Owen Yaa Baya",
+			"fetchedAt": "2026-07-16T04:50:36.354Z"
+		}
+	},
+	{
+		"name": "Bedzimba Rashid Juma",
+		"seat": "MP",
+		"region": "Kisauni",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bedzimba-rashid-juma",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/rashid-juma-bedzimba/",
+			"name": "Rashid Juma Bedzimba",
+			"email": "bedzimbar@yahoo.com",
+			"phone": "0720679612",
+			"fetchedAt": "2026-07-16T04:50:39.333Z"
+		}
+	},
+	{
+		"name": "Biego Paul Kibichiy",
+		"seat": "MP",
+		"region": "Chesumei",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-biego-paul-kibichiy",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:44.805Z"
+		}
+	},
+	{
+		"name": "Bisau Maurice Kakai",
+		"seat": "MP",
+		"region": "Kiminini",
+		"county": "Trans-Nzoia",
+		"party": "DAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bisau-maurice-kakai",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/maurice-kakai-bisau-2022/",
+			"name": "Maurice Kakai Bisau",
+			"fetchedAt": "2026-07-16T04:50:43.783Z"
+		}
+	},
+	{
+		"name": "Bonaya Mumina Gollo",
+		"seat": "MP",
+		"region": "Isiolo",
+		"county": "Isiolo",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bonaya-mumina-gollo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mumina-golo-bonaya/",
+			"name": "Mumina Golo Bonaya",
+			"fetchedAt": "2026-07-16T04:50:46.713Z"
+		}
+	},
+	{
+		"name": "Boss Gladys Jepkosgei",
+		"seat": "MP",
+		"region": "Uasin Gishu",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-boss-gladys-jepkosgei",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:48.884Z"
+		}
+	},
+	{
+		"name": "Bowen David Kangogo",
+		"seat": "MP",
+		"region": "Marakwet East",
+		"county": "Elgeyo - Marakwet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bowen-david-kangogo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/david-kangongo-bowen/",
+			"name": "David Kangongo Bowen",
+			"email": "sandavids@yahoo.co.uk",
+			"phone": "0722314114",
+			"fetchedAt": "2026-07-16T04:50:51.123Z"
+		}
+	},
+	{
+		"name": "Busia Ruth Adhiambo Odinga",
+		"seat": "MP",
+		"region": "Kisumu",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-busia-ruth-adhiambo-odinga",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:53.054Z"
+		}
+	},
+	{
+		"name": "Buyu Rozaah Akinyi",
+		"seat": "MP",
+		"region": "Kisumu West",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-buyu-rozaah-akinyi-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/rozaah-akinyi-buyu/",
+			"name": "Rozaah Akinyi Buyu",
+			"phone": "0721707982",
+			"fetchedAt": "2026-07-16T04:50:55.614Z"
+		}
+	},
+	{
+		"name": "Bwire John Okano",
+		"seat": "MP",
+		"region": "Taveta",
+		"county": "Taita Taveta",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-bwire-john-okano",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-bwire-okano/",
+			"name": "John Bwire Okano",
+			"fetchedAt": "2026-07-16T04:50:58.564Z"
+		}
+	},
+	{
+		"name": "Chebor Paul Kibet",
+		"seat": "MP",
+		"region": "Rongai",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chebor-paul-kibet",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:16:57.204Z"
+		}
+	},
+	{
+		"name": "Chege John Kiragu",
+		"seat": "MP",
+		"region": "Limuru",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chege-john-kiragu",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-kiragu-chege/",
+			"name": "Eng. John Kiragu Chege",
+			"email": "engjk@yahoo.com",
+			"phone": "0722510756",
+			"links": [
+				"https://www.facebook.com/EngineerJohnKiraguChege"
+			],
+			"fetchedAt": "2026-07-16T04:51:03.093Z"
+		}
+	},
+	{
+		"name": "Chege Njuguna",
+		"seat": "MP",
+		"region": "Kandara",
+		"county": "Murang'A",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chege-njuguna",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:01.324Z"
+		}
+	},
+	{
+		"name": "Chege Sabina Wanjiru",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "JP",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chege-sabina-wanjiru",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/sabina-wanjiru-chege/",
+			"name": "Sabina Wanjiru Chege",
+			"email": "info@sabinawanjiruchege.com",
+			"links": [
+				"https://www.facebook.com/Sabina.Wanjiru.Chege",
+				"http://www.sabinawanjiruchege.com/"
+			],
+			"fetchedAt": "2026-07-16T04:51:07.583Z"
+		}
+	},
+	{
+		"name": "Chelule Liza Chepkorir",
+		"seat": "MP",
+		"region": "Nakuru",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chelule-liza-chepkorir",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:05.494Z"
+		}
+	},
+	{
+		"name": "Chepkonga Samuel Kiprono",
+		"seat": "MP",
+		"region": "Ainabkoi",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chepkonga-samuel-kiprono",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/samuel-kiprono-chepkonga/",
+			"name": "Samuel Kiprono Chepkonga",
+			"email": "chepkonga@wananchi.com",
+			"phone": "0722996469",
+			"fetchedAt": "2026-07-16T04:51:12.134Z"
+		}
+	},
+	{
+		"name": "Chepkorir Linet",
+		"seat": "MP",
+		"region": "Bomet",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chepkorir-linet",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/linet-chepkorir/",
+			"name": "Linet Chepkorir",
+			"fetchedAt": "2026-07-16T04:51:15.084Z"
+		}
+	},
+	{
+		"name": "Chepkwony Charity Kathambi",
+		"seat": "MP",
+		"region": "Njoro",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chepkwony-charity-kathambi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/charity-kathambi-chepkwony-2/",
+			"name": "Hon Charity Kathambi Chepkwony",
+			"phone": "0720203201",
+			"fetchedAt": "2026-07-16T04:51:18.034Z"
+		}
+	},
+	{
+		"name": "Cherorot Joseph Kimutai",
+		"seat": "MP",
+		"region": "Kipkelion East",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-cherorot-joseph-kimutai",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:09.614Z"
+		}
+	},
+	{
+		"name": "Chesebe Fred Kapondi",
+		"seat": "MP",
+		"region": "Mt. Elgon",
+		"county": "Bungoma",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chesebe-fred-kapondi-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/fred-kapondi-chesebe/",
+			"name": "Hon Fred Kapondi Chesebe",
+			"fetchedAt": "2026-07-16T04:51:22.464Z"
+		}
+	},
+	{
+		"name": "Chiforomodo Mangale Munga",
+		"seat": "MP",
+		"region": "Lunga Lunga",
+		"county": "Kwale",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chiforomodo-mangale-munga",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/chiforomodo-mangale-munga/",
+			"name": "chiforomodo Mangale Munga",
+			"fetchedAt": "2026-07-16T04:51:25.384Z"
+		}
+	},
+	{
+		"name": "Chikati John Murumba",
+		"seat": "MP",
+		"region": "Tongaren",
+		"county": "Bungoma",
+		"party": "FORD - K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-chikati-john-murumba",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:13.725Z"
+		}
+	},
+	{
+		"name": "Chumel Moroto Samwel",
+		"seat": "MP",
+		"region": "Kapenguria",
+		"county": "West Pokot",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-chumel-moroto-samwel",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:17.904Z"
+		}
+	},
+	{
+		"name": "Geoffrey Wandeto",
+		"seat": "MP",
+		"region": "Tetu",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-cpa-geoffrey-wandeto",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/geoffrey-wandeto/",
+			"name": "Geoffrey Wandeto",
+			"fetchedAt": "2026-07-16T04:51:31.253Z"
+		}
+	},
+	{
+		"name": "Rutto Julius Kipletting",
+		"seat": "MP",
+		"region": "Kesses",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-cpa-rutto-julius-kipletting",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:22.016Z"
+		}
+	},
+	{
+		"name": "Dawood Abdul Rahim",
+		"seat": "MP",
+		"region": "North Imenti",
+		"county": "Meru",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dawood-abdul-rahim-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/abdul-rahim-dawood/",
+			"name": "Abdul Rahim Dawood",
+			"email": "rahimdwd@yahoo.co.uk",
+			"phone": "0722513900",
+			"fetchedAt": "2026-07-16T04:51:35.664Z"
+		}
+	},
+	{
+		"name": "Elachi Beatrice Kadeveresia",
+		"seat": "MP",
+		"region": "Dagoretti North",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-elachi-beatrice-kadeveresia",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:26.226Z"
+		}
+	},
+	{
+		"name": "Eric Wamumbi",
+		"seat": "MP",
+		"region": "Mathira",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-eric-wamumbi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:30.375Z"
+		}
+	},
+	{
+		"name": "Farah Salah Yakub",
+		"seat": "MP",
+		"region": "Fafi",
+		"county": "Garissa",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-farah-salah-yakub",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:34.525Z"
+		}
+	},
+	{
+		"name": "Farah Yussuf Mohamed",
+		"seat": "MP",
+		"region": "Wajir West",
+		"county": "Wajir",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-farah-yussuf-mohamed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:38.644Z"
+		}
+	},
+	{
+		"name": "Gachagua George",
+		"seat": "MP",
+		"region": "Ndaragwa",
+		"county": "Nyandarua",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gachagua-george",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gachagua-george/",
+			"name": "Gachagua George",
+			"fetchedAt": "2026-07-16T04:51:44.504Z"
+		}
+	},
+	{
+		"name": "Gachobe Samuel Kinuthia",
+		"seat": "MP",
+		"region": "Subukia",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gachobe-samuel-kinuthia",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/samuel-kinuthia-gachobe-2/",
+			"name": "Hon Samuel Kinuthia Gachobe",
+			"fetchedAt": "2026-07-16T04:51:47.484Z"
+		}
+	},
+	{
+		"name": "Gakuya James Mwangi",
+		"seat": "MP",
+		"region": "Embakassi North",
+		"county": "Nairobi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gakuya-james-mwangi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/james-mwangi-gakuya/",
+			"name": "James Mwangi Gakuya",
+			"email": "mainkam@wananchi.com",
+			"phone": "0722642490",
+			"fetchedAt": "2026-07-16T04:51:50.454Z"
+		}
+	},
+	{
+		"name": "Gikaria David",
+		"seat": "MP",
+		"region": "Nakuru Town East",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gikaria-david",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/david-gikaria/",
+			"name": "David Gikaria",
+			"email": "cllrtmlw@yahoo.com",
+			"phone": "0720203097",
+			"fetchedAt": "2026-07-16T04:51:53.453Z"
+		}
+	},
+	{
+		"name": "Gimose Charles Gumini",
+		"seat": "MP",
+		"region": "Hamisi",
+		"county": "Vihiga",
+		"party": "ANC",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gimose-charles-gumini",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:42.725Z"
+		}
+	},
+	{
+		"name": "Gisairo Clive Ombane",
+		"seat": "MP",
+		"region": "Kitutu Masaba",
+		"county": "Nyamira",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gisairo-clive-ombane",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:17:46.844Z"
+		}
+	},
+	{
+		"name": "Gitari Joseph Gachoki",
+		"seat": "MP",
+		"region": "Kirinyaga Central",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gitari-joseph-gachoki",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-gitari/",
+			"name": "Eng Joseph Gachoki Gitari",
+			"email": "kirinyagacentral@parliament.go.ke",
+			"phone": "0722527694",
+			"links": [
+				"https://www.facebook.com/pages/HON-MP-Joseph-G-Gitari/202352383133860"
+			],
+			"fetchedAt": "2026-07-16T04:51:59.314Z"
+		}
+	},
+	{
+		"name": "Gitau Faith Wairimu",
+		"seat": "MP",
+		"region": "Nyandarua",
+		"county": "Nyandarua",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gitau-faith-wairimu-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/faith-wairimu-gitau/",
+			"name": "Faith Wairimu Gitau",
+			"fetchedAt": "2026-07-16T04:52:02.314Z"
+		}
+	},
+	{
+		"name": "Githinji Robert Gichimu",
+		"seat": "MP",
+		"region": "Gichugu",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-githinji-robert-gichimu-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/robert-gichimu-githinji/",
+			"name": "Robert Gichimu Githinji",
+			"fetchedAt": "2026-07-16T04:52:05.304Z"
+		}
+	},
+	{
+		"name": "Gogo Lilian Achieng",
+		"seat": "MP",
+		"region": "Rangwe",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-gogo-lilian-achieng"
+	},
+	{
+		"name": "Guyo Ali Wario",
+		"seat": "MP",
+		"region": "Garsen",
+		"county": "Tana River",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-guyo-ali-wario",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ali-wario-guyo-2/",
+			"name": "Ali Wario Guyo",
+			"fetchedAt": "2026-07-16T04:52:22.805Z"
+		}
+	},
+	{
+		"name": "Hamisi Kakuta Maimai",
+		"seat": "MP",
+		"region": "Kajiado East",
+		"county": "Kajiado",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-hamisi-kakuta-maimai",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/hamisi-kakuta/",
+			"name": "Hamisi Kakuta",
+			"fetchedAt": "2026-07-16T05:18:04.523Z"
+		}
+	},
+	{
+		"name": "Haro Abdul Ebrahim",
+		"seat": "MP",
+		"region": "Mandera South",
+		"county": "Mandera",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-haro-abdul-ebrahim",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:09.895Z"
+		}
+	},
+	{
+		"name": "Hiribae Said Buya",
+		"seat": "MP",
+		"region": "Galole",
+		"county": "Tana River",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-hiribae-said-buya",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/said-buya-hiribae/",
+			"name": "Said Buya Hiribae",
+			"fetchedAt": "2026-07-16T04:52:28.744Z"
+		}
+	},
+	{
+		"name": "Ichung’wah Antony Kimani",
+		"seat": "MP",
+		"region": "Kikuyu",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ichungwah-antony-kimani",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:14.004Z"
+		}
+	},
+	{
+		"name": "Ikana Fredrick Lusuli",
+		"seat": "MP",
+		"region": "Shinyalu",
+		"county": "Kakamega",
+		"party": "ANC",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ikana-fredrick-lusuli",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:18.155Z"
+		}
+	},
+	{
+		"name": "Ikiara Dorothy Muthoni",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ikiara-dorothy-muthoni",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:22.305Z"
+		}
+	},
+	{
+		"name": "Ithinji Shadrack Mwiti",
+		"seat": "MP",
+		"region": "South Imenti",
+		"county": "Meru",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ithinji-shadrack-mwiti",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:26.455Z"
+		}
+	},
+	{
+		"name": "Jaldesa Guyo Waqo",
+		"seat": "MP",
+		"region": "Moyale",
+		"county": "Marsabit",
+		"party": "UPIA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-jaldesa-guyo-waqo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/hon-guyo-waqo-jaldesa/",
+			"name": "Hon. Guyo Waqo Jaldesa",
+			"fetchedAt": "2026-07-16T04:52:37.544Z"
+		}
+	},
+	{
+		"name": "Jehow Fatuma Abdi",
+		"seat": "MP",
+		"region": "Wajir",
+		"county": "Wajir",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-jehow-fatuma-abdi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/fatuma-abdi-jehow/",
+			"name": "Fatuma Abdi Jehow",
+			"fetchedAt": "2026-07-16T04:52:40.484Z"
+		}
+	},
+	{
+		"name": "Jhanda Zaheer",
+		"seat": "MP",
+		"region": "Nyaribari Chache",
+		"county": "Kisii",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-jhanda-zaheer",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/zaheer-jhanda/",
+			"name": "Zaheer Jhanda",
+			"fetchedAt": "2026-07-16T04:52:43.394Z"
+		}
+	},
+	{
+		"name": "Joseph Wainaina Iraya",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-joseph-wainaina-iraya",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:30.674Z"
+		}
+	},
+	{
+		"name": "Junet Sheikh Nuh Mohamed",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-junet-sheikh-nuh-mohamed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:34.845Z"
+		}
+	},
+	{
+		"name": "Kagesi Ernest Ogesi Kivai",
+		"seat": "MP",
+		"region": "Vihiga",
+		"county": "Vihiga",
+		"party": "ANC",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kagesi-ernest-ogesi-kivai",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:38.984Z"
+		}
+	},
+	{
+		"name": "Kagiri Jane Wangechi",
+		"seat": "MP",
+		"region": "Laikipia",
+		"county": "Laikipia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kagiri-jane-wangechi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kagiri-jane-wangechi/",
+			"name": "Kagiri Jane Wangechi",
+			"fetchedAt": "2026-07-16T04:52:50.775Z"
+		}
+	},
+	{
+		"name": "Kagombe Gabriel Gathuka",
+		"seat": "MP",
+		"region": "Gatundu South",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kagombe-gabriel-gathuka",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gabriel-kagombe/",
+			"name": "Gabriel Kagombe",
+			"fetchedAt": "2026-07-16T05:18:42.194Z"
+		}
+	},
+	{
+		"name": "Kaguchia John Philip Gichohi",
+		"seat": "MP",
+		"region": "Mukurweini",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kaguchia-john-philip-gichohi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:47.595Z"
+		}
+	},
+	{
+		"name": "Kahangara Joseph Mburu",
+		"seat": "MP",
+		"region": "Lari",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kahangara-joseph-mburu",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-mburu-kahangara/",
+			"name": "Joseph Mburu Kahangara",
+			"email": "kahangarajm@yahoo.com",
+			"phone": "0718555500",
+			"links": [
+				"https://www.facebook.com/mburu.kahangara.1/about"
+			],
+			"fetchedAt": "2026-07-16T04:52:56.685Z"
+		}
+	},
+	{
+		"name": "Kailemia Elizabeth Karambu",
+		"seat": "MP",
+		"region": "Meru",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kailemia-elizabeth-karambu",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kailemia-elizabeth-karambu/",
+			"name": "Kailemia Elizabeth Karambu",
+			"fetchedAt": "2026-07-16T04:52:59.605Z"
+		}
+	},
+	{
+		"name": "Kajwang’ Francis Tom Joseph",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kajwang-francis-tom-joseph",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:18:51.745Z"
+		}
+	},
+	{
+		"name": "Kaluma George Peter Opondo",
+		"seat": "MP",
+		"region": "Homa Bay Town",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kaluma-george-peter-opondo"
+	},
+	{
+		"name": "Kamene Joyce",
+		"seat": "MP",
+		"region": "Machakos",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kamene-joyce",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joyce-kamene/",
+			"name": "Joyce Kamene",
+			"email": "kamenejoyce@yahoo.com",
+			"phone": "0720753261",
+			"fetchedAt": "2026-07-16T04:53:18.445Z"
+		}
+	},
+	{
+		"name": "Kamket Kassait William",
+		"seat": "MP",
+		"region": "Tiaty",
+		"county": "Baringo",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kamket-kassait-william-cbs"
+	},
+	{
+		"name": "Kamuren Charles",
+		"seat": "MP",
+		"region": "Baringo South",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kamuren-charles-cbs",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:19:24.535Z"
+		}
+	},
+	{
+		"name": "Kanchory Elijah Memusi",
+		"seat": "MP",
+		"region": "Kajiado Central",
+		"county": "Kajiado",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kanchory-elijah-memusi"
+	},
+	{
+		"name": "Kandie Joshua Chepyegon",
+		"seat": "MP",
+		"region": "Baringo Central",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kandie-joshua-chepyegon"
+	},
+	{
+		"name": "Karani Stephen Wachira",
+		"seat": "MP",
+		"region": "Laikipia West",
+		"county": "Laikipia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-karani-stephen-wachira-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/stephen-wachira-karani/",
+			"name": "Stephen Wachira Karani",
+			"fetchedAt": "2026-07-16T04:54:06.125Z"
+		}
+	},
+	{
+		"name": "Karauri Ronald Kamwiko",
+		"seat": "MP",
+		"region": "Kasarani",
+		"county": "Nairobi",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-karauri-ronald-kamwiko",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:19:57.325Z"
+		}
+	},
+	{
+		"name": "Kariuki George Macharia",
+		"seat": "MP",
+		"region": "Ndia",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kariuki-george-macharia",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/george-macharia-kariuki-gk/",
+			"name": "George Macharia Kariuki (GK)",
+			"fetchedAt": "2026-07-16T04:54:10.598Z"
+		}
+	},
+	{
+		"name": "Kasalu Irene Muthoni",
+		"seat": "MP",
+		"region": "Kitui",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kasalu-irene-muthoni"
+	},
+	{
+		"name": "Kasiwai Rael Kasiwai",
+		"seat": "MP",
+		"region": "West Pokot",
+		"county": "West Pokot",
+		"party": "KUP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kasiwai-rael-kasiwai",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kasiwai-rael-chepkemoi/",
+			"name": "Kasiwai Rael Chepkemoi",
+			"fetchedAt": "2026-07-16T04:54:27.895Z"
+		}
+	},
+	{
+		"name": "Katana Paul Kahindi",
+		"seat": "MP",
+		"region": "Kaloleni",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-katana-paul-kahindi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/paul-kahindi-katana-2/",
+			"name": "Paul Kahindi Katana",
+			"fetchedAt": "2026-07-16T04:54:30.905Z"
+		}
+	},
+	{
+		"name": "Kaunya Edward Oku",
+		"seat": "MP",
+		"region": "Teso North",
+		"county": "Busia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kaunya-edward-oku"
+	},
+	{
+		"name": "Kemei Kipsang",
+		"seat": "MP",
+		"region": "Sigowet/soin",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kemei-justice-kipsang",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/justice-kipsang-kemei/",
+			"name": "Justice Kipsang Kemei",
+			"email": "justice@sitwetconsultants.com",
+			"phone": "0722302030",
+			"fetchedAt": "2026-07-16T04:54:48.186Z"
+		}
+	},
+	{
+		"name": "Kemei Beatrice Chepngeno",
+		"seat": "MP",
+		"region": "Kericho",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kemei-beatrice-chepngeno",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:30.135Z"
+		}
+	},
+	{
+		"name": "Keter David Kipsang",
+		"seat": "MP",
+		"region": "Emurua Dikirr",
+		"county": "Narok",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-keter-david-kipsang",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:34.305Z"
+		}
+	},
+	{
+		"name": "Keynan Wehliye Adan",
+		"seat": "MP",
+		"region": "Eldas",
+		"county": "Wajir",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-keynan-wehliye-adan",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:38.495Z"
+		}
+	},
+	{
+		"name": "Khamisi Mboko Mishi Juma",
+		"seat": "MP",
+		"region": "Likoni",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-khamisi-mboko-mishi-juma",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:42.736Z"
+		}
+	},
+	{
+		"name": "Khodhe Phelix Odiwuor",
+		"seat": "MP",
+		"region": "Langata",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-khodhe-phelix-odiwuor",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:46.816Z"
+		}
+	},
+	{
+		"name": "Kiamba Suzanne Ndunge",
+		"seat": "MP",
+		"region": "Makueni",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kiamba-suzanne-ndunge",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/suzanne-kiamba/",
+			"name": "Suzanne Kiamba",
+			"fetchedAt": "2026-07-16T05:20:50.014Z"
+		}
+	},
+	{
+		"name": "Kibagendi Antoney",
+		"seat": "MP",
+		"region": "Kitutu Chache South",
+		"county": "Kisii",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kibagendi-antoney",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:20:55.376Z"
+		}
+	},
+	{
+		"name": "Kihara Jayne Nw",
+		"seat": "MP",
+		"region": "Naivasha",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kihara-jayne-nw",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T04:55:01.275Z"
+		}
+	},
+	{
+		"name": "Kihungi Peter Irungu",
+		"seat": "MP",
+		"region": "Kangema",
+		"county": "Muranga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kihungi-peter-irungu",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:15.335Z"
+		}
+	},
+	{
+		"name": "Kilel Richard Cheruiyot",
+		"seat": "MP",
+		"region": "Bomet Central",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kilel-richard-cheruiyot",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:19.495Z"
+		}
+	},
+	{
+		"name": "Kimilu Joshua Kivinda",
+		"seat": "MP",
+		"region": "Kaiti",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kimilu-joshua-kivinda",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joshua-kivinda-kimilu/",
+			"name": "Joshua Kivinda Kimilu",
+			"fetchedAt": "2026-07-16T04:55:06.035Z"
+		}
+	},
+	{
+		"name": "Kingara Simon Nganga",
+		"seat": "MP",
+		"region": "Ruiru",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kingara-simon-nganga",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/simon-nganga-kingara-2/",
+			"name": "Hon Simon Nganga Kingara",
+			"fetchedAt": "2026-07-16T04:55:08.975Z"
+		}
+	},
+	{
+		"name": "Kipchumba Harold Kimuge",
+		"seat": "MP",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kipchumba-harold-kimuge",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/harold-kimunge-kipchumba/",
+			"name": "Harold Kimunge Kipchumba",
+			"email": "haroldkip@yahoo.com",
+			"phone": "0721802851",
+			"links": [
+				"http://disqus.com/?ref_noscript",
+				"http://disqus.com"
+			],
+			"fetchedAt": "2026-07-16T05:21:22.705Z"
+		}
+	},
+	{
+		"name": "Kipkoros Joseph Makilap",
+		"seat": "MP",
+		"region": "Baringo North",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kipkoros-joseph-makilap",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:28.025Z"
+		}
+	},
+	{
+		"name": "Kiplagat David",
+		"seat": "MP",
+		"region": "Soy",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kiplagat-david",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/david-kiplagat/",
+			"name": "David Kiplagat",
+			"fetchedAt": "2026-07-16T04:55:14.904Z"
+		}
+	},
+	{
+		"name": "Kirima Moses Nguchine",
+		"seat": "MP",
+		"region": "Central Imenti",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kirima-moses-nguchine",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/moses-nguchine-kirima-2/",
+			"name": "Moses Nguchine Kirima",
+			"fetchedAt": "2026-07-16T04:55:17.885Z"
+		}
+	},
+	{
+		"name": "Kirwa Abraham Kipsang",
+		"seat": "MP",
+		"region": "Mosop",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kirwa-abraham-kipsang",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:32.156Z"
+		}
+	},
+	{
+		"name": "Kitany Marianne",
+		"seat": "MP",
+		"region": "Aldai",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kitany-marianne",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/marianne-kitany/",
+			"name": "Marianne Kitany",
+			"fetchedAt": "2026-07-16T04:55:22.335Z"
+		}
+	},
+	{
+		"name": "Kiti Richard Ken Chonga",
+		"seat": "MP",
+		"region": "Kilifi South",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kiti-richard-ken-chonga"
+	},
+	{
+		"name": "Kitur Bernard Kibor",
+		"seat": "MP",
+		"region": "Nandi Hills",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kitur-bernard-kibor",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/bernard-kitur-kibor/",
+			"name": "Bernard Kitur Kibor",
+			"fetchedAt": "2026-07-16T04:55:39.775Z"
+		}
+	},
+	{
+		"name": "Kiunjuri Mwangi Festus",
+		"seat": "MP",
+		"region": "Laikipia East",
+		"county": "Laikipia",
+		"party": "TSP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kiunjuri-mwangi-festus",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mwangi-kiunjuri/",
+			"name": "Mwangi Kiunjuri",
+			"email": "info@publicworks.go.ke",
+			"phone": "0202737659",
+			"fetchedAt": "2026-07-16T05:21:49.736Z"
+		}
+	},
+	{
+		"name": "Koech Kipngetich Victor",
+		"seat": "MP",
+		"region": "Chepalungu",
+		"county": "Bomet",
+		"party": "CCM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-koech-kipngetich-victor",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:55.065Z"
+		}
+	},
+	{
+		"name": "Koech Nelson",
+		"seat": "MP",
+		"region": "Belgut",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-koech-nelson",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/nelson-koech-2/",
+			"name": "Nelson Koech",
+			"fetchedAt": "2026-07-16T04:55:45.725Z"
+		}
+	},
+	{
+		"name": "Kombe Harrison Garama",
+		"seat": "MP",
+		"region": "Magarini",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kombe-harrison-garama",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/harrison-kombe/",
+			"name": "Harrison Garama Kombe",
+			"email": "hanko56@hotmail.com",
+			"phone": "0723032771",
+			"fetchedAt": "2026-07-16T04:55:48.725Z"
+		}
+	},
+	{
+		"name": "Komingoi Kibet Kirui",
+		"seat": "MP",
+		"region": "Bureti",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-komingoi-kibet-kirui",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:21:59.325Z"
+		}
+	},
+	{
+		"name": "Korere Sarah Paulata",
+		"seat": "MP",
+		"region": "Laikipia North",
+		"county": "Laikipia",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-korere-sarah-paulata",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/sara-paulata-korere/",
+			"name": "Hon Sara Paulata Korere",
+			"phone": "0727027937",
+			"fetchedAt": "2026-07-16T04:55:53.295Z"
+		}
+	},
+	{
+		"name": "Korir Adams Kipsanai",
+		"seat": "MP",
+		"region": "Keiyo North",
+		"county": "Elgeyo - Marakwet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-korir-adams-kipsanai",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:03.475Z"
+		}
+	},
+	{
+		"name": "Kosgei Hilary Kiplang’at",
+		"seat": "MP",
+		"region": "Kipkelion West",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kosgei-hilary-kiplangat-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T04:55:57.466Z"
+		}
+	},
+	{
+		"name": "Koyi John Waluke",
+		"seat": "MP",
+		"region": "Sirisia",
+		"county": "Bungoma",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-koyi-john-waluke-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-waluke-koyi/",
+			"name": "Hon. John Waluke Koyi",
+			"fetchedAt": "2026-07-16T04:55:59.355Z"
+		}
+	},
+	{
+		"name": "Kuno Yakub Adow",
+		"seat": "MP",
+		"region": "Bura",
+		"county": "Tana River",
+		"party": "UPIA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kuno-yakub-adow",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:23.396Z"
+		}
+	},
+	{
+		"name": "Kuno Amina Udgoon Siyad",
+		"seat": "MP",
+		"region": "Garissa",
+		"county": "Garissa",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kuno-amina-udgoon-siyad",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/siyad-udgoon-amina/",
+			"name": "Siyad Udgoon Amina",
+			"fetchedAt": "2026-07-16T05:22:26.663Z"
+		}
+	},
+	{
+		"name": "Kururia Elijah Njore Njoroge",
+		"seat": "MP",
+		"region": "Gatundu North",
+		"county": "Kiambu",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-kururia-elijah-njore-njoroge",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:31.966Z"
+		}
+	},
+	{
+		"name": "Lekuton Joseph",
+		"seat": "MP",
+		"region": "Laisamis",
+		"county": "Marsabit",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lekuton-joseph-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/lekuton-joseph/",
+			"name": "Lekuton Joseph",
+			"fetchedAt": "2026-07-16T04:56:06.955Z"
+		}
+	},
+	{
+		"name": "Lelmengit Josses Kiptoo Kosgey",
+		"seat": "MP",
+		"region": "Emgwen",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lelmengit-josses-kiptoo-kosgey",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:36.065Z"
+		}
+	},
+	{
+		"name": "Lemanken Aramat",
+		"seat": "MP",
+		"region": "Narok East",
+		"county": "Narok",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lemanken-aramat-cbs"
+	},
+	{
+		"name": "Lenguris Pauline",
+		"seat": "MP",
+		"region": "Samburu",
+		"county": "Samburu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lenguris-pauline",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/lenguris-pauline/",
+			"name": "Lenguris Pauline",
+			"fetchedAt": "2026-07-16T04:56:25.955Z"
+		}
+	},
+	{
+		"name": "Lentoijoni Jackson Lekumontare",
+		"seat": "MP",
+		"region": "Samburu East",
+		"county": "Samburu",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lentoijoni-jackson-lekumontare",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:54.485Z"
+		}
+	},
+	{
+		"name": "Lesuuda Naisula",
+		"seat": "MP",
+		"region": "Samburu West",
+		"county": "Samburu",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lesuuda-naisula-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/naisula-lesuuda/",
+			"name": "Hon Naisula Lesuuda",
+			"email": "nasurem50@gmail.com",
+			"phone": "0720567225",
+			"links": [
+				"http://naisulalesuuda.org",
+				"http://twitter.com/Lesuuda"
+			],
+			"fetchedAt": "2026-07-16T04:56:30.445Z"
+		}
+	},
+	{
+		"name": "Letipila Dominic Eli",
+		"seat": "MP",
+		"region": "Samburu North",
+		"county": "Samburu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-letipila-dominic-eli",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:22:58.636Z"
+		}
+	},
+	{
+		"name": "Lochakapong Peter",
+		"seat": "MP",
+		"region": "Sigor",
+		"county": "West Pokot",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lochakapong-peter",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/peter-lochakapong/",
+			"name": "Peter Lochakapong",
+			"fetchedAt": "2026-07-16T04:56:34.875Z"
+		}
+	},
+	{
+		"name": "Lomwa Joseph Samal",
+		"seat": "MP",
+		"region": "Isiolo North",
+		"county": "Isiolo North",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lomwa-joseph-samal",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-samal-lomwa/",
+			"name": "Joseph Samal Lomwa",
+			"email": "premap07@yahoo.com",
+			"phone": "0726140539",
+			"links": [
+				"https://www.facebook.com/pages/HONJoseph-Samal-Lomwa-Mp-Isiolo-North-Constituency-2013/264384173596682"
+			],
+			"fetchedAt": "2026-07-16T04:56:37.876Z"
+		}
+	},
+	{
+		"name": "Lotee Titus",
+		"seat": "MP",
+		"region": "Kacheliba",
+		"county": "West Pokot",
+		"party": "KUP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-lotee-titus",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:02.805Z"
+		}
+	},
+	{
+		"name": "Luyai Caleb Amisi",
+		"seat": "MP",
+		"region": "Saboti",
+		"county": "Trans-Nzoia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-luyai-caleb-amisi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/caleb-amisi-luyai/",
+			"name": "Caleb Amisi Luyai",
+			"fetchedAt": "2026-07-16T04:56:42.445Z"
+		}
+	},
+	{
+		"name": "Maalim Farah",
+		"seat": "MP",
+		"region": "Dadaab",
+		"county": "Garissa",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-maalim-farah",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/farah-maalim/",
+			"name": "Farah Maalim",
+			"email": "cna@parliament.go.ke",
+			"phone": "+254202221291",
+			"fetchedAt": "2026-07-16T04:56:45.495Z"
+		}
+	},
+	{
+		"name": "Machele Mohamed Soud",
+		"seat": "MP",
+		"region": "Mvita",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-machele-mohamed-soud",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:06.886Z"
+		}
+	},
+	{
+		"name": "Maina Jane Njeri",
+		"seat": "MP",
+		"region": "Kirinyaga",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-maina-jane-njeri",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/jane-njeri-maina/",
+			"name": "Jane Njeri Maina",
+			"fetchedAt": "2026-07-16T04:56:49.915Z"
+		}
+	},
+	{
+		"name": "Maina Betty Njeri",
+		"seat": "MP",
+		"region": "Murang’a",
+		"county": "Murang’a",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-maina-betty-njeri",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/maina-betty-njeri/",
+			"name": "Maina Betty Njeri",
+			"fetchedAt": "2026-07-16T04:56:52.875Z"
+		}
+	},
+	{
+		"name": "Maingi Mary",
+		"seat": "MP",
+		"region": "Mwea",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-maingi-mary",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mary-maingi/",
+			"name": "Mary Maingi",
+			"fetchedAt": "2026-07-16T04:56:55.865Z"
+		}
+	},
+	{
+		"name": "Maisori Marwa Kemero Kitayama",
+		"seat": "MP",
+		"region": "Kuria East",
+		"county": "Migori",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-maisori-marwa-kemero-kitayama-cbs"
+	},
+	{
+		"name": "Majimbo Joseph Kalasinga",
+		"seat": "MP",
+		"region": "Kabuchai",
+		"county": "Bungoma",
+		"party": "FORD-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-majimbo-joseph-kalasinga-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:25.382Z"
+		}
+	},
+	{
+		"name": "Makali John Okwisia",
+		"seat": "MP",
+		"region": "Kanduyi",
+		"county": "Bungoma",
+		"party": "FORD-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-makali-john-okwisia",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:29.516Z"
+		}
+	},
+	{
+		"name": "Manduku Daniel Ogwoka",
+		"seat": "MP",
+		"region": "Nyaribari Masaba",
+		"county": "Kisii",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-manduku-daniel-ogwoka",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/daniel-manduku/",
+			"name": "Daniel Manduku",
+			"fetchedAt": "2026-07-16T05:23:32.704Z"
+		}
+	},
+	{
+		"name": "Marubu Muthoni Monicah",
+		"seat": "MP",
+		"region": "Lamu",
+		"county": "Lamu",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-marubu-muthoni-monicah",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/marubu-muthoni-monicah/",
+			"name": "Marubu Muthoni Monicah",
+			"fetchedAt": "2026-07-16T04:57:17.636Z"
+		}
+	},
+	{
+		"name": "Masara Peter Francis",
+		"seat": "MP",
+		"region": "Suna West",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-masara-peter-francis-0"
+	},
+	{
+		"name": "Masito Fatuma Hamisi",
+		"seat": "MP",
+		"region": "Kwale",
+		"county": "Kwale",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-masito-fatuma-hamisi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/masito-fatuma-hamisi/",
+			"name": "Masito Fatuma Hamisi",
+			"fetchedAt": "2026-07-16T04:57:34.945Z"
+		}
+	},
+	{
+		"name": "Mathenge Duncan Maina",
+		"seat": "MP",
+		"region": "Nyeri Town",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mathenge-duncan-maina",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/duncan-mathenge-maina/",
+			"name": "Duncan Mathenge Maina",
+			"fetchedAt": "2026-07-16T04:57:37.924Z"
+		}
+	},
+	{
+		"name": "Mawathe Julius Musili",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mawathe-julius-musili",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/julius-musili-mawathe-2/",
+			"name": "Julius Musili Mawathe",
+			"fetchedAt": "2026-07-16T04:57:40.885Z"
+		}
+	},
+	{
+		"name": "Mayaka Irene Nyakerario",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mayaka-irene-nyakerario",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:23:52.416Z"
+		}
+	},
+	{
+		"name": "Mbai Nimrod Mbithuka",
+		"seat": "MP",
+		"region": "Kitui East",
+		"county": "Kitui",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mbai-nimrod-mbithuka-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/nimrod-mbithuka-mbai/",
+			"name": "Nimrod Mbithuka Mbai",
+			"fetchedAt": "2026-07-16T04:57:45.325Z"
+		}
+	},
+	{
+		"name": "Mbalu Jessica Nduku Kiko",
+		"seat": "MP",
+		"region": "Kibwezi East",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mbalu-jessica-nduku-kiko",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/jessica-mbalu/",
+			"name": "Jessica N. Mbalu",
+			"email": "jessykiko@yahoo.com",
+			"phone": "0722869530",
+			"fetchedAt": "2026-07-16T05:23:55.671Z"
+		}
+	},
+	{
+		"name": "Mboni David Mwalika",
+		"seat": "MP",
+		"region": "Kitui Rural",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mboni-david-mwalika"
+	},
+	{
+		"name": "Mbui Robert",
+		"seat": "MP",
+		"region": "Kathiani",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mbui-robert",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/robert-mbui/",
+			"name": "Robert Mbui",
+			"email": "mbui@mutungonischools.co.ke",
+			"phone": "0722527333",
+			"links": [
+				"https://www.facebook.com/robert.mbuimpkathiani/about"
+			],
+			"fetchedAt": "2026-07-16T04:58:04.215Z"
+		}
+	},
+	{
+		"name": "Meli Julius Kipbirwot",
+		"seat": "MP",
+		"region": "Tinderet",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-melly-julius-kipbiwott",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:15.387Z"
+		}
+	},
+	{
+		"name": "Mizighi Lydia Haika",
+		"seat": "MP",
+		"region": "Taita Taveta",
+		"county": "Taita Taveta",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mizighi-lydia-haika",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/lydia-haika-mnene-mizighi/",
+			"name": "Lydia Haika Mnene Mizighi",
+			"email": "hycalydy@gmail.com",
+			"phone": "0721452391",
+			"fetchedAt": "2026-07-16T04:58:08.715Z"
+		}
+	},
+	{
+		"name": "Mnyazi Amina Laura",
+		"seat": "MP",
+		"region": "Malindi",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mnyazi-amina-laura",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/amina-mnyazi/",
+			"name": "Amina Mnyazi",
+			"fetchedAt": "2026-07-16T05:24:18.604Z"
+		}
+	},
+	{
+		"name": "Mogaka Stephen",
+		"seat": "MP",
+		"region": "West Mugirango",
+		"county": "Nyamira",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mogaka-stephen",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/stephen-mogaka/",
+			"name": "Stephen Mogaka",
+			"fetchedAt": "2026-07-16T04:58:13.145Z"
+		}
+	},
+	{
+		"name": "Mohamed Abdikadir Hussein",
+		"seat": "MP",
+		"region": "Lagdera",
+		"county": "Garissa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohamed-abdikadir-hussein",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:23.906Z"
+		}
+	},
+	{
+		"name": "Mohamed Aden Daudi",
+		"seat": "MP",
+		"region": "Wajir East",
+		"county": "Wajir",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohamed-aden-daudi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:28.066Z"
+		}
+	},
+	{
+		"name": "Mohamed Mohamed Ali",
+		"seat": "MP",
+		"region": "Nyali",
+		"county": "Mombasa",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohamed-mohamed-ali-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ali-mohamud-mohamed/",
+			"name": "Ali Mohamud Mohamed",
+			"email": "abshiro1@yahoo.com",
+			"fetchedAt": "2026-07-16T04:58:19.105Z"
+		}
+	},
+	{
+		"name": "Mohamed Umulkher Harun",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohamed-umulkher-harun",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:32.175Z"
+		}
+	},
+	{
+		"name": "Mohammed Fatuma Zainab",
+		"seat": "MP",
+		"region": "Migori",
+		"county": "Migori",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohammed-fatuma-zainab",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:36.255Z"
+		}
+	},
+	{
+		"name": "Mohammed Zamzam Chimba",
+		"seat": "MP",
+		"region": "Mombasa",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mohammed-zamzam-chimba",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:40.336Z"
+		}
+	},
+	{
+		"name": "Mongina Jerusha Momanyi",
+		"seat": "MP",
+		"region": "Nyamira",
+		"county": "Nyamira",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mongina-jerusha-momanyi"
+	},
+	{
+		"name": "Mrembo Irene Njoki",
+		"seat": "MP",
+		"region": "Bahati",
+		"county": "Nakuru",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mrembo-irene-njoki",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:24:58.856Z"
+		}
+	},
+	{
+		"name": "Muchangi Karemba",
+		"seat": "MP",
+		"region": "Runyenjes",
+		"county": "Embu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muchangi-karemba-cbs",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:03.076Z"
+		}
+	},
+	{
+		"name": "Muchira Michael Mwangi",
+		"seat": "MP",
+		"region": "Ol Jorok",
+		"county": "Nyandarua",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muchira-michael-mwangi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/michael-mwangi-muchira/",
+			"name": "Michael Mwangi Muchira",
+			"fetchedAt": "2026-07-16T04:58:43.795Z"
+		}
+	},
+	{
+		"name": "Mugabe Innocent Maino",
+		"seat": "MP",
+		"region": "Likuyani",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mugabe-innocent-maino-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:07.165Z"
+		}
+	},
+	{
+		"name": "Muge Cynthia Jepkosgei",
+		"seat": "MP",
+		"region": "Nandi",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muge-cynthia-jepkosgei",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:11.286Z"
+		}
+	},
+	{
+		"name": "Muhanda Elsie Busihile",
+		"seat": "MP",
+		"region": "Kakamega",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muhanda-elsie-busihile",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/elsie-busihile-muhanda/",
+			"name": "Elsie Busihile Muhanda",
+			"email": "elsiemu@yahoo.co.uk",
+			"phone": "0722743518",
+			"fetchedAt": "2026-07-16T04:58:49.715Z"
+		}
+	},
+	{
+		"name": "Muhia Wanjiku",
+		"seat": "MP",
+		"region": "Kipipiri",
+		"county": "Nyandarua",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muhia-wanjiku",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/wanjiku-muhia/",
+			"name": "Wanjiku Muhia",
+			"email": "wanjikumuhia.nyandaruacounty@gmail.com",
+			"phone": "0725726821",
+			"links": [
+				"http://twitter.com/wanjikumuhia"
+			],
+			"fetchedAt": "2026-07-16T04:58:52.715Z"
+		}
+	},
+	{
+		"name": "Mukhwana Titus Khamala",
+		"seat": "MP",
+		"region": "Lurambi",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mukhwana-titus-khamala"
+	},
+	{
+		"name": "Mukunji John Gitonga Mwaniki",
+		"seat": "MP",
+		"region": "Manyatta",
+		"county": "Embu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mukunji-john-gitonga-mwaniki",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gitonga-mukunji/",
+			"name": "Gitonga Mukunji",
+			"fetchedAt": "2026-07-16T05:25:28.815Z"
+		}
+	},
+	{
+		"name": "Mulanya Ekesa Geoffrey",
+		"seat": "MP",
+		"region": "Nambale",
+		"county": "Busia",
+		"party": "IND.",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mulanya-ekesa-geoffrey",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/geoffrey-mulanya/",
+			"name": "Geoffrey Mulanya",
+			"fetchedAt": "2026-07-16T05:25:33.214Z"
+		}
+	},
+	{
+		"name": "Mule Caleb Mutiso",
+		"seat": "MP",
+		"region": "Machakos Town",
+		"county": "Machakos",
+		"party": "MCCP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mule-caleb-mutiso",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/caleb-mule-mutiso/",
+			"name": "Caleb Mule Mutiso",
+			"fetchedAt": "2026-07-16T04:59:12.884Z"
+		}
+	},
+	{
+		"name": "Mule Stephen Mutinda",
+		"seat": "MP",
+		"region": "Matungulu",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mule-stephen-mutinda",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/stephen-mutinda-mule/",
+			"name": "Stephen Mutinda Mule",
+			"email": "smmule2001@yahoo.com",
+			"phone": "0725988683",
+			"fetchedAt": "2026-07-16T04:59:15.935Z"
+		}
+	},
+	{
+		"name": "Muli Fabian Kyule",
+		"seat": "MP",
+		"region": "Kangundo",
+		"county": "Machakos",
+		"party": "GDDP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muli-fabian-kyule-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/fabian-kyule-muli-2/",
+			"name": "Fabian Kyule Muli",
+			"fetchedAt": "2026-07-16T04:59:18.915Z"
+		}
+	},
+	{
+		"name": "Mulu Makali",
+		"seat": "MP",
+		"region": "Kitui Central",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mulu-makali",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/benson-makali-mulu/",
+			"name": "Benson Makali Mulu",
+			"email": "makalimulu@yahoo.com",
+			"phone": "0722809831",
+			"fetchedAt": "2026-07-16T04:59:21.946Z"
+		}
+	},
+	{
+		"name": "Mulyungi Gideon Mutemi",
+		"seat": "MP",
+		"region": "Mwingi Central",
+		"county": "Mwingi",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mulyungi-gideon-mutemi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gideon-mutemi-mulyungi/",
+			"name": "Dr. Gideon Mutemi Mulyungi",
+			"fetchedAt": "2026-07-16T04:59:24.975Z"
+		}
+	},
+	{
+		"name": "Mumo Rose Museo",
+		"seat": "MP",
+		"region": "Makueni",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mumo-rose-museo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/rose-museo-mumo/",
+			"name": "Rose Museo Mumo",
+			"links": [
+				"https://www.facebook.com/rosemuseo.mumo/about"
+			],
+			"fetchedAt": "2026-07-16T04:59:27.945Z"
+		}
+	},
+	{
+		"name": "Munyoro Joseph Kamau",
+		"seat": "MP",
+		"region": "Kigumo",
+		"county": "Murang'A",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-munyoro-joseph-kamau",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-munyoro/",
+			"name": "Joseph Munyoro",
+			"fetchedAt": "2026-07-16T05:25:37.634Z"
+		}
+	},
+	{
+		"name": "Mupe Anthony Kenga",
+		"seat": "MP",
+		"region": "Rabai",
+		"county": "Kilifi",
+		"party": "PAA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mupe-anthony-kenga",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/anthony-kenga/",
+			"name": "Anthony Kenga",
+			"fetchedAt": "2026-07-16T05:25:42.114Z"
+		}
+	},
+	{
+		"name": "Muratha Anne Wanjiku Mugo",
+		"seat": "MP",
+		"region": "Kiambu",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muratha-anne-wanjiku-mugo",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:47.536Z"
+		}
+	},
+	{
+		"name": "Muriu Wakili Edward",
+		"seat": "MP",
+		"region": "Gatanga",
+		"county": "Murang'A",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muriu-wakili-edward",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:51.717Z"
+		}
+	},
+	{
+		"name": "Muriuki Nebart Bernard",
+		"seat": "MP",
+		"region": "Mbeere South",
+		"county": "Embu",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muriuki-nebart-bernard",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:25:56.007Z"
+		}
+	},
+	{
+		"name": "Murugara George Gitonga",
+		"seat": "MP",
+		"region": "Tharaka",
+		"county": "Tharaka-Nithi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-murugara-george-gitonga",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/george-gitonga-murugara/",
+			"name": "George Gitonga Murugara",
+			"fetchedAt": "2026-07-16T04:59:38.374Z"
+		}
+	},
+	{
+		"name": "Musau Vincent Musyoka",
+		"seat": "MP",
+		"region": "Mwala",
+		"county": "Machakos",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-musau-vincent-musyoka"
+	},
+	{
+		"name": "Mutai Kipronoh Alfred",
+		"seat": "MP",
+		"region": "Kuresoi North",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mutai-kipronoh-alfred",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:26:14.547Z"
+		}
+	},
+	{
+		"name": "Muthama Stanley Muiruri",
+		"seat": "MP",
+		"region": "Lamu West",
+		"county": "Lamu",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-muthama-stanley-muiruri",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/stanley-muiruri-muthama-2/",
+			"name": "Hon Stanley Muiruri Muthama",
+			"fetchedAt": "2026-07-16T04:59:57.177Z"
+		}
+	},
+	{
+		"name": "Mutua Didmus Wekesa Barasa",
+		"seat": "MP",
+		"region": "Kimilili",
+		"county": "Bungoma",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mutua-didmus-wekesa-barasa-cbs"
+	},
+	{
+		"name": "Mutuse Eckomas Mwengi",
+		"seat": "MP",
+		"region": "Kibwezi West",
+		"county": "Makueni",
+		"party": "MCCP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mutuse-eckomas-mwengi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/eckomas-mwengi-mutuse/",
+			"name": "Eckomas Mwengi Mutuse",
+			"fetchedAt": "2026-07-16T05:00:14.516Z"
+		}
+	},
+	{
+		"name": "Mwafrika Augustine Kamande",
+		"seat": "MP",
+		"region": "Roysambu",
+		"county": "Nairobi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwafrika-augustine-kamande",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mwafrika-augustine-kamande/",
+			"name": "Mwafrika Augustine Kamande",
+			"fetchedAt": "2026-07-16T05:00:17.495Z"
+		}
+	},
+	{
+		"name": "Mwago Amos Maina",
+		"seat": "MP",
+		"region": "Starehe",
+		"county": "Nairobi",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwago-amos-maina",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:26:33.317Z"
+		}
+	},
+	{
+		"name": "Mwakuwona Danson Mwashako",
+		"seat": "MP",
+		"region": "Wundanyi",
+		"county": "Taita Taveta",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwakuwona-danson-mwashako",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/danson-mwashako-mwakuwona/",
+			"name": "Hon Danson Mwashako Mwakuwona",
+			"fetchedAt": "2026-07-16T05:00:21.925Z"
+		}
+	},
+	{
+		"name": "Mwale Nicholas Scott Tindi",
+		"seat": "MP",
+		"region": "Butere",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwale-nicholas-scott-tindi-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/nicholas-scott-tindi-mwale/",
+			"name": "Nicholas Scott Tindi Mwale",
+			"fetchedAt": "2026-07-16T05:00:24.945Z"
+		}
+	},
+	{
+		"name": "Mwalyo Joshua Mbithi",
+		"seat": "MP",
+		"region": "Masinga",
+		"county": "Machakos",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwalyo-joshua-mbithi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joshua-mbithi-mwalyo-2/",
+			"name": "Joshua Mbithi Mwalyo",
+			"fetchedAt": "2026-07-16T05:00:27.885Z"
+		}
+	},
+	{
+		"name": "Mwangi Teresia Wanjiru",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwangi-teresia-wanjiru",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:26:37.527Z"
+		}
+	},
+	{
+		"name": "Mwanyanje Gertrude Mbeyu",
+		"seat": "MP",
+		"region": "Kilifi",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwanyanje-gertrude-mbeyu-cbs"
+	},
+	{
+		"name": "Mwenje Mark Samuel",
+		"seat": "MP",
+		"region": "Embakasi West",
+		"county": "Nairobi",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwenje-mark-samuel-cbs",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:26:56.179Z"
+		}
+	},
+	{
+		"name": "Mwirigi John Paul",
+		"seat": "MP",
+		"region": "Igembe South",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-mwirigi-john-paul"
+	},
+	{
+		"name": "Nabii Nabwera Daraja",
+		"seat": "MP",
+		"region": "Lugari",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nabii-nabwera-daraja",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:14.732Z"
+		}
+	},
+	{
+		"name": "Nabuin Paul Ekwom",
+		"seat": "MP",
+		"region": "Turkana North",
+		"county": "Turkana",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nabuin-paul-ekwom",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ekwom-nabuin/",
+			"name": "Ekwom Nabuin",
+			"fetchedAt": "2026-07-16T05:27:17.952Z"
+		}
+	},
+	{
+		"name": "Nabulindo Peter Oscar",
+		"seat": "MP",
+		"region": "Matungu",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nabulindo-peter-oscar",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:23.307Z"
+		}
+	},
+	{
+		"name": "Naicca Johnson Manya",
+		"seat": "MP",
+		"region": "Mumias West",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-naicca-johnson-manya-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/johnson-manya-naicca/",
+			"name": "Johnson Manya Naicca",
+			"email": "j.m.naicca@gmail.com",
+			"phone": "0722266888",
+			"fetchedAt": "2026-07-16T05:01:07.055Z"
+		}
+	},
+	{
+		"name": "Namuar Joseph Emathe",
+		"seat": "MP",
+		"region": "Turkana Central",
+		"county": "Turkana",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-namuar-joseph-emathe",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-namuar/",
+			"name": "Joseph Namuar",
+			"fetchedAt": "2026-07-16T05:27:26.516Z"
+		}
+	},
+	{
+		"name": "Nanok Daniel Epuyo",
+		"seat": "MP",
+		"region": "Turkana West",
+		"county": "Turkana",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nanok-daniel-epuyo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/daniel-epuyo-nanok/",
+			"name": "Daniel Epuyo Nanok",
+			"email": "epuyonanok@yahoo.com",
+			"phone": "0721630171",
+			"fetchedAt": "2026-07-16T05:01:11.495Z"
+		}
+	},
+	{
+		"name": "Ndakwa David Athman",
+		"seat": "MP",
+		"region": "Malava",
+		"county": "Kakamega",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ndakwa-david-athman",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:31.809Z"
+		}
+	},
+	{
+		"name": "Ndung’u George Koimburi",
+		"seat": "MP",
+		"region": "Juja",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ndungu-george-koimburi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:35.910Z"
+		}
+	},
+	{
+		"name": "Nduyo Susan Ngugi",
+		"seat": "MP",
+		"region": "Tharaka Nithi",
+		"county": "Tharaka Nithi",
+		"party": "TSP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nduyo-susan-ngugi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ngugi-susan-nduyo/",
+			"name": "Ngugi Susan Nduyo",
+			"fetchedAt": "2026-07-16T05:01:17.305Z"
+		}
+	},
+	{
+		"name": "Nganga Alice Wambui",
+		"seat": "MP",
+		"region": "Thika Town",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nganga-alice-wambui",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:40.030Z"
+		}
+	},
+	{
+		"name": "Ngikolong Nicholas Ngikor Nixon",
+		"seat": "MP",
+		"region": "Turkana East",
+		"county": "Turkana",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ngikolong-nicholas-ngikor-nixon",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:44.151Z"
+		}
+	},
+	{
+		"name": "Ngitit Cecilia Asinyen",
+		"seat": "MP",
+		"region": "Turkana",
+		"county": "Turkana",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ngitit-cecilia-asinyen",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/cecilia-asinyen-ngitit/",
+			"name": "Cecilia Asinyen Ng&#39;itit",
+			"fetchedAt": "2026-07-16T05:27:47.319Z"
+		}
+	},
+	{
+		"name": "Nguna Ngusya Charles",
+		"seat": "MP",
+		"region": "Mwingi West",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nguna-ngusya-charles",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:52.691Z"
+		}
+	},
+	{
+		"name": "Nguro Onesmus Ngogoyo",
+		"seat": "MP",
+		"region": "Kajiado North",
+		"county": "Kajiado",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nguro-onesmus-ngogoyo",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:27:56.851Z"
+		}
+	},
+	{
+		"name": "Ng’elechei Caroline Jeptoo",
+		"seat": "MP",
+		"region": "Elgeyo Marakwet",
+		"county": "Elgeyo Marakwet",
+		"party": "IND.",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ngelechei-caroline-jeptoo",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:28:00.971Z"
+		}
+	},
+	{
+		"name": "Njeru Pamela Njoki",
+		"seat": "MP",
+		"region": "Embu",
+		"county": "Embu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-njeru-pamela-njoki",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/pamela-njoki-njeru/",
+			"name": "Pamela Njoki Njeru",
+			"fetchedAt": "2026-07-16T05:01:28.965Z"
+		}
+	},
+	{
+		"name": "Njeru Leo Wa Muthende",
+		"seat": "MP",
+		"region": "Mbeere North",
+		"county": "Embu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-njeru-leo-wa-muthende",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:28:05.112Z"
+		}
+	},
+	{
+		"name": "Njoroge Mary Wamaua Waithira",
+		"seat": "MP",
+		"region": "Maragwa",
+		"county": "Murang'A",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-njoroge-mary-wamaua-waithira"
+	},
+	{
+		"name": "Ntutu Kitilai Ole",
+		"seat": "MP",
+		"region": "Narok South",
+		"county": "Narok",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ntutu-kitilai-ole",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ntutu-kitilai/",
+			"name": "Ntutu Kitilai",
+			"fetchedAt": "2026-07-16T05:28:22.931Z"
+		}
+	},
+	{
+		"name": "Ntwiga Patrick Munene",
+		"seat": "MP",
+		"region": "Chuka Igambang'Ombe",
+		"county": "Tharaka - Nithi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ntwiga-patrick-munene",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/patrick-munene-ntwiga/",
+			"name": "Patrick Munene Ntwiga",
+			"fetchedAt": "2026-07-16T05:01:49.165Z"
+		}
+	},
+	{
+		"name": "Nyakundi Japheth Mokaya",
+		"seat": "MP",
+		"region": "Kitutu Chache North",
+		"county": "Kisii",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyakundi-japheth-mokaya",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/japheth-nyakundi/",
+			"name": "Japheth Nyakundi",
+			"fetchedAt": "2026-07-16T05:28:27.410Z"
+		}
+	},
+	{
+		"name": "Nyamai Rachael Kaki",
+		"seat": "MP",
+		"region": "Kitui South",
+		"county": "Kitui",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyamai-rachael-kaki-0"
+	},
+	{
+		"name": "Nyamita Mark Ogolla",
+		"seat": "MP",
+		"region": "Uriri",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyamita-mark-ogolla-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mark-ogolla-nyamita/",
+			"name": "Mark Ogolla Nyamita",
+			"fetchedAt": "2026-07-16T05:02:07.915Z"
+		}
+	},
+	{
+		"name": "Nyamoko Joash Nyamache",
+		"seat": "MP",
+		"region": "North Mugirango",
+		"county": "Nyamira",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyamoko-joash-nyamache-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joash-nyamache-nyamoko-2/",
+			"name": "Joash Nyamache Nyamoko",
+			"fetchedAt": "2026-07-16T05:02:10.875Z"
+		}
+	},
+	{
+		"name": "Nyenze Edith Vethi",
+		"seat": "MP",
+		"region": "Kitui West",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyenze-edith-vethi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/edith-nyenze/",
+			"name": "Member of National Assembly Edith Nyenze",
+			"fetchedAt": "2026-07-16T05:28:46.281Z"
+		}
+	},
+	{
+		"name": "Nyikal Wambura James",
+		"seat": "MP",
+		"region": "Seme",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyikal-wambura-james",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:28:51.613Z"
+		}
+	},
+	{
+		"name": "Nyoro Samson Ndindi",
+		"seat": "MP",
+		"region": "Kiharu",
+		"county": "Murang’a",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nyoro-samson-ndindi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/samson-ndindi-nyoro/",
+			"name": "Hon Samson Ndindi Nyoro",
+			"fetchedAt": "2026-07-16T05:02:16.855Z"
+		}
+	},
+	{
+		"name": "Nzengu Paul Musyimi",
+		"seat": "MP",
+		"region": "Mwingi North",
+		"county": "Mwingi",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nzengu-paul-musyimi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/paul-musyimi-nzengu-2/",
+			"name": "Eng. Paul Musyimi Nzengu",
+			"fetchedAt": "2026-07-16T05:02:19.825Z"
+		}
+	},
+	{
+		"name": "Nzioka Erastus Kivasu",
+		"seat": "MP",
+		"region": "Mbooni",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-nzioka-erastus-kivasu",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/erastus-kivasu-nzioka-2/",
+			"name": "Erastus Kivasu Nzioka",
+			"links": [
+				"http://twitter.com/MbooniMp"
+			],
+			"fetchedAt": "2026-07-16T05:02:22.805Z"
+		}
+	},
+	{
+		"name": "Obara Eve Akinyi",
+		"seat": "MP",
+		"region": "Kabondo Kasipul",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-obara-eve-akinyi-cbs"
+	},
+	{
+		"name": "Obiri Innocent Momanyi",
+		"seat": "MP",
+		"region": "Bobasi",
+		"county": "Kisii",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-obiri-innocent-momanyi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:29:10.672Z"
+		}
+	},
+	{
+		"name": "Obo Ruweida Mohamed",
+		"seat": "MP",
+		"region": "Lamu East",
+		"county": "Lamu",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-obo-ruweida-mohamed",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:29:14.826Z"
+		}
+	},
+	{
+		"name": "Ochieng David Ouma",
+		"seat": "MP",
+		"region": "Ugenya",
+		"county": "Siaya",
+		"party": "MDG",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ochieng-david-ouma",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/david-ouma-ochieng/",
+			"name": "David Ouma Ochieng&#39;",
+			"email": "ochiengoo@yahoo.com",
+			"phone": "0722450106",
+			"links": [
+				"http://twitter.com/David_Ouma"
+			],
+			"fetchedAt": "2026-07-16T05:02:43.176Z"
+		}
+	},
+	{
+		"name": "Odanga Geoffrey Makokha",
+		"seat": "MP",
+		"region": "Matayos",
+		"county": "Busia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-odanga-geoffrey-makokha-0"
+	},
+	{
+		"name": "Odege Tom Mboya",
+		"seat": "MP",
+		"region": "Nyatike",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-odege-tom-mboya-0"
+	},
+	{
+		"name": "Odhiambo Elisha Ochieng",
+		"seat": "MP",
+		"region": "Gem",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-odhiambo-elisha-ochieng-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/elisha-ochieng-odhiambo/",
+			"name": "Elisha Ochieng Odhiambo",
+			"fetchedAt": "2026-07-16T05:03:14.865Z"
+		}
+	},
+	{
+		"name": "Odhiambo Millie Grace Akoth",
+		"seat": "MP",
+		"region": "Suba North",
+		"county": "Homa Bay",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-odhiambo-millie-grace-akoth-0"
+	},
+	{
+		"name": "Ogolla Gideon Ochanda",
+		"seat": "MP",
+		"region": "Bondo",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-ogolla-gideon-ochanda"
+	},
+	{
+		"name": "Okelo Jared Odoyo",
+		"seat": "MP",
+		"region": "Nyando",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-okello-jared-odoyo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/jared-odoyo-okelo-2/",
+			"name": "Jared Odoyo Okelo",
+			"fetchedAt": "2026-07-16T05:03:46.636Z"
+		}
+	},
+	{
+		"name": "Okuome Adipo Andrew",
+		"seat": "MP",
+		"region": "Karachuonyo",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-okuome-adipo-andrew"
+	},
+	{
+		"name": "Oluoch Anthony Tom",
+		"seat": "MP",
+		"region": "Mathare",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-oluoch-anthony-tom-0"
+	},
+	{
+		"name": "Omanyo Catherine Nakhabi",
+		"seat": "MP",
+		"region": "Busia",
+		"county": "Busia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-omanyo-catherine-nakhabi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/omanyo-catherine-nakhabi/",
+			"name": "Omanyo Catherine Nakhabi",
+			"fetchedAt": "2026-07-16T05:04:18.275Z"
+		}
+	},
+	{
+		"name": "Ombaka Oduor Christine",
+		"seat": "MP",
+		"region": "Siaya",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ombaka-oduor-christine-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/christine-oduor-ombaka/",
+			"name": "Christine Oduor Ombaka",
+			"email": "ombakac@gmail.com",
+			"phone": "0733793881",
+			"fetchedAt": "2026-07-16T05:04:21.295Z"
+		}
+	},
+	{
+		"name": "Omboko Milemba",
+		"seat": "MP",
+		"region": "Emuhaya",
+		"county": "Vihiga",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-omboko-milemba",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/jeremiah-omboko-milemba/",
+			"name": "Hon Jeremiah Omboko Milemba",
+			"fetchedAt": "2026-07-16T05:04:24.315Z"
+		}
+	},
+	{
+		"name": "Omondi Caroli",
+		"seat": "MP",
+		"region": "Suba South",
+		"county": "Homa Bay",
+		"party": "ODM | Azimio La Umoja One Kenya Coalition",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-omondi-caroli",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/caroli-omondi/",
+			"name": "Caroli Omondi",
+			"fetchedAt": "2026-07-16T05:04:27.255Z"
+		}
+	},
+	{
+		"name": "Omondi Moses Okoth",
+		"seat": "MP",
+		"region": "Ugunja",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-omondi-moses-okoth",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:30:45.402Z"
+		}
+	},
+	{
+		"name": "Omwera George Aldwa",
+		"seat": "MP",
+		"region": "Makadara",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-omwera-george-aladwa-1",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/george-aladwa-omwera-2/",
+			"name": "George Aladwa Omwera",
+			"fetchedAt": "2026-07-16T05:04:31.655Z"
+		}
+	},
+	{
+		"name": "Ong’ondo Boyd Were",
+		"seat": "MP",
+		"region": "Kasipul",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-ongondo-boyd-were",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:30:49.472Z"
+		}
+	},
+	{
+		"name": "Onyiego Silvanus Osoro",
+		"seat": "MP",
+		"region": "South Mugirango",
+		"county": "Kisii",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-onyiego-silvanus-osoro-0"
+	},
+	{
+		"name": "Orero Peter Ochieng",
+		"seat": "MP",
+		"region": "Kibra",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-orero-peter-ochieng",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:31:08.123Z"
+		}
+	},
+	{
+		"name": "Oron Joshua Odongo",
+		"seat": "MP",
+		"region": "Kisumu Central",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-oron-joshua-odongo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joshua-odongo-onono/",
+			"name": "Joshua Odongo Onono",
+			"email": "joshuaoonono@yahoo.com",
+			"links": [
+				"http://disqus.com/?ref_noscript",
+				"http://disqus.com"
+			],
+			"fetchedAt": "2026-07-16T05:31:11.453Z"
+		}
+	},
+	{
+		"name": "Osero Patrick",
+		"seat": "MP",
+		"region": "Borabu",
+		"county": "Nyamira County",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-osero-patrick",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/patrick-osero/",
+			"name": "Patrick Osero",
+			"fetchedAt": "2026-07-16T05:04:53.335Z"
+		}
+	},
+	{
+		"name": "Osogo Joyce Atieno Bensuda",
+		"seat": "MP",
+		"region": "Homa Bay",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-osogo-joyce-atieno-bensuda",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:31:16.833Z"
+		}
+	},
+	{
+		"name": "Otucho Mary Emaase",
+		"seat": "MP",
+		"region": "Teso South",
+		"county": "Busia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-otucho-mary-emaase",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mary-emaase-otuch/",
+			"name": "Mary Emaase Otuch",
+			"fetchedAt": "2026-07-16T05:04:57.805Z"
+		}
+	},
+	{
+		"name": "Oundo Wilberforce Ojiambo",
+		"seat": "MP",
+		"region": "Funyula",
+		"county": "Busia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-dr-oundo-wilberforce-ojiambo"
+	},
+	{
+		"name": "Owino John Walter",
+		"seat": "MP",
+		"region": "Awendo",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-owino-john-walter-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-walter-owino-2/",
+			"name": "John Walter Owino",
+			"fetchedAt": "2026-07-16T05:05:15.055Z"
+		}
+	},
+	{
+		"name": "Owino Martin Peters",
+		"seat": "MP",
+		"region": "Ndhiwa",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-owino-martin-peters-0"
+	},
+	{
+		"name": "Owuor Joshua Aduma",
+		"seat": "MP",
+		"region": "Nyakach",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-owuor-joshua-aduma-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joshua-aduma-owuor/",
+			"name": "Joshua Aduma Owuor",
+			"email": "saadero@yahoo.com",
+			"phone": "0721395464",
+			"fetchedAt": "2026-07-16T05:05:32.386Z"
+		}
+	},
+	{
+		"name": "Oyoo James Onyango",
+		"seat": "MP",
+		"region": "Muhoroni",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-oyoo-james-onyango-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/james-onyango-oyoo/",
+			"name": "James Onyango Oyoo",
+			"email": "jokjamoko@gmail.com",
+			"phone": "0722775809",
+			"fetchedAt": "2026-07-16T05:05:35.346Z"
+		}
+	},
+	{
+		"name": "Oyugi Dick Maungu",
+		"seat": "MP",
+		"region": "Luanda",
+		"county": "Vihiga",
+		"party": "DAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-oyugi-dick-maungu",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:31:49.614Z"
+		}
+	},
+	{
+		"name": "Oyula Joseph H Maero",
+		"seat": "MP",
+		"region": "Butula",
+		"county": "Bungoma",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-oyula-joseph-h-maero-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joseph-h-maero-oyula-2/",
+			"name": "Joseph H Maero Oyula",
+			"links": [
+				"http://twitter.com/oyulajoseph"
+			],
+			"fetchedAt": "2026-07-16T05:05:39.776Z"
+		}
+	},
+	{
+		"name": "Parashina Samuel Sakimba",
+		"seat": "MP",
+		"region": "Kajiado South",
+		"county": "Kajiado",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-parashina-samuel-sakimba",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:31:53.791Z"
+		}
+	},
+	{
+		"name": "Pareyio Mantaine Agnes",
+		"seat": "MP",
+		"region": "Narok North",
+		"county": "Narok",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-pareyio-mantaine-agnes",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:31:57.904Z"
+		}
+	},
+	{
+		"name": "Passaris Esther Muthoni",
+		"seat": "MP",
+		"region": "Nairobi",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-passaris-esther-muthoni",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:02.094Z"
+		}
+	},
+	{
+		"name": "Pkosing David",
+		"seat": "MP",
+		"region": "Pokot South",
+		"county": "Pokot",
+		"party": "KUP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-pkosing-david-losiakou-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:06.184Z"
+		}
+	},
+	{
+		"name": "Rai Samuel Gonzi",
+		"seat": "MP",
+		"region": "Kinango",
+		"county": "Kwale",
+		"party": "PAA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-rai-samuel-gonzi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/samuel-rai/",
+			"name": "Samuel Gonzi Rai",
+			"email": "raigonzi@yahoo.com",
+			"phone": "0721278296",
+			"fetchedAt": "2026-07-16T05:05:48.696Z"
+		}
+	},
+	{
+		"name": "Raso Dido Ali",
+		"seat": "MP",
+		"region": "Saku",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-raso-dido-ali-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/dido-ali-raso/",
+			"name": "Dido Ali Raso",
+			"fetchedAt": "2026-07-16T05:05:51.715Z"
+		}
+	},
+	{
+		"name": "Rasso Dido Ali",
+		"seat": "MP",
+		"region": "Saku",
+		"county": "Marsabit",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-rasso-col-rtd-dido-ali-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/col-rtd-ali-rasso-dido/",
+			"name": "Col (Rtd) Ali Rasso Dido",
+			"email": "dirasso61@yahoo.com",
+			"phone": "0722934348",
+			"fetchedAt": "2026-07-16T05:05:54.706Z"
+		}
+	},
+	{
+		"name": "Reuben Kiborek",
+		"seat": "MP",
+		"region": "Mogotio",
+		"county": "",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-reuben-kiborek",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/reuben-kiborek/",
+			"name": "Reuben Kiborek",
+			"fetchedAt": "2026-07-16T05:05:57.686Z"
+		}
+	},
+	{
+		"name": "Robi Mathias Nyamabe",
+		"seat": "MP",
+		"region": "Kuria West",
+		"county": "Migori",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-robi-mathias-nyamabe-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mathias-nyamabe-robi/",
+			"name": "Mathias Nyamabe Robi",
+			"fetchedAt": "2026-07-16T05:06:00.635Z"
+		}
+	},
+	{
+		"name": "Salasya Peter Kalerwa",
+		"seat": "MP",
+		"region": "Mumias East",
+		"county": "Kakamega",
+		"party": "DAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-salasya-peter-kalerwa",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/peter-salasya-kalerwa/",
+			"name": "Peter Salasya Kalerwa",
+			"fetchedAt": "2026-07-16T05:06:03.606Z"
+		}
+	},
+	{
+		"name": "Salim Feisal Abdallah Bader",
+		"seat": "MP",
+		"region": "Msambweni",
+		"county": "Kwale",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-salim-feisal-abdallah-bader",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:10.353Z"
+		}
+	},
+	{
+		"name": "Saney Ibrahim Adbi",
+		"seat": "MP",
+		"region": "Wajir North",
+		"county": "Wajir",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-saney-ibrahim-adbi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ibrahim-abdi-saney/",
+			"name": "Ibrahim Abdi Saney",
+			"email": "saney.abdi@gmail.com",
+			"phone": "0721373137",
+			"fetchedAt": "2026-07-16T05:06:08.046Z"
+		}
+	},
+	{
+		"name": "Sankaire Leah Sopiato",
+		"seat": "MP",
+		"region": "Kajiado",
+		"county": "Kajiado",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sankaire-leah-sopiato",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/leah-sankaire-sopiato/",
+			"name": "Leah Sankaire Sopiato",
+			"fetchedAt": "2026-07-16T05:06:10.975Z"
+		}
+	},
+	{
+		"name": "Sergon Jematiah Flowrence",
+		"seat": "MP",
+		"region": "Baringo",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sergon-jematiah-flowrence",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:14.544Z"
+		}
+	},
+	{
+		"name": "Shake Mbogho Peter",
+		"seat": "MP",
+		"region": "Mwatate",
+		"county": "Taita Taveta",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-shake-mbogho-peter",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:18.684Z"
+		}
+	},
+	{
+		"name": "Sheikh Umul Ker Kassim",
+		"seat": "MP",
+		"region": "Mandera",
+		"county": "Mandera",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sheikh-umul-ker-kassim",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kasiim-umul-ker-shikh/",
+			"name": "Kasiim Umul Ker Shikh",
+			"fetchedAt": "2026-07-16T05:06:16.886Z"
+		}
+	},
+	{
+		"name": "Shimbwa Omar Mwinyi",
+		"seat": "MP",
+		"region": "Changamwe",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-shimbwa-omar-mwinyi-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/omar-mwinyi-shimbwa/",
+			"name": "Omar Mwinyi Shimbwa",
+			"email": "info@royalcircleagencies.com",
+			"phone": "0722230416",
+			"links": [
+				"https://www.facebook.com/pages/Omar-Mwinyi-Shimbwa/301015606682250"
+			],
+			"fetchedAt": "2026-07-16T05:06:19.845Z"
+		}
+	},
+	{
+		"name": "Shinali Bernard Masaka",
+		"seat": "MP",
+		"region": "Ikolomani",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-shinali-bernard-masaka-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/benard-masaka-shinali/",
+			"name": "Benard Masaka Shinali",
+			"email": "flexcolimited@gmail.com",
+			"phone": "0722702102",
+			"fetchedAt": "2026-07-16T05:06:22.855Z"
+		}
+	},
+	{
+		"name": "Shurie Abdi Omar",
+		"seat": "MP",
+		"region": "Balambala",
+		"county": "Garissa",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-shurie-abdi-omar-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/abdi-omar-shurie-2/",
+			"name": "Abdi Omar Shurie",
+			"fetchedAt": "2026-07-16T05:06:25.806Z"
+		}
+	},
+	{
+		"name": "Sigei Francis Kipyegon Arap",
+		"seat": "MP",
+		"region": "Sotik",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sigei-francis-kipyegon-arap",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:22.845Z"
+		}
+	},
+	{
+		"name": "Sirma Musa Cherutich",
+		"seat": "MP",
+		"region": "Eldama Ravine",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sirma-musa-cherutich",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:26.993Z"
+		}
+	},
+	{
+		"name": "Sitati Daniel Wanyama",
+		"seat": "MP",
+		"region": "Webuye West",
+		"county": "Bungoma",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sitati-daniel-wanyama-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/daniel-wanyama-sitati/",
+			"name": "Daniel Wanyama Sitati",
+			"email": "dan.sitati@yahoo.com",
+			"phone": "0723432321",
+			"fetchedAt": "2026-07-16T05:06:31.745Z"
+		}
+	},
+	{
+		"name": "Sitienei Janet Jepkemboi",
+		"seat": "MP",
+		"region": "Turbo",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sitienei-janet-jepkemboi-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/janet-jepkemboi-sitienei-2/",
+			"name": "Hon Janet Jepkemboi Sitienei",
+			"phone": "0703914202",
+			"fetchedAt": "2026-07-16T05:06:34.816Z"
+		}
+	},
+	{
+		"name": "Siyoi Lillian Chebet",
+		"seat": "MP",
+		"region": "Trans Nzoia",
+		"county": "Trans Nzoia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-siyoi-lillian-chebet",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/lillian-chebet-sioyi/",
+			"name": "Lillian Chebet Sioyi",
+			"fetchedAt": "2026-07-16T05:06:37.755Z"
+		}
+	},
+	{
+		"name": "Sloya Clement Logova",
+		"seat": "MP",
+		"region": "Sabatia",
+		"county": "Vihiga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sloya-clement-logova",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:31.154Z"
+		}
+	},
+	{
+		"name": "Sudi Oscar Kipchumba",
+		"seat": "MP",
+		"region": "Kapseret",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sudi-oscar-kipchumba-0"
+	},
+	{
+		"name": "Suleka Hulbale Harun",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "UDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-suleka-hulbale-harun",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:49.744Z"
+		}
+	},
+	{
+		"name": "Sunkuiya George Risa",
+		"seat": "MP",
+		"region": "Kajiado West",
+		"county": "Kajiado",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sunkuyia-george-risa-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/george-risa-sunkuyia-2/",
+			"name": "George Risa Sunkuyia",
+			"fetchedAt": "2026-07-16T05:06:57.925Z"
+		}
+	},
+	{
+		"name": "Sunkuli Julius Lekakeny",
+		"seat": "MP",
+		"region": "Kilgoris",
+		"county": "Narok",
+		"party": "KANU",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-sunkuli-julius-lekakeny",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:53.872Z"
+		}
+	},
+	{
+		"name": "Taitamu Julius Mánaiba",
+		"seat": "MP",
+		"region": "Igembe North",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-taitumu-julius-manaiba",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:32:57.963Z"
+		}
+	},
+	{
+		"name": "Tandaza Kassim Sawa",
+		"seat": "MP",
+		"region": "Matuga",
+		"county": "Kwale",
+		"party": "ANC",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-tandaza-kassim-sawa-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kassim-sawa-tandaza/",
+			"name": "Hon Kassim Sawa Tandaza",
+			"fetchedAt": "2026-07-16T05:07:03.835Z"
+		}
+	},
+	{
+		"name": "Thuku Zachary Kwenya",
+		"seat": "MP",
+		"region": "Kinangop",
+		"county": "Nyandarua",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-thuku-zachary-kwenya-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/zachary-kwenya-thuku/",
+			"name": "Zachary Kwenya Thuku",
+			"fetchedAt": "2026-07-16T05:07:06.812Z"
+		}
+	},
+	{
+		"name": "Tongoyo Gabriel Koshal",
+		"seat": "MP",
+		"region": "Narok West",
+		"county": "Narok",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-tongoyo-gabriel-koshal-0"
+	},
+	{
+		"name": "Tonkei Rebecca Noonaishi",
+		"seat": "MP",
+		"region": "Narok",
+		"county": "Narok",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-tonkei-rebecca-noonaishi",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/tonkei-rebecca-noonaishi/",
+			"name": "Tonkei Rebecca Noonaishi",
+			"fetchedAt": "2026-07-16T05:07:24.116Z"
+		}
+	},
+	{
+		"name": "Tonui Joseph Kipkosgei",
+		"seat": "MP",
+		"region": "Kuresoi South",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-tonui-joseph-kipkosgei-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/tonui-joseph-kipkosgei/",
+			"name": "Tonui Joseph Kipkosgei",
+			"fetchedAt": "2026-07-16T05:07:27.155Z"
+		}
+	},
+	{
+		"name": "Toroitich Timothy Kipchumba",
+		"seat": "MP",
+		"region": "Marakwet West",
+		"county": "Elgeyo Marakwet",
+		"party": "IND",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-toroitich-timothy-kipchumba",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:33:16.574Z"
+		}
+	},
+	{
+		"name": "Tungule Charo Kenneth Kazungu",
+		"seat": "MP",
+		"region": "Ganze",
+		"county": "Kilifi",
+		"party": "PAA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-tungule-charo-kenneth-kazungu",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:33:20.703Z"
+		}
+	},
+	{
+		"name": "Wachira Rahab Mukami",
+		"seat": "MP",
+		"region": "Nyeri",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wachira-rahab-mukami-0"
+	},
+	{
+		"name": "Wainaina Anthony Njoroge",
+		"seat": "MP",
+		"region": "Kieni",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wainaina-anthony-njoroge",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:33:39.265Z"
+		}
+	},
+	{
+		"name": "Wainaina Michael Wambugu",
+		"seat": "MP",
+		"region": "Othaya",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wainaina-michael-wambugu",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:33:43.414Z"
+		}
+	},
+	{
+		"name": "Waithaka John Machua",
+		"seat": "MP",
+		"region": "Kiambu",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-waithaka-john-machua",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/john-waithaka-machua/",
+			"name": "John Waithaka Machua",
+			"fetchedAt": "2026-07-16T05:07:50.376Z"
+		}
+	},
+	{
+		"name": "Wamacukuru James Githua Kamau",
+		"seat": "MP",
+		"region": "Kabete",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wamacukuru-james-githua-kamau-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/james-githua-kamau-wamacukuru/",
+			"name": "Hon James Githua Kamau Wamacukuru",
+			"fetchedAt": "2026-07-16T05:07:53.325Z"
+		}
+	},
+	{
+		"name": "Wambilianga Catherine Nanjala",
+		"seat": "MP",
+		"region": "Bungoma",
+		"county": "Bungoma",
+		"party": "FORD - K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wambilianga-catherine-nanjala-0"
+	},
+	{
+		"name": "Wamboka Wanami Jack Nelson",
+		"seat": "MP",
+		"region": "Bumula",
+		"county": "Bungoma",
+		"party": "DAP-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wamboka-wanami-jack-nelson",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:34:01.984Z"
+		}
+	},
+	{
+		"name": "Wamuchomba Gathoni",
+		"seat": "MP",
+		"region": "Githunguri",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wamuchomba-gathoni-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gathoni-wamuchomba/",
+			"name": "Gathoni Wamuchomba",
+			"email": "kiambuwomanrep@gmail.com",
+			"phone": "0714443886",
+			"fetchedAt": "2026-07-16T05:08:12.185Z"
+		}
+	},
+	{
+		"name": "Wangaya Christopher Aseka",
+		"seat": "MP",
+		"region": "Khwisero",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wangaya-christopher-aseka-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:34:06.083Z"
+		}
+	},
+	{
+		"name": "Wangwe Emmanuel",
+		"seat": "MP",
+		"region": "Navakholo",
+		"county": "Kakamega",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wangwe-emmanuel-0"
+	},
+	{
+		"name": "Wanjala Raphael Bitta Sauti",
+		"seat": "MP",
+		"region": "Budalangi",
+		"county": "Busia",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wanjala-raphael-bitta-sauti-cbs",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/raphael-bitta-sauti-wanjala/",
+			"name": "Raphael Bitta Sauti Wanjala",
+			"fetchedAt": "2026-07-16T05:08:31.065Z"
+		}
+	},
+	{
+		"name": "Wanjiku John Njuguna",
+		"seat": "MP",
+		"region": "Kiambaa",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wanjiku-john-njuguna-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:34:24.685Z"
+		}
+	},
+	{
+		"name": "Wanjira Martha Wangari",
+		"seat": "MP",
+		"region": "Gilgil",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wanjira-martha-wangari-cbs",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:34:28.855Z"
+		}
+	},
+	{
+		"name": "Wanyonyi Kevin Ferdinand",
+		"seat": "MP",
+		"region": "Kwanza",
+		"county": "Trans Nzoia",
+		"party": "FORD - K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wanyonyi-kevin-ferdinand",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ferdinard-kevin-wanyonyi/",
+			"name": "Ferdinard Kevin Wanyonyi",
+			"email": "wanyonyifk@yahoo.com",
+			"phone": "0722701531",
+			"fetchedAt": "2026-07-16T05:08:37.028Z"
+		}
+	},
+	{
+		"name": "Wanyonyi Martin Pepela",
+		"seat": "MP",
+		"region": "Webuye East",
+		"county": "Bungoma",
+		"party": "FORD-K",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wanyonyi-martin-pepela",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/martin-wanyonyi-pepela/",
+			"name": "Martin Wanyonyi Pepela",
+			"fetchedAt": "2026-07-16T05:08:39.985Z"
+		}
+	},
+	{
+		"name": "Waqo Naomi Jillo",
+		"seat": "MP",
+		"region": "Marsabit",
+		"county": "Marsabit",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-waqo-naomi-jillo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/naomi-jilo-waqo/",
+			"name": "Naomi Jilo Waqo",
+			"email": "naomiwaqo@gmail.com",
+			"fetchedAt": "2026-07-16T05:08:42.946Z"
+		}
+	},
+	{
+		"name": "Waweru John Kiarie",
+		"seat": "MP",
+		"region": "Dagoretti South",
+		"county": "Nairobi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-waweru-john-kiarie-0"
+	},
+	{
+		"name": "Wetangula Timothy Wanyonyi",
+		"seat": "MP",
+		"region": "Westlands",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-wetangula-timothy-wanyonyi-0"
+	},
+	{
+		"name": "Yegon Brighton Leonard",
+		"seat": "MP",
+		"region": "Konoin",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-yegon-brighton-leonard",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/yegon-brighton-leonard/",
+			"name": "Yegon Brighton Leonard",
+			"fetchedAt": "2026-07-16T05:09:14.666Z"
+		}
+	},
+	{
+		"name": "Yegon Richard Kipkemoi",
+		"seat": "MP",
+		"region": "Bomet East",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-yegon-richard-kipkemoi",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:01.863Z"
+		}
+	},
+	{
+		"name": "Yussuf Adan Haji",
+		"seat": "MP",
+		"region": "Mandera West",
+		"county": "Mandera",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hon-yussuf-adan-haji-0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/adan-haji-yussuf-2/",
+			"name": "Hon Adan Haji Yussuf",
+			"fetchedAt": "2026-07-16T05:09:19.118Z"
+		}
+	},
+	{
+		"name": "Kimani Francis Kuria",
+		"seat": "MP",
+		"region": "Molo",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/honcpa-kimani-francis-kuria"
+	},
+	{
+		"name": "Gideon Kimaiyo",
+		"seat": "MP",
+		"region": "Keiyo South",
+		"county": "Elgeyo - Marakwet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/hondr-gideon-kimaiyo",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/gideon-kimaiyo/",
+			"name": "Gideon KiMAIYO",
+			"fetchedAt": "2026-07-16T05:09:36.456Z"
+		}
+	},
+	{
+		"name": "Honkaritho Kiili Daniel",
+		"seat": "MP",
+		"region": "Igembe Central",
+		"county": "Meru",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/honkaritho-kiili-daniel",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:20.315Z"
+		}
+	},
+	{
+		"name": "Honmbiuki Japhet Miriti Kareke",
+		"seat": "MP",
+		"region": "Maara",
+		"county": "Tharaka Nithi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/honmbiuki-japhet-miriti-kareke",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:24.427Z"
+		}
+	},
+	{
+		"name": "Rt Moses Fm Wetang'Ula",
+		"seat": "MP",
+		"region": "",
+		"county": "",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:28.485Z"
+		}
+	},
+	{
+		"name": "Vacant",
+		"seat": "MP",
+		"region": "Garissa Township",
+		"county": "Garissa",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/vacant",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:32.615Z"
+		}
+	},
+	{
+		"name": "Vacant",
+		"seat": "MP",
+		"region": "Kandara",
+		"county": "Muranga",
+		"party": "",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-national-assembly/vacant-0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:36.796Z"
+		}
+	},
+	{
+		"name": "Sifuna Edwin Watenya",
+		"seat": "Senator",
+		"region": "Nairobi",
+		"county": "Nairobi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/sifuna-edwin-watenya/",
+			"name": "Sifuna Edwin Watenya",
+			"fetchedAt": "2026-07-16T05:09:46.696Z"
+		}
+	},
+	{
+		"name": "Khalwale Boni",
+		"seat": "Senator",
+		"region": "Kakamega",
+		"county": "Kakamega",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:40.975Z"
+		}
+	},
+	{
+		"name": "Stewart Madzayo",
+		"seat": "Senator",
+		"region": "Kilifi",
+		"county": "Kilifi",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/stewart-mwachiru-shadrack-madzayo/",
+			"name": "Stewart Mwachiru Shadrack Madzayo",
+			"email": "smadzayo@gmail.com",
+			"phone": "0722993128",
+			"fetchedAt": "2026-07-16T05:09:51.176Z"
+		}
+	},
+	{
+		"name": "Abdalla Shakilla Mohamed",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "WDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:45.125Z"
+		}
+	},
+	{
+		"name": "Beatrice Akinyi Ogolla",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:49.436Z"
+		}
+	},
+	{
+		"name": "Beth Kalunda Syengo",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:53.605Z"
+		}
+	},
+	{
+		"name": "Betty Batuli Montet",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:35:57.765Z"
+		}
+	},
+	{
+		"name": "Boy Issa Juma",
+		"seat": "Senator",
+		"region": "Kwale",
+		"county": "Kwale",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0"
+	},
+	{
+		"name": "Catherine Muyeka Mumma",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:16.326Z"
+		}
+	},
+	{
+		"name": "Cheburet Kiprono Chemitei",
+		"seat": "Senator",
+		"region": "Baringo",
+		"county": "Baringo",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=0",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:20.386Z"
+		}
+	},
+	{
+		"name": "Cherarkey Samson K",
+		"seat": "Senator",
+		"region": "Nandi",
+		"county": "Nandi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/cherarkey-k-samson/",
+			"name": "Cherarkey K Samson",
+			"fetchedAt": "2026-07-16T05:10:17.465Z"
+		}
+	},
+	{
+		"name": "Cheruiyot Aaron Kipkirui",
+		"seat": "Senator",
+		"region": "Kericho",
+		"county": "Kericho",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1"
+	},
+	{
+		"name": "Chesang Allan Kiprotich",
+		"seat": "Senator",
+		"region": "Trans Nzoia",
+		"county": "Trans Nzoia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/chesang-allan-kiprotich/",
+			"name": "Chesang Allan Kiprotich",
+			"fetchedAt": "2026-07-16T05:10:34.756Z"
+		}
+	},
+	{
+		"name": "Chimera Raphael Mwinzago",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:38.965Z"
+		}
+	},
+	{
+		"name": "Chute Mohamed Said",
+		"seat": "Senator",
+		"region": "Marsabit",
+		"county": "Marsabit",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:43.065Z"
+		}
+	},
+	{
+		"name": "Consolata Nabwire Wakwabubi",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:47.165Z"
+		}
+	},
+	{
+		"name": "Crystal Asige",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:51.306Z"
+		}
+	},
+	{
+		"name": "David Wakoli Wafula",
+		"seat": "Senator",
+		"region": "Bungoma County",
+		"county": "Bungoma County",
+		"party": "(Ford K)",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:55.486Z"
+		}
+	},
+	{
+		"name": "Dullo Fatuma Adan",
+		"seat": "Senator",
+		"region": "Isiolo",
+		"county": "Isiolo",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/dullo-fatuma-adan/",
+			"name": "Dullo Fatuma Adan",
+			"email": "jarunadullo@gmail.com",
+			"phone": "0722339549",
+			"fetchedAt": "2026-07-16T05:10:45.175Z"
+		}
+	},
+	{
+		"name": "Ekomwa James Lomenen",
+		"seat": "Senator",
+		"region": "Turkana",
+		"county": "Turkana",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=1",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/james-lomenen-ekomwa/",
+			"name": "James Lomenen Ekomwa",
+			"email": "elomenen@yahoo.com",
+			"phone": "0726257597",
+			"fetchedAt": "2026-07-16T05:10:48.176Z"
+		}
+	},
+	{
+		"name": "Essy Okenyuri Nyaituga Anyieni",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:36:59.585Z"
+		}
+	},
+	{
+		"name": "Faki Mohamed Mwinyihaji",
+		"seat": "Senator",
+		"region": "Mombasa",
+		"county": "Mombasa",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:03.665Z"
+		}
+	},
+	{
+		"name": "George Mungai Mbugua",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:07.825Z"
+		}
+	},
+	{
+		"name": "Haji Abdul Mohammed",
+		"seat": "Senator",
+		"region": "Garissa",
+		"county": "Garissa",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:11.914Z"
+		}
+	},
+	{
+		"name": "Hamida Ali Kibwana",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:16.126Z"
+		}
+	},
+	{
+		"name": "Hezena M Lemaletian",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "ODM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:20.293Z"
+		}
+	},
+	{
+		"name": "Joe Nyutu",
+		"seat": "Senator",
+		"region": "Muranga",
+		"county": "Muranga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ngugi-joe-joseph-nyutu/",
+			"name": "Ngugi Joe Joseph Nyutu",
+			"fetchedAt": "2026-07-16T05:11:00.051Z"
+		}
+	},
+	{
+		"name": "Joyce Chepkoech Korir",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/joyce-chepkoech-korir/",
+			"name": "Joyce Chepkoech Korir",
+			"email": "joycekorir95@gmail.com",
+			"phone": "0725653945",
+			"fetchedAt": "2026-07-16T05:11:03.062Z"
+		}
+	},
+	{
+		"name": "Kajwang' Moses Otieno",
+		"seat": "Senator",
+		"region": "Homa Bay",
+		"county": "Homa Bay",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/moses-otieno-kajwang/",
+			"name": "Moses Otieno Kajwang&#39;",
+			"fetchedAt": "2026-07-16T05:11:06.031Z"
+		}
+	},
+	{
+		"name": "Kamau Joseph Githuku",
+		"seat": "Senator",
+		"region": "Lamu",
+		"county": "Lamu",
+		"party": "JP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=2",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kamau-joseph-githuku/",
+			"name": "Kamau Joseph Githuku",
+			"fetchedAt": "2026-07-16T05:11:09.172Z"
+		}
+	},
+	{
+		"name": "Karungo Paul Thangwa",
+		"seat": "Senator",
+		"region": "Kiambu",
+		"county": "Kiambu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/karungo-thangwa/",
+			"name": "Karungo Thangwa",
+			"fetchedAt": "2026-07-16T05:37:23.564Z"
+		}
+	},
+	{
+		"name": "Keroche Tabitha Karanja",
+		"seat": "Senator",
+		"region": "Nakuru",
+		"county": "Nakuru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/keroche-tabitha-karanja/",
+			"name": "Keroche Tabitha Karanja",
+			"fetchedAt": "2026-07-16T05:11:13.611Z"
+		}
+	},
+	{
+		"name": "Kiplagat Jackson Mandago",
+		"seat": "Senator",
+		"region": "Uasin Gishu",
+		"county": "Uasin Gishu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kiplagat-jackson-mandago/",
+			"name": "Kiplagat Jackson Mandago",
+			"fetchedAt": "2026-07-16T05:11:16.631Z"
+		}
+	},
+	{
+		"name": "Kisang William Kipkemoi",
+		"seat": "Senator",
+		"region": "Elgeyo Marakwet",
+		"county": "Elgeyo Marakwet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/william-kipkemoi-kisang/",
+			"name": "Hon. William Kipkemoi Kisang",
+			"email": "wkisang@fourtell-eafrica.com",
+			"phone": "0722718482",
+			"links": [
+				"https://www.facebook.com/william.kisang"
+			],
+			"fetchedAt": "2026-07-16T05:11:19.662Z"
+		}
+	},
+	{
+		"name": "Lelegwe Steve Ltumbesi",
+		"seat": "Senator",
+		"region": "Samburu",
+		"county": "Samburu",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3"
+	},
+	{
+		"name": "Maanzo Daniel Kitonga",
+		"seat": "Senator",
+		"region": "Makueni",
+		"county": "Makueni",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/maanzo-daniel-kitonga/",
+			"name": "Maanzo Daniel Kitonga",
+			"fetchedAt": "2026-07-16T05:11:37.112Z"
+		}
+	},
+	{
+		"name": "Methu John Muhia",
+		"seat": "Senator",
+		"region": "Nyandarua",
+		"county": "Nyandarua",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/methu-john-muhia/",
+			"name": "Methu John Muhia",
+			"fetchedAt": "2026-07-16T05:11:40.101Z"
+		}
+	},
+	{
+		"name": "Miraj Abdillahi Abdulrahman",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:37:43.325Z"
+		}
+	},
+	{
+		"name": "Mogeni Erick Okongo",
+		"seat": "Senator",
+		"region": "Nyamira",
+		"county": "Nyamira",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3"
+	},
+	{
+		"name": "Mohamed Abass Sheikh",
+		"seat": "Senator",
+		"region": "Wajir",
+		"county": "Wajir",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=3",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:01.845Z"
+		}
+	},
+	{
+		"name": "Mungatana Danson Buya",
+		"seat": "Senator",
+		"region": "Tana River",
+		"county": "Tana River",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/danson-mungatana/",
+			"name": "Danson Mungatana",
+			"email": "mungatana@wanainchi.com",
+			"phone": "0722411971",
+			"links": [
+				"http://twitter.com/dansonmungatana"
+			],
+			"fetchedAt": "2026-07-16T05:38:05.104Z"
+		}
+	},
+	{
+		"name": "Munyi Alexander Mundigi",
+		"seat": "Senator",
+		"region": "Embu",
+		"county": "Embu",
+		"party": "DP",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:10.426Z"
+		}
+	},
+	{
+		"name": "Murango James Kamau",
+		"seat": "Senator",
+		"region": "Kirinyaga",
+		"county": "Kirinyaga",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/murango-james-kamau/",
+			"name": "Murango James Kamau",
+			"fetchedAt": "2026-07-16T05:12:03.382Z"
+		}
+	},
+	{
+		"name": "Murungi Kathuri",
+		"seat": "Senator",
+		"region": "Meru",
+		"county": "Meru",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/kathuri-murungi/",
+			"name": "Kathuri Murungi",
+			"email": "kathurisouthimenti@gmail.com",
+			"phone": "0721419949",
+			"links": [
+				"https://www.facebook.com/pages/HonKathuri-Murungi-MP-South-Imenti/500968646625406"
+			],
+			"fetchedAt": "2026-07-16T05:12:06.362Z"
+		}
+	},
+	{
+		"name": "Muthama Agnes Kavindu Mbuku",
+		"seat": "Senator",
+		"region": "Machakos",
+		"county": "Machakos",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/agnes-kavindu-muthama/",
+			"name": "Agnes Kavindu Muthama",
+			"fetchedAt": "2026-07-16T05:38:13.664Z"
+		}
+	},
+	{
+		"name": "Mutinda Maureen Tabitha",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:19.066Z"
+		}
+	},
+	{
+		"name": "Mwaruma Johnes M",
+		"seat": "Senator",
+		"region": "Taita Taveta",
+		"county": "Taita Taveta",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:23.155Z"
+		}
+	},
+	{
+		"name": "Mwenda Gataya Mo Fire",
+		"seat": "Senator",
+		"region": "Tharaka Nithi",
+		"county": "Tharaka Nithi",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/mwenda-julius-gataya/",
+			"name": "Mwenda Julius Gataya",
+			"fetchedAt": "2026-07-16T05:38:26.415Z"
+		}
+	},
+	{
+		"name": "Nderitu John Kinyua",
+		"seat": "Senator",
+		"region": "Laikipia",
+		"county": "Laikipia",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4"
+	},
+	{
+		"name": "Nyamu Karen Njeri",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=4",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/karen-nyamu/",
+			"name": "Ms. Karen Nyamu",
+			"fetchedAt": "2026-07-16T05:38:45.245Z"
+		}
+	},
+	{
+		"name": "Oginga Oburu",
+		"seat": "Senator",
+		"region": "Siaya",
+		"county": "Siaya",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/oginga-oburu/",
+			"name": "Oginga Oburu",
+			"fetchedAt": "2026-07-16T05:12:31.211Z"
+		}
+	},
+	{
+		"name": "Oketch Eddy Gicheru",
+		"seat": "Senator",
+		"region": "Migori",
+		"county": "Migori",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/oketch-eddy-gicheru/",
+			"name": "Oketch Eddy Gicheru",
+			"fetchedAt": "2026-07-16T05:12:34.141Z"
+		}
+	},
+	{
+		"name": "Okoiti Andrew Omtatah",
+		"seat": "Senator",
+		"region": "Busia",
+		"county": "Busia",
+		"party": "NRA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:50.587Z"
+		}
+	},
+	{
+		"name": "Olekina Ledama",
+		"seat": "Senator",
+		"region": "Narok",
+		"county": "Narok",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ledama-olekina/",
+			"name": "Ledama Olekina",
+			"links": [
+				"https://www.facebook.com/ledamaolekina",
+				"http://www.ledama.com/",
+				"http://twitter.com/ledama"
+			],
+			"fetchedAt": "2026-07-16T05:12:38.642Z"
+		}
+	},
+	{
+		"name": "Omar Mariam Sheikh",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDM",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:54.775Z"
+		}
+	},
+	{
+		"name": "Onyonka Richard Momoima",
+		"seat": "Senator",
+		"region": "Kisii",
+		"county": "Kisii",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/onyonka-richard-momoima/",
+			"name": "Onyonka Richard Momoima",
+			"fetchedAt": "2026-07-16T05:12:43.152Z"
+		}
+	},
+	{
+		"name": "Osotsi Godfrey Atieno",
+		"seat": "Senator",
+		"region": "Vihiga",
+		"county": "Vihiga",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/osotsi-godfrey-otieno/",
+			"name": "Osotsi Godfrey Otieno",
+			"fetchedAt": "2026-07-16T05:12:46.132Z"
+		}
+	},
+	{
+		"name": "Pesi Peris Tobiko",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/peris-pesi-tobiko/",
+			"name": "Peris Pesi Tobiko",
+			"email": "tobppp68@yahoo.com",
+			"phone": "0720292150",
+			"links": [
+				"https://www.facebook.com/PerisPesiTobiko",
+				"http://twitter.com/pesitobiko"
+			],
+			"fetchedAt": "2026-07-16T05:12:49.142Z"
+		}
+	},
+	{
+		"name": "Margaret Jepkoech Kamar",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "JP",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:38:58.956Z"
+		}
+	},
+	{
+		"name": "Tom Odhiambo Ojienda",
+		"seat": "Senator",
+		"region": "Kisumu",
+		"county": "Kisumu",
+		"party": "ODM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=5",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ojienda-tom-odhiambo/",
+			"name": "Ojienda Tom Odhiambo",
+			"fetchedAt": "2026-07-16T05:12:53.602Z"
+		}
+	},
+	{
+		"name": "Recha Julius Murgor",
+		"seat": "Senator",
+		"region": "West Pokot",
+		"county": "West Pokot",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/recha-julius-murgor/",
+			"name": "Recha Julius Murgor",
+			"fetchedAt": "2026-07-16T05:12:56.561Z"
+		}
+	},
+	{
+		"name": "Roba Ali Ibrahim",
+		"seat": "Senator",
+		"region": "Mandera",
+		"county": "Mandera",
+		"party": "UDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/ali-ibrahim-roba/",
+			"name": "Ali Ibrahim Roba",
+			"fetchedAt": "2026-07-16T05:12:59.532Z"
+		}
+	},
+	{
+		"name": "Seki Lenku Ole Kanar",
+		"seat": "Senator",
+		"region": "Kajiado",
+		"county": "Kajiado",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:39:03.146Z"
+		}
+	},
+	{
+		"name": "Veronica Waheti Nduati",
+		"seat": "Senator",
+		"region": "Nominated",
+		"county": "Nominated",
+		"party": "UDA",
+		"elected": false,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "not-found",
+			"fetchedAt": "2026-07-16T05:39:07.276Z"
+		}
+	},
+	{
+		"name": "Wakili Hillary Kiprotich Sigei",
+		"seat": "Senator",
+		"region": "Bomet",
+		"county": "Bomet",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/sigei-hillary-kiprotich/",
+			"name": "Sigei Hillary Kiprotich",
+			"fetchedAt": "2026-07-16T05:39:10.484Z"
+		}
+	},
+	{
+		"name": "Wamatinga Wahome",
+		"seat": "Senator",
+		"region": "Nyeri",
+		"county": "Nyeri",
+		"party": "UDA",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6",
+		"mzalendo": {
+			"status": "found",
+			"url": "https://info.mzalendo.com/person/wahome-wamatinga/",
+			"name": "Wahome Wamatinga",
+			"fetchedAt": "2026-07-16T05:13:06.971Z"
+		}
+	},
+	{
+		"name": "Wambua Enoch Kiio",
+		"seat": "Senator",
+		"region": "Kitui",
+		"county": "Kitui",
+		"party": "WDM",
+		"elected": true,
+		"sourceUrl": "https://www.parliament.go.ke/the-senate/senators?page=6"
+	}
+]
