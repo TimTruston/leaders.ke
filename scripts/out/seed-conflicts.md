@@ -1,6 +1,6 @@
 # Scraped 13th-Parliament seed: conflicts and duplicates
 
-Generated 2026-07-16T15:56:40.819Z from `seed-input-roster.snapshot.json` (383 roster rows), `scraped-wikipedia-13th.json`, `scraped-mps-13th.json`.
+Generated 2026-07-16T18:04:36.689Z from `seed-input-roster.snapshot.json` (383 roster rows), `scraped-wikipedia-13th.json`, `scraped-mps-13th.json`.
 
 ## Summary
 
@@ -70,7 +70,7 @@ Generated 2026-07-16T15:56:40.819Z from `seed-input-roster.snapshot.json` (383 r
 
 | Name | Seat | Region | Detail |
 | --- | --- | --- | --- |
-| Koech Kipngetich Victor | MP | Chepalungu | user #210 already owns victor-koech@seed.leaders.ke — seeding would attach this seat to their account; skipped |
+| Koech Kipngetich Victor | MP | Chepalungu | user #211 already owns victor-koech@seed.leaders.ke — seeding would attach this seat to their account; skipped |
 
 ## party-mismatch (6)
 
