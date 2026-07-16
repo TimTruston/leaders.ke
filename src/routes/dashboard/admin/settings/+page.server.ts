@@ -18,17 +18,12 @@ export const actions: Actions = {
 
 		const otpCooldownSeconds = Number(form.get('otpCooldownSeconds'));
 		const otpDailyCap = Number(form.get('otpDailyCap'));
-		const aspirant = Number(form.get('aspirant'));
-		const influencer = Number(form.get('influencer'));
-		const mobilizer = Number(form.get('mobilizer'));
 		const pageSize = Number(form.get('pageSize'));
 
+		// Lifetime invite limits live on the Packages page (part of what a package buys).
 		for (const [label, value] of [
 			['Cooldown', otpCooldownSeconds],
 			['Daily cap', otpDailyCap],
-			['Aspirant limit', aspirant],
-			['Influencer limit', influencer],
-			['Mobilizer limit', mobilizer],
 			['Page size', pageSize]
 		] as const) {
 			if (!Number.isInteger(value) || value < 1) return fail(400, { error: `${label} must be a whole number of at least 1.` });
@@ -50,7 +45,6 @@ export const actions: Actions = {
 			.set({
 				otpCooldownSeconds,
 				otpDailyCap,
-				inviteLimits: { aspirant, influencer, mobilizer },
 				blockedSlugs,
 				pageSize,
 				updatedAt: new Date()

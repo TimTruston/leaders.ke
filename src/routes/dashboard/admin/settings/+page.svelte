@@ -63,45 +63,7 @@ Applies everywhere a code/link is sent
 			</div>
 		</div>
 
-		<div class="rounded-2xl border border-border bg-surface p-5">
-			<h2 class="font-semibold text-heading">Lifetime invites per campaign</h2>
-			<p class="mt-1 text-xs text-muted">
-				Total invites a campaign may ever send, by subscription tier. <br/>
-				No per-day limit for unique invitees.
-			</p>
-			<div class="mt-2 grid gap-3 sm:grid-cols-3">
-				<label class="block">
-					<span class="text-xs font-medium text-muted">Aspirant</span>
-					<input
-						type="number"
-						name="aspirant"
-						min="1"
-						value={data.settings.inviteLimits.aspirant}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-					/>
-				</label>
-				<label class="block">
-					<span class="text-xs font-medium text-muted">Influencer</span>
-					<input
-						type="number"
-						name="influencer"
-						min="1"
-						value={data.settings.inviteLimits.influencer}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-					/>
-				</label>
-				<label class="block">
-					<span class="text-xs font-medium text-muted">Mobilizer</span>
-					<input
-						type="number"
-						name="mobilizer"
-						min="1"
-						value={data.settings.inviteLimits.mobilizer}
-						class="mt-1 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-					/>
-				</label>
-			</div>
-		</div>
+		<!-- Lifetime invite limits live on the Packages page (part of what a package buys). -->
 
 		<div class="rounded-2xl border border-border bg-surface p-5">
 			<h2 class="font-semibold text-heading">List pagination</h2>

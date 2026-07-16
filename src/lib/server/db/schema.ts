@@ -585,6 +585,28 @@ export const pricing = pgTable('pricing', {
     .where(sql`${t.activeTo} is null`),
 ]);
 
+// What each package INCLUDES (the caps), one row per (band, tier) — prices live in
+// `pricing` above. Seeded from src/lib/data/packages.json; admin-editable on
+// /dashboard/admin/packages. null = unlimited.
+export type PackageFeatures = {
+  pages: number | null;
+  managers: number | null;
+  ambassadors: number | null;
+  subscriptions: number | null;
+  storageMb: number | null;
+  eventsPerWeek: number | null;
+};
+
+export const packages = pgTable('packages', {
+  id: serial('id').primaryKey(),
+  band: priceBandEnum('band').notNull(),
+  tier: subscriptionTierEnum('tier').notNull(),
+  features: jsonb('features').$type<PackageFeatures>().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex('one_package_per_band_tier').on(t.band, t.tier),
+]);
+
 // 16. PAYMENTS (fix 5 — immutable ledger of actual charge events; subscriptions/credits reference these)
 export const paymentPurposeEnum = pgEnum('payment_purpose', ['subscription', 'credits', 'feature', 'donation']);
 export const paymentStatusEnum = pgEnum('payment_status', ['pending', 'success', 'failed', 'reversed']);

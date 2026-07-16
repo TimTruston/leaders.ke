@@ -35,6 +35,7 @@ import { seedPillarTemplates } from './lib/seed-pillar-templates';
 import { seedIssues } from './lib/seed-issues';
 import { seedNews } from './lib/seed-news';
 import { seedPlatformSettings } from './lib/seed-platform-settings';
+import { seedPackages } from './lib/seed-packages';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(process.env.DATABASE_URL, { max: 1 });
@@ -54,7 +55,8 @@ const { values } = parseArgs({
 		'pillar-templates': { type: 'boolean', default: false },
 		issues: { type: 'boolean', default: false },
 		news: { type: 'boolean', default: false },
-		'platform-settings': { type: 'boolean', default: false }
+		'platform-settings': { type: 'boolean', default: false },
+		packages: { type: 'boolean', default: false }
 	},
 	strict: true
 });
@@ -86,6 +88,7 @@ if (willWipe && !yes) {
 if (willWipe) await resetSeedData(db);
 
 if (runAll || values['platform-settings']) await seedPlatformSettings(db);
+if (runAll || values.packages) await seedPackages(db);
 if (runAll || values['system-user']) await getOrCreateSystemUser(db);
 if (runAll || values.positions) await seedPositions(db);
 if (runAll || values.parties) await seedParties(db);

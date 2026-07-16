@@ -34,6 +34,7 @@ const SEED_MANAGED_TABLES = [
 	'alliance_memberships',
 	'subscriptions',
 	'pricing',
+	'packages',
 	'payments',
 	'wallets',
 	'credit_transactions',
