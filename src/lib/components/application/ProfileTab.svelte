@@ -1,22 +1,26 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
+	import ImageCropper from '$lib/components/ImageCropper.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
 	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
 	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
 	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
 	// shapes `data` to this contract and hosts the actions this form posts to
-	// (relative ?/action URLs).
+	// (relative ?/action URLs). Documentation (photo + IEBC certificate) lives here
+	// too now, uploaded via a separate ?/upload action.
 	type TabData = {
 		positions: { id: number; title: string; region: string }[];
 		// Absent on the claim family (party changes belong to the verified profile's
 		// own admins) — the Party select only renders when provided.
 		parties?: { id: number; name: string }[];
+		photoUrl?: string | null;
+		iebcCertificateUrl?: string | null;
 		existingExperience: { id: number; type: string; title: string; institution: string; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
 		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
-		application?: { profile: { missing: string[] } } | null;
+		application?: { profile: { missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
 	let { data, form }: { data: TabData; form: any } = $props();
 
@@ -31,15 +35,46 @@
 	// Application checklist (from the layout load): a required-field label still in this
 	// set is unfilled → its `*` stays red; once saved and out of the set, `*` goes muted.
 	// A failed save's missingFields (field names, not labels) redden the same `*`.
+	// Photo/IEBC come from the documentation slice (uploaded, not part of ?/save).
 	const appMissing = $derived(new Set(data.application?.profile.missing ?? []));
+	const docMissing = $derived(new Set(data.application?.documentation?.missing ?? []));
 	const FIELD_BY_LABEL: Record<string, string> = {
 		'First name': 'firstName',
 		'Other names': 'otherNames',
 		Bio: 'bio',
 		'Elective position': 'positionId'
 	};
-	const starRed = (label: string) => appMissing.has(label) || missing.has(FIELD_BY_LABEL[label] ?? '');
+	const starRed = (label: string) =>
+		appMissing.has(label) || docMissing.has(label) || missing.has(FIELD_BY_LABEL[label] ?? '');
 	const starClass = (label: string) => (starRed(label) ? 'text-red-500' : 'text-muted');
+
+	// Photo + IEBC certificate upload: a separate ?/upload form (multipart) that
+	// auto-submits when a file is picked. The photo passes through the free-crop
+	// modal first; the PDF certificate goes straight up. Both file inputs live in
+	// the visual layout but belong to #docUpload via their form= attribute.
+	let uploading = $state(false);
+	let uploadFormEl: HTMLFormElement | undefined = $state();
+	let photoInput: HTMLInputElement | undefined = $state();
+	let cropping = $state<File | null>(null);
+
+	function onPhotoChange(e: Event) {
+		const input = e.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+		if (!file) return;
+		input.value = ''; // the cropped result replaces it on confirm
+		cropping = file;
+	}
+	function onCropConfirm(cropped: File) {
+		cropping = null;
+		if (!photoInput) return;
+		const dt = new DataTransfer();
+		dt.items.add(cropped);
+		photoInput.files = dt.files;
+		uploadFormEl?.requestSubmit();
+	}
+	function onCertificateChange(e: Event) {
+		if ((e.currentTarget as HTMLInputElement).files?.[0]) uploadFormEl?.requestSubmit();
+	}
 
 	let adding = $state<'leadership' | 'professional' | 'education' | null>(null);
 	function toggleAdding(type: 'leadership' | 'professional' | 'education') {
@@ -159,8 +194,29 @@
 		</div>
 	{/if}
 	<!-- Verification submission ("Submit Application") now lives in the layout,
-	top-right — it's gated on Profile/Contacts/Team/Documentation together, not just
-	this page, so it can't live inside a single tab. -->
+	top-right — it's gated on Profile/Contacts/Team together, not just this page,
+	so it can't live inside a single tab. -->
+
+	{#if form?.uploaded}
+		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">Uploaded.</div>
+	{/if}
+
+	<!-- Photo + certificate uploads post here; the file inputs below reference it via
+	form="docUpload" so they can sit inside the visual layout without nesting forms. -->
+	<form
+		id="docUpload"
+		method="post"
+		action="?/upload"
+		enctype="multipart/form-data"
+		bind:this={uploadFormEl}
+		use:enhance={() => {
+			uploading = true;
+			return async ({ update }) => {
+				uploading = false;
+				await update({ reset: false });
+			};
+		}}
+	></form>
 
 	<form
 		method="post"
@@ -185,31 +241,126 @@
 		<input type="hidden" name="removedExperienceIds" value={JSON.stringify(removedExperienceIds)} />
 		<input type="hidden" name="removedLeadershipIds" value={JSON.stringify(removedLeadershipIds)} />
 
-		<div class="grid gap-5 sm:grid-cols-2">
-			<label class="block">
-				<span class="text-sm font-medium text-heading">First name <span class={starClass('First name')}>*</span></span>
-				<input
-					type="text"
-					name="firstName"
-					required
-					value={data.form.firstName}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
-				/>
-			</label>
-			<label class="block">
-				<span class="text-sm font-medium text-heading">Other names <span class={starClass('Other names')}>*</span></span>
-				<input
-					type="text"
-					name="otherNames"
-					required
-					value={data.form.otherNames}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
-				/>
-			</label>
+		<!-- Left: name, party, IEBC certificate. Right end: photo. Both columns share a
+		fixed height; the left column spreads its field groups with space-between. -->
+		<div class="flex flex-col gap-5 sm:flex-row">
+			<div class="flex flex-1 flex-col gap-5 sm:h-42 sm:justify-between sm:gap-0">
+				<div class="grid gap-5 sm:grid-cols-2">
+					<label class="block">
+						<span class="text-sm font-medium text-heading">First name <span class={starClass('First name')}>*</span></span>
+						<input
+							type="text"
+							name="firstName"
+							required
+							value={data.form.firstName}
+							class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
+						/>
+					</label>
+					<label class="block">
+						<span class="text-sm font-medium text-heading">Other names <span class={starClass('Other names')}>*</span></span>
+						<input
+							type="text"
+							name="otherNames"
+							required
+							value={data.form.otherNames}
+							class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
+						/>
+					</label>
+				</div>
+				{#if missing.has('firstName') || missing.has('otherNames')}
+					<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+				{/if}
+
+				<div class="grid gap-5 sm:grid-cols-2">
+					{#if data.parties}
+						<label class="block">
+							<span class="text-sm font-medium text-heading">Party</span>
+							<select
+								name="partyId"
+								value={data.form.partyId ?? ''}
+								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+							>
+								<option value="">Independent (no party)</option>
+								{#each data.parties as party (party.id)}
+									<option value={party.id}>{party.name}</option>
+								{/each}
+							</select>
+						</label>
+					{/if}
+
+					<!-- IEBC certificate: input-styled file field, auto-uploads on pick. -->
+					<div class="block">
+						<span class="text-sm font-medium text-heading">
+							IEBC Certificate (PDF) <span class={starClass('IEBC Certificate of Clearance')}>*</span>
+						</span>
+						<label
+							class="mt-1.5 flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-2 text-sm transition hover:bg-surface-2"
+						>
+							{#if data.iebcCertificateUrl}
+								<a
+									href={data.iebcCertificateUrl}
+									target="_blank"
+									rel="noopener"
+									onclick={(e) => e.stopPropagation()}
+									class="truncate text-primary hover:underline"
+								>
+									View uploaded PDF
+								</a>
+							{:else}
+								<span class="truncate text-muted">No certificate yet</span>
+							{/if}
+							<span class="shrink-0 rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-heading">
+								{data.iebcCertificateUrl ? 'Replace' : 'Upload'}
+							</span>
+							<input
+								type="file"
+								form="docUpload"
+								name="iebc-certificate"
+								accept="application/pdf"
+								disabled={uploading}
+								onchange={onCertificateChange}
+								class="sr-only"
+							/>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right side: fixed square photo (a fixed size beats aspect-ratio here, which
+			the flex column was compressing). -->
+			<div class="flex shrink-0 flex-col">
+				<span class="text-sm font-medium text-heading">Photo <span class={starClass('Photo')}>*</span></span>
+				<label
+					class="group relative mt-1.5 block aspect-square w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 sm:aspect-auto sm:size-36"
+				>
+					{#if data.photoUrl}
+						<img src={data.photoUrl} alt="Leader" class="h-full w-full object-cover" />
+						<span
+							class="absolute inset-x-0 bottom-0 bg-black/55 py-1.5 text-center text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+						>
+							Change photo
+						</span>
+					{:else}
+						<span class="flex h-full w-full flex-col items-center justify-center gap-1 text-center text-xs font-medium text-muted">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-7">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+							</svg>
+							Upload photo
+						</span>
+					{/if}
+					<input
+						type="file"
+						form="docUpload"
+						name="photo"
+						accept="image/*"
+						disabled={uploading}
+						bind:this={photoInput}
+						onchange={onPhotoChange}
+						class="sr-only"
+					/>
+				</label>
+			</div>
 		</div>
-		{#if missing.has('firstName') || missing.has('otherNames')}
-			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
-		{/if}
 
 		{#if data.form.verified}
 			<label class="block">
@@ -239,22 +390,6 @@
 		</div>
 		{#if missing.has('positionId')}
 			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
-		{/if}
-
-		{#if data.parties}
-			<label class="block">
-				<span class="text-sm font-medium text-heading">Party</span>
-				<select
-					name="partyId"
-					value={data.form.partyId ?? ''}
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				>
-					<option value="">Independent (no party)</option>
-					{#each data.parties as party (party.id)}
-						<option value={party.id}>{party.name}</option>
-					{/each}
-				</select>
-			</label>
 		{/if}
 
 		<div class="block">
@@ -515,3 +650,7 @@
 		</div>
 	</form>
 </div>
+
+{#if cropping}
+	<ImageCropper file={cropping} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
+{/if}

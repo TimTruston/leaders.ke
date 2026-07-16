@@ -8,15 +8,19 @@ import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
+import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
+import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
 // Election day anchors every 2027 aspirant profile's term start.
 const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
+
+// The campaign's public documents, uploaded from the Profile tab onto the leaders row.
+const DOC_COLUMN_BY_KIND = { photo: 'photoUrl', 'iebc-certificate': 'iebcCertificateUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
@@ -100,6 +104,9 @@ export const load: PageServerLoad = async (event) => {
 			hasLeader: !!ctx,
 			verified: !!ctx?.leader.verifiedAt
 		},
+		// Documentation (photo + IEBC certificate) is edited on this tab now.
+		photoUrl: ctx?.leader.photoUrl ?? null,
+		iebcCertificateUrl: ctx?.leader.iebcCertificateUrl ?? null,
 		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
 	};
 };
@@ -307,6 +314,32 @@ export const actions: Actions = {
 		}
 
 		return { saved: true };
+	},
+
+	// Photo + IEBC certificate upload (moved here from the old Documentation tab).
+	// Picking a file auto-submits; the image passes through a crop first, the PDF
+	// goes straight up. Files are UUID-named, so re-uploads never collide.
+	upload: async (event) => {
+		const { ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+
+		const updates: Partial<Record<(typeof DOC_COLUMN_BY_KIND)[keyof typeof DOC_COLUMN_BY_KIND], string>> = {};
+		for (const kind of Object.keys(DOC_COLUMN_BY_KIND) as (keyof typeof DOC_COLUMN_BY_KIND)[]) {
+			const file = form.get(kind);
+			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
+			try {
+				updates[DOC_COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+			} catch (err) {
+				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+			}
+		}
+		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
+
+		await db
+			.update(leaders)
+			.set({ ...updates, updatedAt: new Date() })
+			.where(eq(leaders.id, ctx.leader.id));
+		return { uploaded: true };
 	},
 
 	// "Just testing" escape hatch (mirrors the claim form's Delete): soft-deletes

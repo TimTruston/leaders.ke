@@ -36,11 +36,11 @@
 			items: [
 				{
 					q: 'How do I get on leaders.ke?',
-					a: 'If a profile for you already exists, claim it via "Claim this profile" on that page. Otherwise create one: hit Create a Profile, fill the Profile, Contacts, Documentation, and Team tabs (your sign-off sits on the Team tab under your own entry), and submit for verification.'
+					a: 'If a profile for you already exists, claim it via "Claim this profile" on that page. Otherwise create one: hit Create a Profile, fill the Profile tab (including your photo and IEBC certificate), the Contacts tab, and the Team tab (where your sign-off sits under your own entry), then submit for verification.'
 				},
 				{
 					q: 'What does verification involve?',
-					a: 'You upload your ID, photo, and IEBC Certificate of Clearance, name your role and national ID in the sign-off on the Team tab, and an admin reviews the application. Rejections come back with the reason so you know what to fix.'
+					a: 'You upload your photo and IEBC Certificate of Clearance on the Profile tab, your ID and role in the sign-off on the Team tab, and an admin reviews the application. Rejections come back with the reason so you know what to fix.'
 				},
 				{
 					q: 'What do I get once verified?',

@@ -133,29 +133,24 @@
 					{ href: '/dashboard/account', label: 'Account' }
 				];
 			// Application flow (reached via "Launch a Campaign") and claims share
-			// Profile/Contacts/Documentation. The applicant's sign-off attestation is
-			// embedded on the Team tab (under their own manager entry), so apply has no
-			// separate Signoff tab; Team needs 2+ managers and a completed sign-off
+			// Profile/Contacts. The photo + IEBC certificate live on the Profile tab
+			// now (the Documentation tab is gone). The applicant's sign-off attestation
+			// is embedded on the Team tab (under their own manager entry), so apply has
+			// no separate Signoff tab; Team needs 2+ managers and a completed sign-off
 			// before an application can be submitted. Claims have no Team tab
 			// (management belongs to the profile's admins), so they keep a standalone
 			// Signoff tab. Everything beyond Profile/Contacts hangs off the saved
-			// profile, so those tabs only appear once one exists.
+			// profile, so Team only appears once one exists.
 			case 'apply':
 				return [
 					{ href: `${base}/profile`, label: 'Profile' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
-					...(data.leaderContext
-						? [
-								{ href: `${base}/documentation`, label: 'Documentation' },
-								{ href: `${base}/team`, label: 'Team' }
-							]
-						: [])
+					...(data.leaderContext ? [{ href: `${base}/team`, label: 'Team' }] : [])
 				];
 			case 'claim':
 				return [
 					{ href: `${base}/profile`, label: 'Profile' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
-					{ href: `${base}/documentation`, label: 'Documentation' },
 					{ href: `${base}/signoff`, label: 'Signoff' }
 				];
 			case 'campaign':
@@ -194,14 +189,16 @@
 		profile: 'profile',
 		contacts: 'contacts',
 		team: 'team',
-		documentation: 'documentation',
 		signoff: 'signoff'
 	};
 	const tabIncomplete = (href: string) => {
 		if (!data.application) return false;
 		const seg = href.split('/').pop() ?? '';
-		// The Team tab now hosts the embedded sign-off, so it flags when either the
-		// team or the sign-off is still incomplete.
+		// The Profile tab now hosts the photo + IEBC certificate (old Documentation
+		// tab), so it flags when either the profile fields or documentation are short.
+		if (seg === 'profile') return !data.application.profile.complete || !data.application.documentation.complete;
+		// The Team tab hosts the embedded sign-off, so it flags when either the team
+		// or the sign-off is still incomplete.
 		if (seg === 'team') return !data.application.team.complete || !data.application.signoff.complete;
 		const key = applyTabKeys[seg];
 		return !!(key && !data.application[key].complete);
