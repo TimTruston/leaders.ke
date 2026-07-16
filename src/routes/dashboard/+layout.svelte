@@ -132,14 +132,14 @@
 					})),
 					{ href: '/dashboard/account', label: 'Account' }
 				];
-			// Application flow (reached via "Launch a Campaign") and claims share the
-			// same 4 tabs: no Overview, and Team needs 2+ managers before an application
-			// can be submitted. Team/Documentation show their own "save your profile
-			// first" prompt until a leader row exists.
-			// Claims have no Team tab (management belongs to the profile's admins);
-			// Signoff (the applicant's attestation) closes both flows. Everything
-			// beyond Profile/Contacts hangs off the saved profile, so those tabs only
-			// appear once one exists.
+			// Application flow (reached via "Launch a Campaign") and claims share
+			// Profile/Contacts/Documentation. The applicant's sign-off attestation is
+			// embedded on the Team tab (under their own manager entry), so apply has no
+			// separate Signoff tab; Team needs 2+ managers and a completed sign-off
+			// before an application can be submitted. Claims have no Team tab
+			// (management belongs to the profile's admins), so they keep a standalone
+			// Signoff tab. Everything beyond Profile/Contacts hangs off the saved
+			// profile, so those tabs only appear once one exists.
 			case 'apply':
 				return [
 					{ href: `${base}/profile`, label: 'Profile' },
@@ -147,8 +147,7 @@
 					...(data.leaderContext
 						? [
 								{ href: `${base}/documentation`, label: 'Documentation' },
-								{ href: `${base}/team`, label: 'Team' },
-								{ href: `${base}/signoff`, label: 'Signoff' }
+								{ href: `${base}/team`, label: 'Team' }
 							]
 						: [])
 				];
@@ -199,8 +198,13 @@
 		signoff: 'signoff'
 	};
 	const tabIncomplete = (href: string) => {
-		const key = applyTabKeys[href.split('/').pop() ?? ''];
-		return !!(key && data.application && !data.application[key].complete);
+		if (!data.application) return false;
+		const seg = href.split('/').pop() ?? '';
+		// The Team tab now hosts the embedded sign-off, so it flags when either the
+		// team or the sign-off is still incomplete.
+		if (seg === 'team') return !data.application.team.complete || !data.application.signoff.complete;
+		const key = applyTabKeys[seg];
+		return !!(key && !data.application[key].complete);
 	};
 
 	// Every still-missing field across all four tabs — powers the Submit Application

@@ -1,12 +1,18 @@
 import { fail } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, invites, managers, users } from '$lib/server/db/schema';
+import { ambassadors, invites, leaders, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites, revokeInvite, tryDirectGrant } from '$lib/server/invites';
 import { fullName } from '$lib/server/leader';
+import { isCampaignRole } from '$lib/utils/campaignRoles';
+import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
+
+// The applicant's own ID images, embedded on this tab's sign-off block under
+// their manager entry (the images live on the leaders row).
+const COLUMN_BY_KIND = { 'id-front': 'idFrontUrl', 'id-back': 'idBackUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
 	// A blank application is bounced back to its Profile tab (requireLeader) - the
@@ -30,9 +36,24 @@ export const load: PageServerLoad = async (event) => {
 		isCampaignAdmin(domainUser.id, ctx)
 	]);
 
+	// The sign-off block (embedded under the current user's manager entry) shows
+	// only while the campaign is still an application — it's the attestation the
+	// verification submit reads. Role + national ID live on the user's manager row.
+	const mineRoles = (managerRows.find((r) => r.managers.userId === domainUser.id)?.managers.roles ?? {}) as {
+		title?: string;
+		nationalId?: string;
+	};
+
 	return {
 		id: domainUser.id,
 		isAdmin,
+		verified: !!ctx.leader.verifiedAt,
+		signoff: {
+			myRole: mineRoles.title ?? '',
+			nationalId: mineRoles.nationalId ?? '',
+			idFrontUrl: ctx.leader.idFrontUrl,
+			idBackUrl: ctx.leader.idBackUrl
+		},
 		managers: managerRows.map((r) => ({
 			id: r.managers.id,
 			userId: r.managers.userId,
@@ -53,6 +74,53 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+	// Sign-off: the current user's attestation, embedded on this tab. Role +
+	// national ID save onto their manager row's jsonb; their ID images go on the
+	// leaders row (idFrontUrl/idBackUrl).
+	saveMyDetails: async (event) => {
+		const { domainUser, ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const title = String(form.get('myRole') ?? '').trim();
+		const nationalId = String(form.get('nationalId') ?? '').trim();
+		if (!isCampaignRole(title)) return fail(400, { error: 'Pick your role in this campaign.' });
+		if (!nationalId) return fail(400, { error: 'Enter your national ID number.' });
+
+		const [mine] = await db
+			.select({ id: managers.id, roles: managers.roles })
+			.from(managers)
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
+		if (!mine) return fail(403, { error: 'Only team members can save their details.' });
+
+		await db
+			.update(managers)
+			.set({ roles: { ...((mine.roles ?? {}) as Record<string, unknown>), title, nationalId } })
+			.where(eq(managers.id, mine.id));
+		return { detailsSaved: true };
+	},
+
+	upload: async (event) => {
+		const { ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+
+		const updates: Partial<Record<(typeof COLUMN_BY_KIND)[keyof typeof COLUMN_BY_KIND], string>> = {};
+		for (const kind of Object.keys(COLUMN_BY_KIND) as (keyof typeof COLUMN_BY_KIND)[]) {
+			const file = form.get(kind);
+			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
+			try {
+				updates[COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+			} catch (err) {
+				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+			}
+		}
+		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
+
+		await db
+			.update(leaders)
+			.set({ ...updates, updatedAt: new Date() })
+			.where(eq(leaders.id, ctx.leader.id));
+		return { uploaded: true };
+	},
+
 	inviteManager: async (event) => {
 		const { domainUser, ctx } = await requireLeader(event);
 		if (!(await isCampaignAdmin(domainUser.id, ctx))) {

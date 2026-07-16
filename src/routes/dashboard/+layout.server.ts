@@ -116,8 +116,8 @@ export const load: LayoutServerLoad = async (event) => {
 				[!ev.documentation?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 			]),
 			signoff: toTab([
-				[!ev.signoff?.myRole, 'My role'],
-				[!ev.signoff?.nationalId, 'My National ID'],
+				[!ev.signoff?.myRole, 'Your role'],
+				[!ev.signoff?.nationalId, 'Your National ID'],
 				[!ev.signoff?.idFrontUrl, 'ID front'],
 				[!ev.signoff?.idBackUrl, 'ID back']
 			])
@@ -166,8 +166,8 @@ export const load: LayoutServerLoad = async (event) => {
 		// The applicant's attestation: role + national ID (their manager row) and
 		// their own ID images (leaders row columns, written from the Signoff tab).
 		const signoffMissing = [
-			[!myRoles.title, 'My role'],
-			[!myRoles.nationalId, 'My National ID'],
+			[!myRoles.title, 'Your Role'],
+			[!myRoles.nationalId, 'Your National ID'],
 			[!ctx.leader.idFrontUrl, 'ID front'],
 			[!ctx.leader.idBackUrl, 'ID back']
 		];

@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import SignoffTab from '$lib/components/application/SignoffTab.svelte';
 
 	// Shared across the campaign (/dashboard/[slug]) and apply (/dashboard/apply/[id])
 	// route families - each family's +page.server.ts shapes `data` and hosts the
 	// actions this form posts to (relative ?/action URLs). Only linked once a
 	// profile exists; a blank application's load bounces back to its Profile tab.
 	let { data, form }: { data: any; form: any } = $props();
+
+	// The applicant's sign-off (role, national ID, ID images) is embedded under
+	// their own manager entry while the campaign is still an application — once
+	// verified there's nothing left to attest, so it drops away.
+	const showSignoff = $derived(!data.verified);
 </script>
 
 <svelte:head><title>Team — leaders.ke</title></svelte:head>
@@ -85,32 +91,40 @@
 
 		<ul class="mt-4 space-y-3">
 			{#each data.managers as member (member.id)}
-				<li class="flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-4">
-					<div class="min-w-0">
-						<p class="truncate font-medium text-heading">
-							{member.name}
-							{#if member.admin}
-								<span class="ml-1 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">
-									Admin
-								</span>
+				<li class="rounded-2xl border border-border bg-surface p-4">
+					<div class="flex items-center justify-between gap-3">
+						<div class="min-w-0">
+							<p class="truncate font-medium text-heading">
+								{member.name}
+								{#if member.admin}
+									<span class="ml-1 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">
+										Admin
+									</span>
+								{/if}
+							</p>
+							<p class="truncate text-xs text-muted">{member.email}</p>
+						</div>
+						{#if member.active}
+							{#if data.isAdmin}
+								<form method="post" action="?/removeManager" use:enhance>
+									<input type="hidden" name="memberId" value={member.id} />
+									<button
+										type="submit"
+										class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
+									>
+										{data.id == member.userId ? 'Leave' : 'Remove'}
+									</button>
+								</form>
 							{/if}
-						</p>
-						<p class="truncate text-xs text-muted">{member.email}</p>
-					</div>
-					{#if member.active}
-						{#if data.isAdmin}
-							<form method="post" action="?/removeManager" use:enhance>
-								<input type="hidden" name="memberId" value={member.id} />
-								<button
-									type="submit"
-									class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
-								>
-									{data.id == member.userId ? 'Leave' : 'Remove'}
-								</button>
-							</form>
+						{:else}
+							<span class="shrink-0 text-xs text-muted">Inactive</span>
 						{/if}
-					{:else}
-						<span class="shrink-0 text-xs text-muted">Inactive</span>
+					</div>
+					<!-- The current user's own sign-off attestation, only while applying. -->
+					{#if showSignoff && data.id == member.userId}
+						<div class="mt-4 border-t border-border pt-4">
+							<SignoffTab embedded data={data.signoff} {form} />
+						</div>
 					{/if}
 				</li>
 			{:else}

@@ -1,13 +1,17 @@
 <script lang="ts">
-	// The applicant's attestation, shared by the apply (/dashboard/apply/[id]) and
-	// claim (/dashboard/claim/[slug]) families: who they are to the campaign, their
-	// national ID number, and their own ID images. Each family's +page.server.ts
-	// shapes `data` and hosts the ?/saveMyDetails and ?/upload actions.
+	// The applicant's attestation: who they are to the campaign, their national ID
+	// number, and their own ID images. Rendered two ways:
+	//  - embedded (apply family): nested under the current user's entry on the Team
+	//    tab — its actions live on that route's +page.server.ts.
+	//  - standalone (claim family): its own /claim/[slug]/signoff page, staged into
+	//    the pending claim's evidence.
+	// Either way `data` carries myRole/nationalId/idFrontUrl/idBackUrl and the host
+	// route hosts the ?/saveMyDetails and ?/upload actions.
 	import { enhance } from '$app/forms';
 	import ImageCropper from '$lib/components/ImageCropper.svelte';
 	import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 
-	let { data, form }: { data: any; form: any } = $props();
+	let { data, form, embedded = false }: { data: any; form: any; embedded?: boolean } = $props();
 
 	const docs = $derived([
 		{ kind: 'id-front', label: 'National ID front', url: data.idFrontUrl },
@@ -42,15 +46,21 @@
 	}
 </script>
 
-<svelte:head><title>Sign Off — leaders.ke</title></svelte:head>
+<svelte:head>
+	{#if !embedded}<title>Sign Off — leaders.ke</title>{/if}
+</svelte:head>
 
-<div class="">
-	<h1 class="text-xl font-bold text-heading">Sign Off</h1>
-	<p class="mt-1 text-sm text-muted">
-		Provide the following details to sign off this application.
-	</p>
+<div>
+	{#if embedded}
+		<p class="text-sm font-semibold text-heading">Your sign-off</p>
+		<p class="mt-0.5 text-xs text-muted">Confirm your role, national ID, and ID images to sign off this application.</p>
+	{:else}
+		<h1 class="text-xl font-bold text-heading">Sign Off</h1>
+		<p class="mt-1 text-sm text-muted">Provide the following details to sign off this application.</p>
+	{/if}
 
-	{#if form?.error}
+	<!-- Embedded, errors surface on the Team tab's own banner — avoid a duplicate. -->
+	{#if form?.error && !embedded}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 			{form.error}
 		</div>
@@ -59,7 +69,6 @@
 	{:else if form?.uploaded}
 		<div class="mt-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">Uploaded.</div>
 	{/if}
-
 
 	<form
 		bind:this={formEl}
@@ -106,7 +115,7 @@
 		{/if}
 	</form>
 
-	<form method="post" action="?/saveMyDetails" class="mt-6 rounded-2xl border border-border bg-surface p-5" use:enhance>
+	<form method="post" action="?/saveMyDetails" class="mt-4 rounded-2xl border border-border bg-surface p-5" use:enhance>
 		<div class="flex flex-wrap items-end gap-2">
 			<label class="min-w-48 flex-1">
 				<span class="text-sm font-medium text-heading">My Role <span class={data.myRole ? 'text-muted' : 'text-red-500'}>*</span></span>
@@ -123,7 +132,7 @@
 				</select>
 			</label>
 			<label class="min-w-48 flex-1">
-				<span class="text-sm font-medium text-heading">National ID <span class={data.nationalId ? 'text-muted' : 'text-red-500'}>*</span></span>
+				<span class="text-sm font-medium text-heading">My National ID <span class={data.nationalId ? 'text-muted' : 'text-red-500'}>*</span></span>
 				<input
 					type="text"
 					name="nationalId"
@@ -141,7 +150,6 @@
 			</button>
 		</div>
 	</form>
-
 </div>
 
 {#if cropping}
