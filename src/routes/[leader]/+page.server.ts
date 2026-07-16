@@ -22,12 +22,14 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!resolved) error(404, 'Leader not found');
 	const { row, terms, currentTerm } = resolved;
 
-	// Only verified profiles are public; unverified ones stay dashboard-only until IEBC-verified.
-	if (!currentTerm.leaders.verifiedAt) error(404, 'Leader not found');
+	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
+
+	// Only verified profiles are public; unverified ones stay dashboard-only until
+	// IEBC-verified. Admins get through so they can inspect a submission under review.
+	if (!currentTerm.leaders.verifiedAt && !viewer?.adminAt) error(404, 'Leader not found');
 
 	const leaderId = currentTerm.leaders.id;
 	const allLeaderIds = terms.map((t) => t.leaders.id);
-	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 
 	const [
 		[pillarRow],

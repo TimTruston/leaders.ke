@@ -3,8 +3,8 @@
 // (subscriptions) is a separate, later concern — not gated here.
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, users, verifications } from '$lib/server/db/schema';
-import { isSlugAvailable } from '$lib/server/leader';
+import { contacts, leaders, managers, parties, partyMemberships, positions, users, verifications } from '$lib/server/db/schema';
+import { fullName, isSlugAvailable, leaderPath } from '$lib/server/leader';
 import { notifyUser } from '$lib/server/notifications';
 
 export type VerificationRow = {
@@ -94,6 +94,115 @@ export async function listVerifications(page: number, pageSize: number): Promise
 			...r,
 			requestedAt: r.requestedAt.toISOString(),
 			verifiedAt: r.verifiedAt ? r.verifiedAt.toISOString() : null
+		}))
+	};
+}
+
+export type VerificationDetail = NonNullable<Awaited<ReturnType<typeof getVerificationDetail>>>;
+
+/**
+ * Everything an admin needs to review one request in full, mirroring the
+ * applicant's own tabs (Profile / Contacts / Team / Documentation / Signoff)
+ * so the decision happens where the evidence is, not off a bare queue row.
+ */
+export async function getVerificationDetail(verificationId: number) {
+	const [request] = await db.select().from(verifications).where(eq(verifications.id, verificationId));
+	if (!request) return null;
+
+	const [leaderRow] = await db
+		.select()
+		.from(leaders)
+		.leftJoin(positions, eq(leaders.positionId, positions.id))
+		.where(eq(leaders.id, request.leaderId));
+	if (!leaderRow) return null;
+	const leader = leaderRow.leaders;
+	const seat = leaderRow.positions;
+
+	const [[profileUser], [applicant], contactRows, teamRows, [membership], historyRows] = await Promise.all([
+		db.select().from(users).where(eq(users.id, leader.userId)),
+		db.select().from(users).where(eq(users.id, request.requestedBy)),
+		db
+			.select({ channel: contacts.channel, value: contacts.value, verifiedAt: contacts.verifiedAt })
+			.from(contacts)
+			.where(and(eq(contacts.userId, leader.userId), isNull(contacts.deletedAt))),
+		db
+			.select({ userId: managers.userId, roles: managers.roles, firstName: users.firstName, otherNames: users.otherNames })
+			.from(managers)
+			.innerJoin(users, eq(managers.userId, users.id))
+			.where(and(eq(managers.leaderId, leader.id), eq(managers.isActive, true), isNull(managers.deletedAt))),
+		db
+			.select({ name: parties.name, abbreviation: parties.abbreviation })
+			.from(partyMemberships)
+			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
+			.where(and(eq(partyMemberships.leaderId, leader.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt))),
+		// Every request this leader ever made, with who reviewed it: the paper trail.
+		db
+			.select({
+				id: verifications.id,
+				requestedAt: verifications.requestedAt,
+				outcome: verifications.outcome,
+				notes: verifications.notes,
+				reviewedAt: verifications.reviewedAt,
+				reviewerFirstName: users.firstName,
+				reviewerOtherNames: users.otherNames
+			})
+			.from(verifications)
+			.leftJoin(users, eq(verifications.reviewedBy, users.id))
+			.where(eq(verifications.leaderId, request.leaderId))
+			.orderBy(desc(verifications.requestedAt))
+	]);
+
+	// The applicant's attestation lives on their manager row (role + national ID).
+	const applicantRoles = (teamRows.find((t) => t.userId === request.requestedBy)?.roles ?? {}) as {
+		title?: string;
+		nationalId?: string;
+	};
+
+	return {
+		request: {
+			id: request.id,
+			requestedAt: request.requestedAt.toISOString(),
+			outcome: request.outcome,
+			notes: request.notes,
+			reviewedAt: request.reviewedAt ? request.reviewedAt.toISOString() : null,
+			requestedByName: applicant ? fullName(applicant) : null,
+			evidence: request.evidence as Record<string, string>
+		},
+		profile: {
+			leaderId: leader.id,
+			name: fullName(profileUser),
+			slug: profileUser.slug,
+			// Admins bypass the unverified-404 on the public record page, so this
+			// link works even before approval.
+			publicPath: profileUser.slug ? leaderPath(profileUser) : null,
+			status: leader.status,
+			verifiedAt: leader.verifiedAt ? leader.verifiedAt.toISOString() : null,
+			bio: profileUser.bio,
+			address: profileUser.address,
+			socials: (profileUser.socials ?? {}) as Record<string, string>,
+			seat: seat ? { title: seat.title, region: seat.region } : null,
+			party: membership ? `${membership.name}${membership.abbreviation ? ` (${membership.abbreviation})` : ''}` : null
+		},
+		contacts: contactRows.map((c) => ({ channel: c.channel, value: c.value, verified: !!c.verifiedAt })),
+		team: teamRows.map((t) => ({
+			name: fullName(t),
+			title: ((t.roles ?? {}) as { title?: string }).title ?? null,
+			isApplicant: t.userId === request.requestedBy
+		})),
+		documentation: { photoUrl: leader.photoUrl, iebcCertificateUrl: leader.iebcCertificateUrl },
+		signoff: {
+			role: applicantRoles.title ?? null,
+			nationalId: applicantRoles.nationalId ?? null,
+			idFrontUrl: leader.idFrontUrl,
+			idBackUrl: leader.idBackUrl
+		},
+		history: historyRows.map((h) => ({
+			id: h.id,
+			requestedAt: h.requestedAt.toISOString(),
+			outcome: h.outcome,
+			notes: h.notes,
+			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
+			reviewerName: h.reviewerFirstName ? `${h.reviewerFirstName} ${h.reviewerOtherNames}` : null
 		}))
 	};
 }

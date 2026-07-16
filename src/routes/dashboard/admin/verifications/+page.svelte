@@ -8,8 +8,9 @@
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
 	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 
-	// Which pending request has its reason row expanded — clicking "Reject" opens a
-	// full-width row below it to type the reason before actually submitting.
+	// Which request has its reason row expanded — clicking "Reject" (pending) or
+	// "Revert" (approved) opens a full-width row below it to type the reason
+	// before actually submitting.
 	let rejectingId = $state<number | null>(null);
 </script>
 
@@ -50,8 +51,22 @@
 						<tr class="border-t border-border">
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.leaderId}</td>
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.userId}</td>
-							<td class="px-4 py-3 text-sm text-heading">{req.firstName} {req.otherNames}</td>
-							<td class="px-4 py-3 text-sm text-muted">{req.slug ?? '—'}</td>
+							<td class="px-4 py-3 text-sm">
+								<!-- The full submission (profile, contacts, docs, signoff, history) lives
+								on the request's detail page. -->
+								<a href="/dashboard/admin/verifications/{req.verificationId}" class="font-medium text-primary hover:underline">
+									{req.firstName}
+									{req.otherNames}
+								</a>
+							</td>
+							<td class="px-4 py-3 text-sm text-muted">
+								{#if req.slug}
+									<!-- Admins bypass the unverified-404 on the public record page. -->
+									<a href="/{req.slug}" target="_blank" rel="noopener" class="hover:text-primary hover:underline">{req.slug}</a>
+								{:else}
+									—
+								{/if}
+							</td>
 							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(req.requestedAt))}</td>
 							<td class="px-4 py-3 text-sm text-muted">
 								{req.verifiedAt ? dateFmt.format(new Date(req.verifiedAt)) : '—'}
@@ -69,22 +84,11 @@
 							</td>
 							<td class="px-4 py-3">
 								<div class="flex flex-wrap gap-2">
-									<!-- Approve, and Revert (reject an already-approved one) submit immediately;
-									a fresh Reject opens the reason row below instead. -->
-									<form
-										method="post"
-										action="?/review"
-										use:enhance={({ cancel }) => {
-											if (
-												req.outcome === 'approved' &&
-												!confirm(`Revert ${req.firstName} ${req.otherNames}'s verification? Their profile goes back off the public pages immediately.`)
-											) {
-												cancel();
-											}
-										}}
-									>
-										<input type="hidden" name="verificationId" value={req.verificationId} />
-										{#if req.outcome !== 'approved'}
+									<!-- Approve submits immediately; Reject (pending) and Revert (approved)
+									both open the reason row below instead. -->
+									{#if req.outcome !== 'approved'}
+										<form method="post" action="?/review" use:enhance>
+											<input type="hidden" name="verificationId" value={req.verificationId} />
 											<button
 												type="submit"
 												name="outcome"
@@ -93,18 +97,9 @@
 											>
 												Approve
 											</button>
-										{:else}
-											<button
-												type="submit"
-												name="outcome"
-												value="rejected"
-												class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
-											>
-												Revert
-											</button>
-										{/if}
-									</form>
-									{#if !req.outcome}
+										</form>
+									{/if}
+									{#if req.outcome !== 'rejected'}
 										{#if rejectingId === req.verificationId}
 											<button
 												type="button"
@@ -119,7 +114,7 @@
 												onclick={() => (rejectingId = req.verificationId)}
 												class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
 											>
-												Reject
+												{req.outcome === 'approved' ? 'Revert' : 'Reject'}
 											</button>
 										{/if}
 									{/if}
@@ -134,14 +129,21 @@
 								</td>
 							</tr>
 						{/if}
-						{#if !req.outcome && rejectingId === req.verificationId}
+						{#if req.outcome !== 'rejected' && rejectingId === req.verificationId}
 							<tr class="border-t border-border bg-surface-2">
 								<td colspan="8" class="px-4 py-3">
 									<form
 										method="post"
 										action="?/review"
 										class="flex flex-wrap items-center gap-2"
-										use:enhance={() => {
+										use:enhance={({ cancel }) => {
+											if (
+												req.outcome === 'approved' &&
+												!confirm(`Revert ${req.firstName} ${req.otherNames}'s verification? Their profile goes back off the public pages immediately.`)
+											) {
+												cancel();
+												return;
+											}
 											return async ({ update }) => {
 												rejectingId = null;
 												await update();
@@ -153,7 +155,7 @@
 										<input
 											type="text"
 											name="notes"
-											placeholder="Reason for rejection (shown to the applicant)"
+											placeholder="Reason for {req.outcome === 'approved' ? 'reverting' : 'rejection'} (shown to the applicant)"
 											class="min-w-72 flex-1 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 										/>
 										<button

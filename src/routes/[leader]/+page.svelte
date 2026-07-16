@@ -27,6 +27,14 @@
 </svelte:head>
 
 <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+	{#if !leader.verified}
+		<!-- Only admins ever see an unverified profile here (the load function 404s
+		everyone else): reviewing a verification submission is the whole point. -->
+		<div class="mb-6 rounded-2xl border border-border bg-surface-2 px-4 py-3 text-sm font-medium text-heading">
+			Admin preview: this profile is unverified and hidden from the public.
+		</div>
+	{/if}
+
 	<!-- Breadcrumb: current campaign's seat if vying, else last held seat -->
 	<nav class="text-sm text-muted" aria-label="Breadcrumb">
 		<a href={data.breadcrumb.positionPath} class="hover:text-heading hover:underline">
@@ -55,20 +63,22 @@
 					<div class="min-w-0">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.name}
-							<!-- Every leader page reachable here is already verified — the load
-							function 404s unverified profiles before this renders. -->
-							<span
-								class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
-							>
-								<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
-									<path
-										fill-rule="evenodd"
-										d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-								Verified
-							</span>
+							<!-- Unverified profiles reach here only as admin previews, so the
+							badge is gated instead of assumed. -->
+							{#if leader.verified}
+								<span
+									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
+								>
+									<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
+										<path
+											fill-rule="evenodd"
+											d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+									Verified
+								</span>
+							{/if}
 						</h1>
 						<p class="mt-1 text-sm text-muted">
 							<span class="capitalize">{leader.status}</span>
