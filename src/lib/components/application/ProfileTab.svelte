@@ -244,6 +244,40 @@
 		<!-- Left: name, party, IEBC certificate. Right end: photo. Both columns share a
 		fixed height; the left column spreads its field groups with space-between. -->
 		<div class="flex flex-col gap-5 sm:flex-row">
+			<!-- Right side: fixed square photo (a fixed size beats aspect-ratio here, which
+			the flex column was compressing). -->
+			<div class="flex shrink-0 flex-col">
+				<span class="text-sm font-medium text-heading">Photo <span class={starClass('Photo')}>*</span></span>
+				<label
+					class="group relative mt-1.5 block aspect-square w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 sm:aspect-auto sm:size-36"
+				>
+					{#if data.photoUrl}
+						<img src={data.photoUrl} alt="Leader" class="h-full w-full object-cover" />
+						<span
+							class="absolute inset-x-0 bottom-0 bg-black/55 py-1.5 text-center text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+						>
+							Change photo
+						</span>
+					{:else}
+						<span class="flex h-full w-full flex-col items-center justify-center gap-1 text-center text-xs font-medium text-muted">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-7">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+							</svg>
+							Upload photo
+						</span>
+					{/if}
+					<input
+						type="file"
+						form="docUpload"
+						name="photo"
+						accept="image/*"
+						disabled={uploading}
+						bind:this={photoInput}
+						onchange={onPhotoChange}
+						class="sr-only"
+					/>
+				</label>
+			</div>
 			<div class="flex flex-1 flex-col gap-5 sm:h-42 sm:justify-between sm:gap-0">
 				<div class="grid gap-5 sm:grid-cols-2">
 					<label class="block">
@@ -324,41 +358,6 @@
 						</label>
 					</div>
 				</div>
-			</div>
-
-			<!-- Right side: fixed square photo (a fixed size beats aspect-ratio here, which
-			the flex column was compressing). -->
-			<div class="flex shrink-0 flex-col">
-				<span class="text-sm font-medium text-heading">Photo <span class={starClass('Photo')}>*</span></span>
-				<label
-					class="group relative mt-1.5 block aspect-square w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 sm:aspect-auto sm:size-36"
-				>
-					{#if data.photoUrl}
-						<img src={data.photoUrl} alt="Leader" class="h-full w-full object-cover" />
-						<span
-							class="absolute inset-x-0 bottom-0 bg-black/55 py-1.5 text-center text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
-						>
-							Change photo
-						</span>
-					{:else}
-						<span class="flex h-full w-full flex-col items-center justify-center gap-1 text-center text-xs font-medium text-muted">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-7">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-							</svg>
-							Upload photo
-						</span>
-					{/if}
-					<input
-						type="file"
-						form="docUpload"
-						name="photo"
-						accept="image/*"
-						disabled={uploading}
-						bind:this={photoInput}
-						onchange={onPhotoChange}
-						class="sr-only"
-					/>
-				</label>
 			</div>
 		</div>
 
@@ -652,5 +651,6 @@
 </div>
 
 {#if cropping}
-	<ImageCropper file={cropping} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
+	<!-- Leader photo crops to a square (1:1). -->
+	<ImageCropper file={cropping} aspect={1} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
 {/if}

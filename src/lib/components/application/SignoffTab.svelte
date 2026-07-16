@@ -153,5 +153,6 @@
 </div>
 
 {#if cropping}
-	<ImageCropper file={cropping.file} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
+	<!-- National ID images crop to a 7:9 portrait. -->
+	<ImageCropper file={cropping.file} aspect={7 / 9} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
 {/if}

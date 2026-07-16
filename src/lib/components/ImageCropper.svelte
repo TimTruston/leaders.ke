@@ -1,13 +1,18 @@
 <script lang="ts">
-	// Free-aspect crop modal for image uploads (Documentation tab): drag the box to
-	// move, drag the corner handle to resize, confirm to get a cropped JPEG File.
-	// Dependency-free — a positioned overlay + canvas re-draw at natural resolution.
+	// Crop modal for image uploads: drag the box to move, drag the corner handle to
+	// resize, confirm to get a cropped JPEG File. Dependency-free — a positioned
+	// overlay + canvas re-draw at natural resolution. `aspect` (width / height)
+	// locks the box to a fixed ratio (e.g. 1 for a square photo, 7/9 for an ID);
+	// omit it for a free-form crop.
 	let {
 		file,
+		aspect,
 		onconfirm,
 		oncancel
 	}: {
 		file: File;
+		/** Locked crop ratio as width / height; omit for free-form. */
+		aspect?: number;
 		/** Receives the cropped image as a File (same name, image/jpeg). */
 		onconfirm: (cropped: File) => void;
 		oncancel: () => void;
@@ -19,12 +24,22 @@
 	let rect = $state({ x: 0, y: 0, w: 0, h: 0 }); // displayed-pixel space, relative to the img
 	let drag: { mode: 'move' | 'resize'; startX: number; startY: number; orig: typeof rect } | null = null;
 
-	// Start with a box covering most of the image.
+	// Start with a box covering most of the image (honoring `aspect` when locked).
 	function init() {
 		if (!imgEl) return;
-		const w = imgEl.clientWidth;
-		const h = imgEl.clientHeight;
-		rect = { x: w * 0.1, y: h * 0.1, w: w * 0.8, h: h * 0.8 };
+		const W = imgEl.clientWidth;
+		const H = imgEl.clientHeight;
+		if (aspect) {
+			let w = W * 0.8;
+			let h = w / aspect;
+			if (h > H * 0.9) {
+				h = H * 0.9;
+				w = h * aspect;
+			}
+			rect = { x: (W - w) / 2, y: (H - h) / 2, w, h };
+		} else {
+			rect = { x: W * 0.1, y: H * 0.1, w: W * 0.8, h: H * 0.8 };
+		}
 	}
 
 	function down(e: PointerEvent, mode: 'move' | 'resize') {
@@ -42,6 +57,21 @@
 		if (drag.mode === 'move') {
 			rect.x = Math.min(Math.max(0, drag.orig.x + dx), maxW - rect.w);
 			rect.y = Math.min(Math.max(0, drag.orig.y + dy), maxH - rect.h);
+		} else if (aspect) {
+			// Ratio-locked: width drives the drag, height follows; clamp on whichever
+			// edge (right or bottom) the box hits first so it stays inside the image.
+			let w = Math.max(24, drag.orig.w + dx);
+			let h = w / aspect;
+			if (rect.x + w > maxW) {
+				w = maxW - rect.x;
+				h = w / aspect;
+			}
+			if (rect.y + h > maxH) {
+				h = maxH - rect.y;
+				w = h * aspect;
+			}
+			rect.w = w;
+			rect.h = h;
 		} else {
 			rect.w = Math.min(Math.max(24, drag.orig.w + dx), maxW - rect.x);
 			rect.h = Math.min(Math.max(24, drag.orig.h + dy), maxH - rect.y);
