@@ -393,7 +393,7 @@
 				{/if}
 			{:else if mode === 'apply'}
 				<span class="flex items-center text-sm my-2 sm:my-0">
-					A few steps to go public ahead of 10 August 2027...
+					Only three steps to go public ahead of 10 August 2027...
 				</span>
 				{#if data.pendingVerification}
 					<span
