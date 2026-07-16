@@ -1,6 +1,12 @@
+import { randomBytes } from 'node:crypto';
 import { fail } from '@sveltejs/kit';
+import { and, eq, isNull } from 'drizzle-orm';
+import { db } from '$lib/server/db';
+import { leaders, profileClaims, users } from '$lib/server/db/schema';
 import { requireAdmin } from '$lib/server/dashboard';
-import { listClaims, reviewClaim } from '$lib/server/claims';
+import { listClaims, reviewClaim, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
+import { sendEmail } from '$lib/server/email';
+import { fullName } from '$lib/server/leader';
 import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -28,5 +34,56 @@ export const actions: Actions = {
 		if (!result.ok) return fail(400, { error: result.error });
 
 		return { reviewed: true };
+	},
+
+	// Sends the leader their single-use approve/reject link (/claim/[token]) to an
+	// address the admin supplies — for profiles whose inbox we know out-of-band
+	// (or whose sourced email bounced). Reuses the claim's existing token so a
+	// re-send never invalidates a link already in the leader's inbox.
+	emailLeader: async (event) => {
+		await requireAdmin(event);
+		const form = await event.request.formData();
+		const claimId = Number(form.get('claimId'));
+		const email = String(form.get('email') ?? '').trim().toLowerCase();
+
+		if (!claimId) return fail(400, { error: 'Invalid request.' });
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+			return fail(400, { error: 'Enter a valid email address.', emailClaimId: claimId });
+		}
+
+		const [claim] = await db
+			.select({
+				leaderId: profileClaims.leaderId,
+				claimedBy: profileClaims.claimedBy,
+				evidence: profileClaims.evidence,
+				claimantFirstName: users.firstName,
+				claimantOtherNames: users.otherNames
+			})
+			.from(profileClaims)
+			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
+			.where(and(eq(profileClaims.id, claimId), isNull(profileClaims.outcome)));
+		if (!claim) return fail(400, { error: 'Only pending claims can be sent to the leader.' });
+
+		const [subject] = await db
+			.select({ firstName: users.firstName, otherNames: users.otherNames })
+			.from(leaders)
+			.innerJoin(users, eq(leaders.userId, users.id))
+			.where(eq(leaders.id, claim.leaderId));
+		if (!subject) return fail(400, { error: 'Claimed profile not found.' });
+
+		const evidence = (claim.evidence ?? {}) as ClaimEvidence;
+		const leaderToken = evidence.leaderToken ?? randomBytes(16).toString('hex');
+		if (!evidence.leaderToken) {
+			await stageClaimEvidence(claim.leaderId, claim.claimedBy, { leaderToken });
+		}
+
+		const claimantName = fullName({ firstName: claim.claimantFirstName, otherNames: claim.claimantOtherNames });
+		await sendEmail({
+			to: email,
+			subject: `${claimantName} wants to manage your leaders.ke profile`,
+			text: `Hi ${subject.firstName},\n\n${claimantName} submitted a claim to manage your profile on leaders.ke.\n\nReview and approve or reject it here:\n${event.url.origin}/claim/${leaderToken}\n\nIf you don't recognize this person, reject the claim — our admins also review every claim.`
+		});
+
+		return { emailed: true, sentTo: email, emailClaimId: claimId };
 	}
 };

@@ -4,7 +4,7 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
 import { fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
@@ -89,6 +89,10 @@ export type ClaimRow = {
 	subjectName: string;
 	requestedAt: string;
 	outcome: 'approved' | 'rejected' | null;
+	/** The reviewer's reason, shown under a rejected row in the admin queue. */
+	notes: string | null;
+	/** The claimed profile's best email on file (verified > sourced > any live). */
+	leaderEmail: string | null;
 };
 
 /**
@@ -198,6 +202,7 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 				claimedByUserId: profileClaims.claimedBy,
 				requestedAt: profileClaims.requestedAt,
 				outcome: profileClaims.outcome,
+				notes: profileClaims.notes,
 				claimantFirstName: users.firstName,
 				claimantOtherNames: users.otherNames
 			})
@@ -210,20 +215,36 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 	]);
 
 	const subjectRows = await db
-		.select({ leaderId: leaders.id, firstName: users.firstName, otherNames: users.otherNames })
+		.select({ leaderId: leaders.id, userId: users.id, firstName: users.firstName, otherNames: users.otherNames })
 		.from(leaders)
 		.innerJoin(users, eq(leaders.userId, users.id));
-	const subjectByLeaderId = new Map(subjectRows.map((r) => [r.leaderId, fullName(r)]));
+	const subjectByLeaderId = new Map(subjectRows.map((r) => [r.leaderId, r]));
 
-	const claims = rows.map((r) => ({
-		claimId: r.claimId,
-		leaderId: r.leaderId,
-		claimedByUserId: r.claimedByUserId,
-		claimantName: fullName({ firstName: r.claimantFirstName, otherNames: r.claimantOtherNames }),
-		subjectName: subjectByLeaderId.get(r.leaderId) ?? 'Unknown',
-		requestedAt: r.requestedAt.toISOString(),
-		outcome: r.outcome
-	}));
+	// The leader's best email on file — prefills the admin "Email the leader" form.
+	// Verified beats sourced (see contacts.source) beats any other live row.
+	const emailRows = await db
+		.select({ userId: contacts.userId, value: contacts.value, verifiedAt: contacts.verifiedAt, source: contacts.source })
+		.from(contacts)
+		.where(and(eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
+	const emailByUserId = new Map<number, string>();
+	for (const row of [...emailRows].sort((a, b) => Number(!!b.verifiedAt) - Number(!!a.verifiedAt) || Number(!!b.source) - Number(!!a.source))) {
+		if (!emailByUserId.has(row.userId)) emailByUserId.set(row.userId, row.value);
+	}
+
+	const claims = rows.map((r) => {
+		const subject = subjectByLeaderId.get(r.leaderId);
+		return {
+			claimId: r.claimId,
+			leaderId: r.leaderId,
+			claimedByUserId: r.claimedByUserId,
+			claimantName: fullName({ firstName: r.claimantFirstName, otherNames: r.claimantOtherNames }),
+			subjectName: subject ? fullName(subject) : 'Unknown',
+			leaderEmail: subject ? (emailByUserId.get(subject.userId) ?? null) : null,
+			requestedAt: r.requestedAt.toISOString(),
+			outcome: r.outcome,
+			notes: r.notes
+		};
+	});
 	return { claims, total };
 }
 

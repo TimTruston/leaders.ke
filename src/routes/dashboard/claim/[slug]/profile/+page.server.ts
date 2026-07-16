@@ -1,14 +1,11 @@
 // Claim-family Profile tab: same form as apply/campaign (ProfileTab), but saves
 // stage into the pending claim's evidence — the public profile is untouched
 // until an admin approves the claim.
-import { randomBytes } from 'node:crypto';
 import { fail } from '@sveltejs/kit';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, positions } from '$lib/server/db/schema';
+import { positions } from '$lib/server/db/schema';
 import { deletePendingClaim, resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
-import { sendEmail } from '$lib/server/email';
-import { fullName } from '$lib/server/leader';
 import { redirectWithFlash } from '$lib/server/flash';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
@@ -107,48 +104,24 @@ export const actions: Actions = {
 	},
 
 	// The layout's claim widget posts here (like Submit Application in apply mode):
-	// national ID + submittedAt mark the staged draft as ready for review. The
-	// strongest reviewer is the leader themselves: when the profile has a verified
-	// email, mail them a single-use approve/reject link (/claim/[token]); the
-	// platform-admin queue stays as the fallback either way.
+	// national ID + submittedAt mark the staged draft as ready for review. Nothing
+	// is mailed to the leader here — an admin decides whether/where to send the
+	// single-use approve/reject link (the queue's "Email the leader" action).
 	submitClaim: async (event) => {
 		const { domainUser, slug, resolved, claim } = await resolveClaimRequest(event);
 		// The claimant's role + national ID come from the Signoff tab's staged details.
 		const nationalId = (claim?.evidence as ClaimEvidence | null)?.signoff?.nationalId;
 		if (!nationalId) return fail(400, { claimError: 'Complete the Signoff tab before submitting.' });
 
-		// Any live email works as the leader's inbox: a verified one first, else one
-		// harvested from a public directory (contacts.source, e.g. Mzalendo) — sourced
-		// emails exist precisely so this link has somewhere to go. The link only grants
-		// review of THIS claim, so a stale sourced address fails safe (nobody clicks).
-		const emailRows = await db
-			.select({ value: contacts.value, verifiedAt: contacts.verifiedAt, source: contacts.source })
-			.from(contacts)
-			.where(and(eq(contacts.userId, resolved.row.users.id), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
-		const leaderEmail = emailRows.find((row) => row.verifiedAt) ?? emailRows.find((row) => row.source);
-		const leaderToken = leaderEmail ? randomBytes(16).toString('hex') : undefined;
-
 		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {
 			nationalId,
-			submittedAt: new Date().toISOString(),
-			...(leaderToken ? { leaderToken } : {})
+			submittedAt: new Date().toISOString()
 		});
-
-		if (leaderEmail && leaderToken) {
-			const claimantName = fullName(domainUser);
-			await sendEmail({
-				to: leaderEmail.value,
-				subject: `${claimantName} wants to manage your leaders.ke profile`,
-				text: `Hi ${resolved.row.users.firstName},\n\n${claimantName} submitted a claim to manage your profile on leaders.ke.\n\nReview and approve or reject it here:\n${event.url.origin}/claim/${leaderToken}\n\nIf you don't recognize this person, reject the claim — our admins also review every claim.`
-			});
-		}
 
 		redirectWithFlash(
 			event.cookies,
 			`/dashboard/claim/${slug}/profile`,
-			leaderEmail
-				? 'Claim submitted. The leader has been emailed to confirm; an admin can also review it.'
-				: 'Claim submitted. An admin will review it and grant you manager access.'
+			'Claim submitted. An admin will review it and grant you manager access.'
 		);
 	},
 
