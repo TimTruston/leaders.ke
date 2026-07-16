@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import AuthCard from '$lib/components/auth/AuthCard.svelte';
 	import Field from '$lib/components/auth/Field.svelte';
+	import GoogleButton from '$lib/components/auth/GoogleButton.svelte';
 	import Submit from '$lib/components/auth/Submit.svelte';
 	import type { ActionData, PageData } from './$types';
 
@@ -22,7 +23,16 @@
 					: 'a follower'}. Sign in to accept the invite.
 		</p>
 	{/if}
-	<form method="post" use:enhance class="space-y-4">
+	{#if data.googleEnabled}
+		<GoogleButton label="Sign in with Google" next={data.next} />
+		<div class="my-5 flex items-center gap-3 text-xs text-muted">
+			<span class="h-px flex-1 bg-border"></span>
+			or
+			<span class="h-px flex-1 bg-border"></span>
+		</div>
+	{/if}
+
+	<form method="post" action="?/email" use:enhance class="space-y-4">
 		<Field
 			label="Email"
 			name="email"

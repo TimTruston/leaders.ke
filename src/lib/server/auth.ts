@@ -8,10 +8,18 @@ import { db } from '$lib/server/db';
 import { users, contacts } from '$lib/server/db/schema';
 import { sendEmail } from '$lib/server/email';
 
+// "Continue with Google" only lights up when both OAuth credentials are set —
+// dev without keys stays on email/password, and the login/signup pages hide the
+// button (they read this flag).
+export const googleAuthEnabled = !!env.GOOGLE_CLIENT_ID && !!env.GOOGLE_CLIENT_SECRET;
+
 export const auth = betterAuth({
 	baseURL: publicEnv.PUBLIC_BASE_URL,
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
+	...(googleAuthEnabled
+		? { socialProviders: { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } } }
+		: {}),
 	emailAndPassword: {
 		enabled: true,
 		// Emails the reset link (via Postmark, or the console stub in dev). Powers /forgot-password.
@@ -43,6 +51,16 @@ export const auth = betterAuth({
 		// No sendDeleteAccountVerification, so deleteUser deletes immediately after the password check. Powers /delete-account.
 		deleteUser: { enabled: true }
 	},
+	// Link Google to an existing account with the same email instead of erroring or
+	// making a duplicate. Google is trusted (it verifies emails), so the link is
+	// automatic — someone who signed up with email/password can later "Sign in with
+	// Google" and land on the same account.
+	account: {
+		accountLinking: {
+			enabled: true,
+			trustedProviders: ['google']
+		}
+	},
 	databaseHooks: {
 		user: {
 			create: {
@@ -56,7 +74,11 @@ export const auth = betterAuth({
 						.values({
 							authUserId: authUser.id,
 							firstName: first || 'New',
-							otherNames: rest.join(' ') || 'User'
+							otherNames: rest.join(' ') || 'User',
+							// Google (and any OAuth provider) hands us a pre-verified email, so
+							// skip the OTP step for those; email/password signups arrive
+							// unverified (emailVerified false) and still verify on /verify/email.
+							verified: { email: !!authUser.emailVerified, sms: false, whatsapp: false }
 						})
 						.returning();
 

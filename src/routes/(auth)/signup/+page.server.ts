@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
-import { auth } from '$lib/server/auth';
+import { auth, googleAuthEnabled } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -37,11 +37,32 @@ export const load: PageServerLoad = async (event) => {
 	// switching between the two forms; the action clears it on success.
 	const notice = event.locals.flash ?? null;
 
-	return { next, inviteBanner, lockedEmail, notice };
+	return { next, inviteBanner, lockedEmail, notice, googleEnabled: googleAuthEnabled };
 };
 
 export const actions: Actions = {
-	default: async (event) => {
+	// Start the Google OAuth flow (same as login): better-auth returns the provider
+	// URL, we 302 to it. Sign-up and sign-in are the same OAuth round-trip — the
+	// create hook makes the profile on first return.
+	google: async (event) => {
+		const form = await event.request.formData();
+		const next = safeNext(form.get('next')?.toString() ?? null);
+		let url: string | undefined;
+		try {
+			const res = await auth.api.signInSocial({
+				body: { provider: 'google', callbackURL: next, errorCallbackURL: '/signup' },
+				headers: event.request.headers
+			});
+			url = res?.url;
+		} catch (error) {
+			if (error instanceof APIError) return fail(400, { message: error.message || 'Google sign-up failed' });
+			return fail(500, { message: 'Unexpected error' });
+		}
+		if (!url) return fail(500, { message: 'Could not start Google sign-up.' });
+		redirect(302, url);
+	},
+
+	email: async (event) => {
 		const form = await event.request.formData();
 		const firstName = form.get('firstName')?.toString().trim() ?? '';
 		const otherNames = form.get('otherNames')?.toString().trim() ?? '';

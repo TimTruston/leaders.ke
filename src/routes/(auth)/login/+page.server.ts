@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
-import { auth } from '$lib/server/auth';
+import { auth, googleAuthEnabled } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -42,12 +42,33 @@ export const load: PageServerLoad = async (event) => {
 	const notice = event.locals.flash ?? null;
 
 	return dev
-		? { devEmail: lockedEmail ?? env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner, lockedEmail, notice }
-		: { devEmail: lockedEmail ?? '', devPassword: '', next, inviteBanner, lockedEmail, notice };
+		? { devEmail: lockedEmail ?? env.ADMIN_EMAIL ?? '', devPassword: env.ADMIN_PASSWORD ?? '', next, inviteBanner, lockedEmail, notice, googleEnabled: googleAuthEnabled }
+		: { devEmail: lockedEmail ?? '', devPassword: '', next, inviteBanner, lockedEmail, notice, googleEnabled: googleAuthEnabled };
 };
 
 export const actions: Actions = {
-	default: async (event) => {
+	// Start the Google OAuth flow: better-auth returns the provider URL, we 302 to it.
+	// The provider calls back to /api/auth/callback/google (handled in hooks), which
+	// then lands on `next`. New Google users are created pre-verified (see auth.ts).
+	google: async (event) => {
+		const form = await event.request.formData();
+		const next = safeNext(form.get('next')?.toString() ?? null);
+		let url: string | undefined;
+		try {
+			const res = await auth.api.signInSocial({
+				body: { provider: 'google', callbackURL: next, errorCallbackURL: '/login' },
+				headers: event.request.headers
+			});
+			url = res?.url;
+		} catch (error) {
+			if (error instanceof APIError) return fail(400, { message: error.message || 'Google sign-in failed' });
+			return fail(500, { message: 'Unexpected error' });
+		}
+		if (!url) return fail(500, { message: 'Could not start Google sign-in.' });
+		redirect(302, url);
+	},
+
+	email: async (event) => {
 		const form = await event.request.formData();
 		const email = form.get('email')?.toString() ?? '';
 		const password = form.get('password')?.toString() ?? '';
