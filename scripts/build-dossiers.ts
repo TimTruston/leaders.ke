@@ -100,6 +100,10 @@ type Rec = {
 	termStart?: string | null; // ISO dates when the source asserts them (executive/governor cycles)
 	termEnd?: string | null;
 	platformSlugHint?: string | null; // source-provided platform slug (kiongozi, county portraits)
+	// false = never join by seat identity (rule 2). By-election sources put TWO
+	// different people on one seat key per parliament (the vacated holder and the
+	// winner, often relatives sharing a name token), so seat+1-token is unsafe.
+	seatJoin?: boolean;
 	rawProfile?: { education: unknown[]; experience: unknown[] } | null; // kiongozi civic blurbs, verbatim
 };
 
@@ -129,12 +133,15 @@ function cleanName(name: string): string {
 const TOKEN_STOPLIST = new Set(['hon', 'the', 'prof', 'eng', 'amb', 'sen', 'gen', 'maj', 'col', 'bishop', 'rev', 'cpa', 'cbs', 'egh', 'mgh']);
 
 // Name tokens: lowercase, strip non-letters except apostrophe/hyphen, drop <= 2 chars.
+// Jr/Sr suffixes normalize to junior/senior and are KEPT: they are the only thing
+// distinguishing a father and son who share every other name (Mutula Kilonzo Sr/Jr).
 function nameTokens(name: string): string[] {
 	return name
 		.toLowerCase()
 		.replace(/[^a-z\s'’-]/g, ' ')
 		.replace(/’/g, "'")
 		.split(/\s+/)
+		.map((t) => (t === 'jr' || t === 'jnr' ? 'junior' : t === 'sr' || t === 'snr' ? 'senior' : t))
 		.filter((t) => t.replace(/[^a-z]/g, '').length > 2 && !TOKEN_STOPLIST.has(t));
 }
 
@@ -455,6 +462,51 @@ for (const e of loadArray<{
 	);
 }
 
+// By-elections register: seats vacated mid-term since 2002 plus their by-election
+// winners (curated CSV, wiki-enriched for photos). Labels are the parliament era
+// the partial term sat in, so these merge with the person's other sightings; the
+// CSV bio is kept verbatim and the vacancy reason rides as the term note.
+type ByElectionEntry = {
+	name: string;
+	seat: string;
+	region: string;
+	party: string | null;
+	cycle: string;
+	termStartYear: number;
+	termEndYear: number;
+	reason: string;
+	bio: string;
+	articleUrl: string | null;
+	photoUrl: string | null;
+};
+// Known alternate spellings from other sources, so the subset rule can merge
+// (mzalendo writes "Benard Otieno Okoth" for Bernard Imran Okoth, etc.).
+const BY_ELECTION_ALT_NAMES: Record<string, string[]> = {
+	'Bernard Imran Okoth': ['Benard Otieno Okoth'],
+	'Ken Okoth': ['Kenneth Okoth']
+};
+for (const e of loadArray<ByElectionEntry>('scraped-by-elections.json') ?? []) {
+	if (!e.name?.trim()) continue;
+	records.push(
+		execRec({
+			source: 'by-elections',
+			parliament: e.cycle,
+			seat: e.seat,
+			region: e.region,
+			name: cleanName(e.name),
+			altNames: BY_ELECTION_ALT_NAMES[e.name] ?? [],
+			party: e.party,
+			bio: e.bio || null,
+			photoUrl: e.photoUrl,
+			url: e.articleUrl,
+			note: e.reason,
+			termStart: `${e.termStartYear}-01-01`,
+			termEnd: e.termEndYear >= 2027 ? null : `${e.termEndYear}-12-31`,
+			seatJoin: false
+		})
+	);
+}
+
 // ---------- clustering ----------
 
 let clusterSeq = 0;
@@ -561,7 +613,7 @@ for (const batch of batches) {
 			addToCluster(clusterBySlug.get(r.mzSlug)!, r); // rule 1: slug equality
 			continue;
 		}
-		const bySeat = rule2Match(r);
+		const bySeat = r.seatJoin === false ? null : rule2Match(r);
 		if (bySeat) addToCluster(bySeat, r);
 		else leftovers.push(r);
 	}
@@ -699,10 +751,11 @@ function attachDbUser(c: Cluster): DbUser | null {
 		const holder = holderByPositionKey.get(k.slice(k.indexOf('|') + 1));
 		if (holder && overlap(holder.tokens, clusterTokens(c)) >= 1) return holder;
 	}
-	// (b) unique >= 2-token name match across every leader-user
+	// (b) unique >= 2-token name match across every leader-user; 2-token matches
+	// need the subset guard ("Mutula Kilonzo Sr." must never attach to Jr's user)
 	const scored = leaderUsers
 		.map((u) => ({ u, score: overlap(u.tokens, clusterTokens(c)) }))
-		.filter((s) => s.score >= 2)
+		.filter((s) => s.score >= 3 || (s.score === 2 && subsetEitherWay(s.u.tokens, clusterTokens(c))))
 		.sort((a, b) => b.score - a.score || a.u.userId - b.u.userId);
 	if (scored.length === 1 || (scored.length > 1 && scored[0].score > scored[1].score)) return scored[0].u;
 	return null;

@@ -118,6 +118,15 @@ const countyPortraitBySlug = new Map(
 const formerPresidentByName = new Map(
 	executive.filter((e) => e.photoUrl && e.status === 'former').map((e) => [slugify(e.name), e])
 );
+// By-elections register: person-name lookup for wiki portraits.
+const byElectionByName = new Map(
+	(JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-by-elections.json'), 'utf8')) as {
+		name: string;
+		photoUrl: string | null;
+	}[])
+		.filter((e) => e.photoUrl)
+		.map((e) => [slugify(e.name), e])
+);
 // Past county governors (2013/2017 cycles): person-name lookup, like former presidents.
 const pastGovernorByName = new Map(
 	(JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-governors-past.json'), 'utf8')) as {
@@ -166,14 +175,16 @@ let failed = 0;
 for (const row of rows) {
 	if (!row.slug) continue;
 	const regionSlug = slugify(row.region);
+	// Person-name and slug lookups outrank every seat lookup: a former holder's
+	// seat key points at the CURRENT holder's photo, which the name guard would
+	// reject and thereby shadow the person's own portrait further down the chain.
 	const source =
+		formerPresidentByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
+		pastGovernorByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
+		byElectionByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
 		(row.title === 'MP' ? mzByConstituency.get(regionSlug) : undefined) ??
 		(row.title === 'Woman Rep' ? mzWomanRepByCounty.get(regionSlug) : undefined) ??
 		(row.title === 'Senator' ? mzSenatorByCounty.get(regionSlug) : undefined) ??
-		// Person-name lookups outrank the seat lookup: a former president's seat key
-		// points at the CURRENT holder's photo, which the name guard would reject.
-		formerPresidentByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
-		pastGovernorByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
 		countyPortraitBySlug.get(row.slug) ??
 		kiongoziBySlug.get(row.slug) ??
 		(row.title === 'Governor' ? cogByCounty.get(regionSlug) : undefined) ??

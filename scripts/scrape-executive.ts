@@ -65,10 +65,15 @@ function tokenOverlap(a: string, b: string): number {
 
 const HONORIFICS = /\b(prof|dr|hon|eng|amb|mr|mrs|ms|rev|bishop|capt|col|gen|maj|rtd|cpa|fca)\.?\s+/gi;
 
+// Known wrong matches the scoring can't catch: "Mutula Kilonzo Jr" resolves to
+// his late father's article (the father's title tokens are a subset of the son's).
+const ARTICLE_BLOCKLIST = new Set(['Mutula Kilonzo Jr']);
+
 /** Best-matching article title for a person, or null when nothing plausibly matches.
  * Falls back from the full name to honorific-stripped and token-pair queries — DB
  * names carry titles ("Prof Anyang' Nyong'o") and orderings Wikipedia doesn't. */
 async function findArticle(name: string): Promise<string | null> {
+	if (ARTICLE_BLOCKLIST.has(name)) return null;
 	const cleaned = name.replace(HONORIFICS, '').trim();
 	const tokens = nameTokens(cleaned);
 	const queries = [
