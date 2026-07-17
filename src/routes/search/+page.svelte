@@ -39,7 +39,6 @@
 						partyPath={leader.partyPath}
 						positionTitle={leader.positionTitle}
 						region={leader.region}
-						bio={leader.bio}
 					/>
 				{/each}
 			</div>

@@ -55,50 +55,30 @@
 	</div>
 
 	<!-- Current and Salary-->
-	<div class="mt-6 lg:mt-8 flex flex-col gap-6 lg:gap-8 lg:flex-row">
+	<div class="mt-6 lg:mt-8 flex flex-col gap-4 lg:gap-4 lg:flex-row">
 		<div class="flex-1">
-			<h2 class="text-xl font-bold text-heading">Current</h2>
+			<h2 class="text-xl font-bold text-heading mb-4">Current</h2>
 			{#if data.current}
 				<!-- Stretched name link keeps the whole card clickable while the party
 				stays its own link on top — nesting an <a> in an <a> is invalid HTML. -->
-				<div
-					class="group relative mt-4 rounded-2xl border border-border bg-surface p-5 flex items-center gap-4 transition hover:border-primary hover:shadow-sm"
-				>
-					<Avatar name={data.current.name} initials={data.current.initials} photoUrl={data.current.photoUrl} sizeClass="size-16" textClass="text-xl" />
-					<div class="min-w-0">
-						<a
-							href={data.current.path}
-							class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary"
-						>
-							{data.current.name}
-							{#if data.current.verified}
-								<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary" aria-label="Verified">
-									<path
-										fill-rule="evenodd"
-										d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							{/if}
-						</a>
-						<p class="text-sm text-muted">
-							Serving {data.positionTitle}{#if data.current.party}&nbsp;·
-								{#if data.current.partyPath}
-									<a href={data.current.partyPath} class="relative z-10 hover:text-primary">{data.current.party}</a>
-								{:else}
-									{data.current.party}
-								{/if}
-							{/if}
-						</p>
-					</div>
-				</div>
+				<LeaderCard
+					path={data.current.path}
+					name={data.current.name}
+					initials={data.current.initials}
+					photoUrl={data.current.photoUrl}
+					verified={data.current.verified}
+					party={data.current.party}
+					partyPath={data.current.partyPath}
+					followers={data.current.followers}
+					compact
+				/>
 			{:else}
 				<p class="mt-3 text-sm text-muted">No current on record for this seat yet.</p>
 			{/if}
 		</div>
 
 		<!-- SRC compensation: data pending -->
-		<div class="flex flex-col flex-1">
+		<div class="flex flex-2 flex-col flex-1">
 			<h2 class="text-xl font-bold text-heading">Salary</h2>
 			<p class="mt-4 rounded-2xl border border-border bg-surface-2 p-5 text-sm leading-relaxed grow">
 				The Salaries and Remuneration Commission (SRC) monthly package for this seat is being
