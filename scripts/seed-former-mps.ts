@@ -47,6 +47,8 @@ type MpEntry = {
 	status: string | null; // Elected | Nominated | Women's Representative
 	bio: string | null;
 	photoUrl: string | null;
+	/** Set when the entry comes from a senate render: county is the seat. */
+	chamber?: 'senate';
 };
 
 function nameTokens(name: string): string[] {
@@ -101,10 +103,30 @@ const seedEmailRows = await db
 const userIdBySeedEmail = new Map(seedEmailRows.map((r) => [r.email, r.userId]));
 
 const existingTermRows = await db
-	.select({ userId: leaders.userId, positionId: leaders.positionId, startAt: leaders.startAt })
+	.select({ userId: leaders.userId, positionId: leaders.positionId, startAt: leaders.startAt, endAt: leaders.endAt })
 	.from(leaders)
 	.where(isNull(leaders.deletedAt));
-const existingTerms = new Set(existingTermRows.map((r) => `${r.userId}|${r.positionId}|${r.startAt.toISOString().slice(0, 10)}`));
+// Overlap-aware dedupe: a term already covering any part of the parliament's span
+// (e.g. a year-granular leaders.json leadership row, or a by-elections partial term)
+// blocks a second row for the same seat.
+const termsByUserPosition = new Map<string, { start: number; end: number }[]>();
+for (const r of existingTermRows) {
+	const key = `${r.userId}|${r.positionId}`;
+	const list = termsByUserPosition.get(key) ?? [];
+	list.push({ start: r.startAt.getTime(), end: r.endAt?.getTime() ?? Infinity });
+	termsByUserPosition.set(key, list);
+}
+function termOverlaps(userId: number, positionId: number, start: Date, end: Date): boolean {
+	return (termsByUserPosition.get(`${userId}|${positionId}`) ?? []).some(
+		(t) => t.start < end.getTime() && t.end > start.getTime()
+	);
+}
+function recordTerm(userId: number, positionId: number, start: Date, end: Date): void {
+	const key = `${userId}|${positionId}`;
+	const list = termsByUserPosition.get(key) ?? [];
+	list.push({ start: start.getTime(), end: end.getTime() });
+	termsByUserPosition.set(key, list);
+}
 
 const partyRows = await db.select({ id: parties.id, name: parties.name, abbreviation: parties.abbreviation }).from(parties);
 const partyIdByKey = new Map<string, number>();
@@ -115,11 +137,15 @@ for (const p of partyRows) {
 
 // mzalendo person slug -> the 13th-parliament seat it holds, for match rule 1.
 const mz13: MpEntry[] = JSON.parse(readFileSync(join(OUT_DIR, 'scraped-mps-13th.json'), 'utf8'));
+const mzSenate13: MpEntry[] = JSON.parse(readFileSync(join(OUT_DIR, 'scraped-mps-senate-13th.json'), 'utf8'));
 const seat13BySlug = new Map<string, { title: string; region: string }>();
 for (const e of mz13) {
 	if (/nominated/i.test(e.status ?? '')) continue;
 	if (/women/i.test(e.status ?? '') && e.county) seat13BySlug.set(e.slug, { title: 'Woman Rep', region: e.county });
 	else if (e.constituency) seat13BySlug.set(e.slug, { title: 'MP', region: e.constituency });
+}
+for (const e of mzSenate13) {
+	if (!/nominated/i.test(e.status ?? '') && e.county) seat13BySlug.set(e.slug, { title: 'Senator', region: e.county });
 }
 
 // ---------- plan + apply ----------
@@ -141,6 +167,10 @@ for (const parliament of PARLIAMENTS) {
 	let entries: MpEntry[];
 	if (parliament.source === 'mzalendo') {
 		entries = JSON.parse(readFileSync(join(OUT_DIR, `scraped-mps-${parliament.key}.json`), 'utf8'));
+		// The same parliament's senate render, tagged so seat resolution reads the
+		// county as a Senator seat instead of a Woman Rep giveaway.
+		const senate: MpEntry[] = JSON.parse(readFileSync(join(OUT_DIR, `scraped-mps-senate-${parliament.key}.json`), 'utf8'));
+		entries = entries.concat(senate.map((e) => ({ ...e, chamber: 'senate' as const })));
 	} else {
 		const wiki: WikiEntry[] = JSON.parse(readFileSync(join(OUT_DIR, `scraped-wikipedia-${parliament.key}.json`), 'utf8'));
 		entries = wiki.map((w) => ({
@@ -161,10 +191,18 @@ for (const parliament of PARLIAMENTS) {
 		const flag = (category: string, detail: string) =>
 			findings.push({ category, name: entry.name, parliament: parliament.key, region: entry.constituency ?? entry.county ?? '—', detail });
 
-		// Seat: constituency MP or county Woman Rep; nominated members have no seat (see non-elected.json policy).
-		let title: 'MP' | 'Woman Rep';
+		// Seat: constituency MP, county Woman Rep, or county Senator (senate renders);
+		// nominated members have no seat (see non-elected.json policy).
+		let title: 'MP' | 'Woman Rep' | 'Senator';
 		let region: string;
-		if (/women/i.test(entry.status ?? '') && entry.county) {
+		if (entry.chamber === 'senate') {
+			if (/nominated/i.test(entry.status ?? '') || !entry.county) {
+				flag('nominated', `no geographic seat (status: ${entry.status ?? 'unknown'}) — recorded, not seeded`);
+				continue;
+			}
+			title = 'Senator';
+			region = entry.county;
+		} else if (/women/i.test(entry.status ?? '') && entry.county) {
 			title = 'Woman Rep';
 			region = entry.county;
 		} else if (entry.constituency) {
@@ -200,8 +238,17 @@ for (const parliament of PARLIAMENTS) {
 			}
 		}
 		if (!userId) {
+			// Subset guard on 2-token matches, same as dossier clustering: distinctive
+			// tokens on BOTH sides means namesakes, never the same person.
+			const entryTokens = new Set(nameTokens(entry.name));
 			const scored = leaderUserRows
-				.map((u) => ({ u, score: tokenOverlap(entry.name, `${u.firstName} ${u.otherNames}`) }))
+				.map((u) => {
+					const uTokens = nameTokens(`${u.firstName} ${u.otherNames}`);
+					const score = tokenOverlap(entry.name, `${u.firstName} ${u.otherNames}`);
+					const subset =
+						uTokens.every((t) => entryTokens.has(t)) || [...entryTokens].every((t) => uTokens.includes(t));
+					return { u, score: score >= 3 || (score === 2 && subset) ? score : 0 };
+				})
 				.filter((s) => s.score >= 2)
 				.sort((a, b) => b.score - a.score);
 			if (scored.length && (scored.length === 1 || scored[0].score > scored[1].score)) {
@@ -247,9 +294,8 @@ for (const parliament of PARLIAMENTS) {
 		}
 
 		// ---- the former term itself (one row per parliament — older terms are kept) ----
-		const termKey = `${userId}|${position.id}|${parliament.startAt.toISOString().slice(0, 10)}`;
-		if (existingTerms.has(termKey)) continue;
-		existingTerms.add(termKey);
+		if (termOverlaps(userId, position.id, parliament.startAt, parliament.endAt)) continue;
+		recordTerm(userId, position.id, parliament.startAt, parliament.endAt);
 		termsAdded++;
 		let leaderId: number | null = null;
 		if (flags.apply) {

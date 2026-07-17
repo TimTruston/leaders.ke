@@ -189,12 +189,16 @@ const isPlaceholderName = (name: string) => /^vacant\b/i.test(name.trim());
 // the suffix names the parliament and the rest is name evidence, so those slugs
 // never join rule 1 (each parliament page gets its own slug there).
 const MZ_FILES = [
-	{ file: 'scraped-mps-13th.json', parliament: '13th' as string | null },
-	{ file: 'scraped-mps-12th.json', parliament: '12th' as string | null },
-	{ file: 'scraped-mps-11th.json', parliament: '11th' as string | null },
-	{ file: 'scraped-mps-earlier.json', parliament: null }
+	{ file: 'scraped-mps-13th.json', parliament: '13th' as string | null, senate: false },
+	{ file: 'scraped-mps-12th.json', parliament: '12th' as string | null, senate: false },
+	{ file: 'scraped-mps-11th.json', parliament: '11th' as string | null, senate: false },
+	{ file: 'scraped-mps-earlier.json', parliament: null, senate: false },
+	// Senate renders: an "Elected" member's county IS their seat.
+	{ file: 'scraped-mps-senate-13th.json', parliament: '13th' as string | null, senate: true },
+	{ file: 'scraped-mps-senate-12th.json', parliament: '12th' as string | null, senate: true },
+	{ file: 'scraped-mps-senate-11th.json', parliament: '11th' as string | null, senate: true }
 ];
-for (const { file, parliament } of MZ_FILES) {
+for (const { file, parliament, senate } of MZ_FILES) {
 	const entries = loadArray<MzEntry>(file);
 	if (!entries) continue;
 	let skippedNameless = 0;
@@ -216,7 +220,14 @@ for (const { file, parliament } of MZ_FILES) {
 		}
 		let seat: string | null = null;
 		let region: string | null = null;
-		if (/nominated/i.test(e.status ?? '')) {
+		if (senate) {
+			if (/nominated/i.test(e.status ?? '')) {
+				seat = 'Nominated';
+			} else if (e.county) {
+				seat = 'Senator';
+				region = e.county;
+			}
+		} else if (/nominated/i.test(e.status ?? '')) {
 			seat = 'Nominated';
 		} else if (/women/i.test(e.status ?? '') && e.county) {
 			seat = 'Woman Rep';

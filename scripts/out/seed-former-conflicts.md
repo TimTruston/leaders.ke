@@ -1,18 +1,17 @@
 # 12th/11th-parliament former-term seed: report
 
-Generated 2026-07-17T12:08:31.496Z — APPLIED.
+Generated 2026-07-17T17:07:02.705Z — dry-run.
 
 ## Summary
 
-- Terms to add: 824
-- New people: 482
-- Repeat people matched: 6 by mzalendo slug, 183 by seed email, 155 by name
-- Bios backfilled: 4
-- Party memberships: 559
+- Terms to add: 0
+- New people: 0
+- Repeat people matched: 7 by mzalendo slug, 769 by seed email, 152 by name
+- Bios backfilled: 0
+- Party memberships: 0
 - position-missing: 45
-- ambiguous-person: 11
-- nominated: 24
-- party-not-in-db: 18
+- ambiguous-person: 6
+- nominated: 62
 
 ## position-missing (45)
 
@@ -64,23 +63,18 @@ Generated 2026-07-17T12:08:31.496Z — APPLIED.
 | Patrick Munene Ntwiga | 12th | Chuka/Igambang&#x27;ombe | no MP position matches "Chuka/Igambang&#x27;ombe" | |
 | Fred Kapondi Chesebe | 12th | Mount Elgon | no MP position matches "Mount Elgon" | |
 
-## ambiguous-person (11)
+## ambiguous-person (6)
 
 | Name | Parliament | Region | Detail | Instruction |
 | --- | --- | --- | --- | --- |
-| Martha Wangari Karua | 9th | Gichugu | 2 existing people share 2 name tokens — skipped for manual review | |
-| Hassan Abdi Dukicha | 11th | Galole | 2 existing people share 2 name tokens — skipped for manual review | |
-| Adan Mohamed Nooru | 11th | Mandera North | 2 existing people share 2 name tokens — skipped for manual review | |
-| Mohamed Adan Huka | 11th | Mandera South | 2 existing people share 2 name tokens — skipped for manual review | |
-| John Njoroge Chege | 11th | Kasarani | 2 existing people share 2 name tokens — skipped for manual review | |
-| Ahmed Shakeel Ahmed Shabbir | 12th | Kisumu East | 6 existing people share 2 name tokens — skipped for manual review | |
-| Mohamed Ali Mohamed | 12th | Nyali | 26 existing people share 3 name tokens — skipped for manual review | |
-| Amin Deddy Mohamed Ali | 12th | Laikipia East | 2 existing people share 2 name tokens — skipped for manual review | |
-| David Ochieng Odhiambo | 12th | Ugenya | 2 existing people share 2 name tokens — skipped for manual review | |
-| Omar Mohamed Maalim Hassan | 12th | Mandera East | 3 existing people share 2 name tokens — skipped for manual review | |
-| Abdi Mude Ibrahim | 12th | Lafey | 2 existing people share 2 name tokens — skipped for manual review | |
+| Mohamed Abdi Haji Mohamed | 9th | Mandera West | 6 existing people share 3 name tokens — skipped for manual review | |
+| Mohamed Abdi Haji Mohamed | 11th | Banissa | 6 existing people share 3 name tokens — skipped for manual review | |
+| William Cheptumo | 11th | Baringo North | 2 existing people share 2 name tokens — skipped for manual review | |
+| Mutula Kilonzo Jnr | 11th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
+| Mohamed Ali Mohamed | 12th | Nyali | 3 existing people share 3 name tokens — skipped for manual review | |
+| Mutula Kilonzo Jnr | 12th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
 
-## nominated (24)
+## nominated (62)
 
 | Name | Parliament | Region | Detail | Instruction |
 | --- | --- | --- | --- | --- |
@@ -96,6 +90,24 @@ Generated 2026-07-17T12:08:31.496Z — APPLIED.
 | Abdi Noor Mohammed Ali | 11th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Sunjeev Kour Birdi | 11th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Robert Mutemi Mutua | 11th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Elachi Beatrice Kadeveresia | 11th | Nairobi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Catherine Mukiite Nabwala | 11th | Trans Nzoia | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Janet Ongera | 11th | Kisii | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Elizabeth Ongoro Masha | 11th | Nairobi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Halima Abdille Mohamud | 11th | Wajir | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Agnes Zani | 11th | Kwale | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Beth Mugo | 11th | Kiambu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Emma Mbura Getrude | 11th | Kilifi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Josephine Naisula Lesuuda | 11th | Samburu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Joy Adhiambo Gwendo | 11th | Siaya | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Martha Wangari Wanjira | 11th | Nakuru | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Mshenga Mvita Kisasa | 11th | Kilifi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Liza Chelule | 11th | Nakuru | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Dullo Fatuma Adan | 11th | Isiolo | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Judith Achieng Sijeny | 11th | Kisumu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Zipporah Jepchirchir Kittony | 11th | Trans Nzoia | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Daisy Nyongesa Kanainza | 11th | Kisii | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Hosea Onchwangi | 11th | Kisii | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Gideon Keter | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Cecily Mbarire | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Jacquiline Adhiambo Oduol | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
@@ -108,26 +120,23 @@ Generated 2026-07-17T12:08:31.496Z — APPLIED.
 | Dennitah Ghati | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Nasri Sahal Ibrahim | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Maina Kamanda | 12th | — | no geographic seat (status: Nominated) — recorded, not seeded | |
-
-## party-not-in-db (18)
-
-| Name | Parliament | Region | Detail | Instruction |
-| --- | --- | --- | --- | --- |
-| The National Alliance | — | — | 86 memberships skipped — party not in the parties table | |
-| United Republican Party | — | — | 70 memberships skipped — party not in the parties table | |
-| Wiper Democratic Movement - Kenya | — | — | 47 memberships skipped — party not in the parties table | |
-| Independent | — | — | 15 memberships skipped — party not in the parties table | |
-| United Democratic Forum | — | — | 10 memberships skipped — party not in the parties table | |
-| FORD-People | — | — | 9 memberships skipped — party not in the parties table | |
-| New Ford Kenya | — | — | 6 memberships skipped — party not in the parties table | |
-| Alliance Party Kenya | — | — | 4 memberships skipped — party not in the parties table | |
-| Forum for Restoration of Democracy - People | — | — | 4 memberships skipped — party not in the parties table | |
-| Party for Democratic Reform | — | — | 4 memberships skipped — party not in the parties table | |
-| FORD-Asili | — | — | 2 memberships skipped — party not in the parties table | |
-| Sisi Kwa Sisi | — | — | 2 memberships skipped — party not in the parties table | |
-| Shirikisho | — | — | 1 memberships skipped — party not in the parties table | |
-| The Independent Party | — | — | 1 memberships skipped — party not in the parties table | |
-| National Rainbow Coalition-Kenya | — | — | 1 memberships skipped — party not in the parties table | |
-| Democratic Party Kenya | — | — | 1 memberships skipped — party not in the parties table | |
-| New Democrats | — | — | 1 memberships skipped — party not in the parties table | |
-| Frontier Alliance | — | — | 1 memberships skipped — party not in the parties table | |
+| Beth Mugo | 12th | Kiambu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Milgo Alice Chepkorir | 12th | Bomet | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Millicent Omanga | 12th | Nairobi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Christine Zawadi Gona | 12th | Kilifi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Mary Yiane Senata | 12th | Kajiado | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Falhada Dekow Iman | 12th | Mombasa | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Naomi Jillo Waqo | 12th | Marsabit | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Farhiya Ali Haji | 12th | Garissa | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Agnes Zani | 12th | Kwale | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Judith Ramaita Pareno | 12th | Kajiado | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Beatrice Kwamboka Makori | 12th | Nairobi | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Masitsa Naomi Shiyonga | 12th | Kakamega | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Rose Nyamunga Ogendo | 12th | Kisumu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Petronila Were Lokorio | 12th | Busia | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Abshiro Soka Halake | 12th | Isiolo | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Sylvia Mueni Kasanga | 12th | Makueni | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Prengei Victor | 12th | Nakuru | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Mercy Chebeni | 12th | Uasin Gishu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Isaack Mwaura | 12th | Kiambu | no geographic seat (status: Nominated) — recorded, not seeded | |
+| Getrude Musuruve Inimah | 12th | Kilifi | no geographic seat (status: Nominated) — recorded, not seeded | |

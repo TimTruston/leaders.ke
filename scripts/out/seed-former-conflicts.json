@@ -1,14 +1,13 @@
 {
 	"summary": [
-		"Terms to add: 824",
-		"New people: 482",
-		"Repeat people matched: 6 by mzalendo slug, 183 by seed email, 155 by name",
-		"Bios backfilled: 4",
-		"Party memberships: 559",
+		"Terms to add: 0",
+		"New people: 0",
+		"Repeat people matched: 7 by mzalendo slug, 769 by seed email, 152 by name",
+		"Bios backfilled: 0",
+		"Party memberships: 0",
 		"position-missing: 45",
-		"ambiguous-person: 11",
-		"nominated: 24",
-		"party-not-in-db: 18"
+		"ambiguous-person: 6",
+		"nominated: 62"
 	],
 	"findings": [
 		{
@@ -38,6 +37,13 @@
 			"parliament": "9th",
 			"region": "Dujis",
 			"detail": "no MP position matches \"Dujis\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "Mohamed Abdi Haji Mohamed",
+			"parliament": "9th",
+			"region": "Mandera West",
+			"detail": "6 existing people share 3 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -101,13 +107,6 @@
 			"parliament": "9th",
 			"region": "Kibwezi",
 			"detail": "no MP position matches \"Kibwezi\""
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Martha Wangari Karua",
-			"parliament": "9th",
-			"region": "Gichugu",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -293,24 +292,10 @@
 		},
 		{
 			"category": "ambiguous-person",
-			"name": "Hassan Abdi Dukicha",
+			"name": "Mohamed Abdi Haji Mohamed",
 			"parliament": "11th",
-			"region": "Galole",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Adan Mohamed Nooru",
-			"parliament": "11th",
-			"region": "Mandera North",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Mohamed Adan Huka",
-			"parliament": "11th",
-			"region": "Mandera South",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+			"region": "Banissa",
+			"detail": "6 existing people share 3 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -318,6 +303,13 @@
 			"parliament": "11th",
 			"region": "Chuka/Igambang&#x27;ombe",
 			"detail": "no MP position matches \"Chuka/Igambang&#x27;ombe\""
+		},
+		{
+			"category": "ambiguous-person",
+			"name": "William Cheptumo",
+			"parliament": "11th",
+			"region": "Baringo North",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -332,13 +324,6 @@
 			"parliament": "11th",
 			"region": "Mbita",
 			"detail": "no MP position matches \"Mbita\""
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "John Njoroge Chege",
-			"parliament": "11th",
-			"region": "Kasarani",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "nominated",
@@ -426,10 +411,136 @@
 		},
 		{
 			"category": "ambiguous-person",
-			"name": "Ahmed Shakeel Ahmed Shabbir",
-			"parliament": "12th",
-			"region": "Kisumu East",
-			"detail": "6 existing people share 2 name tokens — skipped for manual review"
+			"name": "Mutula Kilonzo Jnr",
+			"parliament": "11th",
+			"region": "Makueni",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+		},
+		{
+			"category": "nominated",
+			"name": "Elachi Beatrice Kadeveresia",
+			"parliament": "11th",
+			"region": "Nairobi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Catherine Mukiite Nabwala",
+			"parliament": "11th",
+			"region": "Trans Nzoia",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Janet Ongera",
+			"parliament": "11th",
+			"region": "Kisii",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Elizabeth Ongoro Masha",
+			"parliament": "11th",
+			"region": "Nairobi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Halima Abdille Mohamud",
+			"parliament": "11th",
+			"region": "Wajir",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Agnes Zani",
+			"parliament": "11th",
+			"region": "Kwale",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Beth Mugo",
+			"parliament": "11th",
+			"region": "Kiambu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Emma Mbura Getrude",
+			"parliament": "11th",
+			"region": "Kilifi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Josephine Naisula Lesuuda",
+			"parliament": "11th",
+			"region": "Samburu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Joy Adhiambo Gwendo",
+			"parliament": "11th",
+			"region": "Siaya",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Martha Wangari Wanjira",
+			"parliament": "11th",
+			"region": "Nakuru",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Mshenga Mvita Kisasa",
+			"parliament": "11th",
+			"region": "Kilifi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Liza Chelule",
+			"parliament": "11th",
+			"region": "Nakuru",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Dullo Fatuma Adan",
+			"parliament": "11th",
+			"region": "Isiolo",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Judith Achieng Sijeny",
+			"parliament": "11th",
+			"region": "Kisumu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Zipporah Jepchirchir Kittony",
+			"parliament": "11th",
+			"region": "Trans Nzoia",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Daisy Nyongesa Kanainza",
+			"parliament": "11th",
+			"region": "Kisii",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Hosea Onchwangi",
+			"parliament": "11th",
+			"region": "Kisii",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
 			"category": "nominated",
@@ -450,14 +561,7 @@
 			"name": "Mohamed Ali Mohamed",
 			"parliament": "12th",
 			"region": "Nyali",
-			"detail": "26 existing people share 3 name tokens — skipped for manual review"
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Amin Deddy Mohamed Ali",
-			"parliament": "12th",
-			"region": "Laikipia East",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
+			"detail": "3 existing people share 3 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -530,32 +634,11 @@
 			"detail": "no MP position matches \"Mount Elgon\""
 		},
 		{
-			"category": "ambiguous-person",
-			"name": "David Ochieng Odhiambo",
-			"parliament": "12th",
-			"region": "Ugenya",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
-		},
-		{
 			"category": "nominated",
 			"name": "Dennitah Ghati",
 			"parliament": "12th",
 			"region": "—",
 			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Omar Mohamed Maalim Hassan",
-			"parliament": "12th",
-			"region": "Mandera East",
-			"detail": "3 existing people share 2 name tokens — skipped for manual review"
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Abdi Mude Ibrahim",
-			"parliament": "12th",
-			"region": "Lafey",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "nominated",
@@ -572,130 +655,151 @@
 			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "The National Alliance",
-			"parliament": "—",
-			"region": "—",
-			"detail": "86 memberships skipped — party not in the parties table"
+			"category": "ambiguous-person",
+			"name": "Mutula Kilonzo Jnr",
+			"parliament": "12th",
+			"region": "Makueni",
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "United Republican Party",
-			"parliament": "—",
-			"region": "—",
-			"detail": "70 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Beth Mugo",
+			"parliament": "12th",
+			"region": "Kiambu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Wiper Democratic Movement - Kenya",
-			"parliament": "—",
-			"region": "—",
-			"detail": "47 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Milgo Alice Chepkorir",
+			"parliament": "12th",
+			"region": "Bomet",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Independent",
-			"parliament": "—",
-			"region": "—",
-			"detail": "15 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Millicent Omanga",
+			"parliament": "12th",
+			"region": "Nairobi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "United Democratic Forum",
-			"parliament": "—",
-			"region": "—",
-			"detail": "10 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Christine Zawadi Gona",
+			"parliament": "12th",
+			"region": "Kilifi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "FORD-People",
-			"parliament": "—",
-			"region": "—",
-			"detail": "9 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Mary Yiane Senata",
+			"parliament": "12th",
+			"region": "Kajiado",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "New Ford Kenya",
-			"parliament": "—",
-			"region": "—",
-			"detail": "6 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Falhada Dekow Iman",
+			"parliament": "12th",
+			"region": "Mombasa",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Alliance Party Kenya",
-			"parliament": "—",
-			"region": "—",
-			"detail": "4 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Naomi Jillo Waqo",
+			"parliament": "12th",
+			"region": "Marsabit",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Forum for Restoration of Democracy - People",
-			"parliament": "—",
-			"region": "—",
-			"detail": "4 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Farhiya Ali Haji",
+			"parliament": "12th",
+			"region": "Garissa",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Party for Democratic Reform",
-			"parliament": "—",
-			"region": "—",
-			"detail": "4 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Agnes Zani",
+			"parliament": "12th",
+			"region": "Kwale",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "FORD-Asili",
-			"parliament": "—",
-			"region": "—",
-			"detail": "2 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Judith Ramaita Pareno",
+			"parliament": "12th",
+			"region": "Kajiado",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Sisi Kwa Sisi",
-			"parliament": "—",
-			"region": "—",
-			"detail": "2 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Beatrice Kwamboka Makori",
+			"parliament": "12th",
+			"region": "Nairobi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Shirikisho",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Masitsa Naomi Shiyonga",
+			"parliament": "12th",
+			"region": "Kakamega",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "The Independent Party",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Rose Nyamunga Ogendo",
+			"parliament": "12th",
+			"region": "Kisumu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "National Rainbow Coalition-Kenya",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Petronila Were Lokorio",
+			"parliament": "12th",
+			"region": "Busia",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Democratic Party Kenya",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Abshiro Soka Halake",
+			"parliament": "12th",
+			"region": "Isiolo",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "New Democrats",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Sylvia Mueni Kasanga",
+			"parliament": "12th",
+			"region": "Makueni",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		},
 		{
-			"category": "party-not-in-db",
-			"name": "Frontier Alliance",
-			"parliament": "—",
-			"region": "—",
-			"detail": "1 memberships skipped — party not in the parties table"
+			"category": "nominated",
+			"name": "Prengei Victor",
+			"parliament": "12th",
+			"region": "Nakuru",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Mercy Chebeni",
+			"parliament": "12th",
+			"region": "Uasin Gishu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Isaack Mwaura",
+			"parliament": "12th",
+			"region": "Kiambu",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "nominated",
+			"name": "Getrude Musuruve Inimah",
+			"parliament": "12th",
+			"region": "Kilifi",
+			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
 		}
 	]
 }
