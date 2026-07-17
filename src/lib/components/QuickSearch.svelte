@@ -6,10 +6,26 @@
 	import { goto } from '$app/navigation';
 	import { counties, geoSlug } from '$lib/data/geo';
 
-	let { open = $bindable(false) }: { open?: boolean } = $props();
-
 	type Item = { label: string; sub: string; path: string };
 	type Group = { name: string; items: Item[] };
+	type GroupName = 'Platform' | 'Regions' | 'Executive' | 'Parliament' | 'MCAs' | 'Parties';
+
+	let {
+		open = $bindable(false),
+		include = ['Platform', 'Regions', 'Executive', 'Parliament', 'MCAs', 'Parties'],
+		expand = true,
+		hotkey = false,
+		placeholder
+	}: {
+		open?: boolean;
+		/** Which suggestion groups to offer (e.g. leaders-only on /ranks). */
+		include?: GroupName[];
+		/** true: header behavior - small until focused, then covers the nav. false: fixed width. */
+		expand?: boolean;
+		/** true: "/" focuses the box from anywhere (one instance per page). */
+		hotkey?: boolean;
+		placeholder?: string;
+	} = $props();
 
 	const PLATFORM: Item[] = [
 		{ label: 'All Leaders', sub: 'Platform', path: '/leaders' },
@@ -68,7 +84,7 @@
 
 	const groups: Group[] = $derived.by(() => {
 		const q = query.trim().toLowerCase();
-		if (!q) return [{ name: 'Platform', items: PLATFORM.slice(0, 8) }];
+		if (!q) return include.includes('Platform') ? [{ name: 'Platform', items: PLATFORM.slice(0, 8) }] : [];
 		return [
 			{ name: 'Executive', items: dbGroups.executive },
 			{ name: 'Parliament', items: dbGroups.parliament },
@@ -76,7 +92,7 @@
 			{ name: 'Platform', items: filterStatic(PLATFORM, q) },
 			{ name: 'Regions', items: filterStatic(REGIONS, q) },
 			{ name: 'Parties', items: dbGroups.parties }
-		].filter((g) => g.items.length > 0);
+		].filter((g) => include.includes(g.name as GroupName) && g.items.length > 0);
 	});
 	const flat = $derived(groups.flatMap((g) => g.items));
 	$effect(() => {
@@ -124,14 +140,14 @@
 <svelte:window
 	onkeydown={(e) => {
 		// "/" focuses the quick search from anywhere outside a form field.
-		if (e.key === '/' && !open && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+		if (hotkey && e.key === '/' && !open && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
 			e.preventDefault();
 			input?.focus();
 		}
 	}}
 />
 
-<div class="relative {open ? 'w-full max-w-xl' : 'w-28 sm:w-40'} transition-all duration-200">
+<div class="relative transition-all duration-200 {expand ? (open ? 'w-full max-w-xl' : 'w-28 sm:w-40') : 'w-full sm:w-80'}">
 	<svg
 		viewBox="0 0 24 24"
 		fill="none"
@@ -148,7 +164,7 @@
 		onblur={() => setTimeout(() => (open = false), 150)}
 		onkeydown={onKeydown}
 		type="search"
-		placeholder={open ? 'Type the name of a leader, region or party…' : 'Search'}
+		placeholder={placeholder ?? (open ? 'Type the name of a leader, region or party…' : 'Search')}
 		aria-label="Quick search"
 		class="w-full rounded-full border border-border bg-surface py-2 pr-3 pl-9 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:outline-none"
 	/>

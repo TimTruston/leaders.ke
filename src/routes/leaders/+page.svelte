@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import Paginator from '$lib/components/Paginator.svelte';
+	import PositionBadges from '$lib/components/PositionBadges.svelte';
 	import SearchFilter from '$lib/components/SearchFilter.svelte';
 	import type { PageProps } from './$types';
 
@@ -13,12 +14,8 @@
 	// come when the register grows large enough to need it.
 	const allLeaders = $derived(data.dbLeaders);
 
-	// Kenya's elective hierarchy, national to ward; only shown as a badge if the
-	// register actually has someone in that position.
-	const POSITION_ORDER = ['President', 'Governor', 'Senator', 'MP', 'Woman Rep', 'MCA'];
-	const positions = $derived(
-		POSITION_ORDER.filter((p) => allLeaders.some((l) => l.positionTitle === p))
-	);
+	// Positions that actually have someone; PositionBadges orders them by hierarchy.
+	const positions = $derived([...new Set(allLeaders.map((l) => l.positionTitle))]);
 
 	const parties = $derived(
 		[...new Set(allLeaders.map((l) => l.party).filter(Boolean))].sort() as string[]
@@ -104,25 +101,8 @@
 	</div>
 
 	<!-- Position badges: single-select pill bar, matching the pricing page's office selector -->
-	<div class="mt-8 w-full overflow-x-auto">
-		<div
-			class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1"
-			role="group"
-			aria-label="Position"
-		>
-			{#each positions as p (p)}
-				<button
-					type="button"
-					aria-pressed={position === p}
-					onclick={() => (position = p)}
-					class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {position === p
-						? 'bg-primary text-on-primary'
-						: 'text-muted hover:text-heading'}"
-				>
-					{p}
-				</button>
-			{/each}
-		</div>
+	<div class="mt-8 flex justify-center">
+		<PositionBadges {positions} bind:value={position} />
 	</div>
 
 	<!-- Filters: stack on mobile, row on wider screens -->

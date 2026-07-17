@@ -43,7 +43,7 @@
 					{/each}
 				</nav>
 			{/if}
-			<QuickSearch bind:open={searchOpen} />
+			<QuickSearch bind:open={searchOpen} hotkey />
 		</div>
 
 		<div class="flex items-center gap-2">

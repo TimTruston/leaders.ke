@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Paginator from '$lib/components/Paginator.svelte';
+	import PositionBadges from '$lib/components/PositionBadges.svelte';
+	import QuickSearch from '$lib/components/QuickSearch.svelte';
 	import { seatPath } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
@@ -9,24 +11,24 @@
 
 	const PAGE_SIZE = 50;
 
-	let positionFilter = $state('');
 	let page = $state(1);
-	const positionTitles = $derived(
-		[...new Set(data.leaders.map((l) => l.positionTitle))].sort()
-	);
+	let positionFilter = $state('President');
+	const positionTitles = $derived([...new Set(data.leaders.map((l) => l.positionTitle))]);
 	const filtered = $derived(
 		data.leaders.filter((l) => !positionFilter || l.positionTitle === positionFilter)
 	);
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 
-	function onFilterChange() {
+	// Switching the position pill resets to page 1.
+	$effect(() => {
+		positionFilter;
 		page = 1;
-	}
+	});
 </script>
 
 <svelte:head>
-	<title>Leader ranks — leaders.ke</title>
+	<title>LeaderRank — leaders.ke</title>
 	<meta
 		name="description"
 		content="Kenya's leaders and 2027 candidates ranked by followers, pledges, output and manifesto delivery."
@@ -36,23 +38,17 @@
 <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="">
-			<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">Leader ranks</h1>
+			<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">The LeaderRank</h1>
 			<p class="mt-3 text-base leading-relaxed">
 				Ranked by a transparent engagement score: followers + 5× vote pledges + 10× public posts +
 				100× delivered manifesto pillars.
 			</p>
 		</div>
-		<select
-			bind:value={positionFilter}
-			onchange={onFilterChange}
-			aria-label="Filter by position"
-			class="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-		>
-			<option value="">All positions</option>
-			{#each positionTitles as t (t)}
-				<option value={t}>{t}</option>
-			{/each}
-		</select>
+		<div class="flex flex-wrap items-center gap-4">
+			<!-- Leader quick-jump (leaders-only groups) beside the position pill bar -->
+			<QuickSearch include={['Executive', 'Parliament', 'MCAs']} expand={false} placeholder="Find a leader…" />
+			<PositionBadges positions={positionTitles} bind:value={positionFilter} />
+		</div>
 	</div>
 
 	<div class="mt-8 overflow-x-auto rounded-2xl border border-border">
