@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { counties } from '$lib/data/geo';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import Paginator from '$lib/components/Paginator.svelte';
 	import PositionBadges from '$lib/components/PositionBadges.svelte';
@@ -39,6 +40,12 @@
 		region = '';
 	});
 
+	// MCA leaders are listed by ward (countyLabel); the SearchFilter picks a
+	// constituency, so map each ward back to its parent constituency to match them.
+	const constituencyByWard = new Map(
+		counties.flatMap((c) => c.constituencies).flatMap((con) => con.wards.map((w) => [w.seatName, con.seatName]))
+	);
+
 	// Verified profiles rank first within the filtered set — verification is the product.
 	// Then by term status (current, aspirant, former), then reach.
 	const STATUS_ORDER: Record<string, number> = { current: 0, aspirant: 1, former: 2 };
@@ -46,7 +53,10 @@
 		allLeaders
 			.filter(
 				(l) =>
-					(!region || l.countyLabel === region) &&
+					(!region ||
+						(position === 'MCA'
+							? constituencyByWard.get(l.countyLabel) === region
+							: l.countyLabel === region)) &&
 					(!position || l.positionTitle === position) &&
 					(!party || l.party === party) &&
 					(!status || l.status === status) &&

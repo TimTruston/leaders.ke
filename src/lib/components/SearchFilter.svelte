@@ -26,46 +26,23 @@
 	const pillSelect =
 		'rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none';
 
-	// MCA seats are wards (1,450 of them) — too many to pick directly, so drill
-	// down constituency -> ward instead of one flat region list.
+	// MCA seats are wards (1,450 of them) — too many to pick directly, so filter by
+	// constituency instead; the caller matches each MCA leader by their ward's
+	// parent constituency. Only constituencies that actually have a listed MCA show.
 	const allConstituencies = counties
 		.flatMap((c) => c.constituencies)
 		.toSorted((a, b) => a.seatName.localeCompare(b.seatName));
 
-	let selectedConstituency = $state('');
 	const constituencyOptions = $derived(
 		allConstituencies.filter((c) => c.wards.some((w) => regions.includes(w.seatName)))
 	);
-	const wardOptions = $derived(
-		(allConstituencies.find((c) => c.seatName === selectedConstituency)?.wards ?? [])
-			.filter((w) => regions.includes(w.seatName))
-			.toSorted((a, b) => a.name.localeCompare(b.name))
-	);
-
-	// The locked role and its region change out from under this component when the
-	// caller switches position badge — drop the stale constituency picked for the old role.
-	$effect(() => {
-		lockTitle;
-		selectedConstituency = '';
-	});
 </script>
 
 {#if lockTitle === 'MCA'}
-	<select bind:value={selectedConstituency} class={pillSelect} aria-label="Constituency">
+	<select bind:value={region} class={pillSelect} aria-label="Constituency">
 		<option value="">All constituencies</option>
 		{#each constituencyOptions as c (c.seatName)}
 			<option value={c.seatName}>{c.seatName}</option>
-		{/each}
-	</select>
-	<select
-		bind:value={region}
-		class={pillSelect}
-		aria-label="Ward"
-		disabled={!selectedConstituency}
-	>
-		<option value="">All wards</option>
-		{#each wardOptions as w (w.seatName)}
-			<option value={w.seatName}>{w.name}</option>
 		{/each}
 	</select>
 {:else if lockTitle !== 'President'}
