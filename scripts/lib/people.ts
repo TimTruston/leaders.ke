@@ -33,6 +33,8 @@ export type PersonRow = {
 	// (a 'former' row, e.g. an impeached officeholder, needs its real end date).
 	startAt?: string | null;
 	endAt?: string | null;
+	/** Track-record note for this row's own term (leaders.description). */
+	description?: string;
 	bio?: string;
 	education?: ExperienceRow[];
 	professional?: ExperienceRow[];
@@ -307,6 +309,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 					status: row.status,
 					startAt,
 					endAt: toDate(row.endAt),
+					description: row.description ?? null,
 					verifiedAt: new Date() // required to surface on the /vote/2027 ballot (verified-only)
 				})
 				.returning({ id: leaders.id });

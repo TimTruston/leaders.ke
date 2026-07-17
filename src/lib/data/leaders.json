@@ -3106,64 +3106,87 @@
   "region": "Nairobi",
   "party": "ODM",
   "status": "current",
-  "bio": "Senator for Nairobi County focused on devolution oversight, affordable housing accountability and youth employment programs across all 17 sub-counties.",
+  "description": "Won the Nairobi Senate seat in 2022 on an ODM ticket, five years after his first attempt, and made it the county's loudest oversight perch: grilling city budgets and carrying his party's floor fights until his 2026 break with ODM.",
+  "bio": "Edwin Sifuna is Nairobi's Senator and the sharpest tongue in Kenya's opposition: the lawyer who ran Raila Odinga's ODM machine for eight years before it cast him out for refusing to soften on Ruto. An advocate since 2008, he cut his teeth on CORD and NASA strategy committees before Raila handed him the ODM Secretary-General's desk in 2018, at just 35, and he became the party's enforcer, spokesman and most quotable defender. Elected Nairobi Senator in 2022, five years after losing the seat to Johnson Sakaja, he built a national following on combative debate-floor performances. When ODM embraced cooperation with President Ruto's government, Sifuna refused to fall in line: the party stripped him of the Secretary-Generalship in 2026 and the Senate minority dewhipped him on 16 July. He answered with Linda Mwananchi, a street movement rallying cost-of-living anger alongside Babu Owino and James Orengo, positioned as a third force ahead of 2027.",
   "pillars": [
    {
-    "title": "Devolution oversight",
-    "summary": "Track every shilling allocated to Nairobi County and publish quarterly scorecards."
+    "title": "Cost of living",
+    "summary": "Enforce stricter Senate gatekeeping on government spending and borrowing so unnecessary taxes and levies never reach the common mwananchi's food, rent, power and school bills."
    },
    {
-    "title": "Youth employment",
-    "summary": "Champion county-funded apprenticeships linking TVET graduates to city contracts."
+    "title": "Ease of doing business",
+    "summary": "Legislate protectionist measures for the self-employed: cut the high taxes, cumbersome registration requirements, exorbitant licensing fees and digital service tax that frustrate Nairobi's budding business owners."
    },
    {
-    "title": "Housing accountability",
-    "summary": "Public register of affordable housing allocations to end double-allocation fraud."
+    "title": "Youth unemployment",
+    "summary": "Prioritise legislation and partnerships with companies at home and abroad to build a job pipeline and mentorship programme for the youth, plus autonomous digital hubs with little government interference."
+   },
+   {
+    "title": "Access to quality healthcare",
+    "summary": "Push for adequately stocked and equipped public health facilities so the taxes Kenyans pay actually buy them working referral hospitals, oxygen included."
+   },
+   {
+    "title": "Sports and art sectors",
+    "summary": "Create policies and laws that nurture talent from a young age through institutions recognised as sports centres, with real facilities, incentives and rewards for Kenya's shujaas."
    }
   ],
   "education": [
    {
-    "title": "Bachelor of Laws",
-    "institution": "University of Nairobi",
+    "title": "Kenya Certificate of Secondary Education",
+    "institution": "Musingu High School",
+    "description": "Schooled at Kakamega Township Primary and Musingu High School in western Kenya, where he sat his KCSE; those Kakamega roots still anchor his politics, with Luhya leaders now fronting him as a national standard-bearer.",
     "startAt": null,
     "endAt": null
    },
    {
+    "title": "Bachelor of Laws",
+    "institution": "University of Nairobi",
+    "description": "Read law at the University of Nairobi, graduating in 2006. The training shows in his political style: floor debates argued like courtroom submissions and party disputes fought clause by clause through tribunals and registrars.",
+    "startAt": null,
+    "endAt": "2006-01-01"
+   },
+   {
     "title": "Postgraduate Diploma in Law",
     "institution": "Kenya School of Law",
-    "startAt": null,
-    "endAt": null
+    "description": "Completed the advocates training programme at the Kenya School of Law in 2007, did his pupilage at Kairu & McCourt Advocates in Nairobi, and was admitted to the Roll of Advocates in 2008, the profession he practised before politics swallowed his calendar.",
+    "startAt": "2006-01-01",
+    "endAt": "2007-01-01"
    }
   ],
   "professional": [
    {
     "title": "Partner",
     "institution": "E. Sifuna & Associates Advocates",
-    "startAt": null,
+    "description": "Founding partner of his own Nairobi law practice after admission to the bar in 2008, building the commercial and political litigation experience that later made him ODM's in-house legal brain through petitions and coalition talks.",
+    "startAt": "2008-01-01",
     "endAt": null
    },
    {
     "title": "Technical/Advisory Committee Member",
-    "institution": "CORD",
+    "institution": "CORD and NASA coalitions",
+    "description": "Backroom strategist on the technical and advisory committees of the CORD and later NASA opposition coalitions, drafting positions and coalition agreements in the Raila Odinga camp's engine room across two election cycles.",
     "startAt": "2013-01-01",
-    "endAt": "2016-01-01"
-   },
-   {
-    "title": "Technical/Advisory Committee Member",
-    "institution": "NASA",
-    "startAt": null,
-    "endAt": null
+    "endAt": "2017-01-01"
    },
    {
     "title": "Secretary-General",
     "institution": "Orange Democratic Movement (ODM)",
-    "startAt": "2018-01-01",
-    "endAt": "2026-01-01"
+    "description": "Ran Kenya's biggest opposition party from February 2018 as Raila Odinga's enforcer and its public voice, until the NEC removed him in 2026, a removal the Registrar of Political Parties upheld that July, for opposing ODM's cooperation pact with the Ruto administration.",
+    "startAt": "2018-02-23",
+    "endAt": "2026-07-09"
    },
    {
     "title": "Deputy Minority Whip",
     "institution": "Senate of Kenya",
-    "startAt": null,
+    "description": "Held the Senate minority's deputy whip post from 2022 until 16 July 2026, when the minority party voted him out days after his ODM ouster and replaced him with Senator Eddy Oketch; he thanked colleagues and congratulated his successor.",
+    "startAt": "2022-09-01",
+    "endAt": "2026-07-16"
+   },
+   {
+    "title": "Convener",
+    "institution": "Linda Mwananchi Movement",
+    "description": "Fronts the Linda Mwananchi ('protect the citizen') movement with Babu Owino and James Orengo, rallying crowds against the cost of living and taxation and building what allies bill as a third force, possibly his own presidential vehicle, for 2027.",
+    "startAt": "2026-01-01",
     "endAt": null
    }
   ],

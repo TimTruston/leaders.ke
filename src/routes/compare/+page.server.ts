@@ -7,14 +7,15 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ url }) => {
 	const metrics = await listLeaderMetrics();
 
-	const a = url.searchParams.get('a');
-	const b = url.searchParams.get('b');
+	// Landing without a pair shows a live example instead of an empty page: the
+	// right side is a random 2027 presidential aspirant, fresh on every visit.
+	const aspirants = metrics.filter((m) => m.positionTitle === 'President' && m.status === 'aspirant');
+	const randomAspirant = aspirants[Math.floor(Math.random() * aspirants.length)]?.path ?? '/william-ruto';
+	const a = url.searchParams.get('a') ?? '/edwin-sifuna';
+	const b = url.searchParams.get('b') ?? randomAspirant;
 
+	// The picker is the quick-search (its own endpoint), so only the selected pair ships.
 	return {
-		options: metrics.map((m) => ({
-			path: m.path,
-			label: `${m.name} (${m.positionTitle}, ${m.regionLabel})`
-		})),
 		left: metrics.find((m) => m.path === a) ?? null,
 		right: metrics.find((m) => m.path === b) ?? null
 	};
