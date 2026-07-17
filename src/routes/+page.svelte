@@ -8,8 +8,8 @@
 
 	// The hero headline is two cycling halves: any left word reads naturally with
 	// any right word, so the pairs don't need to line up.
-	const leftSet = ['Leadership', 'Campaign', 'Publicity', 'Manifesto', 'Advocacy', 'Citizen\'s'];
-	const rightSet = ['Logbook', 'Copilot', 'Panel', 'Machinery', 'Arsenal', 'Companion'];
+	const leftSet = ['Leadership', 'Campaign', 'Publicity', 'Coalition', 'Advocacy', 'Citizen\'s', 'Movement'];
+	const rightSet = ['Launchpad', 'Copilot', 'Panel', 'Catalyst', 'Arsenal', 'Companion', 'Machinery'];
 
 	// Campaign toolkit grid: what a subscription buys. `live` distinguishes
 	// shipped features from roadmap items (badged "Coming soon") — the badge
