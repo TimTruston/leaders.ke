@@ -1,10 +1,14 @@
 <script lang="ts">
 	import type { User } from 'better-auth';
 	import { enhance } from '$app/forms';
+	import QuickSearch from './QuickSearch.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	// user is null when signed out; drives the Log in / Log out switch.
 	let { user = null }: { user?: User | null } = $props();
+
+	// While the quick search is expanded it covers the nav links' space.
+	let searchOpen = $state(false);
 
 	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
 	const links = [
@@ -26,16 +30,21 @@
 			<span>leaders<span class="text-primary">.ke</span></span>
 		</a>
 
-		<nav class="hidden items-center gap-1 md:flex">
-			{#each links as link (link.href)}
-				<a
-					href={link.href}
-					class="rounded-md px-3 py-2 text-sm font-medium text-text transition hover:bg-surface-2 hover:text-heading"
-				>
-					{link.label}
-				</a>
-			{/each}
-		</nav>
+		<div class="mx-3 flex min-w-0 flex-1 items-center justify-end gap-1 md:justify-center">
+			{#if !searchOpen}
+				<nav class="hidden items-center gap-1 md:flex">
+					{#each links as link (link.href)}
+						<a
+							href={link.href}
+							class="rounded-md px-3 py-2 text-sm font-medium text-text transition hover:bg-surface-2 hover:text-heading"
+						>
+							{link.label}
+						</a>
+					{/each}
+				</nav>
+			{/if}
+			<QuickSearch bind:open={searchOpen} />
+		</div>
 
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
