@@ -21238,7 +21238,8 @@
 			"key": "erick-okongo-omogeni",
 			"canonicalName": "Mogeni Erick Okongo",
 			"names": [
-				"Mogeni Erick Okongo"
+				"Mogeni Erick Okongo",
+				"Okong'o Omogeni"
 			],
 			"platformSlug": "erick-okongo-omogeni",
 			"userId": 95,
@@ -21253,6 +21254,7 @@
 					"party": "Orange Democratic Movement",
 					"sources": [
 						"mzalendo-13th",
+						"wikipedia-13th",
 						"roster"
 					],
 					"assertions": [
@@ -21261,6 +21263,12 @@
 							"name": "Mogeni Erick Okongo",
 							"party": "Orange Democratic Movement",
 							"url": "https://mzalendo.com/mps-performance/senate/13th-parliament/mogeni-erick-okongo/"
+						},
+						{
+							"source": "wikipedia-13th",
+							"name": "Okong'o Omogeni",
+							"party": "ODM",
+							"url": null
 						},
 						{
 							"source": "roster",
@@ -21287,43 +21295,6 @@
 					"National Security, Defence and Foreign Relations"
 				]
 			},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
-			"key": "erick-okongo-omogeni-2",
-			"canonicalName": "Okong'o Omogeni",
-			"names": [
-				"Okong'o Omogeni"
-			],
-			"platformSlug": "erick-okongo-omogeni",
-			"userId": 95,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "13th",
-					"seat": "Senator",
-					"region": "Nyamira",
-					"party": "ODM",
-					"sources": [
-						"wikipedia-13th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-13th",
-							"name": "Okong'o Omogeni",
-							"party": "ODM",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [],
-			"photos": [],
-			"committees": {},
 			"contacts": {
 				"emails": [],
 				"phones": [],
@@ -27286,46 +27257,6 @@
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/9th-parliament-na/member-gideon-konchellah-9th/"
-				}
-			],
-			"bios": [],
-			"photos": [],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
-			"key": "gideon-mbuvi-mike-sonko",
-			"canonicalName": "Gideon Mbuvi Mike 'Sonko'",
-			"names": [
-				"Gideon Mbuvi Mike 'Sonko'"
-			],
-			"platformSlug": null,
-			"userId": null,
-			"mzalendoSlugs": {
-				"11th": "gideon-mbuvi-mike-sonko-11th"
-			},
-			"terms": [
-				{
-					"parliament": "11th",
-					"seat": "Senator",
-					"region": "Nairobi",
-					"party": "The National Alliance",
-					"sources": [
-						"mzalendo-11th"
-					],
-					"assertions": [
-						{
-							"source": "mzalendo-11th",
-							"name": "Gideon Mbuvi Mike 'Sonko'",
-							"party": "The National Alliance",
-							"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/gideon-mbuvi-mike-sonko-11th/"
-						}
-					],
-					"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/gideon-mbuvi-mike-sonko-11th/"
 				}
 			],
 			"bios": [],
@@ -35657,7 +35588,8 @@
 			"key": "james-ndungu-gethenji",
 			"canonicalName": "James Ndungu Gethenji",
 			"names": [
-				"James Ndungu Gethenji"
+				"James Ndungu Gethenji",
+				"Ndung’u Gethenji"
 			],
 			"platformSlug": "james-ndungu-gethenji",
 			"userId": 749,
@@ -35671,7 +35603,8 @@
 					"region": "Tetu",
 					"party": "The National Alliance",
 					"sources": [
-						"mzalendo-11th"
+						"mzalendo-11th",
+						"wikipedia-11th"
 					],
 					"assertions": [
 						{
@@ -35679,6 +35612,12 @@
 							"name": "James Ndungu Gethenji",
 							"party": "The National Alliance",
 							"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/gethenji-james/"
+						},
+						{
+							"source": "wikipedia-11th",
+							"name": "Ndung’u Gethenji",
+							"party": "TNA",
+							"url": null
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/gethenji-james/"
@@ -38746,47 +38685,11 @@
 			}
 		},
 		{
-			"key": "johana-ngeno",
-			"canonicalName": "Johana Ng’eno",
-			"names": [
-				"Johana Ng’eno"
-			],
-			"platformSlug": null,
-			"userId": null,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "11th",
-					"seat": "MP",
-					"region": null,
-					"party": "KNC",
-					"sources": [
-						"wikipedia-11th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-11th",
-							"name": "Johana Ng’eno",
-							"party": "KNC",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [],
-			"photos": [],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
 			"key": "johana-ngeno-kipyegon",
 			"canonicalName": "Johana Ngeno Kipyegon",
 			"names": [
-				"Johana Ngeno Kipyegon"
+				"Johana Ngeno Kipyegon",
+				"Johana Ng’eno"
 			],
 			"platformSlug": "johana-ngeno-kipyegon",
 			"userId": 811,
@@ -38826,7 +38729,8 @@
 					"region": "Emurua Dikirr",
 					"party": "Kenya National Congress",
 					"sources": [
-						"mzalendo-11th"
+						"mzalendo-11th",
+						"wikipedia-11th"
 					],
 					"assertions": [
 						{
@@ -38834,6 +38738,12 @@
 							"name": "Johana Ngeno Kipyegon",
 							"party": "Kenya National Congress",
 							"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/kipyegon-johana-1/"
+						},
+						{
+							"source": "wikipedia-11th",
+							"name": "Johana Ng’eno",
+							"party": "KNC",
+							"url": null
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/kipyegon-johana-1/"
@@ -39671,7 +39581,8 @@
 			"key": "john-mbadi-ngongo",
 			"canonicalName": "John Mbadi Ng'ong'o",
 			"names": [
-				"John Mbadi Ng'ong'o"
+				"John Mbadi Ng'ong'o",
+				"Mbadi John Ng'ongo"
 			],
 			"platformSlug": null,
 			"userId": null,
@@ -39680,12 +39591,31 @@
 			},
 			"terms": [
 				{
+					"parliament": "12th",
+					"seat": "MP",
+					"region": "Suba South",
+					"party": "Orange Democratic Movement",
+					"sources": [
+						"wikipedia-12th"
+					],
+					"assertions": [
+						{
+							"source": "wikipedia-12th",
+							"name": "Mbadi John Ng'ongo",
+							"party": "Orange Democratic Movement",
+							"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
+						}
+					],
+					"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
+				},
+				{
 					"parliament": "11th",
 					"seat": "MP",
 					"region": "Suba North",
 					"party": "Orange Democratic Movement",
 					"sources": [
-						"mzalendo-11th"
+						"mzalendo-11th",
+						"wikipedia-11th"
 					],
 					"assertions": [
 						{
@@ -39693,12 +39623,25 @@
 							"name": "John Mbadi Ng'ong'o",
 							"party": "Orange Democratic Movement",
 							"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/john-mbadi-ngongo/"
+						},
+						{
+							"source": "wikipedia-11th",
+							"name": "Mbadi John Ng'ongo",
+							"party": "ODM",
+							"url": null
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/john-mbadi-ngongo/"
 				}
 			],
-			"bios": [],
+			"bios": [
+				{
+					"text": "Mbadi John Ng'ongo is a Kenyan politician who has been serving as the Cabinet Secretary for the National Treasury and Economic Planning since August 8, 2024.",
+					"source": "wikipedia-12th",
+					"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo",
+					"parliament": "12th"
+				}
+			],
 			"photos": [
 				{
 					"url": "https://mzalendo.com/media/images-rendered/John_Mbadi.min-320x400.jpg",
@@ -43010,7 +42953,8 @@
 			"key": "joseph-meruaki-muthari",
 			"canonicalName": "Joseph M'eruaki M'uthari",
 			"names": [
-				"Joseph M'eruaki M'uthari"
+				"Joseph M'eruaki M'uthari",
+				"Joseph Meruaki Muthari"
 			],
 			"platformSlug": null,
 			"userId": null,
@@ -43024,7 +42968,8 @@
 					"region": "Igembe North",
 					"party": "The National Alliance",
 					"sources": [
-						"mzalendo-11th"
+						"mzalendo-11th",
+						"wikipedia-11th"
 					],
 					"assertions": [
 						{
@@ -43032,6 +42977,12 @@
 							"name": "Joseph M'eruaki M'uthari",
 							"party": "The National Alliance",
 							"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/joseph-meruaki-muthari/"
+						},
+						{
+							"source": "wikipedia-11th",
+							"name": "Joseph Meruaki Muthari",
+							"party": "TNA",
+							"url": null
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/11th-parliament/joseph-meruaki-muthari/"
@@ -43044,43 +42995,6 @@
 					"source": "mzalendo-11th"
 				}
 			],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
-			"key": "joseph-meruaki-muthari-2",
-			"canonicalName": "Joseph Meruaki Muthari",
-			"names": [
-				"Joseph Meruaki Muthari"
-			],
-			"platformSlug": null,
-			"userId": null,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "11th",
-					"seat": "MP",
-					"region": null,
-					"party": "TNA",
-					"sources": [
-						"wikipedia-11th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-11th",
-							"name": "Joseph Meruaki Muthari",
-							"party": "TNA",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [],
-			"photos": [],
 			"committees": {},
 			"contacts": {
 				"emails": [],
@@ -54321,68 +54235,6 @@
 			}
 		},
 		{
-			"key": "mbadi-john-ngongo",
-			"canonicalName": "Mbadi John Ng'ongo",
-			"names": [
-				"Mbadi John Ng'ongo"
-			],
-			"platformSlug": null,
-			"userId": null,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "12th",
-					"seat": "MP",
-					"region": "Suba South",
-					"party": "Orange Democratic Movement",
-					"sources": [
-						"wikipedia-12th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-12th",
-							"name": "Mbadi John Ng'ongo",
-							"party": "Orange Democratic Movement",
-							"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
-						}
-					],
-					"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
-				},
-				{
-					"parliament": "11th",
-					"seat": "MP",
-					"region": null,
-					"party": "ODM",
-					"sources": [
-						"wikipedia-11th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-11th",
-							"name": "Mbadi John Ng'ongo",
-							"party": "ODM",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [
-				{
-					"text": "Mbadi John Ng'ongo is a Kenyan politician who has been serving as the Cabinet Secretary for the National Treasury and Economic Planning since August 8, 2024.",
-					"source": "wikipedia-12th",
-					"url": "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo",
-					"parliament": "12th"
-				}
-			],
-			"photos": [],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
 			"key": "mburi-muiru",
 			"canonicalName": "Mburi Muiru",
 			"names": [
@@ -54971,14 +54823,35 @@
 		},
 		{
 			"key": "mike-sonko",
-			"canonicalName": "Mike Sonko",
+			"canonicalName": "Gideon Mbuvi Mike 'Sonko'",
 			"names": [
+				"Gideon Mbuvi Mike 'Sonko'",
 				"Mike Sonko"
 			],
 			"platformSlug": "mike-sonko",
 			"userId": 1062,
-			"mzalendoSlugs": {},
+			"mzalendoSlugs": {
+				"11th": "gideon-mbuvi-mike-sonko-11th"
+			},
 			"terms": [
+				{
+					"parliament": "11th",
+					"seat": "Senator",
+					"region": "Nairobi",
+					"party": "The National Alliance",
+					"sources": [
+						"mzalendo-11th"
+					],
+					"assertions": [
+						{
+							"source": "mzalendo-11th",
+							"name": "Gideon Mbuvi Mike 'Sonko'",
+							"party": "The National Alliance",
+							"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/gideon-mbuvi-mike-sonko-11th/"
+						}
+					],
+					"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/gideon-mbuvi-mike-sonko-11th/"
+				},
 				{
 					"parliament": "gov-2017",
 					"seat": "Governor",
@@ -57596,63 +57469,6 @@
 			}
 		},
 		{
-			"key": "moses-masika-wetangula",
-			"canonicalName": "Moses Masika Wetang'ula",
-			"names": [
-				"Moses Masika Wetang'ula",
-				"Rt Moses Fm Wetang'Ula"
-			],
-			"platformSlug": "moses-masika-wetangula",
-			"userId": 667,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "13th",
-					"seat": "Nominated",
-					"region": null,
-					"party": null,
-					"sources": [
-						"non-elected"
-					],
-					"assertions": [
-						{
-							"source": "non-elected",
-							"name": "Rt Moses Fm Wetang'Ula",
-							"party": "",
-							"url": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh"
-						}
-					],
-					"url": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh",
-					"note": "8th Speaker of the National Assembly of Kenya"
-				},
-				{
-					"parliament": "9th",
-					"seat": "MP",
-					"region": "Sirisia",
-					"party": "NARC",
-					"sources": [
-						"wikipedia-9th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-9th",
-							"name": "Moses Masika Wetang'ula",
-							"party": "NARC",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [],
-			"photos": [],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
 			"key": "moses-nguchine-kirima",
 			"canonicalName": "Moses Nguchine Kirima",
 			"names": [
@@ -57944,7 +57760,9 @@
 			"names": [
 				"Wetangula Moses Masika",
 				"Moses Masika Wetangula",
-				"Moses Wetangula"
+				"Moses Wetangula",
+				"Moses Masika Wetang'ula",
+				"Rt Moses Fm Wetang'Ula"
 			],
 			"platformSlug": "moses-wetangula",
 			"userId": 81,
@@ -57971,6 +57789,25 @@
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/wetangula-moses-masika/"
+				},
+				{
+					"parliament": "13th",
+					"seat": "Nominated",
+					"region": null,
+					"party": null,
+					"sources": [
+						"non-elected"
+					],
+					"assertions": [
+						{
+							"source": "non-elected",
+							"name": "Rt Moses Fm Wetang'Ula",
+							"party": "",
+							"url": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh"
+						}
+					],
+					"url": "https://www.parliament.go.ke/the-national-assembly/rt-hon-dr-moses-fm-wetangula-egh",
+					"note": "8th Speaker of the National Assembly of Kenya"
 				},
 				{
 					"parliament": "13th",
@@ -58025,6 +57862,23 @@
 						}
 					],
 					"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/wetangula-moses/"
+				},
+				{
+					"parliament": "9th",
+					"seat": "MP",
+					"region": "Sirisia",
+					"party": "NARC",
+					"sources": [
+						"wikipedia-9th"
+					],
+					"assertions": [
+						{
+							"source": "wikipedia-9th",
+							"name": "Moses Masika Wetang'ula",
+							"party": "NARC",
+							"url": null
+						}
+					]
 				}
 			],
 			"bios": [
@@ -60276,43 +60130,6 @@
 			}
 		},
 		{
-			"key": "ndungu-gethenji",
-			"canonicalName": "Ndung’u Gethenji",
-			"names": [
-				"Ndung’u Gethenji"
-			],
-			"platformSlug": null,
-			"userId": null,
-			"mzalendoSlugs": {},
-			"terms": [
-				{
-					"parliament": "11th",
-					"seat": "MP",
-					"region": null,
-					"party": "TNA",
-					"sources": [
-						"wikipedia-11th"
-					],
-					"assertions": [
-						{
-							"source": "wikipedia-11th",
-							"name": "Ndung’u Gethenji",
-							"party": "TNA",
-							"url": null
-						}
-					]
-				}
-			],
-			"bios": [],
-			"photos": [],
-			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
 			"key": "nelson-gaichuhie",
 			"canonicalName": "Nelson Gaichuhie",
 			"names": [
@@ -61102,72 +60919,6 @@
 			],
 			"photos": [],
 			"committees": {},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
-			}
-		},
-		{
-			"key": "ntutu-kitilai",
-			"canonicalName": "Ntutu Kitilai",
-			"names": [
-				"Ntutu Kitilai",
-				"Kitilai Ole Ntutu",
-				"Ntutu Kitilai Ole"
-			],
-			"platformSlug": "ntutu-kitilai",
-			"userId": 438,
-			"mzalendoSlugs": {
-				"13th": "ntutu-kitilai"
-			},
-			"terms": [
-				{
-					"parliament": "13th",
-					"seat": "MP",
-					"region": "Narok South",
-					"party": "Independent",
-					"sources": [
-						"mzalendo-13th",
-						"wikipedia-13th",
-						"roster"
-					],
-					"assertions": [
-						{
-							"source": "mzalendo-13th",
-							"name": "Ntutu Kitilai",
-							"party": "Independent",
-							"url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/ntutu-kitilai/"
-						},
-						{
-							"source": "wikipedia-13th",
-							"name": "Kitilai Ole Ntutu",
-							"party": "Independent",
-							"url": null
-						},
-						{
-							"source": "roster",
-							"name": "Ntutu Kitilai Ole",
-							"party": "IND",
-							"url": "https://www.parliament.go.ke/the-national-assembly/hon-ntutu-kitilai-ole"
-						}
-					],
-					"url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/ntutu-kitilai/"
-				}
-			],
-			"bios": [],
-			"photos": [
-				{
-					"url": "https://mzalendo.com/media/images-rendered/Ntutu_Kitilai.min-320x400.jpg",
-					"source": "mzalendo-13th"
-				}
-			],
-			"committees": {
-				"13th": [
-					"Budget and Appropriations",
-					"Committee on Implementation"
-				]
-			},
 			"contacts": {
 				"emails": [],
 				"phones": [],
@@ -63618,17 +63369,53 @@
 		},
 		{
 			"key": "patrick-ole-ntutu",
-			"canonicalName": "Patrick Keturet Ole Ntutu",
+			"canonicalName": "Ntutu Kitilai",
 			"names": [
+				"Ntutu Kitilai",
 				"Patrick Keturet Ole Ntutu",
+				"Kitilai Ole Ntutu",
+				"Ntutu Kitilai Ole",
 				"Patrick Ole Ntutu"
 			],
 			"platformSlug": "patrick-ole-ntutu",
 			"userId": 68,
 			"mzalendoSlugs": {
+				"13th": "ntutu-kitilai",
 				"11th": "ntutu-patrick"
 			},
 			"terms": [
+				{
+					"parliament": "13th",
+					"seat": "MP",
+					"region": "Narok South",
+					"party": "Independent",
+					"sources": [
+						"mzalendo-13th",
+						"wikipedia-13th",
+						"roster"
+					],
+					"assertions": [
+						{
+							"source": "mzalendo-13th",
+							"name": "Ntutu Kitilai",
+							"party": "Independent",
+							"url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/ntutu-kitilai/"
+						},
+						{
+							"source": "wikipedia-13th",
+							"name": "Kitilai Ole Ntutu",
+							"party": "Independent",
+							"url": null
+						},
+						{
+							"source": "roster",
+							"name": "Ntutu Kitilai Ole",
+							"party": "IND",
+							"url": "https://www.parliament.go.ke/the-national-assembly/hon-ntutu-kitilai-ole"
+						}
+					],
+					"url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/ntutu-kitilai/"
+				},
 				{
 					"parliament": "11th",
 					"seat": "MP",
@@ -63683,11 +63470,20 @@
 			"bios": [],
 			"photos": [
 				{
+					"url": "https://mzalendo.com/media/images-rendered/Ntutu_Kitilai.min-320x400.jpg",
+					"source": "mzalendo-13th"
+				},
+				{
 					"url": "https://narok.go.ke/wp-content/uploads/2022/11/gvn_ntutu_round_portrait.jpg",
 					"source": "county-site"
 				}
 			],
-			"committees": {},
+			"committees": {
+				"13th": [
+					"Budget and Appropriations",
+					"Committee on Implementation"
+				]
+			},
 			"contacts": {
 				"emails": [],
 				"phones": [],
@@ -64876,55 +64672,6 @@
 						"fetchedAt": "2026-07-16T05:12:49.142Z"
 					}
 				]
-			}
-		},
-		{
-			"key": "peter-anyang-nyongo",
-			"canonicalName": "Peter Anyang Nyongo",
-			"names": [
-				"Peter Anyang Nyongo"
-			],
-			"platformSlug": "peter-anyang-nyongo",
-			"userId": 1124,
-			"mzalendoSlugs": {
-				"11th": "nyongo-peter"
-			},
-			"terms": [
-				{
-					"parliament": "11th",
-					"seat": "Senator",
-					"region": "Kisumu",
-					"party": "Orange Democratic Movement",
-					"sources": [
-						"mzalendo-11th"
-					],
-					"assertions": [
-						{
-							"source": "mzalendo-11th",
-							"name": "Peter Anyang Nyongo",
-							"party": "Orange Democratic Movement",
-							"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/nyongo-peter/"
-						}
-					],
-					"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/nyongo-peter/"
-				}
-			],
-			"bios": [],
-			"photos": [
-				{
-					"url": "https://mzalendo.com/media/images-rendered/peter-anyang-nyongo-pgk.min-320x400.jpg",
-					"source": "mzalendo-11th"
-				}
-			],
-			"committees": {
-				"11th": [
-					"Standing"
-				]
-			},
-			"contacts": {
-				"emails": [],
-				"phones": [],
-				"links": []
 			}
 		},
 		{
@@ -67048,16 +66795,37 @@
 		},
 		{
 			"key": "prof-anyang-nyongo",
-			"canonicalName": "Peter Anyang' Nyong'o",
+			"canonicalName": "Peter Anyang Nyongo",
 			"names": [
+				"Peter Anyang Nyongo",
 				"Peter Anyang' Nyong'o",
 				"Prof Anyang' Nyong'o",
 				"Prof. Peter Anyang’ Nyong’o, EGH"
 			],
 			"platformSlug": "prof-anyang-nyongo",
 			"userId": 86,
-			"mzalendoSlugs": {},
+			"mzalendoSlugs": {
+				"11th": "nyongo-peter"
+			},
 			"terms": [
+				{
+					"parliament": "11th",
+					"seat": "Senator",
+					"region": "Kisumu",
+					"party": "Orange Democratic Movement",
+					"sources": [
+						"mzalendo-11th"
+					],
+					"assertions": [
+						{
+							"source": "mzalendo-11th",
+							"name": "Peter Anyang Nyongo",
+							"party": "Orange Democratic Movement",
+							"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/nyongo-peter/"
+						}
+					],
+					"url": "https://mzalendo.com/mps-performance/senate/11th-parliament/nyongo-peter/"
+				},
 				{
 					"parliament": "9th",
 					"seat": "MP",
@@ -67144,6 +66912,10 @@
 			],
 			"photos": [
 				{
+					"url": "https://mzalendo.com/media/images-rendered/peter-anyang-nyongo-pgk.min-320x400.jpg",
+					"source": "mzalendo-11th"
+				},
+				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Kisumu_Governor_Anyang_Nyong%27o_giving_speech.jpg/330px-Kisumu_Governor_Anyang_Nyong%27o_giving_speech.jpg",
 					"source": "wikipedia-9th"
 				},
@@ -67156,7 +66928,11 @@
 					"source": "cog"
 				}
 			],
-			"committees": {},
+			"committees": {
+				"11th": [
+					"Standing"
+				]
+			},
 			"contacts": {
 				"emails": [],
 				"phones": [],

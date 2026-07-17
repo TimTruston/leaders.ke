@@ -132,17 +132,31 @@ function cleanName(name: string): string {
 // Honorifics never identify a person and would inflate token overlap.
 const TOKEN_STOPLIST = new Set(['hon', 'the', 'prof', 'eng', 'amb', 'sen', 'gen', 'maj', 'col', 'bishop', 'rev', 'cpa', 'cbs', 'egh', 'mgh']);
 
-// Name tokens: lowercase, strip non-letters except apostrophe/hyphen, drop <= 2 chars.
-// Jr/Sr suffixes normalize to junior/senior and are KEPT: they are the only thing
-// distinguishing a father and son who share every other name (Mutula Kilonzo Sr/Jr).
+// Name tokens: lowercase, strip non-letters (apostrophes REMOVED so "Ng'ang'a"
+// matches "Nganga"), drop <= 2 chars. Jr/Sr suffixes normalize to junior/senior
+// and are KEPT: they are the only thing distinguishing a father and son who share
+// every other name (Mutula Kilonzo Sr/Jr). Patronymic particles that sources
+// space inconsistently ("Ole Kina" vs "Olekina") expand to BOTH forms so either
+// spelling overlaps the other.
+const PARTICLES = ['ole'];
 function nameTokens(name: string): string[] {
-	return name
+	const raw = name
 		.toLowerCase()
-		.replace(/[^a-z\s'’-]/g, ' ')
-		.replace(/’/g, "'")
+		.replace(/[''’]/g, '')
+		.replace(/[^a-z\s-]/g, ' ')
 		.split(/\s+/)
 		.map((t) => (t === 'jr' || t === 'jnr' ? 'junior' : t === 'sr' || t === 'snr' ? 'senior' : t))
-		.filter((t) => t.replace(/[^a-z]/g, '').length > 2 && !TOKEN_STOPLIST.has(t));
+		.filter(Boolean);
+	const out = new Set<string>();
+	for (let i = 0; i < raw.length; i++) {
+		const t = raw[i];
+		if (PARTICLES.includes(t) && raw[i + 1]) out.add(t + raw[i + 1]); // "ole kina" -> olekina
+		for (const p of PARTICLES) {
+			if (t.startsWith(p) && t.length > p.length + 2) out.add(t.slice(p.length)); // "olekina" -> kina
+		}
+		out.add(t);
+	}
+	return [...out].filter((t) => t.replace(/[^a-z]/g, '').length > 2 && !TOKEN_STOPLIST.has(t));
 }
 
 function clusterTokens(c: Cluster): Set<string> {

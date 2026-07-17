@@ -2,11 +2,11 @@
 	"summary": [
 		"Terms to add: 0",
 		"New people: 0",
-		"Repeat people matched: 7 by mzalendo slug, 769 by seed email, 152 by name",
+		"Repeat people matched: 7 by mzalendo slug, 769 by seed email, 154 by name",
 		"Bios backfilled: 0",
 		"Party memberships: 0",
 		"position-missing: 45",
-		"ambiguous-person: 6",
+		"ambiguous-person: 4",
 		"nominated: 62"
 	],
 	"findings": [
@@ -37,13 +37,6 @@
 			"parliament": "9th",
 			"region": "Dujis",
 			"detail": "no MP position matches \"Dujis\""
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Mohamed Abdi Haji Mohamed",
-			"parliament": "9th",
-			"region": "Mandera West",
-			"detail": "6 existing people share 3 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -289,13 +282,6 @@
 			"parliament": "11th",
 			"region": "Lunga Lunga",
 			"detail": "no MP position matches \"Lunga Lunga\""
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "Mohamed Abdi Haji Mohamed",
-			"parliament": "11th",
-			"region": "Banissa",
-			"detail": "6 existing people share 3 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -561,7 +547,7 @@
 			"name": "Mohamed Ali Mohamed",
 			"parliament": "12th",
 			"region": "Nyali",
-			"detail": "3 existing people share 3 name tokens — skipped for manual review"
+			"detail": "3 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",

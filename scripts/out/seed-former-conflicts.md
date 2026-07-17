@@ -1,16 +1,16 @@
 # 12th/11th-parliament former-term seed: report
 
-Generated 2026-07-17T17:07:02.705Z — dry-run.
+Generated 2026-07-17T17:21:16.821Z — dry-run.
 
 ## Summary
 
 - Terms to add: 0
 - New people: 0
-- Repeat people matched: 7 by mzalendo slug, 769 by seed email, 152 by name
+- Repeat people matched: 7 by mzalendo slug, 769 by seed email, 154 by name
 - Bios backfilled: 0
 - Party memberships: 0
 - position-missing: 45
-- ambiguous-person: 6
+- ambiguous-person: 4
 - nominated: 62
 
 ## position-missing (45)
@@ -63,15 +63,13 @@ Generated 2026-07-17T17:07:02.705Z — dry-run.
 | Patrick Munene Ntwiga | 12th | Chuka/Igambang&#x27;ombe | no MP position matches "Chuka/Igambang&#x27;ombe" | |
 | Fred Kapondi Chesebe | 12th | Mount Elgon | no MP position matches "Mount Elgon" | |
 
-## ambiguous-person (6)
+## ambiguous-person (4)
 
 | Name | Parliament | Region | Detail | Instruction |
 | --- | --- | --- | --- | --- |
-| Mohamed Abdi Haji Mohamed | 9th | Mandera West | 6 existing people share 3 name tokens — skipped for manual review | |
-| Mohamed Abdi Haji Mohamed | 11th | Banissa | 6 existing people share 3 name tokens — skipped for manual review | |
 | William Cheptumo | 11th | Baringo North | 2 existing people share 2 name tokens — skipped for manual review | |
 | Mutula Kilonzo Jnr | 11th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
-| Mohamed Ali Mohamed | 12th | Nyali | 3 existing people share 3 name tokens — skipped for manual review | |
+| Mohamed Ali Mohamed | 12th | Nyali | 3 existing people share 2 name tokens — skipped for manual review | |
 | Mutula Kilonzo Jnr | 12th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
 
 ## nominated (62)

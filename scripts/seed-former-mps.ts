@@ -51,8 +51,22 @@ type MpEntry = {
 	chamber?: 'senate';
 };
 
+// Apostrophes are stripped so "Ng'ang'a" matches "Nganga"; patronymic particles
+// spaced inconsistently across sources ("Ole Kina" vs "Olekina") expand to both
+// forms - mirrors build-dossiers' tokenizer.
+const PARTICLES = ['ole'];
 function nameTokens(name: string): string[] {
-	return name.toLowerCase().replace(/[^a-z\s'-]/g, ' ').split(/\s+/).filter((t) => t.length > 2);
+	const raw = name.toLowerCase().replace(/[''’]/g, '').replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(Boolean);
+	const out = new Set<string>();
+	for (let i = 0; i < raw.length; i++) {
+		const t = raw[i];
+		if (PARTICLES.includes(t) && raw[i + 1]) out.add(t + raw[i + 1]);
+		for (const p of PARTICLES) {
+			if (t.startsWith(p) && t.length > p.length + 2) out.add(t.slice(p.length));
+		}
+		out.add(t);
+	}
+	return [...out].filter((t) => t.length > 2);
 }
 
 function tokenOverlap(a: string, b: string): number {
