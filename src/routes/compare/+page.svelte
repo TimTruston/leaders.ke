@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
+	import QuickSearch from '$lib/components/QuickSearch.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -15,10 +16,9 @@
 		b = data.right?.path ?? '';
 	});
 
-	// Switching a dropdown triggers the comparison directly (no Compare button for
-	// JS users — a <noscript> submit keeps the plain GET form working without JS).
-	// Only navigate when both are picked, they differ, and they differ from the
-	// pair already on screen — otherwise every click would reload and spam history.
+	// Picking a leader triggers the comparison directly. Only navigate when both
+	// are picked, they differ, and they differ from the pair already on screen —
+	// otherwise every pick would reload and spam history.
 	function maybeCompare() {
 		if (!a || !b || a === b) return;
 		if (a === (data.left?.path ?? '') && b === (data.right?.path ?? '')) return;
@@ -60,45 +60,37 @@
 		</p>
 	</div>
 
-	<!-- Picker: plain GET form so comparisons are shareable URLs -->
-	<form method="get" class="mt-8 flex flex-wrap items-end gap-3">
-		<label class="block min-w-0 flex-1">
+	<!-- Picker: two leaders-only quick searches; picking either updates the ?a/?b URL -->
+	<div class="mt-8 flex flex-wrap items-end gap-3">
+		<div class="min-w-0 flex-1">
 			<span class="text-sm font-medium text-heading">Leader A</span>
-			<select
-				name="a"
-				bind:value={a}
-				onchange={maybeCompare}
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-			>
-				<option value="" disabled>Select a leader</option>
-				{#each data.options as option (option.path)}
-					<option value={option.path}>{option.label}</option>
-				{/each}
-			</select>
-		</label>
-		<label class="block min-w-0 flex-1">
+			<div class="mt-1.5">
+				<QuickSearch
+					include={['Executive', 'Parliament', 'MCAs']}
+					expand={false}
+					placeholder={data.left?.name ?? 'Find leader A…'}
+					onPick={(item) => {
+						a = item.path;
+						maybeCompare();
+					}}
+				/>
+			</div>
+		</div>
+		<div class="min-w-0 flex-1">
 			<span class="text-sm font-medium text-heading">Leader B</span>
-			<select
-				name="b"
-				bind:value={b}
-				onchange={maybeCompare}
-				class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-			>
-				<option value="" disabled>Select a leader</option>
-				{#each data.options as option (option.path)}
-					<option value={option.path}>{option.label}</option>
-				{/each}
-			</select>
-		</label>
-		<noscript>
-			<button
-				type="submit"
-				class="rounded-full bg-primary px-6 py-2.5 font-semibold text-on-primary transition hover:brightness-95"
-			>
-				Compare
-			</button>
-		</noscript>
-	</form>
+			<div class="mt-1.5">
+				<QuickSearch
+					include={['Executive', 'Parliament', 'MCAs']}
+					expand={false}
+					placeholder={data.right?.name ?? 'Find leader B…'}
+					onPick={(item) => {
+						b = item.path;
+						maybeCompare();
+					}}
+				/>
+			</div>
+		</div>
+	</div>
 
 	{#if data.left && data.right}
 		<!-- Header cards: large LeaderCard variant (card-height photo, bio on the right) -->

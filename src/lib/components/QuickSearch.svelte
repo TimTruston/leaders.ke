@@ -15,7 +15,8 @@
 		include = ['Platform', 'Regions', 'Executive', 'Parliament', 'MCAs', 'Parties'],
 		expand = true,
 		hotkey = false,
-		placeholder
+		placeholder,
+		onPick
 	}: {
 		open?: boolean;
 		/** Which suggestion groups to offer (e.g. leaders-only on /ranks). */
@@ -25,6 +26,8 @@
 		/** true: "/" focuses the box from anywhere (one instance per page). */
 		hotkey?: boolean;
 		placeholder?: string;
+		/** Picker mode: receive the chosen item instead of navigating to it. */
+		onPick?: (item: { label: string; sub: string; path: string }) => void;
 	} = $props();
 
 	const PLATFORM: Item[] = [
@@ -109,7 +112,8 @@
 	function pick(item: Item | undefined) {
 		if (!item) return;
 		close();
-		goto(item.path);
+		if (onPick) onPick(item);
+		else goto(item.path);
 	}
 
 	function onKeydown(e: KeyboardEvent) {
@@ -192,7 +196,7 @@
 					</button>
 				{/each}
 			{/each}
-			{#if query.trim()}
+			{#if query.trim() && !onPick}
 				<button
 					type="button"
 					onmousedown={(e) => {

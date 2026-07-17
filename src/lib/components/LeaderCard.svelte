@@ -64,7 +64,8 @@
 
 <!-- The leader name uses a stretched link (after:absolute after:inset-0) so the
 whole card is clickable, while the party name stays its own separate link on top. -->
-<div class="group relative rounded-2xl border border-border bg-surface transition hover:border-primary hover:shadow-sm {large ? 'p-6' : 'p-5'}">
+<div class="group relative rounded-2xl border border-border bg-surface transition hover:border-primary hover:shadow-sm {large ? 'p-3' : 'p-5'}">
+	{#if !large}
 	<!-- Compare trigger: z-10 keeps it clickable above the card's stretched link. -->
 	<button
 		type="button"
@@ -95,10 +96,11 @@ whole card is clickable, while the party name stays its own separate link on top
 			&lt;&gt;
 		{/if}
 	</button>
-	<div class="flex items-center {large ? 'gap-5 flex-col lg:flex-row' : 'gap-3'}" >
+	{/if}
+	<div class="flex items-center {large ? 'flex-col lg:flex-row' : 'gap-3'}" >
 		<!-- In the large variant the photo spans the card's height. -->
-		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-40' : 'size-24'} textClass={large ? 'text-4xl' : 'text-xl'} />
-		<div class="w-full min-w-0">
+		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-50' : 'size-24'} textClass={large ? 'text-4xl' : 'text-xl'} />
+		<div class="w-full min-w-0 {large? 'px-3 pt-4 lg:pt-0' : 'p-2'}">
 			<a href={path} class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary">
 				<span class="truncate">{name}</span>
 				{#if verified}
