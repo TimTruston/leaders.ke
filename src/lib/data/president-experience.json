@@ -1,6 +1,7 @@
 [
  {
   "name": "Jomo Kenyatta",
+  "officialName": "Jomo Kenyatta",
   "bio": "Jomo Kenyatta was Kenya's founding father: the anthropologist-agitator tried at Kapenguria who walked from a colonial prison to lead his country into independence and its first fifteen years. From Kenya African Union president to Prime Minister at independence in 1963 and President from 1964, he preached Harambee self-help, kept Kenya capitalist amid Cold War currents and drove rapid Africanization of the economy. His LSE-honed book Facing Mount Kenya remains a classic rebuttal of colonial anthropology. Critics weigh one-party drift, land-settlement inequities and silenced rivals against him; admirers answer with stability and growth rare among post-colonial states. He died in office in 1978, having stamped his family's name on Kenyan politics for generations.",
   "education": [
    {
@@ -30,6 +31,7 @@
  },
  {
   "name": "Daniel arap Moi",
+  "officialName": "Daniel arap Moi",
   "bio": "Daniel arap Moi was Kenya's longest-ruling president: the Rift Valley schoolteacher whose 24-year Nyayo era mixed iron one-party control with a genius for survival that outlasted coups and cold wars. He rose from a Baringo classroom through KADU leadership, the home affairs ministry and eleven loyal years as Kenyatta's Vice President before inheriting power in 1978. He crushed the 1982 coup attempt and tightened one-party rule, then conceded multipartyism in 1991 and still won two more elections against a divided opposition. School milk, literacy drives and infrastructure ran alongside detentions, the Nyayo House torture chambers and the Goldenberg scandal. He handed power peacefully to Kibaki in 2002 and died in 2020, a colossus Kenyans argue over to this day.",
   "education": [
    {
@@ -59,6 +61,7 @@
  },
  {
   "name": "Mwai Kibaki",
+  "officialName": "Emilio Mwai Kibaki",
   "bio": "Mwai Kibaki was Kenya's gentleman economist: the Makerere- and LSE-trained finance minister who waited four decades for the presidency, then used it to rebuild the economy and deliver a new constitution. Kenya's longest-serving finance minister and for a decade Moi's Vice President, he founded the Democratic Party when multipartyism returned, lost twice, and finally swept to power in 2002 on the NARC wave that ended KANU's forty-year rule. His decade brought free primary education, landmark roads, the mobile-money take-off and growth Kenya had not seen in a generation, but also the disputed 2007 election and its bloody aftermath, healed only by a power-sharing accord. He signed the 2010 Constitution into law, retired in 2013 and died in 2022, remembered as the quiet builder.",
   "education": [
    {
@@ -94,7 +97,8 @@
   ]
  },
  {
-  "name": "Uhuru Kenyatta",
+  "name": "Uhuru Mugai Kenyatta",
+  "officialName": "Uhuru Muigai Kenyatta",
   "bio": "Uhuru Kenyatta, son of Kenya's founding president, served two terms as its fourth: the princeling who won power under the shadow of ICC charges and left it at peace with his fiercest rival. Moi's chosen heir in 2002, he lost graciously, then won in 2013 alongside William Ruto as the cases against both men collapsed. His presidency built at scale: the SGR railway, expanded electricity, the Big Four agenda, and a mountain of infrastructure debt to match. The 2018 handshake with Raila Odinga steadied a country rattled by the annulled 2017 election but shattered his alliance with Ruto, whose 2022 victory over Uhuru's preferred candidate ended the family's direct hold on power. He remains an influential elder statesman of the opposition camp.",
   "education": [
    {

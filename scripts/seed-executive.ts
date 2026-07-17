@@ -20,7 +20,9 @@ import { user as authUsers } from '../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName } from './lib/names';
 
 type CuratedExperience = { title: string; institution: string; description: string; startAt: string | null; endAt: string | null };
-type CuratedPerson = { name: string; bio: string; education: CuratedExperience[]; professional: CuratedExperience[] };
+// `name` is the dossier canonical name (the matching key, scraped spelling and
+// all); `officialName` is the curated correct form the profile should display.
+type CuratedPerson = { name: string; officialName?: string; bio: string; education: CuratedExperience[]; professional: CuratedExperience[] };
 
 type ExecutiveEntry = {
 	name: string;
@@ -44,7 +46,39 @@ if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(process.env.DATABASE_URL, { max: 1 });
 const db = drizzle(client);
 
-const entries: ExecutiveEntry[] = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-executive.json'), 'utf8'));
+// Entries come from dossiers.json (the canonical per-person record): 'exec-2022'
+// terms are the sitting executives, 'pres-<year>' terms the former presidencies.
+// The bio is the dossier's wikipedia-executive intro — the same text this seeder
+// may have written before, which the replace-only-seeder-text rule depends on.
+type DossierEntry = {
+	canonicalName: string;
+	terms: { parliament: string; seat: string; region: string | null; termStart?: string; termEnd?: string }[];
+	bios: { text: string; source: string }[];
+};
+const { dossiers } = JSON.parse(readFileSync(join(import.meta.dir, 'out', 'dossiers.json'), 'utf8')) as {
+	dossiers: DossierEntry[];
+};
+const entries: ExecutiveEntry[] = dossiers.flatMap((d) => {
+	const bio = d.bios.find((b) => b.source === 'wikipedia-executive')?.text ?? null;
+	return d.terms
+		.filter((t) => (t.parliament === 'exec-2022' || /^pres-\d{4}$/.test(t.parliament)) && t.parliament !== 'pres-2027')
+		.filter((t) => t.seat === 'President' || t.seat === 'Governor')
+		.map((t) => ({
+			name: d.canonicalName,
+			seat: t.seat as 'President' | 'Governor',
+			region: t.region ?? 'Kenya',
+			status: (t.parliament === 'exec-2022' ? 'current' : 'former') as 'current' | 'former',
+			termStart: t.termStart ?? null,
+			termEnd: t.termEnd ?? null,
+			bio
+		}));
+});
+// Former presidencies oldest first, sitting executives after: insertion order
+// then mirrors regime order for unsorted frontend reads.
+entries.sort((a, b) => {
+	const rank = (e: ExecutiveEntry) => (e.status === 'former' ? 0 : 1);
+	return rank(a) - rank(b) || (a.termStart ?? '').localeCompare(b.termStart ?? '');
+});
 const curatedExperience = new Map(
 	(JSON.parse(readFileSync(join(import.meta.dir, '..', 'src', 'lib', 'data', 'president-experience.json'), 'utf8')) as CuratedPerson[]).map(
 		(p) => [p.name, p]
@@ -56,6 +90,7 @@ let termsAdded = 0;
 let biosApplied = 0;
 let biosKept = 0;
 let experienceAdded = 0;
+let namesFixed = 0;
 
 for (const entry of entries) {
 	// ---- resolve or create the person ----
@@ -121,6 +156,21 @@ for (const entry of entries) {
 		}
 		// Curated education/professional history (with descriptions) on the former term's row.
 		const curated = curatedExperience.get(entry.name);
+		// Scraped sources misspell some presidents ("Uhuru Mugai Kenyatta") or drop
+		// given names (Kibaki's "Emilio"); the curated officialName wins over any
+		// scraped form, including the slug the misspelling generated.
+		if (person && curated?.officialName) {
+			const { firstName, otherNames } = splitName(curated.officialName);
+			const [row] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, person.id));
+			const wantSlug = slugify(curated.officialName);
+			if (row && (row.firstName !== firstName || row.otherNames !== otherNames || row.slug !== wantSlug)) {
+				namesFixed++;
+				if (flags.apply) {
+					const slug = row.slug === wantSlug ? row.slug : await generateLeaderSlug(db, curated.officialName);
+					await db.update(users).set({ firstName, otherNames, slug }).where(eq(users.id, person.id));
+				}
+			}
+		}
 		if (person && curated) {
 			const [term] = await db
 				.select({ id: leaders.id })
@@ -193,6 +243,6 @@ for (const entry of entries) {
 
 console.log(
 	`[seed-executive] ${flags.apply ? 'applied' : 'dry-run'}: ${created} former presidents created, ${termsAdded} terms added, ` +
-		`${biosApplied} bios ${flags.apply ? 'written' : 'to write'}, ${biosKept} longer bios kept, ${experienceAdded} experience rows added`
+		`${biosApplied} bios ${flags.apply ? 'written' : 'to write'}, ${biosKept} longer bios kept, ${experienceAdded} experience rows added, ${namesFixed} names corrected`
 );
 await client.end();

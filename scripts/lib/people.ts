@@ -192,7 +192,14 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 	let skipped = 0;
 	let missingPosition = 0;
 
-	for (const row of rows) {
+	// Regime order: former terms (oldest first), then incumbents, then aspirants -
+	// insertion order then mirrors chronology for unsorted frontend reads.
+	const statusRank: Record<PersonRow['status'], number> = { former: 0, current: 1, aspirant: 2 };
+	const orderedRows = [...rows].sort(
+		(a, b) => statusRank[a.status] - statusRank[b.status] || (a.startAt ?? '9999').localeCompare(b.startAt ?? '9999')
+	);
+
+	for (const row of orderedRows) {
 		const [position] = await db
 			.select({ id: positions.id })
 			.from(positions)

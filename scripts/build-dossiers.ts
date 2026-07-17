@@ -77,9 +77,14 @@ type ContactFact = { value: string; url: string | null; publisher: string; fetch
 type Contacts = { emails: ContactFact[]; phones: ContactFact[]; links: ContactFact[] };
 
 type Rec = {
-	source: string; // 'mzalendo-13th', 'wikipedia-9th', 'roster', 'non-elected'
+	source: string; // 'mzalendo-13th', 'wikipedia-9th', 'roster', 'non-elected', 'wikipedia-executive', ...
+	// Cycle label, the generalized "which election/term is this sighting about":
+	// parliaments ('13th'...'8th') for legislators, 'gov-2013'/'gov-2017' for past
+	// governor cycles, 'exec-2022' for sitting executives, 'pres-<start year>' for
+	// presidencies, 'pres-2027' for declared candidates. MCA cycles slot in the
+	// same way ('mca-2022'). One seat per label per person (conflict guard).
 	parliament: string | null;
-	seat: string | null; // MP | Woman Rep | Senator | Nominated
+	seat: string | null; // MP | Woman Rep | Senator | Nominated | Governor | President
 	region: string | null;
 	name: string;
 	altNames: string[]; // extra name forms (roster's mzalendo name, earlier-slug evidence)
@@ -92,6 +97,10 @@ type Rec = {
 	contacts: Contacts;
 	note: string | null;
 	mzSlug: string | null; // slug for rule-1 equality (null for the 'earlier' file)
+	termStart?: string | null; // ISO dates when the source asserts them (executive/governor cycles)
+	termEnd?: string | null;
+	platformSlugHint?: string | null; // source-provided platform slug (kiongozi, county portraits)
+	rawProfile?: { education: unknown[]; experience: unknown[] } | null; // kiongozi civic blurbs, verbatim
 };
 
 type Cluster = {
@@ -299,6 +308,151 @@ for (const { file, source, nominated } of [
 			mzSlug: null
 		});
 	}
+}
+
+// Executive + governor sources share one record shape; this trims the boilerplate.
+function execRec(
+	partial: Pick<Rec, 'source' | 'parliament' | 'seat' | 'region' | 'name'> & Partial<Rec>
+): Rec {
+	return {
+		altNames: [],
+		party: null,
+		partyIsFullName: false,
+		bio: null,
+		photoUrl: null,
+		committees: [],
+		url: null,
+		contacts: emptyContacts(),
+		note: null,
+		mzSlug: null,
+		...partial
+	};
+}
+
+// Wikipedia executive scrape: sitting president + governors ('exec-2022') and the
+// former presidencies, each presidency its own cycle label ('pres-1964', ...).
+type ExecEntry = {
+	name: string;
+	seat: 'President' | 'Governor';
+	region: string;
+	status: 'current' | 'former';
+	termStart: string | null;
+	termEnd: string | null;
+	articleUrl: string | null;
+	bio: string | null;
+	photoUrl: string | null;
+};
+for (const e of loadArray<ExecEntry>('scraped-wikipedia-executive.json') ?? []) {
+	if (!e.name?.trim()) continue;
+	const label = e.status === 'former' && e.termStart ? `pres-${e.termStart.slice(0, 4)}` : 'exec-2022';
+	records.push(
+		execRec({
+			source: 'wikipedia-executive',
+			parliament: label,
+			seat: e.seat,
+			region: e.region,
+			name: cleanName(e.name),
+			bio: e.bio,
+			photoUrl: e.photoUrl,
+			url: e.articleUrl,
+			termStart: e.termStart,
+			termEnd: e.termEnd
+		})
+	);
+}
+
+// Past governor cycles (2013/2017 winners + mid-term successors).
+type PastGovEntry = {
+	name: string;
+	county: string;
+	cycle: '2013' | '2017';
+	party: string | null;
+	termStart: string;
+	termEnd: string;
+	note?: string;
+	articleUrl: string | null;
+	bio: string | null;
+	photoUrl: string | null;
+};
+for (const e of loadArray<PastGovEntry>('scraped-wikipedia-governors-past.json') ?? []) {
+	if (!e.name?.trim()) continue;
+	records.push(
+		execRec({
+			source: 'wikipedia-govpast',
+			parliament: `gov-${e.cycle}`,
+			seat: 'Governor',
+			region: e.county,
+			name: cleanName(e.name),
+			party: e.party,
+			bio: e.bio,
+			photoUrl: e.photoUrl,
+			url: e.articleUrl,
+			note: e.note ?? null,
+			termStart: e.termStart,
+			termEnd: e.termEnd
+		})
+	);
+}
+
+// Council of Governors + county-site portraits: photo evidence for sitting governors.
+for (const e of loadArray<{ county: string; name: string; photoUrl: string }>('scraped-cog-governors.json') ?? []) {
+	if (!e.name?.trim()) continue;
+	records.push(
+		execRec({
+			source: 'cog',
+			parliament: 'exec-2022',
+			seat: 'Governor',
+			region: e.county,
+			name: cleanName(e.name),
+			photoUrl: e.photoUrl,
+			url: 'https://cog.go.ke/current-governors/'
+		})
+	);
+}
+for (const e of loadArray<{ slug: string; name: string; county: string; photoUrl: string; publisher: string }>(
+	'scraped-county-portraits.json'
+) ?? []) {
+	if (!e.name?.trim()) continue;
+	records.push(
+		execRec({
+			source: 'county-site',
+			parliament: 'exec-2022',
+			seat: 'Governor',
+			region: e.county,
+			name: cleanName(e.name),
+			photoUrl: e.photoUrl,
+			url: null,
+			note: e.publisher,
+			platformSlugHint: e.slug
+		})
+	);
+}
+
+// kiongozi.online civic profiles: declared 2027 presidential candidates. The name
+// comes from the platform slug (the source is keyed by slug, not display name);
+// the raw education/experience blurbs ride along verbatim for downstream curation.
+for (const e of loadArray<{
+	kiongoziSlug: string;
+	platformSlug: string;
+	url: string;
+	photoUrl: string | null;
+	education: unknown[];
+	experience: unknown[];
+}>('scraped-kiongozi.json') ?? []) {
+	records.push(
+		execRec({
+			source: 'kiongozi',
+			parliament: 'pres-2027',
+			seat: 'President',
+			region: 'Kenya',
+			name: cleanName(e.platformSlug.replace(/-/g, ' ').replace(/\b[a-z]/g, (ch) => ch.toUpperCase())),
+			photoUrl: e.photoUrl,
+			url: e.url,
+			note: '2027 presidential candidate',
+			platformSlugHint: e.platformSlug,
+			rawProfile: { education: e.education, experience: e.experience }
+		})
+	);
 }
 
 // ---------- clustering ----------
@@ -531,9 +685,15 @@ if (!process.env.DATABASE_URL) {
 }
 
 function attachDbUser(c: Cluster): DbUser | null {
-	// (a) current holder of the cluster's 13th-parliament seat, name-corroborated
+	// (0) a source-provided platform slug (kiongozi, county portraits) is exact
 	for (const r of c.records) {
-		if (r.parliament !== '13th') continue;
+		if (!r.platformSlugHint) continue;
+		const hinted = leaderUsers.find((u) => u.slug === r.platformSlugHint);
+		if (hinted) return hinted;
+	}
+	// (a) current holder of the cluster's current-cycle seat, name-corroborated
+	for (const r of c.records) {
+		if (r.parliament !== '13th' && r.parliament !== 'exec-2022') continue;
 		const k = seatKey(r);
 		if (!k) continue;
 		const holder = holderByPositionKey.get(k.slice(k.indexOf('|') + 1));
@@ -565,7 +725,12 @@ const SOURCE_PRIORITY = [
 	'wikipedia-11th',
 	'wikipedia-9th',
 	'roster',
-	'non-elected'
+	'non-elected',
+	'wikipedia-executive',
+	'wikipedia-govpast',
+	'kiongozi',
+	'cog',
+	'county-site'
 ];
 const sourceRank = (s: string) => {
 	const i = SOURCE_PRIORITY.indexOf(s);
@@ -584,6 +749,8 @@ type Term = {
 	assertions: { source: string; name: string; party: string | null; url: string | null }[];
 	url?: string;
 	note?: string;
+	termStart?: string;
+	termEnd?: string;
 };
 
 type Dossier = {
@@ -599,6 +766,8 @@ type Dossier = {
 	photos: { url: string; source: string }[];
 	committees: Record<string, string[]>;
 	contacts: Contacts;
+	/** Verbatim civic-profile blurbs (kiongozi education/experience) for curation passes. */
+	rawProfiles?: { source: string; url: string | null; education: unknown[]; experience: unknown[] }[];
 	possibleDuplicateOf?: string;
 };
 
@@ -636,6 +805,8 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 		}
 		if (r.url && !term.url) term.url = r.url;
 		if (r.note && !term.note) term.note = r.note;
+		if (r.termStart && !term.termStart) term.termStart = r.termStart;
+		if (r.termEnd && !term.termEnd) term.termEnd = r.termEnd;
 	}
 	// A region-less sighting (e.g. a wikipedia row whose constituency cell was
 	// unusable) corroborates an existing regioned term for the same parliament
@@ -702,7 +873,13 @@ function buildDossier(c: Cluster, dbUser: DbUser | null): Dossier {
 		if (r.mzSlug && r.parliament && !mzalendoSlugs[r.parliament]) mzalendoSlugs[r.parliament] = r.mzSlug;
 	}
 
+	const rawProfiles: NonNullable<Dossier['rawProfiles']> = [];
+	for (const r of recs) {
+		if (r.rawProfile) rawProfiles.push({ source: r.source, url: r.url, ...r.rawProfile });
+	}
+
 	return {
+		...(rawProfiles.length ? { rawProfiles } : {}),
 		key: '', // assigned after slug dedupe below
 		canonicalName,
 		names,

@@ -30,9 +30,11 @@ const OUT_DIR = join(import.meta.dir, 'out');
 // 12th/11th come from mzalendo.com member pages; the 9th's only roster is
 // Wikipedia's (mzalendo keeps no 9th-parliament pages, and neither has a 10th/8th list).
 const PARLIAMENTS = [
-	{ key: '12th', source: 'mzalendo', startAt: new Date('2017-08-31T00:00:00+03:00'), endAt: new Date('2022-09-13T00:00:00+03:00') },
+	// Oldest first: insertion order then mirrors regime order, so unsorted
+	// frontend reads come out chronologically by default.
+	{ key: '9th', source: 'wikipedia', startAt: new Date('2003-01-14T00:00:00+03:00'), endAt: new Date('2007-10-22T00:00:00+03:00') },
 	{ key: '11th', source: 'mzalendo', startAt: new Date('2013-03-28T00:00:00+03:00'), endAt: new Date('2017-08-31T00:00:00+03:00') },
-	{ key: '9th', source: 'wikipedia', startAt: new Date('2003-01-14T00:00:00+03:00'), endAt: new Date('2007-10-22T00:00:00+03:00') }
+	{ key: '12th', source: 'mzalendo', startAt: new Date('2017-08-31T00:00:00+03:00'), endAt: new Date('2022-09-13T00:00:00+03:00') }
 ] as const;
 
 type MpEntry = {

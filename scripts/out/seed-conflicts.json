@@ -1,5 +1,5 @@
 {
-	"generatedAt": "2026-07-16T18:04:36.689Z",
+	"generatedAt": "2026-07-17T12:08:29.000Z",
 	"rosterTotal": 383,
 	"planned": {
 		"creates": 324,
@@ -111,7 +111,7 @@
 			"name": "Koech Kipngetich Victor",
 			"seat": "MP",
 			"region": "Chepalungu",
-			"detail": "user #211 already owns victor-koech@seed.leaders.ke — seeding would attach this seat to their account; skipped"
+			"detail": "user #212 already owns victor-koech@seed.leaders.ke — seeding would attach this seat to their account; skipped"
 		},
 		{
 			"category": "source-name-conflict",
