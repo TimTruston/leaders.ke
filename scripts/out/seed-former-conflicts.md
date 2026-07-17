@@ -1,19 +1,20 @@
 # 12th/11th-parliament former-term seed: report
 
-Generated 2026-07-17T17:21:16.821Z — dry-run.
+Generated 2026-07-17T19:00:14.250Z — APPLIED.
 
 ## Summary
 
-- Terms to add: 0
-- New people: 0
-- Repeat people matched: 7 by mzalendo slug, 769 by seed email, 154 by name
-- Bios backfilled: 0
-- Party memberships: 0
-- position-missing: 45
-- ambiguous-person: 4
+- Terms to add: 909
+- New people: 558
+- Repeat people matched: 7 by mzalendo slug, 211 by seed email, 157 by name
+- Bios backfilled: 1
+- Party memberships: 611
+- position-missing: 43
 - nominated: 62
+- ambiguous-person: 3
+- party-not-in-db: 18
 
-## position-missing (45)
+## position-missing (43)
 
 | Name | Parliament | Region | Detail | Instruction |
 | --- | --- | --- | --- | --- |
@@ -56,21 +57,10 @@ Generated 2026-07-17T17:21:16.821Z — dry-run.
 | Jimmy Nuru Ondieki Angwenyi | 9th | Kitutu Chache | no MP position matches "Kitutu Chache" | |
 | Godfrey Okeri Masanya | 9th | North Mugirango Borabu | no MP position matches "North Mugirango Borabu" | |
 | Khatib Abdallah Mwashetani | 11th | Lunga Lunga | no MP position matches "Lunga Lunga" | |
-| Onesmus Muthomi Njuki | 11th | Chuka/Igambang&#x27;ombe | no MP position matches "Chuka/Igambang&#x27;ombe" | |
 | John Serut | 11th | Mount Elgon | no MP position matches "Mount Elgon" | |
 | William Odhiambo Oduol | 11th | Mbita | no MP position matches "Mbita" | |
 | Khatib Abdallah Mwashetani | 12th | Lunga Lunga | no MP position matches "Lunga Lunga" | |
-| Patrick Munene Ntwiga | 12th | Chuka/Igambang&#x27;ombe | no MP position matches "Chuka/Igambang&#x27;ombe" | |
 | Fred Kapondi Chesebe | 12th | Mount Elgon | no MP position matches "Mount Elgon" | |
-
-## ambiguous-person (4)
-
-| Name | Parliament | Region | Detail | Instruction |
-| --- | --- | --- | --- | --- |
-| William Cheptumo | 11th | Baringo North | 2 existing people share 2 name tokens — skipped for manual review | |
-| Mutula Kilonzo Jnr | 11th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
-| Mohamed Ali Mohamed | 12th | Nyali | 3 existing people share 2 name tokens — skipped for manual review | |
-| Mutula Kilonzo Jnr | 12th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
 
 ## nominated (62)
 
@@ -138,3 +128,34 @@ Generated 2026-07-17T17:21:16.821Z — dry-run.
 | Mercy Chebeni | 12th | Uasin Gishu | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Isaack Mwaura | 12th | Kiambu | no geographic seat (status: Nominated) — recorded, not seeded | |
 | Getrude Musuruve Inimah | 12th | Kilifi | no geographic seat (status: Nominated) — recorded, not seeded | |
+
+## ambiguous-person (3)
+
+| Name | Parliament | Region | Detail | Instruction |
+| --- | --- | --- | --- | --- |
+| Mutula Kilonzo Jnr | 11th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
+| Mohamed Ali Mohamed | 12th | Nyali | 2 existing people share 2 name tokens — skipped for manual review | |
+| Mutula Kilonzo Jnr | 12th | Makueni | 2 existing people share 2 name tokens — skipped for manual review | |
+
+## party-not-in-db (18)
+
+| Name | Parliament | Region | Detail | Instruction |
+| --- | --- | --- | --- | --- |
+| The National Alliance | — | — | 95 memberships skipped — party not in the parties table | |
+| United Republican Party | — | — | 79 memberships skipped — party not in the parties table | |
+| Wiper Democratic Movement - Kenya | — | — | 53 memberships skipped — party not in the parties table | |
+| Independent | — | — | 16 memberships skipped — party not in the parties table | |
+| United Democratic Forum | — | — | 13 memberships skipped — party not in the parties table | |
+| FORD-People | — | — | 9 memberships skipped — party not in the parties table | |
+| Alliance Party Kenya | — | — | 7 memberships skipped — party not in the parties table | |
+| New Ford Kenya | — | — | 6 memberships skipped — party not in the parties table | |
+| Party for Democratic Reform | — | — | 5 memberships skipped — party not in the parties table | |
+| Forum for Restoration of Democracy - People | — | — | 4 memberships skipped — party not in the parties table | |
+| FORD-Asili | — | — | 2 memberships skipped — party not in the parties table | |
+| Sisi Kwa Sisi | — | — | 2 memberships skipped — party not in the parties table | |
+| Shirikisho | — | — | 1 memberships skipped — party not in the parties table | |
+| The Independent Party | — | — | 1 memberships skipped — party not in the parties table | |
+| National Rainbow Coalition-Kenya | — | — | 1 memberships skipped — party not in the parties table | |
+| Democratic Party Kenya | — | — | 1 memberships skipped — party not in the parties table | |
+| New Democrats | — | — | 1 memberships skipped — party not in the parties table | |
+| Frontier Alliance | — | — | 1 memberships skipped — party not in the parties table | |

@@ -1,13 +1,14 @@
 {
 	"summary": [
-		"Terms to add: 0",
-		"New people: 0",
-		"Repeat people matched: 7 by mzalendo slug, 769 by seed email, 154 by name",
-		"Bios backfilled: 0",
-		"Party memberships: 0",
-		"position-missing: 45",
-		"ambiguous-person: 4",
-		"nominated: 62"
+		"Terms to add: 909",
+		"New people: 558",
+		"Repeat people matched: 7 by mzalendo slug, 211 by seed email, 157 by name",
+		"Bios backfilled: 1",
+		"Party memberships: 611",
+		"position-missing: 43",
+		"nominated: 62",
+		"ambiguous-person: 3",
+		"party-not-in-db: 18"
 	],
 	"findings": [
 		{
@@ -285,20 +286,6 @@
 		},
 		{
 			"category": "position-missing",
-			"name": "Onesmus Muthomi Njuki",
-			"parliament": "11th",
-			"region": "Chuka/Igambang&#x27;ombe",
-			"detail": "no MP position matches \"Chuka/Igambang&#x27;ombe\""
-		},
-		{
-			"category": "ambiguous-person",
-			"name": "William Cheptumo",
-			"parliament": "11th",
-			"region": "Baringo North",
-			"detail": "2 existing people share 2 name tokens — skipped for manual review"
-		},
-		{
-			"category": "position-missing",
 			"name": "John Serut",
 			"parliament": "11th",
 			"region": "Mount Elgon",
@@ -547,7 +534,7 @@
 			"name": "Mohamed Ali Mohamed",
 			"parliament": "12th",
 			"region": "Nyali",
-			"detail": "3 existing people share 2 name tokens — skipped for manual review"
+			"detail": "2 existing people share 2 name tokens — skipped for manual review"
 		},
 		{
 			"category": "position-missing",
@@ -555,13 +542,6 @@
 			"parliament": "12th",
 			"region": "Lunga Lunga",
 			"detail": "no MP position matches \"Lunga Lunga\""
-		},
-		{
-			"category": "position-missing",
-			"name": "Patrick Munene Ntwiga",
-			"parliament": "12th",
-			"region": "Chuka/Igambang&#x27;ombe",
-			"detail": "no MP position matches \"Chuka/Igambang&#x27;ombe\""
 		},
 		{
 			"category": "nominated",
@@ -786,6 +766,132 @@
 			"parliament": "12th",
 			"region": "Kilifi",
 			"detail": "no geographic seat (status: Nominated) — recorded, not seeded"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "The National Alliance",
+			"parliament": "—",
+			"region": "—",
+			"detail": "95 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "United Republican Party",
+			"parliament": "—",
+			"region": "—",
+			"detail": "79 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Wiper Democratic Movement - Kenya",
+			"parliament": "—",
+			"region": "—",
+			"detail": "53 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Independent",
+			"parliament": "—",
+			"region": "—",
+			"detail": "16 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "United Democratic Forum",
+			"parliament": "—",
+			"region": "—",
+			"detail": "13 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "FORD-People",
+			"parliament": "—",
+			"region": "—",
+			"detail": "9 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Alliance Party Kenya",
+			"parliament": "—",
+			"region": "—",
+			"detail": "7 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "New Ford Kenya",
+			"parliament": "—",
+			"region": "—",
+			"detail": "6 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Party for Democratic Reform",
+			"parliament": "—",
+			"region": "—",
+			"detail": "5 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Forum for Restoration of Democracy - People",
+			"parliament": "—",
+			"region": "—",
+			"detail": "4 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "FORD-Asili",
+			"parliament": "—",
+			"region": "—",
+			"detail": "2 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Sisi Kwa Sisi",
+			"parliament": "—",
+			"region": "—",
+			"detail": "2 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Shirikisho",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "The Independent Party",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "National Rainbow Coalition-Kenya",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Democratic Party Kenya",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "New Democrats",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
+		},
+		{
+			"category": "party-not-in-db",
+			"name": "Frontier Alliance",
+			"parliament": "—",
+			"region": "—",
+			"detail": "1 memberships skipped — party not in the parties table"
 		}
 	]
 }

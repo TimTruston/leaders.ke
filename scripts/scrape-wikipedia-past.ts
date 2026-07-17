@@ -11,6 +11,7 @@
 //   bun run scripts/scrape-wikipedia-past.ts
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { decodeEntities } from './lib/names';
 
 const WIKI = 'https://en.wikipedia.org';
 const OUT_DIR = join(import.meta.dir, 'out');
@@ -71,10 +72,7 @@ async function fetchText(url: string, tries = 3): Promise<string> {
 }
 
 function stripTags(html: string): string {
-	return html
-		.replace(/<[^>]+>/g, ' ')
-		.replace(/&amp;/g, '&')
-		.replace(/&#0?39;/g, "'")
+	return decodeEntities(html.replace(/<[^>]+>/g, ' '))
 		.replace(/\[[^\]]*\]/g, '')
 		.replace(/\s+/g, ' ')
 		.trim();

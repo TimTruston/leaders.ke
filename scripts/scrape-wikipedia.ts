@@ -9,6 +9,7 @@
 // article summary is already fetched are skipped on re-run).
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { decodeEntities } from './lib/names';
 
 const WIKI = 'https://en.wikipedia.org';
 const PAGE = `${WIKI}/wiki/13th_Parliament_of_Kenya`;
@@ -40,10 +41,7 @@ async function fetchText(url: string, tries = 3): Promise<string> {
 }
 
 function stripTags(html: string): string {
-	return html
-		.replace(/<[^>]+>/g, ' ')
-		.replace(/&amp;/g, '&')
-		.replace(/&#0?39;/g, "'")
+	return decodeEntities(html.replace(/<[^>]+>/g, ' '))
 		.replace(/\[[^\]]*\]/g, '') // citation markers rendered as "[ 4 ]"
 		.replace(/\s+/g, ' ')
 		.trim();

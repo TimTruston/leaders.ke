@@ -14,6 +14,7 @@
 //   bun run scripts/scrape-mp-profiles.ts --only 13th    # one file
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { decodeEntities } from './lib/names';
 import { parseArgs } from 'node:util';
 
 const MZALENDO = 'https://mzalendo.com';
@@ -55,11 +56,7 @@ async function fetchText(url: string, tries = 4): Promise<string> {
 }
 
 function stripTags(html: string): string {
-	return html
-		.replace(/<[^>]+>/g, ' ')
-		.replace(/&amp;/g, '&')
-		.replace(/&#0?39;|&rsquo;/g, "'")
-		.replace(/&quot;/g, '"')
+	return decodeEntities(html.replace(/<[^>]+>/g, ' '))
 		.replace(/\s+/g, ' ')
 		.trim();
 }

@@ -22,6 +22,30 @@ export function slugify(input: string): string {
 		.replace(/(^-|-$)/g, '');
 }
 
+// Named HTML entities the scraped sources actually emit. Numeric forms (&#39; and
+// &#x27;) are decoded generically below, so only names live here.
+const NAMED_ENTITIES: Record<string, string> = {
+	amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+	rsquo: '’', lsquo: '‘', ndash: '–', mdash: '—', hellip: '…'
+};
+
+/** Decodes the HTML entities that leak from scraped markup — numeric (`&#39;`,
+ * `&#x27;`) and the handful of named ones above — into real characters. The single
+ * point every scraper and the dossier builder must run names/bios through, so an
+ * apostrophe like Ng'itit never survives as `Ng&#39;itit`. */
+export function decodeEntities(input: string): string {
+	return input
+		.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+		.replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+		.replace(/&([a-z]+);/gi, (m, name) => NAMED_ENTITIES[name.toLowerCase()] ?? m);
+}
+
+/** decodeEntities for a person's NAME: also folds curly apostrophes to straight so
+ * the display form and the slug stay consistent (King'ola, not King’ola). */
+export function decodeNameEntities(input: string): string {
+	return decodeEntities(input).replace(/[’‘]/g, "'");
+}
+
 /** Split a full display name into a single-word firstName + the remainder as otherNames. */
 export function splitName(fullName: string): { firstName: string; otherNames: string } {
 	const [firstName, ...rest] = fullName.trim().split(/\s+/);

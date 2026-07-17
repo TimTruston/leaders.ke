@@ -21,7 +21,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { leaders, positions, users } from '../src/lib/server/db/schema';
-import { slugify } from './lib/names';
+import { decodeNameEntities, slugify } from './lib/names';
 
 const OUT_DIR = join(import.meta.dir, 'out');
 
@@ -116,15 +116,16 @@ type Cluster = {
 };
 
 // Wikipedia cells occasionally leak HTML entities and cite-template markup into
-// names ("David Ouma Ochieng&#x27;", "Chris Karan (2017–18) {{cite web|…").
+// names ("David Ouma Ochieng&#x27;", "Chris Karan (2017–18) {{cite web|…"). Strip
+// the markup FIRST, then decode entities via the shared helper, so a real "<" in
+// the source can't reappear after decoding and swallow the rest of the name.
 function cleanName(name: string): string {
-	return name
-		.replace(/&#x27;|&#39;|&rsquo;/g, "'")
-		.replace(/&amp;/g, '&')
-		.replace(/&quot;/g, '"')
-		.replace(/\{\{[\s\S]*$/, '') // cite templates and everything after
-		.replace(/&lt;[\s\S]*$/, '')
-		.replace(/<[\s\S]*$/, '')
+	return decodeNameEntities(
+		name
+			.replace(/\{\{[\s\S]*$/, '') // cite templates and everything after
+			.replace(/&lt;[\s\S]*$/, '')
+			.replace(/<[\s\S]*$/, '')
+	)
 		.replace(/\s+/g, ' ')
 		.trim();
 }

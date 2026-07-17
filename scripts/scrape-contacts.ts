@@ -21,7 +21,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { contacts, leaders, positions, users } from '../src/lib/server/db/schema';
 import { seedPeople, type ContactSource, type PersonRow } from './lib/people';
-import { slugify } from './lib/names';
+import { decodeNameEntities, slugify } from './lib/names';
 
 const OUT_DIR = join(import.meta.dir, 'out');
 const ROSTER_FILE = join(OUT_DIR, 'scraped-roster.json');
@@ -80,7 +80,9 @@ const POST_NOMINALS = new Set(['cbs', 'egh', 'mgh', 'mbs', 'hsc', 'ogw', 'mp', '
 
 /** "HON (DR.) KING'OLA PATRICK MAKAU, CBS" -> "King'ola Patrick Makau" */
 function cleanName(raw: string): string {
-	const stripped = raw
+	// Decode entities FIRST so a &#39; becomes a real apostrophe the title-caser
+	// recognises (Ng'itit), instead of surviving as literal "Ng&#39;itit".
+	const stripped = decodeNameEntities(raw)
 		.replace(/\([^)]*\)/g, ' ') // (Dr.), (Rtd)...
 		.split(',') // drop post-nominal segments ("..., CBS, MP")
 		.filter((seg) => {
