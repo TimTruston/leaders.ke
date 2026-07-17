@@ -118,6 +118,15 @@ const countyPortraitBySlug = new Map(
 const formerPresidentByName = new Map(
 	executive.filter((e) => e.photoUrl && e.status === 'former').map((e) => [slugify(e.name), e])
 );
+// Past county governors (2013/2017 cycles): person-name lookup, like former presidents.
+const pastGovernorByName = new Map(
+	(JSON.parse(readFileSync(join(import.meta.dir, 'out', 'scraped-wikipedia-governors-past.json'), 'utf8')) as {
+		name: string;
+		photoUrl: string | null;
+	}[])
+		.filter((e) => e.photoUrl)
+		.map((e) => [slugify(e.name), e])
+);
 // kiongozi.online civic profiles: portraits for the 2027 presidential candidates,
 // matched by platform slug (the DB name is the guard, so carry it as `name`).
 const kiongoziBySlug = new Map<string, { name: string; photoUrl: string }>();
@@ -164,6 +173,7 @@ for (const row of rows) {
 		// Person-name lookups outrank the seat lookup: a former president's seat key
 		// points at the CURRENT holder's photo, which the name guard would reject.
 		formerPresidentByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
+		pastGovernorByName.get(slugify(`${row.firstName} ${row.otherNames}`)) ??
 		countyPortraitBySlug.get(row.slug) ??
 		kiongoziBySlug.get(row.slug) ??
 		(row.title === 'Governor' ? cogByCounty.get(regionSlug) : undefined) ??

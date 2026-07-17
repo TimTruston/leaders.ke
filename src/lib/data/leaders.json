@@ -951,7 +951,19 @@
   "name": "Kawira Mwangaza",
   "title": "Governor",
   "region": "Meru",
+  "status": "former",
+  "startAt": "2022-08-25",
+  "endAt": "2025-03-17",
+  "professional": [],
+  "bio": "Kawira Mwangaza served as Meru County's third Governor from 2022 until March 2025, when the High Court upheld her third impeachment by the county assembly, ending a turbulent tenure. A bishop and broadcaster who rose from selling bananas to owning Baite TV, she won the seat as an independent after a term as Meru Woman Representative, but her administration was consumed by a running war with MCAs over appointments and conduct. She was the first Kenyan governor removed through impeachment while serving her first term."
+ },
+ {
+  "name": "Isaac Mutuma M'ethingia",
+  "title": "Governor",
+  "region": "Meru",
   "status": "current",
+  "startAt": "2025-03-17",
+  "bio": "Isaac Mutuma M'ethingia is Meru County's fourth Governor, sworn in on 17 March 2025 after the High Court upheld the impeachment of Kawira Mwangaza, whom he had served as Deputy Governor. A reverend and businessman, he assumed office under Article 182 of the Constitution and inherited a county government strained by years of conflict between the executive and the assembly, making reconciliation and service delivery the twin tests of his tenure.",
   "professional": []
  },
  {

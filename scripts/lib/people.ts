@@ -29,6 +29,10 @@ export type PersonRow = {
 	title: string;
 	region: string;
 	status: 'current' | 'aspirant' | 'former';
+	// Term dates for this row's own seat; default to the cycle constants when absent
+	// (a 'former' row, e.g. an impeached officeholder, needs its real end date).
+	startAt?: string | null;
+	endAt?: string | null;
 	bio?: string;
 	education?: ExperienceRow[];
 	professional?: ExperienceRow[];
@@ -287,7 +291,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				}
 			}
 
-			const startAt = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
+			const startAt = toDate(row.startAt) ?? (row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START);
 			const [leader] = await tx
 				.insert(leaders)
 				.values({
@@ -295,6 +299,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 					positionId: position.id,
 					status: row.status,
 					startAt,
+					endAt: toDate(row.endAt),
 					verifiedAt: new Date() // required to surface on the /vote/2027 ballot (verified-only)
 				})
 				.returning({ id: leaders.id });
