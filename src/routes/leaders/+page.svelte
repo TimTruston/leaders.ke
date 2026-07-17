@@ -182,7 +182,7 @@
 	<!-- CTA -->
 	<div class="mt-14 rounded-3xl bg-surface-2 px-6 py-10 text-center">
 		<h2 class="text-xl font-bold text-heading">Vying in 2027 and not listed here?</h2>
-		<p class="mx-auto mt-2 max-w-lg text-sm leading-relaxed">
+		<p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed">
 			Claim your profile, get verified against IEBC records, and mobilize your team!
 		</p>
 		<a

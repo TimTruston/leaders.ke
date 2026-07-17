@@ -98,7 +98,7 @@
 				{#if leader.bio}
 					<!-- Bio is stored as markdown-lite (RichTextEditor); renderRichText
 					escapes it before formatting, so {@html} is safe here. -->
-					<div class="mt-6 space-y-3 leading-relaxed">{@html renderRichText(leader.bio)}</div>
+					<div class="mt-6 space-y-2 leading-normal text-lg">{@html renderRichText(leader.bio)}</div>
 				{/if}
 			</div>
 
