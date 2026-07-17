@@ -1,5 +1,9 @@
 <script lang="ts">
 	import Countdown from "$lib/components/Countdown.svelte";
+	import WordCycler from '$lib/components/WordCycler.svelte';
+	
+	const leftSet = ['Level Up', 'Catapult', 'Propel', 'Amplify', 'Strengthen'];
+	const rightSet = ['Leadership', 'Campaign', 'Publicity', 'Advocacy', 'Supporters'];
 
 	// Static pricing page driven by the blueprint's rate matrix + package benefits.
 	// Prices are monthly KES, keyed by office band (see positions.band: national | regional | ward).
@@ -101,7 +105,7 @@
 <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 	<div class="text-center">
 		<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">
-			Supercharge your campaign
+			<WordCycler words={leftSet}/> Your <WordCycler words={rightSet}/>
 		</h1>
 		<p class="mx-auto mt-4 max-w-xl text-base leading-relaxed">
 			Select your office below to view your packages. Hover to explore it.

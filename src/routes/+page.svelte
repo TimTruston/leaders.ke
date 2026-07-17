@@ -1,9 +1,15 @@
 <script lang="ts">
 	import Countdown from '$lib/components/Countdown.svelte';
 	import SloganCycler from '$lib/components/SloganCycler.svelte';
+	import WordCycler from '$lib/components/WordCycler.svelte';
 
 	// The homepage sells to the paying customer (candidates and currents);
 	// citizens get the directory, news and countdown as the public layer.
+
+	// The hero headline is two cycling halves: any left word reads naturally with
+	// any right word, so the pairs don't need to line up.
+	const leftSet = ['Leadership', 'Campaign', 'Publicity', 'Manifesto', 'Advocacy', 'Citizen\'s'];
+	const rightSet = ['Logbook', 'Copilot', 'Panel', 'Machinery', 'Arsenal', 'Companion'];
 
 	// Campaign toolkit grid: what a subscription buys. `live` distinguishes
 	// shipped features from roadmap items (badged "Coming soon") — the badge
@@ -125,7 +131,7 @@
 </script>
 
 <svelte:head>
-	<title>leaders.ke — Your 2027 campaign HQ</title>
+	<title>leaders.ke — Your 2027 Campaign HQ</title>
 	<meta
 		name="description"
 		content="Run and win your 2027 campaign from one platform: a verified profile, manifesto, followers and broadcasts. Citizens: verify who is vying and follow campaigns."
@@ -145,8 +151,11 @@
 				<span class="size-2 rounded-full bg-primary"></span>
 				The platform that verifies who is vying
 			</span>
+			<!-- Two halves of the headline cycle independently, staggered so only one
+			word swaps at a time (e.g. "Campaign Machinery" → "Campaign Dashboard"). -->
 			<h1 class="text-4xl font-extrabold tracking-tight text-heading sm:text-5xl">
-				Your 2027 campaign HQ
+				<WordCycler words={leftSet} />
+				<WordCycler words={rightSet} delay={1000} />
 			</h1>
 			<div class="mt-4">
 				<SloganCycler />
