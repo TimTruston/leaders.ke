@@ -1479,7 +1479,7 @@
 			"phones": [],
 			"links": []
 		},
-		"bio": "Amos M\u016bhinga K\u012bmunya is a Kenyan politician who represented Kipipiri Constituency across the 9th and 12th Parliaments, first elected under NARC and later under the Jubilee Party. He served as Minister of Lands and Settlement before becoming Minister of Finance in 2006, resigning in July 2008 amid the Grand Regency Hotel scandal, and later served as Minister of Trade. In the 12th Parliament he chaired a Departmental Committee and sat on the Constitution and House Business Committees before becoming Majority Leader of the National Assembly under the Jubilee Party, replacing Aden Duale in that role. In 2019 he earned a PhD in Business Administration from the United States International University in Nairobi.",
+		"bio": "Amos Mūhinga Kīmunya is a Kenyan politician who represented Kipipiri Constituency across the 9th and 12th Parliaments, first elected under NARC and later under the Jubilee Party. He served as Minister of Lands and Settlement before becoming Minister of Finance in 2006, resigning in July 2008 amid the Grand Regency Hotel scandal, and later served as Minister of Trade. In the 12th Parliament he chaired a Departmental Committee and sat on the Constitution and House Business Committees before becoming Majority Leader of the National Assembly under the Jubilee Party, replacing Aden Duale in that role. In 2019 he earned a PhD in Business Administration from the United States International University in Nairobi.",
 		"bioSources": [
 			"https://en.wikipedia.org/wiki/Amos_Kimunya"
 		],
@@ -1591,14 +1591,7 @@
 			"https://en.wikipedia.org/wiki/Andrew_Mwadime"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Taita Taveta County",
-				"startAt": "2022-08-01",
-				"endAt": null
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "andrew-ndooli-ligale",
@@ -2441,7 +2434,7 @@
 			"phones": [],
 			"links": []
 		},
-		"bio": "Beth Wamb\u016bi M\u016bgo is a Kenyan politician who represented Dagoretti Constituency in Nairobi in the 9th Parliament, elected in the 2007 Kenyan parliamentary election on a Party of National Unity ticket.",
+		"bio": "Beth Wambūi Mūgo is a Kenyan politician who represented Dagoretti Constituency in Nairobi in the 9th Parliament, elected in the 2007 Kenyan parliamentary election on a Party of National Unity ticket.",
 		"bioSources": [
 			"https://en.wikipedia.org/wiki/Beth_Wambui_Mugo"
 		],
@@ -2637,14 +2630,7 @@
 			"https://en.wikipedia.org/wiki/Ali_Roba"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Mandera County",
-				"startAt": "2013-03-04",
-				"endAt": null
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "caroli-omondi",
@@ -2666,7 +2652,7 @@
 		"key": "caroline-jeptoo-ngelechei",
 		"userId": 438,
 		"platformSlug": "caroline-jeptoo-ngelechei",
-		"firstName": "Ng\u2019elechei",
+		"firstName": "Ng’elechei",
 		"otherNames": "Caroline Jeptoo",
 		"contacts": {
 			"emails": [],
@@ -2820,12 +2806,6 @@
 				"institution": "Government of Kenya",
 				"startAt": "2013-01-01",
 				"endAt": "2015-01-01"
-			},
-			{
-				"title": "Governor",
-				"institution": "Kitui County",
-				"startAt": null,
-				"endAt": null
 			}
 		]
 	},
@@ -3173,7 +3153,7 @@
 		"userId": null,
 		"platformSlug": null,
 		"firstName": "Chris",
-		"otherNames": "Karan (2017\u201318)",
+		"otherNames": "Karan (2017–18)",
 		"contacts": {
 			"emails": [],
 			"phones": [],
@@ -3291,7 +3271,7 @@
 			"phones": [],
 			"links": []
 		},
-		"bio": "Christopher Ndarathi M\u016br\u016bngar\u016b is a Kenyan politician who represented Kieni Constituency in Nyeri County during the 9th Parliament under NARC. He served as Kenya's Minister of Transport.",
+		"bio": "Christopher Ndarathi Mūrūngarū is a Kenyan politician who represented Kieni Constituency in Nyeri County during the 9th Parliament under NARC. He served as Kenya's Minister of Transport.",
 		"bioSources": [
 			"https://en.wikipedia.org/wiki/Christopher_Ndarathi_Murungaru"
 		],
@@ -3839,7 +3819,7 @@
 			"phones": [],
 			"links": []
 		},
-		"bio": "David (Daudi) Mw\u012braria is a Kenyan politician who represented North Imenti Constituency in the 9th Parliament. He served as Kenya's Minister for Finance and later as Minister for Environment and Natural Resources. Running for re-election in December 2007 on a Party of National Unity ticket, he was defeated by Silas Muriuki of the Mazingira Green Party of Kenya.",
+		"bio": "David (Daudi) Mwīraria is a Kenyan politician who represented North Imenti Constituency in the 9th Parliament. He served as Kenya's Minister for Finance and later as Minister for Environment and Natural Resources. Running for re-election in December 2007 on a Party of National Unity ticket, he was defeated by Silas Muriuki of the Mazingira Green Party of Kenya.",
 		"bioSources": [
 			"https://en.wikipedia.org/wiki/Daudi_Mwiraria"
 		],
@@ -5491,14 +5471,7 @@
 			"https://en.wikipedia.org/wiki/Fahim_Yasin_Twaha"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Lamu County",
-				"startAt": null,
-				"endAt": "2022-08-11"
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "faith-wairimu-gitau",
@@ -6778,12 +6751,6 @@
 				"title": "Mayor",
 				"institution": "Malindi",
 				"startAt": null,
-				"endAt": null
-			},
-			{
-				"title": "Governor",
-				"institution": "Kilifi County",
-				"startAt": "2022-08-01",
 				"endAt": null
 			}
 		]
@@ -8400,14 +8367,7 @@
 			"https://en.wikipedia.org/wiki/Jackson_Mandago"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Uasin Gishu County",
-				"startAt": "2013-01-01",
-				"endAt": "2022-01-01"
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "jacob-macharia",
@@ -9380,7 +9340,7 @@
 		"userId": null,
 		"platformSlug": null,
 		"firstName": "Johana",
-		"otherNames": "Ng\u2019eno",
+		"otherNames": "Ng’eno",
 		"contacts": {
 			"emails": [],
 			"phones": [],
@@ -11738,14 +11698,7 @@
 			"https://en.wikipedia.org/wiki/Kawira_Mwangaza"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor of Meru County",
-				"institution": "County Government of Meru",
-				"startAt": "2022-08-01",
-				"endAt": "2024-08-21"
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "ken-obura-mirenga",
@@ -12151,12 +12104,6 @@
 				"institution": "Office of the President of Kenya",
 				"startAt": null,
 				"endAt": null
-			},
-			{
-				"title": "Governor",
-				"institution": "County Government of Makueni",
-				"startAt": null,
-				"endAt": "2022-01-01"
 			}
 		]
 	},
@@ -13017,12 +12964,6 @@
 				"title": "Chairman of the Board",
 				"institution": "Kenya Airports Authority",
 				"startAt": null,
-				"endAt": null
-			},
-			{
-				"title": "Governor of Embu County",
-				"institution": "County Government of Embu",
-				"startAt": "2013-03-01",
 				"endAt": null
 			}
 		]
@@ -14302,14 +14243,7 @@
 			"https://en.wikipedia.org/wiki/Muthomi_Njuki"
 		],
 		"education": [],
-		"professional": [
-			{
-				"title": "Governor of Tharaka Nithi County",
-				"institution": "County Government of Tharaka Nithi",
-				"startAt": "2017-01-01",
-				"endAt": null
-			}
-		]
+		"professional": []
 	},
 	{
 		"key": "mutinda-maureen-tabitha",
@@ -14598,7 +14532,7 @@
 		"key": "ndungu-gethenji",
 		"userId": null,
 		"platformSlug": null,
-		"firstName": "Ndung\u2019u",
+		"firstName": "Ndung’u",
 		"otherNames": "Gethenji",
 		"contacts": {
 			"emails": [],
@@ -15288,7 +15222,7 @@
 			"phones": [],
 			"links": []
 		},
-		"bio": "Pamela Njoki Njeru, popularly known by her nickname \u201cDouble N\u201d, is the Woman Representative for Embu County in the 13th Parliament of Kenya, serving her first term from 2022 to 2027. She was elected on the United Democratic Alliance (UDA) ticket, aligning her with the ruling party. In the National Assembly she sits on both the Diaspora Affairs and Migrant Workers committee and the Regional Development committee, giving her a role in shaping policy on issues facing Kenyans abroad as well as development projects in the regions. Her election marked her entry into elective politics as she took up the mandate to represent Embu's women in the current Parliament.",
+		"bio": "Pamela Njoki Njeru, popularly known by her nickname “Double N”, is the Woman Representative for Embu County in the 13th Parliament of Kenya, serving her first term from 2022 to 2027. She was elected on the United Democratic Alliance (UDA) ticket, aligning her with the ruling party. In the National Assembly she sits on both the Diaspora Affairs and Migrant Workers committee and the Regional Development committee, giving her a role in shaping policy on issues facing Kenyans abroad as well as development projects in the regions. Her election marked her entry into elective politics as she took up the mandate to represent Embu's women in the current Parliament.",
 		"bioSources": [
 			"https://mzalendo.com/mps-performance/national-assembly/13th-parliament/pamela-njoki-njeru/",
 			"https://en.wikipedia.org/wiki/Pamela_Njeru"
@@ -16009,12 +15943,6 @@
 		"education": [],
 		"professional": [
 			{
-				"title": "Senator",
-				"institution": "Embu County",
-				"startAt": null,
-				"endAt": null
-			},
-			{
 				"title": "Minister for Co-operative Development and Marketing",
 				"institution": "Government of Kenya",
 				"startAt": null,
@@ -16373,12 +16301,6 @@
 		],
 		"education": [],
 		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Kisumu County",
-				"startAt": null,
-				"endAt": null
-			},
 			{
 				"title": "Secretary-General",
 				"institution": "Orange Democratic Movement",
@@ -19708,12 +19630,6 @@
 		],
 		"education": [],
 		"professional": [
-			{
-				"title": "Governor",
-				"institution": "Kiambu County",
-				"startAt": "2013-01-01",
-				"endAt": null
-			},
 			{
 				"title": "Cabinet Secretary for Information, Communications and the Digital Economy",
 				"institution": "Government of Kenya",

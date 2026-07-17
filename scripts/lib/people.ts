@@ -10,6 +10,7 @@ import { hashPassword } from 'better-auth/crypto';
 import { campaigns, contacts, experience, leaders, parties, partyMemberships, pillars, positions, users } from '../../src/lib/server/db/schema';
 import { user as authUsers, account } from '../../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName, type AnyDb } from './names';
+import { modeledSeatOffice } from './offices';
 
 export type ExperienceRow = { title: string; institution: string; description?: string; startAt: string | null; endAt: string | null };
 // A prior/current elective or nominated term nested on a person's leaders.json row (e.g. an
@@ -79,11 +80,20 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 			.onConflictDoNothing();
 	}
 
+	// Seats this person holds as Track Record terms (this row's own seat + any
+	// leadership[] terms). A professional-experience entry naming one of these is a
+	// duplicate of a linked term, so it is skipped below.
+	const heldOffices = new Set<string>([row.title, ...(row.leadership ?? []).map((l) => l.title)]);
+
 	for (const [type, rows] of [
 		['education', row.education] as const,
 		['professional', row.professional] as const
 	]) {
 		for (const expRow of rows ?? []) {
+			if (type === 'professional') {
+				const office = modeledSeatOffice(expRow.title, expRow.institution);
+				if (office && heldOffices.has(office)) continue; // already a Track Record term
+			}
 			const [existing] = await db
 				.select({ id: experience.id, description: experience.description })
 				.from(experience)

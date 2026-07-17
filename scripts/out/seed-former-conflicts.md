@@ -1,6 +1,6 @@
 # 12th/11th-parliament former-term seed: report
 
-Generated 2026-07-17T19:00:14.250Z — APPLIED.
+Generated 2026-07-17T19:50:10.780Z — APPLIED.
 
 ## Summary
 

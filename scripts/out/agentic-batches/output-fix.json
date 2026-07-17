@@ -1,333 +1,326 @@
 [
- {
-  "key": "abdikadir-hussein-mohamed",
-  "bio": "Abdikadir Hussein is a Kenyan politician who has represented Lagdera Constituency in the National Assembly during the 13th Parliament under the Orange Democratic Movement. Earlier in his career, running on the Safina party ticket, he was elected to represent Mandera Central Constituency in the 2007 general election, defeating the sitting MP Billow Kerrow. In the 13th Parliament, he serves on the Blue Economy, Water and Irrigation Committee and the Defence, Intelligence and Foreign Relations Committee.",
-  "bioSources": [
-   "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/abdikadir-hussein/",
-   "https://en.wikipedia.org/wiki/Abdikadir_Hussein_Mohamed"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "abdikadir-hussein-mohamed-3",
-  "bio": "Hussein Maalim Mohamed is a Kenyan politician who represented Dujis Constituency in the National Assembly during the 9th Parliament under KANU. He also served as a Minister of State in the Office of the President.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Hussein_Maalim_Mohamed"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Minister of State",
-    "institution": "Office of the President",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "ahmed-abdisalan-ibrahim-3",
-  "bio": "Ibrahim Ahmed Abass is a Kenyan politician who represented Ijara Constituency, in Garissa County, in the National Assembly during the 11th Parliament under the Orange Democratic Movement.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Ahmed_Abass"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "ali-mohamud-mohamed",
-  "bio": "Mohamed Ali Mohamed, popularly known by his nickname Moha Jicho Pevu, is a Kenyan politician, media personality, and television anchor. He has represented Nyali Constituency in the National Assembly across the 12th and 13th Parliaments, running as an independent before joining the United Democratic Alliance, and earlier represented Mandera West Constituency in the 11th Parliament under the United Republican Party. In the 13th Parliament, he serves on the Committee on Implementation and the Committee on Environment, Forestry and Mining.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Mohammad_Ali_(Kenyan_politician)"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Television Anchor and Media Personality",
-    "institution": "",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "ali-mohamud-mohamed-2",
-  "bio": "Mohamed Maalim Mohamud is a Kenyan politician who represented Mandera West Constituency in the National Assembly during the 11th Parliament under URP, serving from 2007 to 2013. He later served as a Senator for Mandera County, where he chaired the Senate's Finance and Budget Committee, and he is affiliated with the Jubilee Party. Earlier in his career, from 2008 to 2011, he served as Assistant Minister in the Ministry of Energy.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Mohamed_Maalim_Mohamud"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Assistant Minister",
-    "institution": "Ministry of Energy",
-    "startAt": "2008-01-01",
-    "endAt": "2011-01-01"
-   }
-  ]
- },
- {
-  "key": "capt-ali-roba",
-  "bio": "Ali Roba, born Ibrahim Ali Roba, was the first governor of Mandera County, winning election in March 2013 on a URP ticket within the Jubilee coalition and securing a second and final term in August 2017. After completing two terms as governor, he moved to represent Mandera County in the Senate, where his 13th Parliament term is affiliated with the UDM.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Ali_Roba"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Governor",
-    "institution": "Mandera County",
-    "startAt": "2013-03-04",
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "daniel-kazungu-muzee-2",
-  "bio": "Dan Kazungu Muzee is a Kenyan politician who represented Malindi Constituency, in Kilifi County, in the National Assembly during the 11th Parliament under the Orange Democratic Movement (ODM), having been elected in 2013. He lost his bid for re-election in 2017. He later served as Cabinet Secretary in the Ministry of Mining.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Dan_Muzee"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Cabinet Secretary",
-    "institution": "Ministry of Mining",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "eng-joseph-gachoki-gitari-2",
-  "bio": "Joseph Gachoki Gitari is a Kenyan politician who has represented Kirinyaga Central Constituency in the National Assembly since February 2011, first winning the seat after the removal of former MP Ngata Kariuki. He served in the 11th Parliament under TNA and later in the 13th Parliament under the United Democratic Alliance, where he sits on departmental committees covering Diaspora and Migrant Workers, Lands, and Regional Integration.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Joseph_Gitari"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "fatuma-ibrahim-ali",
-  "bio": "Fatuma Ibrahim Ali is a Kenyan politician of Somali ethnicity who represented Wajir County as Woman Representative in the National Assembly during the 11th Parliament, having been elected in March 2013 on an Orange Democratic Movement ticket. She has served as a Commissioner of the Kenya National Commission on Human Rights, and from 2017 to 2022 she sat in the East African Legislative Assembly (EALA) as a member representing Kenya.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Fatuma_Ibrahim_Ali"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Commissioner",
-    "institution": "Kenya National Commission on Human Rights",
-    "startAt": null,
-    "endAt": null
-   },
-   {
-    "title": "Member, East African Legislative Assembly (EALA)",
-    "institution": "East African Legislative Assembly",
-    "startAt": "2017-01-01",
-    "endAt": "2022-01-01"
-   }
-  ]
- },
- {
-  "key": "hassan-mohamed-mwanyoha",
-  "bio": "Hassan Mohamed Mwanyoha is a Kenyan politician who represented Matuga Constituency, in Kwale County, in the National Assembly, first elected in 2002 and again in 2013 under the Orange Democratic Movement. Before entering national politics, he served for 15 years as a councilor for Tiwi Ward on a Kenya African National Union (KANU) ticket.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Hassan_Mwanyoha"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Councilor",
-    "institution": "Tiwi Ward",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "hon-adan-haji-yussuf-2",
-  "bio": "Mohamed Yussuf Haji was a Kenyan politician who represented Ijara Constituency in the National Assembly during the 9th Parliament under KANU. He went on to serve as Minister of State for Defence from 2008 to 2013 and briefly as acting Minister of Internal Security and Provincial Affairs in 2012. From 2013 he served in the Senate of Kenya under the Jubilee Party. He died on 15 February 2021.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Mohamed_Yusuf_Haji"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Minister of State for Defence",
-    "institution": "Government of Kenya",
-    "startAt": "2008-01-01",
-    "endAt": "2013-01-01"
-   },
-   {
-    "title": "Acting Minister of Internal Security and Provincial Affairs",
-    "institution": "Government of Kenya",
-    "startAt": "2012-01-01",
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "john-mbadi-ng-x27-ong-x27-o-2",
-  "bio": "John Mbadi Ng'ongo is a Kenyan politician who represented Suba South Constituency in the National Assembly across the 11th and 12th Parliaments under the Orange Democratic Movement. Since August 8, 2024, he has served as Cabinet Secretary for the National Treasury and Economic Planning.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Cabinet Secretary",
-    "institution": "National Treasury and Economic Planning",
-    "startAt": "2024-08-08",
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "john-muchiri-nyaga-2",
-  "bio": "John Muchiri Nyaga is a Kenyan politician who represented Manyatta Constituency, in Embu County, in the National Assembly across the 11th and 12th Parliaments, running under The National Alliance (TNA) with Jubilee Coalition support and later under the Jubilee Party. First elected in 2013, he served on the House Committee on Public Investment and the Departmental Committee on Health. Mzalendo Trust noted that he spoke only nine times in the chamber during his term, one of the least active contributions among his peers.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/John_Muchiri"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "maina-betty-njeri",
-  "bio": "Maina Betty Njeri is a Kenyan politician who has served as the Woman Representative for Murang'a County in the National Assembly during the 13th Parliament, representing the United Democratic Alliance. In this role, she sits on the Departmental Committee on Public Investments.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Betty_Maina"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "martha-wangari-karua",
-  "bio": "Martha Wangari Karua is a Kenyan politician and an advocate of the High Court of Kenya who represented Gichugu Constituency in the National Assembly during the 9th Parliament under NARC. She served as Minister for Justice until resigning from the position in April 2009. Throughout her career she has been a consistent advocate for women's rights and for strengthening Kenya's democratic institutions.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Martha_Wangari_Karua"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Advocate",
-    "institution": "High Court of Kenya",
-    "startAt": null,
-    "endAt": null
-   },
-   {
-    "title": "Minister for Justice",
-    "institution": "Government of Kenya",
-    "startAt": null,
-    "endAt": "2009-04-01"
-   }
-  ]
- },
- {
-  "key": "martha-wangari-wanjira",
-  "bio": "Martha Wangari Wanjira is a Kenyan politician who represents Gilgil Constituency, in Nakuru County, in the National Assembly. She won the seat in 2022 on a United Democratic Alliance (UDA) ticket with 35,363 votes, having earlier held the same constituency in the 12th Parliament under the Jubilee Party. In the 13th Parliament she serves on several House committees, including Defence, Intelligence and Foreign Relations; Liaison; Procedure and House Rules; and Selection.",
-  "bioSources": [
-   "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/martha-wangari/",
-   "https://en.wikipedia.org/wiki/Martha_Wangari_Wanjira"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "peter-ochieng-orero-2",
-  "bio": "Peter Ochieng Odoyo is a Kenyan politician and economist who represented Nyakach Constituency in the National Assembly from 1997 to 2007 under NARC. Within Parliament he served as Vice Chair of the Finance, Trade and Planning Committee from 1998 to 2001, before holding the positions of Assistant Minister for Foreign Affairs, Assistant Minister for Labour, and Assistant Minister for Regional Development between 2001 and 2005. He has also been a longtime coordinator for the World e-Parliament in Kenya and East Africa.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Peter_Ochieng_Odoyo"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Assistant Minister for Foreign Affairs",
-    "institution": "Government of Kenya",
-    "startAt": "2001-01-01",
-    "endAt": "2005-01-01"
-   },
-   {
-    "title": "Assistant Minister for Labour",
-    "institution": "Government of Kenya",
-    "startAt": "2001-01-01",
-    "endAt": "2005-01-01"
-   },
-   {
-    "title": "Assistant Minister for Regional Development",
-    "institution": "Government of Kenya",
-    "startAt": "2001-01-01",
-    "endAt": "2005-01-01"
-   },
-   {
-    "title": "Coordinator",
-    "institution": "World e-Parliament (Kenya and East Africa)",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "salim-idd-mustafa-2",
-  "bio": "Salid Idd Mustafa was a Kenyan broadcast journalist and politician who represented Kilifi South Constituency in the National Assembly during the 11th Parliament under the Orange Democratic Movement (ODM). He died in 2020 from suspected COVID-19 complications.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Salid_Mustafa"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Broadcast Journalist",
-    "institution": "",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "samuel-moroto-chumel",
-  "bio": "Samuel Moroto Chumel is a Kenyan politician from the Pokot community of West Pokot County who has represented Kapenguria Constituency in the National Assembly under the Kenya African National Union (KANU), first elected in 2002. Before entering politics, he built a career as a teacher and trade unionist.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Samuel_Moroto_Chumel"
-  ],
-  "education": [],
-  "professional": [
-   {
-    "title": "Teacher",
-    "institution": "",
-    "startAt": null,
-    "endAt": null
-   },
-   {
-    "title": "Trade Unionist",
-    "institution": "",
-    "startAt": null,
-    "endAt": null
-   }
-  ]
- },
- {
-  "key": "shaaban-ali-isaack-2",
-  "bio": "Shaaban Ali Issack is a Kenyan politician who served in the National Assembly during the 11th Parliament under URP. He hails from the Murule Clan of the Jidle Hawiye clan of the Somali community.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Shaaban_Ali_Issack"
-  ],
-  "education": [],
-  "professional": []
- },
- {
-  "key": "victor-kioko-munyaka-2",
-  "bio": "Dr Victor Kioko Munyaka is a Kenyan politician who has represented Machakos Town Constituency in the National Assembly since the 2007 general election, serving in the 11th Parliament under CCU and the 12th Parliament under the Jubilee Party. He holds a degree in Veterinary Medicine from the University of Nairobi and has served on several departmental committees during his tenure.",
-  "bioSources": [
-   "https://en.wikipedia.org/wiki/Victor_Munyaka"
-  ],
-  "education": [
-   {
-    "title": "Degree in Veterinary Medicine",
-    "institution": "University of Nairobi",
-    "startAt": null,
-    "endAt": null
-   }
-  ],
-  "professional": []
- }
+	{
+		"key": "abdikadir-hussein-mohamed",
+		"bio": "Abdikadir Hussein is a Kenyan politician who has represented Lagdera Constituency in the National Assembly during the 13th Parliament under the Orange Democratic Movement. Earlier in his career, running on the Safina party ticket, he was elected to represent Mandera Central Constituency in the 2007 general election, defeating the sitting MP Billow Kerrow. In the 13th Parliament, he serves on the Blue Economy, Water and Irrigation Committee and the Defence, Intelligence and Foreign Relations Committee.",
+		"bioSources": [
+			"https://mzalendo.com/mps-performance/national-assembly/13th-parliament/abdikadir-hussein/",
+			"https://en.wikipedia.org/wiki/Abdikadir_Hussein_Mohamed"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "abdikadir-hussein-mohamed-3",
+		"bio": "Hussein Maalim Mohamed is a Kenyan politician who represented Dujis Constituency in the National Assembly during the 9th Parliament under KANU. He also served as a Minister of State in the Office of the President.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Hussein_Maalim_Mohamed"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Minister of State",
+				"institution": "Office of the President",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "ahmed-abdisalan-ibrahim-3",
+		"bio": "Ibrahim Ahmed Abass is a Kenyan politician who represented Ijara Constituency, in Garissa County, in the National Assembly during the 11th Parliament under the Orange Democratic Movement.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Ahmed_Abass"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "ali-mohamud-mohamed",
+		"bio": "Mohamed Ali Mohamed, popularly known by his nickname Moha Jicho Pevu, is a Kenyan politician, media personality, and television anchor. He has represented Nyali Constituency in the National Assembly across the 12th and 13th Parliaments, running as an independent before joining the United Democratic Alliance, and earlier represented Mandera West Constituency in the 11th Parliament under the United Republican Party. In the 13th Parliament, he serves on the Committee on Implementation and the Committee on Environment, Forestry and Mining.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Mohammad_Ali_(Kenyan_politician)"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Television Anchor and Media Personality",
+				"institution": "",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "ali-mohamud-mohamed-2",
+		"bio": "Mohamed Maalim Mohamud is a Kenyan politician who represented Mandera West Constituency in the National Assembly during the 11th Parliament under URP, serving from 2007 to 2013. He later served as a Senator for Mandera County, where he chaired the Senate's Finance and Budget Committee, and he is affiliated with the Jubilee Party. Earlier in his career, from 2008 to 2011, he served as Assistant Minister in the Ministry of Energy.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Mohamed_Maalim_Mohamud"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Assistant Minister",
+				"institution": "Ministry of Energy",
+				"startAt": "2008-01-01",
+				"endAt": "2011-01-01"
+			}
+		]
+	},
+	{
+		"key": "capt-ali-roba",
+		"bio": "Ali Roba, born Ibrahim Ali Roba, was the first governor of Mandera County, winning election in March 2013 on a URP ticket within the Jubilee coalition and securing a second and final term in August 2017. After completing two terms as governor, he moved to represent Mandera County in the Senate, where his 13th Parliament term is affiliated with the UDM.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Ali_Roba"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "daniel-kazungu-muzee-2",
+		"bio": "Dan Kazungu Muzee is a Kenyan politician who represented Malindi Constituency, in Kilifi County, in the National Assembly during the 11th Parliament under the Orange Democratic Movement (ODM), having been elected in 2013. He lost his bid for re-election in 2017. He later served as Cabinet Secretary in the Ministry of Mining.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Dan_Muzee"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Cabinet Secretary",
+				"institution": "Ministry of Mining",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "eng-joseph-gachoki-gitari-2",
+		"bio": "Joseph Gachoki Gitari is a Kenyan politician who has represented Kirinyaga Central Constituency in the National Assembly since February 2011, first winning the seat after the removal of former MP Ngata Kariuki. He served in the 11th Parliament under TNA and later in the 13th Parliament under the United Democratic Alliance, where he sits on departmental committees covering Diaspora and Migrant Workers, Lands, and Regional Integration.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Joseph_Gitari"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "fatuma-ibrahim-ali",
+		"bio": "Fatuma Ibrahim Ali is a Kenyan politician of Somali ethnicity who represented Wajir County as Woman Representative in the National Assembly during the 11th Parliament, having been elected in March 2013 on an Orange Democratic Movement ticket. She has served as a Commissioner of the Kenya National Commission on Human Rights, and from 2017 to 2022 she sat in the East African Legislative Assembly (EALA) as a member representing Kenya.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Fatuma_Ibrahim_Ali"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Commissioner",
+				"institution": "Kenya National Commission on Human Rights",
+				"startAt": null,
+				"endAt": null
+			},
+			{
+				"title": "Member, East African Legislative Assembly (EALA)",
+				"institution": "East African Legislative Assembly",
+				"startAt": "2017-01-01",
+				"endAt": "2022-01-01"
+			}
+		]
+	},
+	{
+		"key": "hassan-mohamed-mwanyoha",
+		"bio": "Hassan Mohamed Mwanyoha is a Kenyan politician who represented Matuga Constituency, in Kwale County, in the National Assembly, first elected in 2002 and again in 2013 under the Orange Democratic Movement. Before entering national politics, he served for 15 years as a councilor for Tiwi Ward on a Kenya African National Union (KANU) ticket.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Hassan_Mwanyoha"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Councilor",
+				"institution": "Tiwi Ward",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "hon-adan-haji-yussuf-2",
+		"bio": "Mohamed Yussuf Haji was a Kenyan politician who represented Ijara Constituency in the National Assembly during the 9th Parliament under KANU. He went on to serve as Minister of State for Defence from 2008 to 2013 and briefly as acting Minister of Internal Security and Provincial Affairs in 2012. From 2013 he served in the Senate of Kenya under the Jubilee Party. He died on 15 February 2021.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Mohamed_Yusuf_Haji"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Minister of State for Defence",
+				"institution": "Government of Kenya",
+				"startAt": "2008-01-01",
+				"endAt": "2013-01-01"
+			},
+			{
+				"title": "Acting Minister of Internal Security and Provincial Affairs",
+				"institution": "Government of Kenya",
+				"startAt": "2012-01-01",
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "john-mbadi-ng-x27-ong-x27-o-2",
+		"bio": "John Mbadi Ng'ongo is a Kenyan politician who represented Suba South Constituency in the National Assembly across the 11th and 12th Parliaments under the Orange Democratic Movement. Since August 8, 2024, he has served as Cabinet Secretary for the National Treasury and Economic Planning.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Mbadi_John_Ng'ongo"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Cabinet Secretary",
+				"institution": "National Treasury and Economic Planning",
+				"startAt": "2024-08-08",
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "john-muchiri-nyaga-2",
+		"bio": "John Muchiri Nyaga is a Kenyan politician who represented Manyatta Constituency, in Embu County, in the National Assembly across the 11th and 12th Parliaments, running under The National Alliance (TNA) with Jubilee Coalition support and later under the Jubilee Party. First elected in 2013, he served on the House Committee on Public Investment and the Departmental Committee on Health. Mzalendo Trust noted that he spoke only nine times in the chamber during his term, one of the least active contributions among his peers.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/John_Muchiri"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "maina-betty-njeri",
+		"bio": "Maina Betty Njeri is a Kenyan politician who has served as the Woman Representative for Murang'a County in the National Assembly during the 13th Parliament, representing the United Democratic Alliance. In this role, she sits on the Departmental Committee on Public Investments.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Betty_Maina"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "martha-wangari-karua",
+		"bio": "Martha Wangari Karua is a Kenyan politician and an advocate of the High Court of Kenya who represented Gichugu Constituency in the National Assembly during the 9th Parliament under NARC. She served as Minister for Justice until resigning from the position in April 2009. Throughout her career she has been a consistent advocate for women's rights and for strengthening Kenya's democratic institutions.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Martha_Wangari_Karua"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Advocate",
+				"institution": "High Court of Kenya",
+				"startAt": null,
+				"endAt": null
+			},
+			{
+				"title": "Minister for Justice",
+				"institution": "Government of Kenya",
+				"startAt": null,
+				"endAt": "2009-04-01"
+			}
+		]
+	},
+	{
+		"key": "martha-wangari-wanjira",
+		"bio": "Martha Wangari Wanjira is a Kenyan politician who represents Gilgil Constituency, in Nakuru County, in the National Assembly. She won the seat in 2022 on a United Democratic Alliance (UDA) ticket with 35,363 votes, having earlier held the same constituency in the 12th Parliament under the Jubilee Party. In the 13th Parliament she serves on several House committees, including Defence, Intelligence and Foreign Relations; Liaison; Procedure and House Rules; and Selection.",
+		"bioSources": [
+			"https://mzalendo.com/mps-performance/national-assembly/13th-parliament/martha-wangari/",
+			"https://en.wikipedia.org/wiki/Martha_Wangari_Wanjira"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "peter-ochieng-orero-2",
+		"bio": "Peter Ochieng Odoyo is a Kenyan politician and economist who represented Nyakach Constituency in the National Assembly from 1997 to 2007 under NARC. Within Parliament he served as Vice Chair of the Finance, Trade and Planning Committee from 1998 to 2001, before holding the positions of Assistant Minister for Foreign Affairs, Assistant Minister for Labour, and Assistant Minister for Regional Development between 2001 and 2005. He has also been a longtime coordinator for the World e-Parliament in Kenya and East Africa.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Peter_Ochieng_Odoyo"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Assistant Minister for Foreign Affairs",
+				"institution": "Government of Kenya",
+				"startAt": "2001-01-01",
+				"endAt": "2005-01-01"
+			},
+			{
+				"title": "Assistant Minister for Labour",
+				"institution": "Government of Kenya",
+				"startAt": "2001-01-01",
+				"endAt": "2005-01-01"
+			},
+			{
+				"title": "Assistant Minister for Regional Development",
+				"institution": "Government of Kenya",
+				"startAt": "2001-01-01",
+				"endAt": "2005-01-01"
+			},
+			{
+				"title": "Coordinator",
+				"institution": "World e-Parliament (Kenya and East Africa)",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "salim-idd-mustafa-2",
+		"bio": "Salid Idd Mustafa was a Kenyan broadcast journalist and politician who represented Kilifi South Constituency in the National Assembly during the 11th Parliament under the Orange Democratic Movement (ODM). He died in 2020 from suspected COVID-19 complications.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Salid_Mustafa"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Broadcast Journalist",
+				"institution": "",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "samuel-moroto-chumel",
+		"bio": "Samuel Moroto Chumel is a Kenyan politician from the Pokot community of West Pokot County who has represented Kapenguria Constituency in the National Assembly under the Kenya African National Union (KANU), first elected in 2002. Before entering politics, he built a career as a teacher and trade unionist.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Samuel_Moroto_Chumel"
+		],
+		"education": [],
+		"professional": [
+			{
+				"title": "Teacher",
+				"institution": "",
+				"startAt": null,
+				"endAt": null
+			},
+			{
+				"title": "Trade Unionist",
+				"institution": "",
+				"startAt": null,
+				"endAt": null
+			}
+		]
+	},
+	{
+		"key": "shaaban-ali-isaack-2",
+		"bio": "Shaaban Ali Issack is a Kenyan politician who served in the National Assembly during the 11th Parliament under URP. He hails from the Murule Clan of the Jidle Hawiye clan of the Somali community.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Shaaban_Ali_Issack"
+		],
+		"education": [],
+		"professional": []
+	},
+	{
+		"key": "victor-kioko-munyaka-2",
+		"bio": "Dr Victor Kioko Munyaka is a Kenyan politician who has represented Machakos Town Constituency in the National Assembly since the 2007 general election, serving in the 11th Parliament under CCU and the 12th Parliament under the Jubilee Party. He holds a degree in Veterinary Medicine from the University of Nairobi and has served on several departmental committees during his tenure.",
+		"bioSources": [
+			"https://en.wikipedia.org/wiki/Victor_Munyaka"
+		],
+		"education": [
+			{
+				"title": "Degree in Veterinary Medicine",
+				"institution": "University of Nairobi",
+				"startAt": null,
+				"endAt": null
+			}
+		],
+		"professional": []
+	}
 ]

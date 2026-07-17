@@ -15,7 +15,8 @@ import { parseArgs } from 'node:util';
 import { and, desc, eq, isNull, isNotNull } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { contacts, experience, leaders, users } from '../src/lib/server/db/schema';
+import { contacts, experience, leaders, positions, users } from '../src/lib/server/db/schema';
+import { modeledSeatOffice } from './lib/offices';
 
 const OUT_DIR = join(import.meta.dir, 'out');
 
@@ -83,9 +84,28 @@ for (const entry of entries) {
 		}
 	}
 
+	// Elective seats we model as positions become Track Record `leaders` terms.
+	// A professional-experience row for a seat the person actually holds as a term
+	// would list that office twice (once linked as Track Record, once unlinked), so
+	// drop it — but ONLY when the matching term exists, so a nominated stint or an
+	// un-modeled office (its sole record) is never lost.
+	const heldOffices = new Set(
+		(
+			await db
+				.select({ title: positions.title })
+				.from(leaders)
+				.innerJoin(positions, eq(leaders.positionId, positions.id))
+				.where(and(eq(leaders.userId, person.id), isNull(leaders.deletedAt)))
+		).map((r) => r.title)
+	);
 	const rows = [
 		...entry.education.map((r) => ({ ...r, kind: 'education' as const })),
-		...entry.professional.map((r) => ({ ...r, kind: 'professional' as const }))
+		...entry.professional
+			.filter((r) => {
+				const office = modeledSeatOffice(r.title, r.institution);
+				return !(office && heldOffices.has(office));
+			})
+			.map((r) => ({ ...r, kind: 'professional' as const }))
 	].filter((r) => r.title);
 	if (rows.length) {
 		// Experience hangs off the person's most recent leaders row.
