@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Avatar from '$lib/components/Avatar.svelte';
+	import DeliveryScore from '$lib/components/DeliveryScore.svelte';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import Reviews from '$lib/components/Reviews.svelte';
 	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
@@ -105,21 +106,11 @@
 			<!-- Delivery score: public rollup of the manifesto tracker -->
 			{#if data.delivery.total > 0}
 				<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-					<h2 class="text-xl font-bold text-heading">Delivery score</h2>
-					<p class="mt-1 text-sm text-muted">
-						{data.delivery.delivered} of {data.delivery.total} manifesto pillars delivered
-						{#if data.delivery.inProgress > 0}· {data.delivery.inProgress} in progress{/if}
-					</p>
-					<div class="mt-3 flex h-3 overflow-hidden rounded-full bg-surface-2">
-						<div
-							class="h-full bg-primary"
-							style="width: {Math.round((data.delivery.delivered / data.delivery.total) * 100)}%"
-						></div>
-						<div
-							class="h-full bg-primary/40"
-							style="width: {Math.round((data.delivery.inProgress / data.delivery.total) * 100)}%"
-						></div>
-					</div>
+					<DeliveryScore
+						delivered={data.delivery.delivered}
+						total={data.delivery.total}
+						inProgress={data.delivery.inProgress}
+					/>
 				</div>
 			{/if}
 

@@ -2,7 +2,7 @@
 // (for single-region national seats like President) /[position] directly.
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { parties, partyMemberships } from '$lib/server/db/schema';
+import { campaigns, parties, partyMemberships, pillars } from '$lib/server/db/schema';
 import {
 	ACTIVE_CYCLE,
 	findPositionByPath,
@@ -53,6 +53,22 @@ export async function loadSeatHub(position: string, region: string) {
 
 	const currentRow = rows.find((r) => r.leaders.status === 'current');
 	const dbContestants = rows.filter((r) => r.leaders.status === 'aspirant').map(toCard);
+
+	// Manifesto delivery rollup for the seat's current holder (same shape the
+	// public leader profile shows), so the hub can score the incumbent.
+	let delivery = { total: 0, delivered: 0, inProgress: 0 };
+	if (currentRow) {
+		const pillarRows = await db
+			.select({ deliveryStatus: pillars.deliveryStatus })
+			.from(pillars)
+			.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
+			.where(and(eq(campaigns.leaderId, currentRow.leaders.id), isNull(pillars.deletedAt)));
+		delivery = {
+			total: pillarRows.length,
+			delivered: pillarRows.filter((p) => p.deliveryStatus === 'delivered').length,
+			inProgress: pillarRows.filter((p) => p.deliveryStatus === 'in_progress').length
+		};
+	}
 
 	// History: every recorded term for this seat, most recent first. Aspirants
 	// stay off the timeline until elected.
@@ -108,6 +124,7 @@ export async function loadSeatHub(position: string, region: string) {
 		boundary,
 		breadcrumb,
 		current: currentRow ? toCard(currentRow) : null,
+		delivery,
 		contestants: dbContestants,
 		history,
 		cycle: ACTIVE_CYCLE,

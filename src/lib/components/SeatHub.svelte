@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Avatar from '$lib/components/Avatar.svelte';
+	import DeliveryScore from '$lib/components/DeliveryScore.svelte';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import type { SeatHubData } from '$lib/server/seatHub';
 
@@ -78,13 +79,27 @@
 		</div>
 
 		<!-- SRC compensation: data pending -->
-		<div class="flex flex-2 flex-col flex-1">
+		<div class="flex flex-1 flex-col">
 			<h2 class="text-xl font-bold text-heading">Salary</h2>
 			<p class="mt-4 rounded-2xl border border-border bg-surface-2 p-5 text-sm leading-relaxed grow">
 				The Salaries and Remuneration Commission (SRC) monthly package for this seat is being
 				compiled and will appear here for transparency.
 			</p>
 		</div>
+		
+		<!-- Manifesto delivery score for the current holder -->
+		<div class="flex flex-1 flex-col">
+			<DeliveryScore
+				delivered={data.delivery.delivered}
+				total={data.delivery.total}
+				inProgress={data.delivery.inProgress}
+				heading="Delivery"
+				emptyText={data.current
+					? `${data.current.name}'s manifesto delivery tracker will appear here once their promises are logged.`
+					: 'No current officeholder to score for this seat yet.'}
+			/>
+		</div>
+
 	</div>
 
 
