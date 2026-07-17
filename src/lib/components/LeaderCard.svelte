@@ -64,7 +64,7 @@
 
 <!-- The leader name uses a stretched link (after:absolute after:inset-0) so the
 whole card is clickable, while the party name stays its own separate link on top. -->
-<div class="group relative rounded-2xl border border-border bg-surface transition hover:border-primary hover:shadow-sm {large ? 'p-3' : 'p-5'}">
+<div class="group relative rounded-2xl border border-border bg-surface transition hover:border-primary hover:shadow-sm {large ? 'p-3' : 'p-2'}">
 	{#if !large}
 	<!-- Compare trigger: z-10 keeps it clickable above the card's stretched link. -->
 	<button
@@ -99,7 +99,7 @@ whole card is clickable, while the party name stays its own separate link on top
 	{/if}
 	<div class="flex items-center {large ? 'flex-col lg:flex-row' : 'gap-3'}" >
 		<!-- In the large variant the photo spans the card's height. -->
-		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-50' : 'size-24'} textClass={large ? 'text-4xl' : 'text-xl'} />
+		<Avatar {name} {initials} {photoUrl} sizeClass={large ? 'size-50' : 'h-30'} textClass={large ? 'text-4xl' : 'text-xl'} />
 		<div class="w-full min-w-0 {large? 'px-3 pt-4 lg:pt-0' : 'p-2'}">
 			<a href={path} class="flex items-center gap-1 font-semibold text-heading after:absolute after:inset-0 group-hover:text-primary">
 				<span class="truncate">{name}</span>
@@ -151,7 +151,7 @@ whole card is clickable, while the party name stays its own separate link on top
 			{#if large && bio}
 				<!-- Large variant: the bio sits in the right column, under name/seat/party. -->
 				{@const text = plainText(bio)}
-				<p class="mt-3 text-sm leading-relaxed">{text.slice(0, 200)}{text.length > 200 ? '…' : ''}</p>
+				<p class="mt-2 text-xs leading-relaxed">{text.slice(0, 200)}{text.length > 200 ? '…' : ''}</p>
 			{/if}
 		</div>
 	</div>

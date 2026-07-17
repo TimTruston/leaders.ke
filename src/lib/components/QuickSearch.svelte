@@ -151,7 +151,7 @@
 	}}
 />
 
-<div class="relative transition-all duration-200 {expand ? (open ? 'w-full max-w-xl' : 'w-28 sm:w-40') : 'w-full sm:w-80'}">
+<div class="relative transition-all duration-200 {expand ? (open ? 'w-full max-w-xl' : 'w-28 sm:w-40') : 'w-full'}">
 	<svg
 		viewBox="0 0 24 24"
 		fill="none"

@@ -112,7 +112,7 @@
 
 	<!-- Position badges: single-select pill bar, matching the pricing page's office selector -->
 	<div class="mt-8 flex justify-center">
-		<PositionBadges {positions} bind:value={position} />
+		<PositionBadges {positions} bind:value={position}/>
 	</div>
 
 	<!-- Filters: stack on mobile, row on wider screens -->
