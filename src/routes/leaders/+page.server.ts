@@ -35,56 +35,52 @@ export const load: PageServerLoad = async () => {
 		: [];
 	const partyByLeaderId = new Map(memberships.map((m) => [m.leaderId, m.partyName]));
 
-	// A person can have several `leaders` rows (Track Record); they all share one
-	// slug/URL, so keep just one card per slug — preferring their non-'former' row,
-	// and among former-only rows the most recent term.
-	const bySlug = new Map<string, (typeof rows)[number]>();
+	// One entry PER TERM, so the client can render any regime's view of the
+	// directory (a multi-regime person appears in every era they served, wearing
+	// that era's seat). Person-level facts (photo, party, followers) come from
+	// their best row so every term's card looks complete.
+	const photoBySlug = new Map<string, string>();
+	const partyBySlug = new Map<string, string>();
+	const followersBySlug = new Map<string, number>();
 	for (const r of rows) {
 		if (!r.users.slug) continue;
-		const existing = bySlug.get(r.users.slug);
-		const better =
-			!existing ||
-			(existing.leaders.status === 'former' &&
-				(r.leaders.status !== 'former' ||
-					(r.leaders.endAt?.getTime() ?? 0) > (existing.leaders.endAt?.getTime() ?? 0)));
-		if (better) bySlug.set(r.users.slug, r);
+		if (r.leaders.photoUrl && !photoBySlug.has(r.users.slug)) photoBySlug.set(r.users.slug, r.leaders.photoUrl);
+		const party = partyByLeaderId.get(r.leaders.id);
+		if (party && (!partyBySlug.has(r.users.slug) || r.leaders.status !== 'former')) partyBySlug.set(r.users.slug, party);
+		followersBySlug.set(
+			r.users.slug,
+			(followersBySlug.get(r.users.slug) ?? 0) + (followersByLeaderId.get(r.leaders.id) ?? 0)
+		);
 	}
 
-	// Directory order: current officeholders first, then aspirants, then former.
-	const STATUS_ORDER: Record<string, number> = { current: 0, aspirant: 1, former: 2 };
-	const dbLeaders = [...bySlug.values()].map((r) => {
-		const name = fullName(r.users);
-		return {
-			slug: r.users.slug,
-			path: leaderPath(r.users),
-			name,
-			initials: name
-				.split(/\s+/)
-				.map((w) => w[0])
-				.join('')
-				.slice(0, 2)
-				.toUpperCase(),
-			photoUrl: r.leaders.photoUrl,
-			party: partyByLeaderId.get(r.leaders.id) ?? null,
-			partyPath: partyByLeaderId.has(r.leaders.id)
-				? `/parties/${slugify(partyByLeaderId.get(r.leaders.id)!)}`
-				: null,
-			countyLabel: r.positions.region,
-			positionTitle: r.positions.title,
-			status: r.leaders.status,
-			verified: !!r.leaders.verifiedAt,
-			followers: followersByLeaderId.get(r.leaders.id) ?? 0,
-			// Former leaders rank by how recently their term ended (oldest last).
-			termEnd: (r.leaders.endAt ?? r.leaders.startAt)?.getTime() ?? 0
-		};
-	});
-	dbLeaders.sort(
-		(a, b) =>
-			(STATUS_ORDER[a.status] ?? 3) - (STATUS_ORDER[b.status] ?? 3) ||
-			(a.status === 'former' ? b.termEnd - a.termEnd : 0) ||
-			b.followers - a.followers ||
-			a.name.localeCompare(b.name)
-	);
+	const dbLeaders = rows
+		.filter((r) => r.users.slug)
+		.map((r) => {
+			const name = fullName(r.users);
+			const slug = r.users.slug!;
+			const party = partyBySlug.get(slug) ?? null;
+			return {
+				slug,
+				path: leaderPath(r.users),
+				name,
+				initials: name
+					.split(/\s+/)
+					.map((w) => w[0])
+					.join('')
+					.slice(0, 2)
+					.toUpperCase(),
+				photoUrl: photoBySlug.get(slug) ?? null,
+				party,
+				partyPath: party ? `/parties/${slugify(party)}` : null,
+				countyLabel: r.positions.region,
+				positionTitle: r.positions.title,
+				status: r.leaders.status,
+				verified: !!r.leaders.verifiedAt,
+				followers: followersBySlug.get(slug) ?? 0,
+				termStart: r.leaders.startAt.getTime(),
+				termEnd: r.leaders.endAt?.getTime() ?? null
+			};
+		});
 
 	return { dbLeaders };
 };

@@ -79,7 +79,7 @@ html {
 	-webkit-font-smoothing: antialiased;
 	/* Slightly larger base than the browser's 16px: every rem-based Tailwind
 	   size (text-sm, text-xs, headings, spacing set in rem) scales with it. */
-	font-size: 16px;
+	/* font-size: 19px; */
 }
 
 body {
