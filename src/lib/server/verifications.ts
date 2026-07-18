@@ -130,7 +130,7 @@ export async function getVerificationDetail(verificationId: number) {
 			.select({ userId: managers.userId, roles: managers.roles, firstName: users.firstName, otherNames: users.otherNames })
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
-			.where(and(eq(managers.leaderId, leader.id), eq(managers.isActive, true), isNull(managers.deletedAt))),
+			.where(and(eq(managers.subjectUserId, leader.userId), eq(managers.isActive, true), isNull(managers.deletedAt))),
 		db
 			.select({ name: parties.name, abbreviation: parties.abbreviation })
 			.from(partyMemberships)

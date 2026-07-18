@@ -205,8 +205,11 @@ export const campaigns = pgTable('campaigns', {
 // A person granted access to run a leader's dashboard on their behalf.
 export const managers = pgTable('managers', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id).notNull(), // Soft delete handles detachment
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  userId: integer('user_id').references(() => users.id).notNull(), // the manager granted access; soft delete handles detachment
+  // The PERSON being managed (users, not a leaders term): one manages a person, never a
+  // single candidacy — authority spans their whole Track Record. `campaignId` below still
+  // records which campaign the manager joined through, but it never narrows that authority.
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
   // Per-manager: admin flag + this manager's own sign-off (role, national ID, ID
   // images). Never shared across the team — each member attests separately.

@@ -257,7 +257,7 @@ export const actions: Actions = {
 			// isn't a separate permission tier, just the first admin manager.
 			await db.insert(managers).values({
 				userId: domainUser.id,
-				leaderId,
+				subjectUserId: subjectId,
 				roles: { admin: true },
 				verifiedAt: new Date()
 			});
@@ -382,7 +382,7 @@ export const actions: Actions = {
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+			.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
 
 		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
 		if (verifiedManagers < settings.requiredTeamManagers) {

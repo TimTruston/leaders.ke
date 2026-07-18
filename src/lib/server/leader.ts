@@ -118,14 +118,16 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 		return { leader: own.leaders, position: own.positions, profileUser: own.users, role: 'leader' };
 	}
 
-	// Most recently joined first — someone managing several campaigns should land
-	// on the one they just accepted an invite for, not an arbitrary older one.
+	// Most recently joined first — someone managing several people should land on the
+	// one they just accepted an invite for, not an arbitrary older one. Managers attach
+	// to the person, so join through subjectUserId and anchor to that person's active
+	// term (latest start = their current/aspirant seat, the workspace anchor).
 	const [managed] = await db
 		.select()
 		.from(managers)
-		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
+		.innerJoin(users, eq(managers.subjectUserId, users.id))
+		.innerJoin(leaders, eq(leaders.userId, users.id))
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(
 			and(
 				eq(managers.userId, domainUserId),
@@ -134,7 +136,7 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 				isNull(leaders.deletedAt)
 			)
 		)
-		.orderBy(desc(managers.id))
+		.orderBy(desc(managers.id), desc(leaders.startAt))
 		.limit(1);
 	if (managed) {
 		return {
@@ -165,17 +167,23 @@ async function findPersonManager(
 	const [manager] = await db
 		.select({ roles: managers.roles })
 		.from(managers)
-		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
 		.where(
 			and(
 				eq(managers.userId, domainUserId),
-				eq(leaders.userId, subjectUserId),
+				eq(managers.subjectUserId, subjectUserId),
 				eq(managers.isActive, true),
-				isNull(managers.deletedAt),
-				isNull(leaders.deletedAt)
+				isNull(managers.deletedAt)
 			)
 		);
 	return manager ?? null;
+}
+
+/** The person (users.id) behind a leaders-row (term) id. Invites and claims still
+ * target a specific candidacy term, but the manager row they create is person-scoped,
+ * so those flows resolve the term to its owner here before writing `subjectUserId`. */
+export async function personIdForLeader(leaderId: number): Promise<number | null> {
+	const [row] = await db.select({ userId: leaders.userId }).from(leaders).where(eq(leaders.id, leaderId));
+	return row?.userId ?? null;
 }
 
 /**

@@ -7,7 +7,7 @@ import { and, count, desc, eq, gt, gte, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ambassadors, campaigns, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { fullName } from '$lib/server/leader';
+import { fullName, personIdForLeader } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
 import { getPlatformSettings } from '$lib/server/settings';
 
@@ -48,18 +48,22 @@ export async function tryDirectGrant(leaderId: number, role: 'manager' | 'ambass
 		.where(eq(authUsers.email, normalizedEmail));
 	if (!account) return null;
 
-	const [isManager] = await db
-		.select({ id: managers.id })
-		.from(managers)
-		.where(and(eq(managers.userId, account.userId), eq(managers.leaderId, leaderId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+	// Managers attach to the person behind this candidacy term; ambassadors stay per-term.
+	const subjectUserId = await personIdForLeader(leaderId);
+	const [isManager] = subjectUserId
+		? await db
+				.select({ id: managers.id })
+				.from(managers)
+				.where(and(eq(managers.userId, account.userId), eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)))
+		: [];
 	const [isAmbassador] = await db
 		.select({ id: ambassadors.id })
 		.from(ambassadors)
 		.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.leaderId, leaderId), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)));
 	if (!isManager && !isAmbassador) return null;
 
-	if (role === 'manager' && !isManager) {
-		await db.insert(managers).values({ userId: account.userId, leaderId, roles: {} });
+	if (role === 'manager' && !isManager && subjectUserId) {
+		await db.insert(managers).values({ userId: account.userId, subjectUserId, roles: {} });
 	} else if (role === 'ambassador' && !isAmbassador) {
 		await db.insert(ambassadors).values({ userId: account.userId, leaderId, roles: {} });
 	}
@@ -312,12 +316,15 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 	}
 
 	if (invite.role === 'manager') {
+		// Managers attach to the person behind the invited candidacy term.
+		const subjectUserId = await personIdForLeader(invite.leaderId);
+		if (!subjectUserId) return { ok: false as const, error: 'This invite link is no longer valid.' };
 		const [existing] = await db
 			.select({ id: managers.id })
 			.from(managers)
-			.where(and(eq(managers.userId, userId), eq(managers.leaderId, invite.leaderId), isNull(managers.deletedAt)));
+			.where(and(eq(managers.userId, userId), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)));
 		if (!existing) {
-			await db.insert(managers).values({ userId, leaderId: invite.leaderId, roles: {} });
+			await db.insert(managers).values({ userId, subjectUserId, roles: {} });
 		}
 	} else if (invite.role === 'ambassador') {
 		const [existing] = await db

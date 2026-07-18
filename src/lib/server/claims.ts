@@ -5,7 +5,7 @@ import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
-import { fullName, resolveCurrentTerm } from '$lib/server/leader';
+import { fullName, personIdForLeader, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
 
@@ -257,11 +257,16 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
 	if (!claim) return { ok: false as const, error: 'Claim not found.' };
 
+	// A claim targets a specific candidacy term, but the manager row it grants is
+	// person-scoped: the claimant manages the whole person behind that term.
+	const subjectUserId = await personIdForLeader(claim.leaderId);
+	if (!subjectUserId) return { ok: false as const, error: 'Claimed profile not found.' };
+
 	if (outcome === 'approved') {
 		const [existing] = await db
 			.select({ id: managers.id })
 			.from(managers)
-			.where(and(eq(managers.userId, claim.claimedBy), eq(managers.leaderId, claim.leaderId)));
+			.where(and(eq(managers.userId, claim.claimedBy), eq(managers.subjectUserId, subjectUserId)));
 
 		if (existing) {
 			await db
@@ -271,7 +276,7 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 		} else {
 			await db.insert(managers).values({
 				userId: claim.claimedBy,
-				leaderId: claim.leaderId,
+				subjectUserId,
 				roles: { admin: true }
 			});
 		}
@@ -279,7 +284,7 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 		await db
 			.update(managers)
 			.set({ isActive: false, deletedAt: new Date() })
-			.where(and(eq(managers.userId, claim.claimedBy), eq(managers.leaderId, claim.leaderId)));
+			.where(and(eq(managers.userId, claim.claimedBy), eq(managers.subjectUserId, subjectUserId)));
 	}
 
 	await db

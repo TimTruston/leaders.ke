@@ -306,11 +306,11 @@ export async function seedAdminFixture(db: AnyDb) {
 		const [ex] = await db
 			.select({ id: managers.id })
 			.from(managers)
-			.where(and(eq(managers.userId, m.userId), eq(managers.leaderId, aspirantId), isNull(managers.deletedAt)));
+			.where(and(eq(managers.userId, m.userId), eq(managers.subjectUserId, leaderUserId), isNull(managers.deletedAt)));
 		if (ex) continue;
 		await db.insert(managers).values({
 			userId: m.userId,
-			leaderId: aspirantId,
+			subjectUserId: leaderUserId,
 			campaignId: campaign.id,
 			roles: { admin: true, title: m.title },
 			isActive: true,

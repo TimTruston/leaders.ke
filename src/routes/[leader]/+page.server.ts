@@ -100,7 +100,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				await db
 					.select({ id: managers.id })
 					.from(managers)
-					.where(and(eq(managers.userId, viewer.id), eq(managers.leaderId, leaderId), isNull(managers.deletedAt)))
+					.where(and(eq(managers.userId, viewer.id), eq(managers.subjectUserId, row.users.id), isNull(managers.deletedAt)))
 			)[0]
 		: false;
 

@@ -25,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt))),
+			.where(and(eq(managers.subjectUserId, ctx.profileUser.id), isNull(managers.deletedAt))),
 		db
 			.select()
 			.from(ambassadors)
@@ -86,7 +86,7 @@ export const actions: Actions = {
 		const [mine] = await db
 			.select({ id: managers.id, roles: managers.roles })
 			.from(managers)
-			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, ctx.profileUser.id), isNull(managers.deletedAt)));
 		if (!mine) return fail(403, { error: 'Only team members can save their details.' });
 
 		await db
@@ -103,7 +103,7 @@ export const actions: Actions = {
 		const [mine] = await db
 			.select({ id: managers.id, roles: managers.roles })
 			.from(managers)
-			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, ctx.profileUser.id), isNull(managers.deletedAt)));
 		if (!mine) return fail(403, { error: 'Only team members can upload their ID.' });
 
 		// The ID images stage on the uploader's OWN manager row, so managers never
@@ -198,7 +198,7 @@ export const actions: Actions = {
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(managers.id, memberId), eq(managers.leaderId, ctx.leader.id)));
+			.where(and(eq(managers.id, memberId), eq(managers.subjectUserId, ctx.profileUser.id)));
 		if (!member) return fail(404, { error: 'Manager not found.' });
 
 		// Only admins reduce the admin count — removing a plain manager never needs this check.
@@ -208,7 +208,7 @@ export const actions: Actions = {
 			const activeRows = await db
 				.select({ roles: managers.roles })
 				.from(managers)
-				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+				.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
 			const activeAdminCount = activeRows.filter((r) => (r.roles as { admin?: boolean } | null)?.admin).length;
 			if (activeAdminCount < 2) {
 				return fail(403, { error: 'Add another admin manager before removing yourself.' });
@@ -219,7 +219,7 @@ export const actions: Actions = {
 		await db
 			.update(managers)
 			.set({ isActive: false, deletedAt: new Date() })
-			.where(and(eq(managers.id, memberId), eq(managers.leaderId, ctx.leader.id)));
+			.where(and(eq(managers.id, memberId), eq(managers.subjectUserId, ctx.profileUser.id)));
 		return { removed: { email: member.email } };
 	},
 

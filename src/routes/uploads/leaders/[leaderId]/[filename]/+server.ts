@@ -9,6 +9,7 @@ import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { managers } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
+import { personIdForLeader } from '$lib/server/leader';
 import type { RequestHandler } from './$types';
 
 const EXT_CONTENT_TYPE: Record<string, string> = {
@@ -29,10 +30,15 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	if (!domainUser.adminAt) {
-		const [membership] = await db
-			.select({ id: managers.id })
-			.from(managers)
-			.where(and(eq(managers.userId, domainUser.id), eq(managers.leaderId, leaderId), isNull(managers.deletedAt)));
+		// The URL names a candidacy term; access is granted to a manager of the person
+		// behind it (managers attach to the person, not the term).
+		const subjectUserId = await personIdForLeader(leaderId);
+		const [membership] = subjectUserId
+			? await db
+					.select({ id: managers.id })
+					.from(managers)
+					.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)))
+			: [];
 		if (!membership) error(403, 'Not authorized to view this document.');
 	}
 

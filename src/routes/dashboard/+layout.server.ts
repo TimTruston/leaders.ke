@@ -148,7 +148,7 @@ export const load: LayoutServerLoad = async (event) => {
 				.from(managers)
 				.innerJoin(users, eq(managers.userId, users.id))
 				.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-				.where(and(eq(managers.leaderId, ctx.leader.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
+				.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
 		]);
 
 		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
@@ -217,8 +217,8 @@ export const load: LayoutServerLoad = async (event) => {
 			startAt: leaders.startAt
 		})
 		.from(managers)
-		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(managers.subjectUserId, users.id))
+		.innerJoin(leaders, eq(leaders.userId, users.id))
 		.where(and(eq(managers.userId, domainUser.id), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(leaders.deletedAt)));
 	// Managers attach to the PERSON, not a term: one switcher entry per managed person,
 	// collapsing their terms to the active one (latest start) for the link + verified badge.
