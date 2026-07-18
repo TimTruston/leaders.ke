@@ -423,7 +423,10 @@ export async function getOrCreateSystemUser(db: AnyDb): Promise<number> {
 	});
 	const [domainUser] = await db
 		.insert(users)
-		.values({ authUserId: authId, firstName, otherNames, adminAt: new Date() })
+		// verified.email mirrors the auth-level emailVerified above: the dashboard gates on
+		// the DOMAIN users.verified.email, so without this the freshly-seeded admin is bounced
+		// to /verify/email (OTP) on every login after a reseed.
+		.values({ authUserId: authId, firstName, otherNames, adminAt: new Date(), verified: { email: true, sms: false, whatsapp: false } })
 		.returning({ id: users.id });
 	console.log(`[system-user] seeded ${email} (user id ${domainUser.id}, platform admin)`);
 	return domainUser.id;

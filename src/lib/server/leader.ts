@@ -48,6 +48,10 @@ export function fullName(u: { firstName: string; otherNames: string }): string {
  * never shadow, plus words the platform may want later). */
 async function isSlugBlocked(slug: string): Promise<boolean> {
 	if (/^[0-9-]+$/.test(slug)) return true;
+	// "admin"-adjacent slugs are always reserved, pattern-wide (not just the bare
+	// "admin" on the list below): nobody may take admin-* or *-admin, since such a
+	// URL reads as a platform-admin page (and /platform-admin is the dev demo leader).
+	if (/(^|-)admin($|-)/.test(slug)) return true;
 	const { blockedSlugs } = await getPlatformSettings();
 	return blockedSlugs.includes(slug);
 }
@@ -160,12 +164,17 @@ export async function getLeaderContextByApplyId(
 	domainUserId: number
 ): Promise<LeaderContext | 'denied' | null> {
 	if (!isApplyId(applyId)) return 'denied';
+	// A person can hold several leaders rows (a Track Record spanning terms); resolve
+	// to the active one (latest start = current/aspirant seat), mirroring
+	// resolveCurrentTerm, so the team/manager check runs against the seat being worked
+	// on — not an arbitrary former term the manager was never added to.
 	const [row] = await db
 		.select()
 		.from(users)
 		.innerJoin(leaders, eq(leaders.userId, users.id))
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(users.authUserId, applyId), isNull(users.deletedAt), isNull(leaders.deletedAt)));
+		.where(and(eq(users.authUserId, applyId), isNull(users.deletedAt), isNull(leaders.deletedAt)))
+		.orderBy(desc(leaders.startAt));
 	if (!row) return null;
 
 	if (row.leaders.userId === domainUserId) {

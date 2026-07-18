@@ -65,7 +65,9 @@ export async function generateLeaderSlug(db: AnyDb, name: string): Promise<strin
 	let n = 1;
 	// eslint-disable-next-line no-constant-condition
 	while (true) {
-		if (!DEFAULT_BLOCKED_SLUGS.includes(candidate)) {
+		// Mirror the app's block (isSlugBlocked in $lib/server/leader): the exact-match
+		// list plus the pattern-wide admin-*/*-admin reservation.
+		if (!DEFAULT_BLOCKED_SLUGS.includes(candidate) && !/(^|-)admin($|-)/.test(candidate)) {
 			const [existing] = await db
 				.select({ id: users.id })
 				.from(users)

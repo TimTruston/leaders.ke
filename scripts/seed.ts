@@ -13,7 +13,9 @@
 //   bun run db:seed -- --clear --leaders
 //
 // Dependency order: system-user -> positions -> parties -> leaders -> mcas -> campaigns
-// -> pillars -> issues -> news (leaders/mcas look up parties by title and seed each
+// -> pillars -> issues -> news -> admin-fixture (admin-fixture needs system-user +
+// positions: it turns the ADMIN_EMAIL account into a dev-only demo leader, visible only
+// to a signed-in admin since it stays unverified). (leaders/mcas look up parties by title and seed each
 // person's `leadership[]` terms as extra `leaders` rows in the same pass;
 // campaigns/pillars look up leaders; issues only needs positions and the system user
 // as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
@@ -36,6 +38,7 @@ import { seedIssues } from './lib/seed-issues';
 import { seedNews } from './lib/seed-news';
 import { seedPlatformSettings } from './lib/seed-platform-settings';
 import { seedPackages } from './lib/seed-packages';
+import { seedAdminFixture } from './lib/seed-admin-fixture';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(process.env.DATABASE_URL, { max: 1 });
@@ -56,7 +59,8 @@ const { values } = parseArgs({
 		issues: { type: 'boolean', default: false },
 		news: { type: 'boolean', default: false },
 		'platform-settings': { type: 'boolean', default: false },
-		packages: { type: 'boolean', default: false }
+		packages: { type: 'boolean', default: false },
+		'admin-fixture': { type: 'boolean', default: false }
 	},
 	strict: true
 });
@@ -99,5 +103,6 @@ if (runAll || values.pillars) await seedPillars(db);
 if (runAll || values['pillar-templates']) await seedPillarTemplates(db);
 if (runAll || values.issues) await seedIssues(db);
 if (runAll || values.news) await seedNews(db);
+if (runAll || values['admin-fixture']) await seedAdminFixture(db);
 
 await client.end();
