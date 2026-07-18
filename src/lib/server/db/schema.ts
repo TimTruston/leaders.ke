@@ -853,6 +853,32 @@ export const DEFAULT_BLOCKED_SLUGS = [
   // routes a leader slug must never shadow
   'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'leaders', 'pricing',
   'compare', 'rank', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
+  // position words: the seat-hub routes (/president, /mca/...) and the /rank
+  // plurals — no leader may take a seat name as their personal URL
+  'president', 'presidents', 'deputy-president', 'deputy-presidents',
+  'governor', 'governors', 'senator', 'senators', 'mp', 'mps', 'mca', 'mcas',
+  'woman-rep', 'woman-reps', 'women-rep', 'women-reps',
+  'woman-representative', 'woman-representatives', 'women-representative', 'women-representatives',
+  // other Kenyan leadership titles (current and historical) — not routes, but a
+  // personal URL like /cabinet-secretary or /chief would read as an official page
+  'cabinet-secretary', 'cabinet-secretaries', 'principal-secretary', 'principal-secretaries',
+  'chief-administrative-secretary', 'chief-administrative-secretaries',
+  'minister', 'ministers', 'assistant-minister', 'assistant-ministers',
+  'prime-minister', 'prime-ministers', 'deputy-prime-minister', 'deputy-prime-ministers',
+  'vice-president', 'vice-presidents', 'deputy-governor', 'deputy-governors',
+  'attorney-general', 'solicitor-general', 'chief-justice', 'deputy-chief-justice',
+  'judge', 'judges', 'magistrate', 'magistrates',
+  'speaker', 'speakers', 'deputy-speaker', 'deputy-speakers',
+  'majority-leader', 'minority-leader', 'chief-whip',
+  'member-of-parliament', 'members-of-parliament',
+  'member-of-county-assembly', 'members-of-county-assembly',
+  'councillor', 'councillors', 'mayor', 'mayors', 'deputy-mayor',
+  'chief', 'chiefs', 'assistant-chief', 'assistant-chiefs',
+  'county-commissioner', 'county-commissioners', 'inspector-general', 'head-of-public-service',
+  'high-commissioner', 'cs', 'ps', 'dp', 'pm', 'ag', 'cj', 'ig',
+  // institutions that would mislead as a personal page
+  'parliament', 'senate', 'national-assembly', 'county-assembly', 'cabinet',
+  'state-house', 'government', 'county-government', 'iebc', 'kenya',
   'dashboard', 'features', 'demo', 'logout', 'login', 'signup', 'change-email',
   'change-password', 'delete-account', 'forgot-password', 'reset-password',
   // kept for the platform's future use
