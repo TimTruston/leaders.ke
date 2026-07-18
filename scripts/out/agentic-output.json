@@ -1093,7 +1093,7 @@
 		"professional": []
 	},
 	{
-		"key": "ali-mohamud-mohamed",
+		"key": "mohamed-ali-mohamed",
 		"userId": 387,
 		"platformSlug": "ali-mohamud-mohamed",
 		"firstName": "Mohamed",
@@ -1127,7 +1127,7 @@
 	{
 		"key": "ali-mohamud-mohamed-2",
 		"userId": 387,
-		"platformSlug": "ali-mohamud-mohamed",
+		"platformSlug": "mohamed-maalim-mohamud",
 		"firstName": "Mohamed",
 		"otherNames": "Maalim Mohamud",
 		"contacts": {
@@ -20136,5 +20136,95 @@
 		],
 		"education": [],
 		"professional": []
+	},
+	{
+		"key": "mohamud-mohamed-ali",
+		"userId": null,
+		"platformSlug": "mohamud-mohamed-ali",
+		"firstName": "Mohamud",
+		"otherNames": "Mohamed Ali",
+		"contacts": {
+			"emails": [
+				{
+					"value": "info@marsabit.go.ke",
+					"url": "https://marsabit.go.ke/governor",
+					"publisher": "marsabit.go.ke",
+					"fetchedAt": "2026-07-18T16:45:00.000Z"
+				}
+			],
+			"phones": [
+				{
+					"value": "254745201491",
+					"url": "https://marsabit.go.ke/governor",
+					"publisher": "marsabit.go.ke",
+					"fetchedAt": "2026-07-18T16:45:00.000Z"
+				}
+			],
+			"links": []
+		},
+		"bio": null,
+		"bioSources": [
+			"https://marsabit.go.ke/governor"
+		],
+		"education": [
+			{
+				"title": "Master of Arts, Public Policy and Administration",
+				"institution": "Kenyatta University",
+				"description": "Returned to graduate school mid-career for a public policy and administration degree at Kenyatta University, formalising the policy craft he had been practising in Parliament, at the NHIF and in county government.",
+				"startAt": null,
+				"endAt": null
+			},
+			{
+				"title": "BA, Building Economics and Management",
+				"institution": "University of Nairobi",
+				"description": "Trained as a built-environment economist at the University of Nairobi, graduating in 1993 into the quantity-surveying profession that anchored his early career and his lifelong membership of the IQSK and the Architectural Association of Kenya.",
+				"startAt": null,
+				"endAt": "1993-01-01"
+			},
+			{
+				"title": "Secondary Education",
+				"institution": "Starehe Boys' Centre",
+				"description": "Left Uran Primary in Sololo for a coveted place at Nairobi's Starehe Boys' Centre, completing his secondary education in 1988 at the school famed for turning bright boys from poor households into professionals.",
+				"startAt": null,
+				"endAt": "1988-01-01"
+			}
+		],
+		"professional": [
+			{
+				"title": "Assistant Quantity Surveyor",
+				"institution": "Ministry of Roads and Public Works",
+				"description": "Costed and supervised public infrastructure works for four years in the roads ministry, the technical apprenticeship that grounded his later push for county roads and gave him a professional's eye for construction budgets.",
+				"startAt": "1998-01-01",
+				"endAt": "2002-01-01"
+			},
+			{
+				"title": "Member of Parliament, Moyale",
+				"institution": "National Assembly",
+				"description": "Won the Moyale seat in 2007 and spent a term pressing frontier-district concerns in Parliament, championing constituency development in one of Kenya's most marginalised corners.",
+				"startAt": "2007-01-01",
+				"endAt": "2013-01-01"
+			},
+			{
+				"title": "Assistant Minister",
+				"institution": "Ministry of Special Programmes",
+				"description": "Handled drought response, resettlement and emergency relief as Assistant Minister while doubling as an alternate board member and Policy and Strategy Committee chair for the Global Fund.",
+				"startAt": "2008-01-01",
+				"endAt": "2011-01-01"
+			},
+			{
+				"title": "Chairman",
+				"institution": "National Hospital Insurance Fund",
+				"description": "Chaired the national health insurer through a reform stretch that introduced outpatient cover in 2015 and set the fund on the road toward universal health coverage, the experience behind his county health agenda.",
+				"startAt": "2014-01-01",
+				"endAt": "2017-01-01"
+			},
+			{
+				"title": "Chairman",
+				"institution": "Frontier Counties Development Council",
+				"description": "Leads the bloc of arid and semi-arid frontier counties lobbying as one voice for infrastructure, security and equitable national investment, alongside chairing the Council of Governors' transport, infrastructure and energy committee.",
+				"startAt": null,
+				"endAt": null
+			}
+		]
 	}
 ]

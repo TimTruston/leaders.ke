@@ -113,6 +113,10 @@ type Cluster = {
 	tokens: Set<string>;
 	possibleDuplicateOf: Cluster | null;
 	duplicateSharedTokens: number;
+	/** Set when a FORCED_IDENTITIES rule created this cluster: it collects exactly the
+	 * records its rule matches and is exempt from the cluster-merge pass, so a
+	 * high-token-overlap namesake can never absorb it. */
+	forcedIdentity?: string;
 };
 
 // Wikipedia cells occasionally leak HTML entities and cite-template markup into
@@ -621,11 +625,27 @@ function rule3Scores(r: Rec): { c: Cluster; score: number }[] {
 		.sort((a, b) => b.score - a.score || a.c.id - b.c.id);
 }
 
+// Manual identity overrides for mismerges the token rules provably get wrong
+// (see docs/dossier-mismerges.md). Each rule captures the records it matches into
+// a dedicated cluster (rule 0, before any token matching) that the merge pass
+// never folds into another cluster. First case: Marsabit governor "Mohamud
+// Mohamed Ali" shares 3 name tokens with Nyali MP "Mohamed Ali Mohamed" (Moha
+// Jicho Pevu), so rule 3 merged them — his Wikipedia lookup had even matched
+// Muhammad Ali Jinnah.
+const FORCED_IDENTITIES: { id: string; match: (r: Rec) => boolean }[] = [
+	{
+		id: 'marsabit-governor',
+		match: (r) =>
+			r.seat === 'Governor' && r.region === 'Marsabit' && (r.parliament === 'exec-2022' || r.parliament === 'gov-2017')
+	}
+];
+const forcedClusters = new Map<string, Cluster>();
+
 // Sources are clustered one batch at a time in fixed priority order (mzalendo
 // 13th -> earlier, wikipedia 13th -> 9th, roster, non-elected). Within a batch,
-// rule 1 and rule 2 run first; the leftovers run rule 3 strongest-match-first so
-// a person's own high-overlap record claims their cluster before a namesake's
-// weaker 2-token match can squat in it.
+// rule 0 (forced identities) runs first, then rule 1 and rule 2; the leftovers
+// run rule 3 strongest-match-first so a person's own high-overlap record claims
+// their cluster before a namesake's weaker 2-token match can squat in it.
 const batches: Rec[][] = [];
 for (const r of records) {
 	const last = batches[batches.length - 1];
@@ -635,6 +655,18 @@ for (const r of records) {
 for (const batch of batches) {
 	const leftovers: Rec[] = [];
 	for (const r of batch) {
+		const forced = FORCED_IDENTITIES.find((f) => f.match(r));
+		if (forced) {
+			// rule 0: manual identity override — this record's own cluster, no token matching
+			const existing = forcedClusters.get(forced.id);
+			if (existing) addToCluster(existing, r);
+			else {
+				const created = newCluster(r);
+				created.forcedIdentity = forced.id;
+				forcedClusters.set(forced.id, created);
+			}
+			continue;
+		}
 		if (r.mzSlug && clusterBySlug.has(r.mzSlug)) {
 			addToCluster(clusterBySlug.get(r.mzSlug)!, r); // rule 1: slug equality
 			continue;
@@ -688,8 +720,9 @@ function seatConflict(a: Cluster, b: Cluster): boolean {
 const merged = new Set<number>();
 for (const c of [...clusters].sort((a, b) => a.id - b.id)) {
 	if (merged.has(c.id)) continue;
+	if (c.forcedIdentity) continue; // manual identity — never merged into anything
 	const scored = clusters
-		.filter((o) => o.id !== c.id && !merged.has(o.id))
+		.filter((o) => o.id !== c.id && !merged.has(o.id) && !o.forcedIdentity)
 		.map((o) => ({ o, score: overlap(clusterTokens(c), clusterTokens(o)) }))
 		.filter(
 			(s) =>

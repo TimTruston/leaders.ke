@@ -20,11 +20,13 @@ import { modeledSeatOffice } from './lib/offices';
 
 const OUT_DIR = join(import.meta.dir, 'out');
 
-type ExperienceRow = { title: string; institution: string; startAt: string | null; endAt: string | null };
+type ExperienceRow = { title: string; institution: string; description?: string | null; startAt: string | null; endAt: string | null };
+type ContactValue = { value: string; url: string; publisher: string; fetchedAt: string };
 type Entry = {
 	key: string;
 	platformSlug: string | null;
 	bio: string | null;
+	contacts?: { emails: ContactValue[]; phones: ContactValue[]; links: ContactValue[] };
 	education: ExperienceRow[];
 	professional: ExperienceRow[];
 	flaggedMismerge?: boolean;
@@ -60,6 +62,7 @@ let biosApplied = 0;
 let biosProtected = 0;
 let experienceAdded = 0;
 let phonesNormalized = 0;
+let contactsAdded = 0;
 let unmatched = 0;
 
 for (const entry of entries) {
@@ -118,7 +121,7 @@ for (const entry of entries) {
 		if (leader) {
 			for (const row of rows) {
 				const [existing] = await db
-					.select({ id: experience.id })
+					.select({ id: experience.id, description: experience.description })
 					.from(experience)
 					.where(
 						and(
@@ -128,19 +131,50 @@ for (const entry of entries) {
 							eq(experience.institution, row.institution)
 						)
 					);
-				if (existing) continue;
+				if (existing) {
+					// Backfill a description added to the artifact after the row shipped.
+					if (row.description && !existing.description && flags.apply) {
+						await db.update(experience).set({ description: row.description }).where(eq(experience.id, existing.id));
+					}
+					continue;
+				}
 				if (flags.apply) {
 					await db.insert(experience).values({
 						leaderId: leader.id,
 						type: row.kind,
 						title: row.title,
 						institution: row.institution,
+						description: row.description ?? null,
 						startAt: toDate(row.startAt),
 						endAt: toDate(row.endAt)
 					});
 				}
 				experienceAdded++;
 			}
+		}
+	}
+
+	// Sourced contacts carried on the entry (e.g. a county-site office email/phone):
+	// insert with provenance; the channel+value unique index dedupes across users.
+	for (const [channel, values] of [
+		['email', entry.contacts?.emails ?? []] as const,
+		['sms', entry.contacts?.phones ?? []] as const
+	]) {
+		for (const c of values) {
+			if (!c.value?.trim()) continue;
+			const value = channel === 'sms' ? normalizePhone(c.value) : c.value.trim().toLowerCase();
+			const [existing] = await db
+				.select({ id: contacts.id })
+				.from(contacts)
+				.where(and(eq(contacts.userId, person.id), eq(contacts.channel, channel), eq(contacts.value, value), isNull(contacts.deletedAt)));
+			if (existing) continue;
+			if (flags.apply) {
+				await db
+					.insert(contacts)
+					.values({ userId: person.id, channel, value, source: { url: c.url, publisher: c.publisher, fetchedAt: c.fetchedAt } })
+					.onConflictDoNothing();
+			}
+			contactsAdded++;
 		}
 	}
 
@@ -165,7 +199,7 @@ for (const entry of entries) {
 
 console.log(
 	`[seed-agentic] ${flags.apply ? 'applied' : 'dry-run'}: ${biosApplied} bios ${flags.apply ? 'written' : 'to write'}, ` +
-		`${biosProtected} protected (not seeder-written), ${experienceAdded} experience rows, ` +
+		`${biosProtected} protected (not seeder-written), ${experienceAdded} experience rows, ${contactsAdded} contacts added, ` +
 		`${phonesNormalized} phones normalized, ${unmatched} entries with no matching slug`
 );
 await client.end();
