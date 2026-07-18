@@ -69,7 +69,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.from(posts)
 			.where(
 				and(
-					eq(posts.leaderId, leaderId),
+					eq(posts.subjectUserId, row.users.id),
 					eq(posts.medium, 'web'),
 					eq(posts.public, true),
 					eq(posts.approved, true),
@@ -84,7 +84,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.where(
 				and(
 					eq(followers.digest, 'leader'),
-					eq(followers.digestId, leaderId),
+					eq(followers.digestId, row.users.id),
 					isNull(followers.deletedAt)
 				)
 			),
@@ -189,7 +189,7 @@ export const actions: Actions = {
 			.where(
 				and(
 					eq(followers.digest, 'leader'),
-					eq(followers.digestId, row.leaders.id),
+					eq(followers.digestId, row.users.id),
 					isNull(followers.deletedAt),
 					or(
 						emailAddress ? eq(followers.emailAddress, emailAddress) : undefined,
@@ -209,7 +209,7 @@ export const actions: Actions = {
 			county: row.positions.region,
 			ward: ward || null,
 			digest: 'leader',
-			digestId: row.leaders.id,
+			digestId: row.users.id,
 			// Contact channel doubles as the digest opt-in; SMS numbers get WhatsApp later, not assumed.
 			email: isEmail,
 			sms: !isEmail
@@ -280,7 +280,7 @@ export const actions: Actions = {
 				.from(posts)
 				.where(
 					and(
-						eq(posts.leaderId, row.leaders.id),
+						eq(posts.subjectUserId, row.users.id),
 						eq(posts.medium, 'web'),
 						eq(posts.public, true),
 						isNull(posts.deletedAt)

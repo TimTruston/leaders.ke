@@ -13,7 +13,7 @@ export const load: PageServerLoad = async (event) => {
 	const pageSize = await getPageSize();
 	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
-	const filter = and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'web'), isNull(posts.deletedAt));
+	const filter = and(eq(posts.subjectUserId, ctx.profileUser.id), eq(posts.medium, 'web'), isNull(posts.deletedAt));
 	const [rows, [{ n: total }]] = await Promise.all([
 		db
 			.select()
@@ -51,7 +51,7 @@ export const actions: Actions = {
 		// Team posts publish directly for now; an approval flow can gate `approved` later.
 		await db.insert(posts).values({
 			creatorId: domainUser.id,
-			leaderId: ctx.leader.id,
+			subjectUserId: ctx.profileUser.id,
 			title,
 			body,
 			medium: 'web',
@@ -69,7 +69,7 @@ export const actions: Actions = {
 		const [row] = await db
 			.select()
 			.from(posts)
-			.where(and(eq(posts.id, postId), eq(posts.leaderId, ctx.leader.id), isNull(posts.deletedAt)));
+			.where(and(eq(posts.id, postId), eq(posts.subjectUserId, ctx.profileUser.id), isNull(posts.deletedAt)));
 		if (!row) return fail(404, { error: 'Post not found.' });
 
 		await db
@@ -87,7 +87,7 @@ export const actions: Actions = {
 		await db
 			.update(posts)
 			.set({ deletedAt: new Date() })
-			.where(and(eq(posts.id, postId), eq(posts.leaderId, ctx.leader.id)));
+			.where(and(eq(posts.id, postId), eq(posts.subjectUserId, ctx.profileUser.id)));
 		return { saved: true };
 	}
 };

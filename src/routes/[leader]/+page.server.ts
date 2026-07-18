@@ -52,11 +52,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ n: count() })
 				.from(followers)
-				.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, leaderId), isNull(followers.deletedAt))),
+				.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, row.users.id), isNull(followers.deletedAt))),
 			db
 				.select({ title: posts.title, createdAt: posts.createdAt })
 				.from(posts)
-				.where(and(eq(posts.leaderId, leaderId), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
+				.where(and(eq(posts.subjectUserId, row.users.id), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
 				.limit(1),
 			// Delivery tracker rollup for the public delivery score.
@@ -65,12 +65,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.from(pillars)
 				.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
 				.where(and(eq(campaigns.leaderId, leaderId), isNull(pillars.deletedAt))),
-			// "In the news": aggregated coverage tagged to this leader (any of their terms).
+			// "In the news": aggregated coverage tagged to this person.
 			db
 				.select({ id: posts.id, title: posts.title, summary: posts.aiSummary, body: posts.body, createdAt: posts.createdAt })
 				.from(tags)
 				.innerJoin(posts, eq(tags.postId, posts.id))
-				.where(and(inArray(tags.leaderId, allLeaderIds), isNull(tags.deletedAt), isNull(posts.deletedAt)))
+				.where(and(eq(tags.subjectUserId, row.users.id), isNull(tags.deletedAt), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
 				.limit(10),
 			// Education + professional history spans every term (attached to whichever

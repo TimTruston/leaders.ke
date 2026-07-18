@@ -15,15 +15,22 @@ export type FollowedLeader = {
 };
 
 export async function listFollowedLeaders(userId: number): Promise<FollowedLeader[]> {
+	// Follows are person-scoped (digestId = the followed person's users.id); the seat
+	// shown is their active term (latest start), picked in JS from the joined terms.
 	const rows = await db
 		.select()
 		.from(followers)
-		.innerJoin(leaders, eq(followers.digestId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(followers.digestId, users.id))
+		.innerJoin(leaders, eq(leaders.userId, users.id))
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(followers.userId, userId), eq(followers.digest, 'leader'), isNull(followers.deletedAt)));
+		.where(and(eq(followers.userId, userId), eq(followers.digest, 'leader'), isNull(followers.deletedAt), isNull(leaders.deletedAt)));
 
-	return rows.map((r) => ({
+	const byPerson = new Map<number, (typeof rows)[number]>();
+	for (const r of rows) {
+		const prev = byPerson.get(r.users.id);
+		if (!prev || r.leaders.startAt.getTime() > prev.leaders.startAt.getTime()) byPerson.set(r.users.id, r);
+	}
+	return [...byPerson.values()].map((r) => ({
 		leaderId: r.leaders.id,
 		name: fullName(r.users),
 		path: leaderPath(r.users),
@@ -44,11 +51,11 @@ export type FeedPost = {
 /** Recent public posts from the leaders this citizen follows, newest first. */
 export async function listFollowedLeadersFeed(userId: number, limit = 20): Promise<FeedPost[]> {
 	const followed = await db
-		.select({ leaderId: followers.digestId })
+		.select({ personId: followers.digestId })
 		.from(followers)
 		.where(and(eq(followers.userId, userId), eq(followers.digest, 'leader'), isNull(followers.deletedAt)));
-	const leaderIds = followed.map((f) => f.leaderId).filter((id): id is number => id != null);
-	if (leaderIds.length === 0) return [];
+	const personIds = followed.map((f) => f.personId).filter((id): id is number => id != null);
+	if (personIds.length === 0) return [];
 
 	const rows = await db
 		.select({
@@ -61,11 +68,10 @@ export async function listFollowedLeadersFeed(userId: number, limit = 20): Promi
 			slug: users.slug
 		})
 		.from(posts)
-		.innerJoin(leaders, eq(posts.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(posts.subjectUserId, users.id))
 		.where(
 			and(
-				inArray(posts.leaderId, leaderIds),
+				inArray(posts.subjectUserId, personIds),
 				eq(posts.medium, 'web'),
 				eq(posts.public, true),
 				isNull(posts.deletedAt)

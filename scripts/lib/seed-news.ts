@@ -37,7 +37,7 @@ export async function seedNews(db: AnyDb) {
 			.insert(posts)
 			.values({ title: row.title, body: row.body, aiSummary: row.aiSummary, medium: 'web', approved: true, public: true })
 			.returning({ id: posts.id });
-		await db.insert(tags).values({ postId: post.id, leaderId: leader.id });
+		await db.insert(tags).values({ postId: post.id, subjectUserId: leader.userId });
 		seeded++;
 	}
 

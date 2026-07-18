@@ -18,11 +18,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const target = and(
 		eq(followers.digest, 'leader'),
-		eq(followers.digestId, ctx.leader.id),
+		eq(followers.digestId, ctx.profileUser.id),
 		isNull(followers.deletedAt)
 	);
 
-	const historyFilter = and(eq(posts.leaderId, ctx.leader.id), eq(posts.medium, 'email'), isNull(posts.deletedAt));
+	const historyFilter = and(eq(posts.subjectUserId, ctx.profileUser.id), eq(posts.medium, 'email'), isNull(posts.deletedAt));
 	const [history, [{ n: total }], followerRows] = await Promise.all([
 		db
 			.select()
@@ -73,7 +73,7 @@ export const actions: Actions = {
 
 		const conditions = [
 			eq(followers.digest, 'leader'),
-			eq(followers.digestId, ctx.leader.id),
+			eq(followers.digestId, ctx.profileUser.id),
 			isNull(followers.deletedAt),
 			eq(followers.email, true),
 			isNotNull(followers.emailAddress)
@@ -104,7 +104,7 @@ export const actions: Actions = {
 		const audienceLabel = kind === 'all' ? 'all followers' : `${kind}: ${value}`;
 		await db.insert(posts).values({
 			creatorId: domainUser.id,
-			leaderId: ctx.leader.id,
+			subjectUserId: ctx.profileUser.id,
 			title: subject,
 			body,
 			medium: 'email',

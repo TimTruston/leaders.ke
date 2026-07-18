@@ -23,7 +23,7 @@ export const load: PageServerLoad = async (event) => {
 			)
 		);
 
-	const statsFor = async (leaderId: number) => {
+	const statsFor = async (leaderId: number, personId: number) => {
 		const [[followerRow], [postRow], [pillarRow], [mentionRow], latest] = await Promise.all([
 			db
 				.select({ n: count() })
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async (event) => {
 				.where(
 					and(
 						eq(followers.digest, 'leader'),
-						eq(followers.digestId, leaderId),
+						eq(followers.digestId, personId),
 						isNull(followers.deletedAt)
 					)
 				),
@@ -40,7 +40,7 @@ export const load: PageServerLoad = async (event) => {
 				.from(posts)
 				.where(
 					and(
-						eq(posts.leaderId, leaderId),
+						eq(posts.subjectUserId, personId),
 						eq(posts.medium, 'web'),
 						eq(posts.public, true),
 						isNull(posts.deletedAt)
@@ -54,13 +54,13 @@ export const load: PageServerLoad = async (event) => {
 			db
 				.select({ n: count() })
 				.from(tags)
-				.where(and(eq(tags.leaderId, leaderId), isNull(tags.deletedAt))),
+				.where(and(eq(tags.subjectUserId, personId), isNull(tags.deletedAt))),
 			db
 				.select({ title: posts.title, createdAt: posts.createdAt })
 				.from(posts)
 				.where(
 					and(
-						eq(posts.leaderId, leaderId),
+						eq(posts.subjectUserId, personId),
 						eq(posts.medium, 'web'),
 						eq(posts.public, true),
 						isNull(posts.deletedAt)
@@ -87,11 +87,11 @@ export const load: PageServerLoad = async (event) => {
 			party: null as string | null,
 			status: r.leaders.status,
 			verified: !!r.leaders.verifiedAt,
-			...(await statsFor(r.leaders.id))
+			...(await statsFor(r.leaders.id, r.users.id))
 		}))
 	);
 
-	const mine = await statsFor(ctx.leader.id);
+	const mine = await statsFor(ctx.leader.id, ctx.profileUser.id);
 
 	return {
 		seat: `${ctx.position.title}, ${ctx.position.region}`,

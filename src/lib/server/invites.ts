@@ -339,7 +339,7 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 			await db.insert(ambassadors).values({ userId, leaderId: activeTerm.leaders.id, roles: {} });
 		}
 	} else {
-		if (!activeTerm) return { ok: false as const, error: 'This invite link is no longer valid.' };
+		// Follows are person-scoped: digestId is the followed person's users.id.
 		const [existing] = await db
 			.select({ id: followers.id })
 			.from(followers)
@@ -347,12 +347,12 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 				and(
 					eq(followers.userId, userId),
 					eq(followers.digest, 'leader'),
-					eq(followers.digestId, activeTerm.leaders.id),
+					eq(followers.digestId, invite.subjectUserId),
 					isNull(followers.deletedAt)
 				)
 			);
 		if (!existing) {
-			await db.insert(followers).values({ userId, digest: 'leader', digestId: activeTerm.leaders.id, email: true });
+			await db.insert(followers).values({ userId, digest: 'leader', digestId: invite.subjectUserId, email: true });
 		}
 	}
 

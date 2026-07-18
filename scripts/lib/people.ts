@@ -381,8 +381,8 @@ export async function findAnyLeaderByName(
 }
 
 /** The first available (non-deleted) leader, used as a fallback tag target for undirected dummy content. */
-export async function findFirstLeader(db: AnyDb): Promise<{ id: number } | null> {
-	const [row] = await db.select({ id: leaders.id }).from(leaders).where(isNull(leaders.deletedAt)).limit(1);
+export async function findFirstLeader(db: AnyDb): Promise<{ id: number; userId: number } | null> {
+	const [row] = await db.select({ id: leaders.id, userId: leaders.userId }).from(leaders).where(isNull(leaders.deletedAt)).limit(1);
 	return row ?? null;
 }
 

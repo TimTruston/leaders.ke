@@ -61,7 +61,7 @@ async function computeLeaderMetrics(
 		db
 			.select({ n: count() })
 			.from(followers)
-			.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, leaderId), isNull(followers.deletedAt))),
+			.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, user.id), isNull(followers.deletedAt))),
 		// Live vote pledges across all of the leader's campaigns
 		db
 			.select({ n: count() })
@@ -71,7 +71,7 @@ async function computeLeaderMetrics(
 		db
 			.select({ n: count() })
 			.from(posts)
-			.where(and(eq(posts.leaderId, leaderId), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt))),
+			.where(and(eq(posts.subjectUserId, user.id), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt))),
 		db
 			.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus })
 			.from(pillars)
@@ -177,6 +177,7 @@ export async function listPositionMetrics(
 	const rows = await db
 		.select({
 			leaderId: leaders.id,
+			userId: users.id,
 			slug: users.slug,
 			firstName: users.firstName,
 			otherNames: users.otherNames,
@@ -200,13 +201,15 @@ export async function listPositionMetrics(
 	const people = [...bySlug.values()];
 	if (people.length === 0) return { total: 0, leaders: [] };
 	const ids = people.map((p) => p.leaderId);
+	const personIds = people.map((p) => p.userId);
 
 	// The four score inputs, each one grouped query over the whole position.
+	// Follows and posts are PERSON-scoped; pledges/pillars stay per-campaign.
 	const [followerRows, pledgeRows, postRows, pillarRows] = await Promise.all([
 		db
-			.select({ leaderId: followers.digestId, n: count() })
+			.select({ userId: followers.digestId, n: count() })
 			.from(followers)
-			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, ids), isNull(followers.deletedAt)))
+			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, personIds), isNull(followers.deletedAt)))
 			.groupBy(followers.digestId),
 		db
 			.select({ leaderId: campaigns.leaderId, n: count() })
@@ -215,10 +218,10 @@ export async function listPositionMetrics(
 			.where(and(inArray(campaigns.leaderId, ids), isNull(pledges.deletedAt)))
 			.groupBy(campaigns.leaderId),
 		db
-			.select({ leaderId: posts.leaderId, n: count() })
+			.select({ userId: posts.subjectUserId, n: count() })
 			.from(posts)
-			.where(and(inArray(posts.leaderId, ids), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
-			.groupBy(posts.leaderId),
+			.where(and(inArray(posts.subjectUserId, personIds), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
+			.groupBy(posts.subjectUserId),
 		db
 			.select({
 				leaderId: campaigns.leaderId,
@@ -230,17 +233,17 @@ export async function listPositionMetrics(
 			.where(and(inArray(campaigns.leaderId, ids), isNull(pillars.deletedAt)))
 			.groupBy(campaigns.leaderId)
 	]);
-	const followersBy = new Map(followerRows.map((r) => [r.leaderId, r.n]));
+	const followersBy = new Map(followerRows.map((r) => [r.userId, r.n]));
 	const pledgesBy = new Map(pledgeRows.map((r) => [r.leaderId, r.n]));
-	const postsBy = new Map(postRows.map((r) => [r.leaderId, r.n]));
+	const postsBy = new Map(postRows.map((r) => [r.userId, r.n]));
 	const pillarsBy = new Map(pillarRows.map((r) => [r.leaderId, r]));
 
 	const scored = people
 		.map((p) => {
 			const base = {
-				followers: followersBy.get(p.leaderId) ?? 0,
+				followers: followersBy.get(p.userId) ?? 0,
 				pledges: pledgesBy.get(p.leaderId) ?? 0,
-				postCount: postsBy.get(p.leaderId) ?? 0,
+				postCount: postsBy.get(p.userId) ?? 0,
 				delivered: pillarsBy.get(p.leaderId)?.delivered ?? 0
 			};
 			return {

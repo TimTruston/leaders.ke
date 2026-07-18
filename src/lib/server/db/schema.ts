@@ -353,7 +353,9 @@ export const events = pgTable('events', {
 export const posts = pgTable('posts', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id), // system-aggregated posts can have a null creatorId
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }),
+  // The PERSON who speaks/is spoken about — a post follows them across terms.
+  // campaignId still tags a post to one run when it belongs to that campaign.
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   body: text('body').notNull(),
@@ -395,7 +397,7 @@ export const tags = pgTable('tags', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id, { onDelete: 'cascade' }), // nullable if the tag is system-generated
   postId: integer('post_id').references(() => posts.id, { onDelete: 'cascade' }).notNull(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(), // who got tagged in the post
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(), // the PERSON tagged in the post
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
@@ -459,7 +461,7 @@ export const followers = pgTable('followers', {
   constituency: varchar('constituency', { length: 50 }),
   ward: varchar('ward', { length: 50 }),
   digest: digestEnum('digest').notNull(),
-  digestId: integer('digest_id'), // polymorphic: positions/leaders/campaigns id; null for platform-wide follow
+  digestId: integer('digest_id'), // polymorphic: positions/campaigns id, or the PERSON's users.id for digest 'leader'; null for platform-wide follow
   email: boolean('email').default(false).notNull(),
   sms: boolean('sms').default(false).notNull(),
   whatsapp: boolean('whatsapp').default(false).notNull(),
@@ -735,7 +737,7 @@ export const chatTargetEnum = pgEnum('chat_target', ['leader', 'manager', 'ambas
 export const conversations = pgTable('conversations', {
   id: serial('id').primaryKey(),
   scope: digestEnum('scope').notNull(), // platform | position | leader | campaign — same RAG scoping as follows
-  scopeId: integer('scope_id'), // the position/leader/campaign id; null for platform-wide (home) chat
+  scopeId: integer('scope_id'), // the position/campaign id, or the PERSON's users.id for scope 'leader'; null for platform-wide (home) chat
   channel: chatChannelEnum('channel').notNull(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'set null' }), // null for anonymous web visitors
   followerId: integer('follower_id').references(() => followers.id, { onDelete: 'set null' }), // set when a WhatsApp thread starts from a follow notification

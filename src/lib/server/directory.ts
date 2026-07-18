@@ -52,6 +52,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	const rows = await db
 		.select({
 			leaderId: leaders.id,
+			userId: users.id,
 			slug: users.slug,
 			firstName: users.firstName,
 			otherNames: users.otherNames,
@@ -98,13 +99,14 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[], regimeOptions };
 	}
 	const ids = people.map((p) => p.leaderId);
+	const personIds = people.map((p) => p.userId);
 
-	// Follower counts + live party per leader, one grouped query each.
+	// Follower counts (per PERSON — follows are user-scoped) + live party per leader.
 	const [followerRows, partyRows] = await Promise.all([
 		db
-			.select({ leaderId: followers.digestId, n: count() })
+			.select({ userId: followers.digestId, n: count() })
 			.from(followers)
-			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, ids), isNull(followers.deletedAt)))
+			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, personIds), isNull(followers.deletedAt)))
 			.groupBy(followers.digestId),
 		db
 			.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
@@ -112,7 +114,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
 			.where(and(inArray(partyMemberships.leaderId, ids), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 	]);
-	const followersBy = new Map(followerRows.map((r) => [r.leaderId, r.n]));
+	const followersBy = new Map(followerRows.map((r) => [r.userId, r.n]));
 	const partyBy = new Map(partyRows.map((r) => [r.leaderId, r.partyName]));
 
 	// Filter options come from the FULL position set (before filtering). Raw region
@@ -133,7 +135,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 
 	// Directory order (same as the old /leaders): status, then reach, then name.
 	const sorted = filtered
-		.map((p) => ({ ...p, followerCount: followersBy.get(p.leaderId) ?? 0 }))
+		.map((p) => ({ ...p, followerCount: followersBy.get(p.userId) ?? 0 }))
 		.sort(
 			(a, b) =>
 				(STATUS_ORDER[a.status] ?? 3) - (STATUS_ORDER[b.status] ?? 3) ||

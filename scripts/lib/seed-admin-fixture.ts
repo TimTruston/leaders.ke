@@ -223,13 +223,13 @@ export async function seedAdminFixture(db: AnyDb) {
 		let [post] = await db
 			.select({ id: posts.id })
 			.from(posts)
-			.where(and(eq(posts.leaderId, aspirantId), eq(posts.title, pr.title), isNull(posts.deletedAt)));
+			.where(and(eq(posts.subjectUserId, leaderUserId), eq(posts.title, pr.title), isNull(posts.deletedAt)));
 		if (!post) {
 			[post] = await db
 				.insert(posts)
 				.values({
 					creatorId: leaderUserId,
-					leaderId: aspirantId,
+					subjectUserId: leaderUserId,
 					campaignId: campaign.id,
 					title: pr.title,
 					body: pr.body,
@@ -244,8 +244,8 @@ export async function seedAdminFixture(db: AnyDb) {
 			const [tag] = await db
 				.select({ id: tags.id })
 				.from(tags)
-				.where(and(eq(tags.postId, post.id), eq(tags.leaderId, aspirantId), isNull(tags.deletedAt)));
-			if (!tag) await db.insert(tags).values({ creatorId: leaderUserId, postId: post.id, leaderId: aspirantId });
+				.where(and(eq(tags.postId, post.id), eq(tags.subjectUserId, leaderUserId), isNull(tags.deletedAt)));
+			if (!tag) await db.insert(tags).values({ creatorId: leaderUserId, postId: post.id, subjectUserId: leaderUserId });
 		}
 	}
 
@@ -321,11 +321,11 @@ export async function seedAdminFixture(db: AnyDb) {
 	const [existingFollow] = await db
 		.select({ id: followers.id })
 		.from(followers)
-		.where(and(eq(followers.userId, leaderUserId), eq(followers.digest, 'leader'), eq(followers.digestId, aspirantId), isNull(followers.deletedAt)));
+		.where(and(eq(followers.userId, leaderUserId), eq(followers.digest, 'leader'), eq(followers.digestId, leaderUserId), isNull(followers.deletedAt)));
 	if (!existingFollow) {
 		await db
 			.insert(followers)
-			.values({ userId: leaderUserId, digest: 'leader', digestId: aspirantId, county: 'Nairobi', email: true, sms: false, whatsapp: false });
+			.values({ userId: leaderUserId, digest: 'leader', digestId: leaderUserId, county: 'Nairobi', email: true, sms: false, whatsapp: false });
 	}
 
 	console.log(`[admin-fixture] seeded demo leader /${LEADER_SLUG} (admin-managed, unverified) + citizens/manager (login pw: ${DUMMY_PASSWORD})`);

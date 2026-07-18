@@ -4,7 +4,7 @@
 import { and, count, desc, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ambassadors, followers, leaders, positions, users } from '$lib/server/db/schema';
-import { fullName, leaderPath } from '$lib/server/leader';
+import { fullName, leaderPath, personIdForLeader } from '$lib/server/leader';
 
 export type AmbassadorAssignment = {
 	id: number;
@@ -82,6 +82,10 @@ export async function addCitizenFollower(
 	const emailAddress = email || null;
 	const phoneNumber = phone || null;
 
+	// Follows are person-scoped: resolve the campaign term to its person once.
+	const subjectUserId = await personIdForLeader(leaderId);
+	if (!subjectUserId) return { ok: false as const, error: 'Campaign not found.' };
+
 	// App-layer dedupe for account-less follows: one live follow per contact per leader.
 	const [duplicate] = await db
 		.select({ id: followers.id })
@@ -89,7 +93,7 @@ export async function addCitizenFollower(
 		.where(
 			and(
 				eq(followers.digest, 'leader'),
-				eq(followers.digestId, leaderId),
+				eq(followers.digestId, subjectUserId),
 				isNull(followers.deletedAt),
 				or(
 					emailAddress ? eq(followers.emailAddress, emailAddress) : undefined,
@@ -107,7 +111,7 @@ export async function addCitizenFollower(
 		county: input.county,
 		ward: input.ward || null,
 		digest: 'leader',
-		digestId: leaderId,
+		digestId: subjectUserId,
 		// Each provided contact channel doubles as a digest opt-in.
 		email: !!emailAddress,
 		sms: !!phoneNumber,
@@ -133,9 +137,10 @@ export async function listRecruits(
 	page: number,
 	pageSize: number
 ): Promise<{ recruits: Recruit[]; total: number }> {
+	const subjectUserId = await personIdForLeader(leaderId); // follows are person-scoped
 	const filter = and(
 		eq(followers.digest, 'leader'),
-		eq(followers.digestId, leaderId),
+		eq(followers.digestId, subjectUserId ?? 0),
 		eq(followers.addedBy, recruiterUserId),
 		isNull(followers.deletedAt)
 	);

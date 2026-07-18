@@ -19,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
 	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
 	const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-	const mentionFilter = and(eq(tags.leaderId, ctx.leader.id), isNull(tags.deletedAt), isNull(posts.deletedAt));
+	const mentionFilter = and(eq(tags.subjectUserId, ctx.profileUser.id), isNull(tags.deletedAt), isNull(posts.deletedAt));
 
 	const [mentionRows, [totalRow], [dayRow], draftRows] = await Promise.all([
 		db
@@ -39,7 +39,7 @@ export const load: PageServerLoad = async (event) => {
 			.select({ n: count() })
 			.from(tags)
 			.where(
-				and(eq(tags.leaderId, ctx.leader.id), isNull(tags.deletedAt), gte(tags.createdAt, dayAgo))
+				and(eq(tags.subjectUserId, ctx.profileUser.id), isNull(tags.deletedAt), gte(tags.createdAt, dayAgo))
 			),
 		// Draft responses live in the posts CMS as unpublished posts.
 		db
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async (event) => {
 			.from(posts)
 			.where(
 				and(
-					eq(posts.leaderId, ctx.leader.id),
+					eq(posts.subjectUserId, ctx.profileUser.id),
 					eq(posts.medium, 'web'),
 					eq(posts.public, false),
 					isNull(posts.deletedAt)
@@ -108,7 +108,7 @@ export const actions: Actions = {
 
 		await db.insert(posts).values({
 			creatorId: domainUser.id,
-			leaderId: ctx.leader.id,
+			subjectUserId: ctx.profileUser.id,
 			title: `Response: ${mention.title}`,
 			body: answer,
 			medium: 'web',

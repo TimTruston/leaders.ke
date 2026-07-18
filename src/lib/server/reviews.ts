@@ -373,7 +373,7 @@ export async function respondToReview(
 
 	const [conversation] = await db
 		.insert(conversations)
-		.values({ scope: 'leader', scopeId: leaderId, channel: 'web' })
+		.values({ scope: 'leader', scopeId: subjectId, channel: 'web' }) // scope 'leader' keys on the PERSON (users.id)
 		.returning({ id: conversations.id });
 
 	await db.insert(messages).values({

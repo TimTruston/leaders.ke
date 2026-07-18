@@ -16,7 +16,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const target = and(
 		eq(followers.digest, 'leader'),
-		eq(followers.digestId, ctx.leader.id),
+		eq(followers.digestId, ctx.profileUser.id),
 		isNull(followers.deletedAt)
 	);
 

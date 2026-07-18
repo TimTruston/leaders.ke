@@ -351,6 +351,13 @@
       "when": 1784394425075,
       "tag": "0049_majestic_xorn",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1784395227570,
+      "tag": "0050_dashing_lord_hawal",
+      "breakpoints": true
     }
   ]
 }
