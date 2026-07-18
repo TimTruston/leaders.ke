@@ -45,16 +45,16 @@
 </script>
 
 <svelte:head>
-	<title>Compare leaders — leaders.ke</title>
+	<title>Compare Leaders — leaders.ke</title>
 	<meta
 		name="description"
-		content="Compare any two leaders! A candidate vs current, same seat across regions, same seat across regimes..."
+		content="Compare Leaders. A candidate vs current, same seat across regions, same seat across regimes..."
 	/>
 </svelte:head>
 
 <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 	<div class="">
-		<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">Compare your leaders!</h1>
+		<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">Compare Leaders</h1>
 		<p class="mt-3 text-base leading-relaxed">
 			Pick any two leaders - a candidate vs current, same seat across regions, same seat across regimes...
 		</p>
