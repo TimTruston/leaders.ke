@@ -19,7 +19,7 @@
 		onPick
 	}: {
 		open?: boolean;
-		/** Which suggestion groups to offer (e.g. leaders-only on /ranks). */
+		/** Which suggestion groups to offer (e.g. leaders-only on /rank pages). */
 		include?: GroupName[];
 		/** true: header behavior - small until focused, then covers the nav. false: fixed width. */
 		expand?: boolean;
@@ -32,7 +32,7 @@
 
 	const PLATFORM: Item[] = [
 		{ label: 'All Leaders', sub: 'Platform', path: '/leaders' },
-		{ label: 'Leaders Rank', sub: 'Platform', path: '/ranks' },
+		{ label: 'Leaders Rank', sub: 'Platform', path: '/rank/presidents' },
 		{ label: 'Compare Leaders', sub: 'Platform', path: '/compare' },
 		{ label: '2027 Vote Simulator', sub: 'Platform', path: '/vote/2027' },
 		{ label: 'Parties, Alliances & Movements', sub: 'Platform', path: '/parties' },

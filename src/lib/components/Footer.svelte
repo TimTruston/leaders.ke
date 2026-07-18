@@ -21,7 +21,7 @@
 			links: [
 				{ href: '/vote/2027', label: 'My 2027 Vote' },
 				{ href: '/leaders', label: 'Leaders' },
-				{ href: '/ranks', label: 'Ranks' },
+				{ href: '/rank/presidents', label: 'Ranks' },
 				{ href: '/compare', label: 'Compare' },
 				{ href: '/why-vote', label: 'Why Vote?' }
 			]

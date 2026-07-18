@@ -1,6 +1,6 @@
-// Public leader metrics shared by /ranks, /compare and dashboards.
+// Public leader metrics shared by /rank/[position] and /compare.
 // The engagement score is deliberately transparent: citizens can recompute it.
-import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	campaigns,
@@ -147,41 +147,119 @@ export async function randomVerifiedAspirantPath(positionTitle: string): Promise
 	return `/${slugs[Math.floor(Math.random() * slugs.length)]}`;
 }
 
-// Public metrics: only verified profiles are listed, per the same rule as /leaders and /search.
-export async function listLeaderMetrics(): Promise<LeaderMetrics[]> {
+/** One row of a /rank/[position] table: the score inputs, no bio/pillar bodies. */
+export type RankedLeaderMetrics = {
+	rank: number;
+	name: string;
+	path: string;
+	photoUrl: string | null;
+	regionLabel: string;
+	status: string;
+	followers: number;
+	pledges: number;
+	postCount: number;
+	pillarCount: number;
+	delivered: number;
+	score: number;
+};
+
+/**
+ * One position's verified leaders (every status: current, aspirant, former)
+ * ranked by engagement score, paginated server-side. Batched: 5 queries total
+ * no matter how many leaders the position has — the whole set must be scored to
+ * rank it, but only the requested page's rows ship to the client.
+ */
+export async function listPositionMetrics(
+	positionTitle: string,
+	page: number,
+	pageSize: number
+): Promise<{ total: number; leaders: RankedLeaderMetrics[] }> {
 	const rows = await db
-		.select()
+		.select({
+			leaderId: leaders.id,
+			slug: users.slug,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			photoUrl: leaders.photoUrl,
+			status: leaders.status,
+			region: positions.region
+		})
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
 
-	// Current party per leader in one batched query (same rule as seat hubs:
-	// a live membership is one with no end date).
-	const leaderIds = rows.map((r) => r.leaders.id);
-	const partyRows = leaderIds.length
-		? await db
-				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
-				.from(partyMemberships)
-				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
-		: [];
-	const partyByLeaderId = new Map(partyRows.map((p) => [p.leaderId, p.partyName]));
-
-	const dbMetrics = await Promise.all(
-		rows.map((r) => computeLeaderMetrics(r.leaders, r.positions, r.users, partyByLeaderId.get(r.leaders.id) ?? null))
-	);
-
-	// A person can have several `leaders` rows (Track Record) that all share one
-	// flat URL; keep just one card per path, preferring their non-'former' row.
-	const dbByPath = new Map<string, (typeof dbMetrics)[number]>();
-	for (const m of dbMetrics) {
-		const existing = dbByPath.get(m.path);
-		if (!existing || (existing.status === 'former' && m.status !== 'former')) {
-			dbByPath.set(m.path, m);
-		}
+	// A person can have several `leaders` rows (Track Record) sharing one flat
+	// URL; keep one entry per slug, preferring their non-'former' row.
+	const bySlug = new Map<string, (typeof rows)[number]>();
+	for (const r of rows) {
+		if (!r.slug) continue;
+		const existing = bySlug.get(r.slug);
+		if (!existing || (existing.status === 'former' && r.status !== 'former')) bySlug.set(r.slug, r);
 	}
-	const dedupedDbMetrics = [...dbByPath.values()];
+	const people = [...bySlug.values()];
+	if (people.length === 0) return { total: 0, leaders: [] };
+	const ids = people.map((p) => p.leaderId);
 
-	return dedupedDbMetrics.sort((a, b) => b.score - a.score);
+	// The four score inputs, each one grouped query over the whole position.
+	const [followerRows, pledgeRows, postRows, pillarRows] = await Promise.all([
+		db
+			.select({ leaderId: followers.digestId, n: count() })
+			.from(followers)
+			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, ids), isNull(followers.deletedAt)))
+			.groupBy(followers.digestId),
+		db
+			.select({ leaderId: campaigns.leaderId, n: count() })
+			.from(pledges)
+			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
+			.where(and(inArray(campaigns.leaderId, ids), isNull(pledges.deletedAt)))
+			.groupBy(campaigns.leaderId),
+		db
+			.select({ leaderId: posts.leaderId, n: count() })
+			.from(posts)
+			.where(and(inArray(posts.leaderId, ids), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
+			.groupBy(posts.leaderId),
+		db
+			.select({
+				leaderId: campaigns.leaderId,
+				n: count(),
+				delivered: sql<number>`count(*) filter (where ${pillars.deliveryStatus} = 'delivered')`.mapWith(Number)
+			})
+			.from(pillars)
+			.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
+			.where(and(inArray(campaigns.leaderId, ids), isNull(pillars.deletedAt)))
+			.groupBy(campaigns.leaderId)
+	]);
+	const followersBy = new Map(followerRows.map((r) => [r.leaderId, r.n]));
+	const pledgesBy = new Map(pledgeRows.map((r) => [r.leaderId, r.n]));
+	const postsBy = new Map(postRows.map((r) => [r.leaderId, r.n]));
+	const pillarsBy = new Map(pillarRows.map((r) => [r.leaderId, r]));
+
+	const scored = people
+		.map((p) => {
+			const base = {
+				followers: followersBy.get(p.leaderId) ?? 0,
+				pledges: pledgesBy.get(p.leaderId) ?? 0,
+				postCount: postsBy.get(p.leaderId) ?? 0,
+				delivered: pillarsBy.get(p.leaderId)?.delivered ?? 0
+			};
+			return {
+				name: fullName(p),
+				path: leaderPath(p),
+				photoUrl: p.photoUrl,
+				regionLabel: p.region,
+				status: p.status,
+				pillarCount: pillarsBy.get(p.leaderId)?.n ?? 0,
+				...base,
+				score: engagementScore(base)
+			};
+		})
+		.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+
+	return {
+		total: scored.length,
+		leaders: scored
+			.slice((page - 1) * pageSize, page * pageSize)
+			.map((l, i) => ({ ...l, rank: (page - 1) * pageSize + i + 1 }))
+	};
 }

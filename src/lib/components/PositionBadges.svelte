@@ -1,12 +1,21 @@
 <script lang="ts">
-	// Single-select pill bar for position filtering (leaders directory, ranks),
+	// Single-select pill bar for position filtering (leaders directory, rank pages),
 	// matching the pricing page's office selector. The component owns Kenya's
 	// elective hierarchy order and the abbreviated mobile labels - callers just
-	// pass whichever positions actually have people.
+	// pass whichever positions actually have people. Two modes:
+	//  - filter (default): clicking a pill sets the bindable `value`.
+	//  - links (`hrefFor` set): each pill is an <a> to its own page (e.g.
+	//    /rank/governors), `value` only marks the active one; no "All" pill.
 	let {
 		positions,
 		value = $bindable(''),
-	}: { positions: string[]; value?: string; } = $props();
+		hrefFor
+	}: {
+		positions: string[];
+		value?: string;
+		/** Link mode: pill hrefs by position title; omit for filter mode. */
+		hrefFor?: (position: string) => string;
+	} = $props();
 
 	// National to ward; unknown titles keep their incoming order at the end.
 	const ORDER = ['President', 'Governor', 'Senator', 'MP', 'Woman Rep', 'MCA'];
@@ -22,9 +31,24 @@
 		const i = ORDER.indexOf(p);
 		return i === -1 ? ORDER.length : i;
 	};
-	// The clear-filter "All" pill sits last, per ORDER.
-	const ordered = $derived([...[...positions].sort((a, b) => rank(a) - rank(b)), ...['']]);
+	// The clear-filter "All" pill sits last, per ORDER — filter mode only (each
+	// link-mode pill is a whole page; there is no "all positions" page).
+	const ordered = $derived([...[...positions].sort((a, b) => rank(a) - rank(b)), ...(hrefFor ? [] : [''])]);
+
+	const pillClass = (p: string) =>
+		`flex-1 rounded-full px-2.5 py-1.5 text-center text-sm font-semibold whitespace-nowrap transition sm:flex-none sm:px-4 ${
+			value === p ? 'bg-primary text-on-primary' : 'text-muted hover:text-heading'
+		}`;
 </script>
+
+{#snippet label(p: string)}
+	{#if p !== '' && SHORT[p]}
+		<span class="sm:hidden">{SHORT[p]}</span>
+		<span class="hidden sm:inline">{p}</span>
+	{:else}
+		{p === '' ? 'All' : p}
+	{/if}
+{/snippet}
 
 <!-- Full-width on mobile (pills share the row evenly); shrink-to-fit from sm up,
      where min-w-0 keeps the bar shrinkable inside a flex row (scrolls, not wraps). -->
@@ -35,21 +59,21 @@
 		aria-label="Position"
 	>
 		{#each ordered as p (p)}
-			<button
-				type="button"
-				aria-pressed={value === p}
-				onclick={() => (value = p)}
-				class="flex-1 rounded-full px-2.5 py-1.5 text-center text-sm font-semibold whitespace-nowrap transition sm:flex-none sm:px-4 {value === p
-					? 'bg-primary text-on-primary'
-					: 'text-muted hover:text-heading'}"
-			>
-				{#if p !== '' && SHORT[p]}
-					<span class="sm:hidden">{SHORT[p]}</span>
-					<span class="hidden sm:inline">{p}</span>
-				{:else}
-					{p === '' ? 'All' : p}
-				{/if}
-			</button>
+			{#if hrefFor}
+				<!-- Hover-preload so a pill's page is usually already fetched on click. -->
+				<a
+					href={hrefFor(p)}
+					data-sveltekit-preload-data="hover"
+					aria-current={value === p ? 'page' : undefined}
+					class={pillClass(p)}
+				>
+					{@render label(p)}
+				</a>
+			{:else}
+				<button type="button" aria-pressed={value === p} onclick={() => (value = p)} class={pillClass(p)}>
+					{@render label(p)}
+				</button>
+			{/if}
 		{/each}
 	</div>
 </div>

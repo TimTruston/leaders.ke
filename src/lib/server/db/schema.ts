@@ -852,7 +852,7 @@ export const ballotSimulations = pgTable('ballot_simulations', {
 export const DEFAULT_BLOCKED_SLUGS = [
   // routes a leader slug must never shadow
   'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'leaders', 'pricing',
-  'compare', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
+  'compare', 'rank', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
   'dashboard', 'features', 'demo', 'logout', 'login', 'signup', 'change-email',
   'change-password', 'delete-account', 'forgot-password', 'reset-password',
   // kept for the platform's future use

@@ -1,10 +1,8 @@
-import { listLeaderMetrics } from '$lib/server/metrics';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-// /ranks: public leader rankings by transparent engagement score.
+// The ranking lives at /rank/[position] (one page per office); old /ranks links
+// land on the top of the hierarchy.
 export const load: PageServerLoad = async () => {
-	const metrics = await listLeaderMetrics();
-	return {
-		leaders: metrics.map(({ pillars: _pillars, bio: _bio, ...rest }) => rest)
-	};
+	redirect(301, '/rank/presidents');
 };
