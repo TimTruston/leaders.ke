@@ -14,8 +14,14 @@ export type RankPositionSlug = (typeof RANK_POSITIONS)[number]['slug'];
 
 export const titleForRankSlug = (slug: string) => RANK_POSITIONS.find((p) => p.slug === slug)?.title ?? null;
 
-// Near-miss spellings that 301 to the canonical plural slug (see rank/[alias]).
+// Near-miss spellings that 301 to the canonical plural slug (see rank/[alias]):
+// each position's singular, plus the woman-rep spelling variants.
 export const RANK_SLUG_ALIASES: Record<string, RankPositionSlug> = {
+	president: 'presidents',
+	governor: 'governors',
+	senator: 'senators',
+	mp: 'mps',
+	mca: 'mcas',
 	'woman-rep': 'women-reps',
 	'woman-reps': 'women-reps',
 	'women-rep': 'women-reps',
