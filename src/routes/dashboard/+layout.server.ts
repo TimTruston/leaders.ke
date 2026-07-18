@@ -213,13 +213,21 @@ export const load: LayoutServerLoad = async (event) => {
 			otherNames: users.otherNames,
 			slug: users.slug,
 			authUserId: users.authUserId,
-			verifiedAt: leaders.verifiedAt
+			verifiedAt: leaders.verifiedAt,
+			startAt: leaders.startAt
 		})
 		.from(managers)
 		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(and(eq(managers.userId, domainUser.id), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(leaders.deletedAt)));
-	const myCampaigns = [...new Map(managedRows.map((r) => [r.leaderId, r])).values()].map((r) => ({
+	// Managers attach to the PERSON, not a term: one switcher entry per managed person,
+	// collapsing their terms to the active one (latest start) for the link + verified badge.
+	const byPerson = new Map<string, (typeof managedRows)[number]>();
+	for (const r of managedRows) {
+		const prev = byPerson.get(r.authUserId);
+		if (!prev || r.startAt.getTime() > prev.startAt.getTime()) byPerson.set(r.authUserId, r);
+	}
+	const myCampaigns = [...byPerson.values()].map((r) => ({
 		leaderId: r.leaderId,
 		name: fullName(r),
 		verified: !!r.verifiedAt,

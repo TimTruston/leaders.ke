@@ -5,7 +5,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { getDomainUser, getLeaderContext, getLeaderContextByApplyId, getLeaderContextBySlug, type LeaderContext } from '$lib/server/leader';
-import { contacts as contactsTable, managers, type users } from '$lib/server/db/schema';
+import { contacts as contactsTable, leaders, managers, type users } from '$lib/server/db/schema';
 
 export type DashboardUser = {
 	authUser: NonNullable<RequestEvent['locals']['user']>;
@@ -138,9 +138,12 @@ export async function requireAdmin(event: RequestEvent): Promise<DashboardUser> 
  * campaign. (Managing ambassadors, posts, etc. is open to every manager.) */
 export async function isCampaignAdmin(domainUserId: number, ctx: LeaderContext): Promise<boolean> {
 	if (ctx.role === 'leader') return true;
-	const [row] = await db
+	// Person-level: admin if any of the viewer's manager rows across this person's
+	// terms carries the admin role (managers attach to the person, not one term).
+	const rows = await db
 		.select({ roles: managers.roles })
 		.from(managers)
-		.where(and(eq(managers.userId, domainUserId), eq(managers.leaderId, ctx.leader.id), isNull(managers.deletedAt)));
-	return !!(row?.roles as { admin?: boolean } | undefined)?.admin;
+		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
+		.where(and(eq(managers.userId, domainUserId), eq(leaders.userId, ctx.profileUser.id), isNull(managers.deletedAt), isNull(leaders.deletedAt)));
+	return rows.some((r) => (r.roles as { admin?: boolean } | undefined)?.admin);
 }

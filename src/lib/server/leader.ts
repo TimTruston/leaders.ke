@@ -152,6 +152,31 @@ export function isApplyId(id: string): boolean {
 	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 }
 
+/** A viewer's active manager row on ANY term of a person: managers attach to the
+ * PERSON, not one term, so management authority spans a leader's whole Track Record.
+ * A manager added to one campaign keeps access when a new term becomes the live seat,
+ * and (per the accepted trade-off) can edit historical terms too. Returns the row's
+ * roles so callers can read the admin flag; null when the viewer manages no term. */
+async function findPersonManager(
+	domainUserId: number,
+	subjectUserId: number
+): Promise<{ roles: typeof managers.$inferSelect.roles } | null> {
+	const [manager] = await db
+		.select({ roles: managers.roles })
+		.from(managers)
+		.innerJoin(leaders, eq(managers.leaderId, leaders.id))
+		.where(
+			and(
+				eq(managers.userId, domainUserId),
+				eq(leaders.userId, subjectUserId),
+				eq(managers.isActive, true),
+				isNull(managers.deletedAt),
+				isNull(leaders.deletedAt)
+			)
+		);
+	return manager ?? null;
+}
+
 /**
  * The leader context for a /dashboard/apply/[id]/* URL. The id is the
  * application's pre-minted UUID, which becomes the phantom user's auth id on
@@ -180,17 +205,8 @@ export async function getLeaderContextByApplyId(
 	if (row.leaders.userId === domainUserId) {
 		return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'leader' };
 	}
-	const [manager] = await db
-		.select({ id: managers.id })
-		.from(managers)
-		.where(
-			and(
-				eq(managers.userId, domainUserId),
-				eq(managers.leaderId, row.leaders.id),
-				eq(managers.isActive, true),
-				isNull(managers.deletedAt)
-			)
-		);
+	// Person-level: a manager of any of this person's terms may work the profile.
+	const manager = await findPersonManager(domainUserId, row.users.id);
 	if (!manager) return 'denied';
 
 	return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'manager' };
@@ -204,8 +220,8 @@ export async function getLeaderContextByApplyId(
  */
 export async function getLeaderContextBySlug(slug: string, domainUserId: number): Promise<LeaderContext | null> {
 	// One person can hold several `leaders` rows (Track Record) — resolveCurrentTerm
-	// picks the live campaign, not whichever row a bare slug join happens to hit
-	// (a `former` term has no manager rows, which read as access denied).
+	// picks the live campaign as the anchor term, not whichever row a bare slug join
+	// happens to hit.
 	const resolved = await resolveCurrentTerm(slug);
 	if (!resolved) return null;
 	const { row, currentTerm } = resolved;
@@ -214,17 +230,8 @@ export async function getLeaderContextBySlug(slug: string, domainUserId: number)
 		return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'leader' };
 	}
 
-	const [manager] = await db
-		.select({ id: managers.id })
-		.from(managers)
-		.where(
-			and(
-				eq(managers.userId, domainUserId),
-				eq(managers.leaderId, currentTerm.leaders.id),
-				eq(managers.isActive, true),
-				isNull(managers.deletedAt)
-			)
-		);
+	// Person-level: a manager of any of this person's terms may work the profile.
+	const manager = await findPersonManager(domainUserId, row.users.id);
 	if (!manager) return null;
 
 	return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'manager' };
