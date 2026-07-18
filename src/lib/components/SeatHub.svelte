@@ -23,7 +23,9 @@
 		<nav class="text-sm text-muted" aria-label="Breadcrumb">
 			{#each data.breadcrumb as crumb, i (crumb.path + i)}
 				{#if i > 0}<span class="mx-1">/</span>{/if}
-				{#if i === data.breadcrumb.length - 1}
+				<!-- The trailing crumb is the page itself (plain text) — unless it's the
+				only crumb (Country seats), where it links to the position directory. -->
+				{#if data.breadcrumb.length > 1 && i === data.breadcrumb.length - 1}
 					<span>{crumb.label}</span>
 				{:else}
 					<a href={crumb.path} class="hover:text-heading hover:underline">{crumb.label}</a>
@@ -34,6 +36,7 @@
 		<RegimeLinks
 			regimes={data.regimes}
 			basePath={data.basePath}
+			hubPath={data.hubPath}
 			cycle={data.cycle}
 			regime={data.regime}
 			startYearsOnly

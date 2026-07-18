@@ -12,6 +12,7 @@ import {
 	slugify
 } from '$lib/server/leader';
 import { counties, findCountyBySlug, findConstituencyBySlug, findWardBySlug, geoSlug } from '$lib/data/geo';
+import { pluralPositionTitle, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 
 export async function loadSeatHub(position: string, region: string, regimeYear?: number) {
 	const positionRow = await findPositionByPath(position, region);
@@ -119,28 +120,33 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 	const positionTitle = positionRow.title;
 	const regionLabel = positionRow.region;
 	const boundary = positionRow.boundary;
-	const seatPath = `/${position}/${slugify(regionLabel)}`;
+	// Country-wide seats drop the region namespace: year pages live at
+	// /presidents/2027 (basePath) and the hub itself at the singular /president
+	// (hubPath) — "kenya" goes without saying. Regional seats use one path for both.
+	const seatPath = boundary === 'Country' ? `/${position}` : `/${position}/${slugify(regionLabel)}`;
+	const hubPath = boundary === 'Country' ? `/${SINGULAR_SLUG_BY_TITLE[positionTitle] ?? position}` : seatPath;
 
 	// Breadcrumb: "Position" alone for single-region national seats, "Position /
 	// Region" generally, and a 3-level "MCA / Constituency / Ward" for MCA seats.
+	// The leading crumb is the position DIRECTORY, so it reads plural ("Governors").
+	const directoryCrumb = { label: pluralPositionTitle(positionTitle), path: `/${position}` };
 	let breadcrumb: { label: string; path: string }[];
 	if (boundary === 'Country') {
-		breadcrumb = [{ label: positionTitle, path: `/${position}` }];
+		// A single "Presidents" crumb linking to the directory ("Kenya" goes
+		// without saying); SeatHub links lone crumbs instead of flattening them.
+		breadcrumb = [directoryCrumb];
 	} else if (positionTitle === 'MCA') {
 		const parentConstituency = counties
 			.flatMap((c) => c.constituencies)
 			.find((c) => c.wards.some((w) => w.seatName === regionLabel));
 		const ward = findWardBySlug(region);
 		breadcrumb = [
-			{ label: positionTitle, path: `/${position}` },
+			directoryCrumb,
 			...(parentConstituency ? [{ label: parentConstituency.name, path: seatPath }] : []),
 			{ label: ward?.name ?? regionLabel, path: seatPath }
 		];
 	} else {
-		breadcrumb = [
-			{ label: positionTitle, path: `/${position}` },
-			{ label: regionLabel, path: seatPath }
-		];
+		breadcrumb = [directoryCrumb, { label: regionLabel, path: seatPath }];
 	}
 
 	// Regime line options: the active cycle plus each recorded term's start year
@@ -166,6 +172,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 		regime,
 		regimes,
 		basePath: seatPath,
+		hubPath,
 		seatVoters,
 		county: county
 			? {

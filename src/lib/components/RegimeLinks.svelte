@@ -4,6 +4,7 @@
 	let {
 		regimes,
 		basePath,
+		hubPath = basePath,
 		cycle,
 		regime,
 		hideCurrentYear = false,
@@ -11,8 +12,11 @@
 	}: {
 		/** Options from loadSeatHub: the active cycle plus each recorded term. */
 		regimes: { year: number; label: string }[];
-		/** The seat's hub path; past years link to `${basePath}/${year}`. */
+		/** Base for year links (`${basePath}/${year}`). */
 		basePath: string;
+		/** The hub itself (the active cycle's link) — differs from basePath on
+		 * Country-wide seats (/president vs /presidents/2027). */
+		hubPath?: string;
 		/** The active election cycle — its link is the hub itself. */
 		cycle: number;
 		/** The regime currently on screen (highlighted). */
@@ -31,7 +35,7 @@
 		<span>Regimes:</span>
 		{#each visible as r (r.year)}
 			<a
-				href={r.year === cycle ? basePath : `${basePath}/${r.year}`}
+				href={r.year === cycle ? hubPath : `${basePath}/${r.year}`}
 				class="transition hover:text-heading {r.year === regime
 					? 'font-semibold text-primary underline underline-offset-4'
 					: ''}"

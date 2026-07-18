@@ -4,7 +4,7 @@
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import PositionBadges from '$lib/components/PositionBadges.svelte';
 	import SearchFilter from '$lib/components/SearchFilter.svelte';
-	import { POSITION_SLUG_BY_TITLE } from '$lib/utils/seat';
+	import { pluralPositionTitle, POSITION_SLUG_BY_TITLE } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -65,7 +65,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.positionTitle}s — leaders.ke</title>
+	<title>{pluralPositionTitle(data.positionTitle)} — leaders.ke</title>
 	<meta
 		name="description"
 		content="Every {data.positionTitle} and 2027 candidate: regions, incumbents and cleared contestants."
@@ -77,11 +77,11 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 <section class="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
 	<div class="border-t border-border pt-10">
 		<div class="mt-4 flex flex-col sm:flex-row justify-between gap-2 items-start">
-			<h1 class="text-3xl font-extrabold tracking-tight text-heading">{data.positionTitle}s</h1>
+			<h1 class="text-3xl font-extrabold tracking-tight w-fit text-balance">{pluralPositionTitle(data.positionTitle)}</h1>
 			<PositionBadges positions={PILL_TITLES} value={data.positionTitle} {hrefFor} />
 		</div>
-		<p class="mt-2 text-sm leading-relaxed text-muted">
-			Verified {data.positionTitle}s and 2027 contestants.
+		<p class="flex-1 mt-2 text-sm leading-relaxed text-muted">
+			Verified {pluralPositionTitle(data.positionTitle)} and 2027 contestants.
 		</p>
 	</div>
 

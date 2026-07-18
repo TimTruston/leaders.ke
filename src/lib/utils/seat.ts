@@ -40,6 +40,18 @@ export const SINGULAR_SLUG_BY_TITLE: Record<string, string> = {
 /** The canonical URL slug for a position title, or null for unknown titles. */
 export const positionSlug = (title: string): string | null => POSITION_SLUG_BY_TITLE[title] ?? null;
 
+/** Display plural for a position title (breadcrumbs, directory headings). */
+export const PLURAL_TITLE_BY_TITLE: Record<string, string> = {
+	President: 'Presidents',
+	'Deputy President': 'Deputy Presidents',
+	Governor: 'Governors',
+	Senator: 'Senators',
+	'Woman Rep': 'Women Representatives',
+	MP: 'Members of Parliament',
+	MCA: 'Members of County Assemblies'
+};
+export const pluralPositionTitle = (title: string): string => PLURAL_TITLE_BY_TITLE[title] ?? `${title}s`;
+
 const slugify = (input: string) =>
 	input
 		.toLowerCase()
