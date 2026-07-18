@@ -127,7 +127,15 @@ export async function getVerificationDetail(verificationId: number) {
 			.from(contacts)
 			.where(and(eq(contacts.userId, leader.userId), isNull(contacts.deletedAt))),
 		db
-			.select({ userId: managers.userId, roles: managers.roles, firstName: users.firstName, otherNames: users.otherNames })
+			.select({
+				userId: managers.userId,
+				roles: managers.roles,
+				firstName: users.firstName,
+				otherNames: users.otherNames,
+				// ID images live on the manager's own users row, not in roles.
+				idFrontUrl: users.idFrontUrl,
+				idBackUrl: users.idBackUrl
+			})
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.where(and(eq(managers.subjectUserId, leader.userId), eq(managers.isActive, true), isNull(managers.deletedAt))),
@@ -179,21 +187,21 @@ export async function getVerificationDetail(verificationId: number) {
 			party: membership ? `${membership.name}${membership.abbreviation ? ` (${membership.abbreviation})` : ''}` : null
 		},
 		contacts: contactRows.map((c) => ({ channel: c.channel, value: c.value, verified: !!c.verifiedAt })),
-		// Each manager carries their own sign-off (role, national ID, ID images) on
-		// their manager row — no longer a single applicant attestation.
+		// Each manager carries their own sign-off (role + national ID on their manager
+		// row; ID images on their own users row) — no single applicant attestation.
 		team: teamRows.map((t) => {
 			const roles = (t.roles ?? {}) as ManagerRoles;
 			return {
 				name: fullName(t),
 				title: roles.title ?? null,
 				nationalId: roles.nationalId ?? null,
-				idFrontUrl: roles.idFrontUrl ?? null,
-				idBackUrl: roles.idBackUrl ?? null,
-				signoffComplete: signoffComplete(roles),
+				idFrontUrl: t.idFrontUrl,
+				idBackUrl: t.idBackUrl,
+				signoffComplete: signoffComplete(roles, t),
 				isApplicant: t.userId === request.requestedBy
 			};
 		}),
-		documentation: { photoUrl: leader.photoUrl, iebcCertificateUrl: leader.iebcCertificateUrl },
+		documentation: { photoUrl: profileUser.photoUrl, iebcCertificateUrl: leader.iebcCertificateUrl },
 		history: historyRows.map((h) => ({
 			id: h.id,
 			requestedAt: h.requestedAt.toISOString(),

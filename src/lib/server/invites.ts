@@ -1,24 +1,25 @@
-// onboarding.md: how a worker joins a campaign. A manager/ambassador/follower is
+// onboarding.md: how a worker joins a leader's team. A manager/ambassador/follower is
 // invited by email; the link is single-use and expires once accepted. Re-inviting
 // the same email/role revokes whatever link was open before, so there's only ever
-// one live.
+// one live. Invites are PERSON-scoped (you join someone's team, not one candidacy):
+// manager rows land on the person; an ambassador accept resolves the person to their
+// active term at accept time (ambassadors are per-run).
 import { randomBytes } from 'node:crypto';
 import { and, count, desc, eq, gt, gte, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, campaigns, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
+import { ambassadors, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { fullName, personIdForLeader } from '$lib/server/leader';
+import { activeTermForPerson, fullName } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
 import { getPlatformSettings } from '$lib/server/settings';
 
-/** This campaign's current paid tier, defaulting to the free/lowest tier
- * ('aspirant') if it has no live campaign row or active subscription yet. */
-async function getCampaignTier(leaderId: number): Promise<'aspirant' | 'influencer' | 'mobilizer'> {
+/** This person's current paid tier, defaulting to the free/lowest tier
+ * ('aspirant') when they have no active subscription (billing is user-scoped). */
+async function getPersonTier(subjectUserId: number): Promise<'aspirant' | 'influencer' | 'mobilizer'> {
 	const [row] = await db
 		.select({ tier: subscriptions.tier })
-		.from(campaigns)
-		.innerJoin(subscriptions, eq(subscriptions.campaignId, campaigns.id))
-		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt), eq(subscriptions.status, 'active')))
+		.from(subscriptions)
+		.where(and(eq(subscriptions.subjectUserId, subjectUserId), eq(subscriptions.status, 'active')))
 		.orderBy(desc(subscriptions.startAt))
 		.limit(1);
 	return row?.tier ?? 'aspirant';
@@ -33,12 +34,12 @@ export async function emailHasAccount(email: string): Promise<boolean> {
 
 /**
  * If this email already belongs to an active manager OR ambassador of this same
- * leader, grant the new role directly (no invite/email) — they're already a
+ * person, grant the new role directly (no invite/email) — they're already a
  * known, trusted member of the team, just missing this one role. Returns null if
  * they're not an existing team member here (caller should fall back to a normal
  * emailed invite).
  */
-export async function tryDirectGrant(leaderId: number, role: 'manager' | 'ambassador', email: string): Promise<{ userId: number } | null> {
+export async function tryDirectGrant(subjectUserId: number, role: 'manager' | 'ambassador', email: string): Promise<{ userId: number } | null> {
 	const normalizedEmail = email.trim().toLowerCase();
 
 	const [account] = await db
@@ -48,24 +49,24 @@ export async function tryDirectGrant(leaderId: number, role: 'manager' | 'ambass
 		.where(eq(authUsers.email, normalizedEmail));
 	if (!account) return null;
 
-	// Managers attach to the person behind this candidacy term; ambassadors stay per-term.
-	const subjectUserId = await personIdForLeader(leaderId);
-	const [isManager] = subjectUserId
+	const [isManager] = await db
+		.select({ id: managers.id })
+		.from(managers)
+		.where(and(eq(managers.userId, account.userId), eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+	// Ambassadors are per-run: their existing membership lives on the person's active term.
+	const activeTerm = await activeTermForPerson(subjectUserId);
+	const [isAmbassador] = activeTerm
 		? await db
-				.select({ id: managers.id })
-				.from(managers)
-				.where(and(eq(managers.userId, account.userId), eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)))
+				.select({ id: ambassadors.id })
+				.from(ambassadors)
+				.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.leaderId, activeTerm.leaders.id), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)))
 		: [];
-	const [isAmbassador] = await db
-		.select({ id: ambassadors.id })
-		.from(ambassadors)
-		.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.leaderId, leaderId), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)));
 	if (!isManager && !isAmbassador) return null;
 
-	if (role === 'manager' && !isManager && subjectUserId) {
+	if (role === 'manager' && !isManager) {
 		await db.insert(managers).values({ userId: account.userId, subjectUserId, roles: {} });
-	} else if (role === 'ambassador' && !isAmbassador) {
-		await db.insert(ambassadors).values({ userId: account.userId, leaderId, roles: {} });
+	} else if (role === 'ambassador' && !isAmbassador && activeTerm) {
+		await db.insert(ambassadors).values({ userId: account.userId, leaderId: activeTerm.leaders.id, roles: {} });
 	}
 	return { userId: account.userId };
 }
@@ -93,13 +94,13 @@ export type InviteDetails = {
 };
 
 /** Creates a fresh invite for this email, revoking any invite still open for the
- * same (leader, role, email) first — one live link per person — and emails it
+ * same (person, role, email) first — one live link per invitee — and emails it
  * (dev: sendEmail logs the link to the console when no Postmark token is set).
- * Throws if: re-inviting the same (leader, role, email) too soon/too often (spam
+ * Throws if: re-inviting the same (person, role, email) too soon/too often (spam
  * guard — mass mobilization to *unique* emails is never rate-limited), or the
- * campaign has hit its lifetime invite cap for its subscription tier. */
+ * person has hit their lifetime invite cap for their subscription tier. */
 export async function createInvite(
-	leaderId: number,
+	subjectUserId: number,
 	role: InviteRole,
 	createdBy: number,
 	email: string,
@@ -111,7 +112,7 @@ export async function createInvite(
 	const [recent] = await db
 		.select({ createdAt: invites.createdAt })
 		.from(invites)
-		.where(and(eq(invites.leaderId, leaderId), eq(invites.role, role), eq(invites.email, normalizedEmail)))
+		.where(and(eq(invites.subjectUserId, subjectUserId), eq(invites.role, role), eq(invites.email, normalizedEmail)))
 		.orderBy(desc(invites.createdAt))
 		.limit(1);
 	if (recent) {
@@ -127,7 +128,7 @@ export async function createInvite(
 		.from(invites)
 		.where(
 			and(
-				eq(invites.leaderId, leaderId),
+				eq(invites.subjectUserId, subjectUserId),
 				eq(invites.role, role),
 				eq(invites.email, normalizedEmail),
 				gte(invites.createdAt, new Date(Date.now() - 24 * 60 * 60 * 1000))
@@ -137,11 +138,11 @@ export async function createInvite(
 		throw new Error('Too many invites sent to this email today. Try again tomorrow.');
 	}
 
-	const [{ lifetimeCount }] = await db.select({ lifetimeCount: count() }).from(invites).where(eq(invites.leaderId, leaderId));
-	const tier = await getCampaignTier(leaderId);
+	const [{ lifetimeCount }] = await db.select({ lifetimeCount: count() }).from(invites).where(eq(invites.subjectUserId, subjectUserId));
+	const tier = await getPersonTier(subjectUserId);
 	const limit = settings.inviteLimits[tier];
 	if (lifetimeCount >= limit) {
-		throw new Error(`This campaign has reached its lifetime invite limit (${limit}) for the ${tier} package.`);
+		throw new Error(`This team has reached its lifetime invite limit (${limit}) for the ${tier} package.`);
 	}
 
 	await db
@@ -149,7 +150,7 @@ export async function createInvite(
 		.set({ deletedAt: new Date() })
 		.where(
 			and(
-				eq(invites.leaderId, leaderId),
+				eq(invites.subjectUserId, subjectUserId),
 				eq(invites.role, role),
 				eq(invites.email, normalizedEmail),
 				isNull(invites.deletedAt),
@@ -159,13 +160,12 @@ export async function createInvite(
 
 	const token = randomBytes(24).toString('hex');
 	const expiresAt = new Date(Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60 * 1000);
-	await db.insert(invites).values({ token, leaderId, role, email: normalizedEmail, createdBy, expiresAt });
+	await db.insert(invites).values({ token, subjectUserId, role, email: normalizedEmail, createdBy, expiresAt });
 
 	const [leader] = await db
 		.select({ firstName: users.firstName, otherNames: users.otherNames })
-		.from(leaders)
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(eq(leaders.id, leaderId));
+		.from(users)
+		.where(eq(users.id, subjectUserId));
 	const leaderName = fullName(leader);
 	const link = `${origin}/invite/${token}`;
 
@@ -178,12 +178,12 @@ export async function createInvite(
 	return { token };
 }
 
-/** Every invite for this leader that's still usable (not used, not revoked, not expired). */
-export async function listOpenInvites(leaderId: number): Promise<OpenInvite[]> {
+/** Every invite for this person that's still usable (not used, not revoked, not expired). */
+export async function listOpenInvites(subjectUserId: number): Promise<OpenInvite[]> {
 	const rows = await db
 		.select()
 		.from(invites)
-		.where(and(eq(invites.leaderId, leaderId), isNull(invites.deletedAt), isNull(invites.usedBy)))
+		.where(and(eq(invites.subjectUserId, subjectUserId), isNull(invites.deletedAt), isNull(invites.usedBy)))
 		.orderBy(invites.createdAt);
 
 	const now = Date.now();
@@ -208,9 +208,10 @@ export type ReceivedInvite = {
 	createdAt: string;
 };
 
-/** One page of invites (any leader, any role) addressed to this email that are
+/** One page of invites (any person, any role) addressed to this email that are
  * still open and unexpired — powers the citizen dashboard's Invites tab. Expiry is
- * filtered in SQL so it composes correctly with pagination. */
+ * filtered in SQL so it composes correctly with pagination; the inviting person's
+ * seat (their active term) is resolved per row, the page is small. */
 export async function listInvitesForEmail(
 	email: string,
 	page: number,
@@ -229,16 +230,13 @@ export async function listInvitesForEmail(
 				token: invites.token,
 				role: invites.role,
 				createdAt: invites.createdAt,
+				subjectUserId: invites.subjectUserId,
 				firstName: users.firstName,
 				otherNames: users.otherNames,
-				slug: users.slug,
-				positionTitle: positions.title,
-				region: positions.region
+				slug: users.slug
 			})
 			.from(invites)
-			.innerJoin(leaders, eq(invites.leaderId, leaders.id))
-			.innerJoin(users, eq(leaders.userId, users.id))
-			.innerJoin(positions, eq(leaders.positionId, positions.id))
+			.innerJoin(users, eq(invites.subjectUserId, users.id))
 			.where(filter)
 			.orderBy(desc(invites.createdAt))
 			.limit(pageSize)
@@ -247,25 +245,30 @@ export async function listInvitesForEmail(
 	]);
 
 	return {
-		invites: rows.map((r) => ({
-			token: r.token,
-			role: r.role,
-			leaderName: fullName(r),
-			leaderPath: r.slug ? `/${r.slug}` : '/presidents',
-			positionTitle: r.positionTitle,
-			region: r.region,
-			createdAt: r.createdAt.toISOString()
-		})),
+		invites: await Promise.all(
+			rows.map(async (r) => {
+				const term = await activeTermForPerson(r.subjectUserId);
+				return {
+					token: r.token,
+					role: r.role,
+					leaderName: fullName(r),
+					leaderPath: r.slug ? `/${r.slug}` : '/presidents',
+					positionTitle: term?.positions.title ?? '',
+					region: term?.positions.region ?? '',
+					createdAt: r.createdAt.toISOString()
+				};
+			})
+		),
 		total
 	};
 }
 
 /** Revokes an open invite link before it's ever accepted. */
-export async function revokeInvite(leaderId: number, inviteId: number) {
+export async function revokeInvite(subjectUserId: number, inviteId: number) {
 	await db
 		.update(invites)
 		.set({ deletedAt: new Date() })
-		.where(and(eq(invites.id, inviteId), eq(invites.leaderId, leaderId)));
+		.where(and(eq(invites.id, inviteId), eq(invites.subjectUserId, subjectUserId)));
 }
 
 /** Looks up an invite by token for display on the accept/sign-in page, without consuming it. */
@@ -277,26 +280,24 @@ export async function getInviteByToken(token: string): Promise<InviteDetails | n
 			expiresAt: invites.expiresAt,
 			usedBy: invites.usedBy,
 			deletedAt: invites.deletedAt,
+			subjectUserId: invites.subjectUserId,
 			firstName: users.firstName,
-			otherNames: users.otherNames,
-			positionTitle: positions.title,
-			region: positions.region
+			otherNames: users.otherNames
 		})
 		.from(invites)
-		.innerJoin(leaders, eq(invites.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.innerJoin(users, eq(invites.subjectUserId, users.id))
 		.where(eq(invites.token, token));
 
 	if (!row || row.usedBy || row.deletedAt) return null;
 	if (row.expiresAt && row.expiresAt.getTime() < Date.now()) return null;
 
+	const term = await activeTermForPerson(row.subjectUserId);
 	return {
 		role: row.role,
 		email: row.email,
 		leaderName: fullName({ firstName: row.firstName, otherNames: row.otherNames }),
-		positionTitle: row.positionTitle,
-		region: row.region
+		positionTitle: term?.positions.title ?? '',
+		region: term?.positions.region ?? ''
 	};
 }
 
@@ -315,28 +316,30 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 		return { ok: false as const, error: `This invite was sent to ${invite.email}. Sign in with that email to accept it.` };
 	}
 
+	// Ambassador/follower placement needs the person's active term (per-run rows).
+	const activeTerm = await activeTermForPerson(invite.subjectUserId);
+
 	if (invite.role === 'manager') {
-		// Managers attach to the person behind the invited candidacy term.
-		const subjectUserId = await personIdForLeader(invite.leaderId);
-		if (!subjectUserId) return { ok: false as const, error: 'This invite link is no longer valid.' };
 		const [existing] = await db
 			.select({ id: managers.id })
 			.from(managers)
-			.where(and(eq(managers.userId, userId), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)));
+			.where(and(eq(managers.userId, userId), eq(managers.subjectUserId, invite.subjectUserId), isNull(managers.deletedAt)));
 		if (!existing) {
-			await db.insert(managers).values({ userId, subjectUserId, roles: {} });
+			await db.insert(managers).values({ userId, subjectUserId: invite.subjectUserId, roles: {} });
 		}
 	} else if (invite.role === 'ambassador') {
+		if (!activeTerm) return { ok: false as const, error: 'This invite link is no longer valid.' };
 		const [existing] = await db
 			.select({ id: ambassadors.id })
 			.from(ambassadors)
 			.where(
-				and(eq(ambassadors.userId, userId), eq(ambassadors.leaderId, invite.leaderId), isNull(ambassadors.deletedAt))
+				and(eq(ambassadors.userId, userId), eq(ambassadors.leaderId, activeTerm.leaders.id), isNull(ambassadors.deletedAt))
 			);
 		if (!existing) {
-			await db.insert(ambassadors).values({ userId, leaderId: invite.leaderId, roles: {} });
+			await db.insert(ambassadors).values({ userId, leaderId: activeTerm.leaders.id, roles: {} });
 		}
 	} else {
+		if (!activeTerm) return { ok: false as const, error: 'This invite link is no longer valid.' };
 		const [existing] = await db
 			.select({ id: followers.id })
 			.from(followers)
@@ -344,29 +347,28 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 				and(
 					eq(followers.userId, userId),
 					eq(followers.digest, 'leader'),
-					eq(followers.digestId, invite.leaderId),
+					eq(followers.digestId, activeTerm.leaders.id),
 					isNull(followers.deletedAt)
 				)
 			);
 		if (!existing) {
-			await db.insert(followers).values({ userId, digest: 'leader', digestId: invite.leaderId, email: true });
+			await db.insert(followers).values({ userId, digest: 'leader', digestId: activeTerm.leaders.id, email: true });
 		}
 	}
 
 	await db.update(invites).set({ usedBy: userId, usedAt: new Date() }).where(eq(invites.id, invite.id));
 
-	const [leader] = await db
-		.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId, verifiedAt: leaders.verifiedAt })
-		.from(leaders)
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(eq(leaders.id, invite.leaderId));
+	const [person] = await db
+		.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId })
+		.from(users)
+		.where(eq(users.id, invite.subjectUserId));
 
-	// The campaign's dashboard home: verified ones live under their slug,
+	// The team's dashboard home: verified profiles live under their slug,
 	// in-progress applications under their pre-minted UUID (the phantom's auth id).
 	const dashboardBase =
-		leader.verifiedAt && leader.slug ? `/dashboard/${leader.slug}` : `/dashboard/apply/${leader.authUserId}`;
+		activeTerm?.leaders.verifiedAt && person.slug ? `/dashboard/${person.slug}` : `/dashboard/apply/${person.authUserId}`;
 
-	return { ok: true as const, role: invite.role, leaderName: fullName(leader), dashboardBase, leaderId: invite.leaderId };
+	return { ok: true as const, role: invite.role, leaderName: fullName(person), dashboardBase, leaderId: activeTerm?.leaders.id ?? 0 };
 }
 
 /** Where each accepted role actually lands: managers go straight into the

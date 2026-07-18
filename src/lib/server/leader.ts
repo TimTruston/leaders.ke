@@ -178,12 +178,25 @@ async function findPersonManager(
 	return manager ?? null;
 }
 
-/** The person (users.id) behind a leaders-row (term) id. Invites and claims still
- * target a specific candidacy term, but the manager row they create is person-scoped,
- * so those flows resolve the term to its owner here before writing `subjectUserId`. */
+/** The person (users.id) behind a leaders-row (term) id — for flows that arrive with
+ * a term id but write person-scoped rows. */
 export async function personIdForLeader(leaderId: number): Promise<number | null> {
 	const [row] = await db.select({ userId: leaders.userId }).from(leaders).where(eq(leaders.id, leaderId));
 	return row?.userId ?? null;
+}
+
+/** A person's ACTIVE term (latest start = current/aspirant seat) joined to its seat —
+ * the anchor for person-scoped flows that still need a term (ambassador placement,
+ * invite display, dashboard base paths). Null for a person with no terms. */
+export async function activeTermForPerson(subjectUserId: number) {
+	const [row] = await db
+		.select()
+		.from(leaders)
+		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.where(and(eq(leaders.userId, subjectUserId), isNull(leaders.deletedAt)))
+		.orderBy(desc(leaders.startAt))
+		.limit(1);
+	return row ?? null;
 }
 
 /**
@@ -330,11 +343,15 @@ export async function getOrCreateMainCampaign(leaderId: number, creatorId: numbe
 		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	if (existing) return existing;
 
+	// A campaign is one run at one seat in one cycle — stamp both from its term.
+	const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leaderId));
 	const [created] = await db
 		.insert(campaigns)
 		.values({
 			creatorId,
 			leaderId,
+			positionId: term.positionId,
+			cycleYear: term.startAt.getFullYear(),
 			title: `${leaderName}'s Campaign`,
 			description: `${leaderName}'s campaign for office.`
 		})

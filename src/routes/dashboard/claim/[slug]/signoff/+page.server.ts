@@ -30,7 +30,7 @@ export const actions: Actions = {
 		if (!nationalId) return fail(400, { error: 'Enter your national ID number.' });
 
 		const staged = (claim?.evidence as ClaimEvidence | null)?.signoff;
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
 			signoff: { ...staged, myRole, nationalId }
 		});
 		return { detailsSaved: true };
@@ -56,7 +56,7 @@ export const actions: Actions = {
 		}
 		if (!uploadedAny) return fail(400, { error: 'Choose a file to upload.' });
 
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, { signoff: staged });
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, { signoff: staged });
 		return { uploaded: true };
 	}
 };

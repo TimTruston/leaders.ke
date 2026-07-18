@@ -165,11 +165,15 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 			.from(campaigns)
 			.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 		if (!campaign) {
+			// A campaign is one run at one seat in one cycle — stamped from its term.
+			const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leaderId));
 			[campaign] = await db
 				.insert(campaigns)
 				.values({
 					creatorId: userId,
 					leaderId,
+					positionId: term.positionId,
+					cycleYear: term.startAt.getFullYear(),
 					title: `${row.name}'s Campaign`,
 					description: `${row.name}'s campaign for office.`
 				})

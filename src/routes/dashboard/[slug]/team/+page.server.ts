@@ -10,9 +10,9 @@ import { isCampaignRole, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
-// Each manager's own ID images live on their own manager row's roles jsonb (never
-// shared), keyed by which side was uploaded.
-const ROLES_KEY_BY_KIND = { 'id-front': 'idFrontUrl', 'id-back': 'idBackUrl' } as const;
+// Each manager's own ID images live on their OWN users row (an identity follows the
+// person — joining a second team never re-uploads), keyed by which side was uploaded.
+const USER_COLUMN_BY_KIND = { 'id-front': 'idFrontUrl', 'id-back': 'idBackUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
 	// A blank application is bounced back to its Profile tab (requireLeader) - the
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async (event) => {
 			.innerJoin(users, eq(ambassadors.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
 			.where(and(eq(ambassadors.leaderId, ctx.leader.id), isNull(ambassadors.deletedAt))),
-		listOpenInvites(ctx.leader.id),
+		listOpenInvites(ctx.profileUser.id),
 		isCampaignAdmin(domainUser.id, ctx)
 	]);
 
@@ -49,8 +49,9 @@ export const load: PageServerLoad = async (event) => {
 		signoff: {
 			myRole: mineRoles.title ?? '',
 			nationalId: mineRoles.nationalId ?? '',
-			idFrontUrl: mineRoles.idFrontUrl ?? null,
-			idBackUrl: mineRoles.idBackUrl ?? null
+			// ID images live on the manager's own users row, not in roles.
+			idFrontUrl: domainUser.idFrontUrl,
+			idBackUrl: domainUser.idBackUrl
 		},
 		managers: managerRows.map((r) => ({
 			id: r.managers.id,
@@ -106,24 +107,22 @@ export const actions: Actions = {
 			.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, ctx.profileUser.id), isNull(managers.deletedAt)));
 		if (!mine) return fail(403, { error: 'Only team members can upload their ID.' });
 
-		// The ID images stage on the uploader's OWN manager row, so managers never
+		// The ID images land on the uploader's OWN users row, so managers never
 		// overwrite each other. Filenames are UUIDs (saveLeaderDocument), so sharing
 		// the leader's upload dir is safe.
-		const roles = { ...((mine.roles ?? {}) as ManagerRoles) };
-		let uploadedAny = false;
-		for (const kind of Object.keys(ROLES_KEY_BY_KIND) as (keyof typeof ROLES_KEY_BY_KIND)[]) {
+		const updates: Partial<Record<'idFrontUrl' | 'idBackUrl', string>> = {};
+		for (const kind of Object.keys(USER_COLUMN_BY_KIND) as (keyof typeof USER_COLUMN_BY_KIND)[]) {
 			const file = form.get(kind);
 			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
 			try {
-				roles[ROLES_KEY_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
-				uploadedAny = true;
+				updates[USER_COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
 			} catch (err) {
 				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
 			}
 		}
-		if (!uploadedAny) return fail(400, { error: 'Choose a file to upload.' });
+		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
 
-		await db.update(managers).set({ roles }).where(eq(managers.id, mine.id));
+		await db.update(users).set(updates).where(eq(users.id, domainUser.id));
 		return { uploaded: true };
 	},
 
@@ -136,11 +135,11 @@ export const actions: Actions = {
 		const email = String(form.get('email') ?? '').trim();
 		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
 
-		const granted = await tryDirectGrant(ctx.leader.id, 'manager', email);
+		const granted = await tryDirectGrant(ctx.profileUser.id, 'manager', email);
 		if (granted) return { granted: { email, role: 'Manager' } };
 
 		try {
-			await createInvite(ctx.leader.id, 'manager', domainUser.id, email, event.url.origin);
+			await createInvite(ctx.profileUser.id, 'manager', domainUser.id, email, event.url.origin);
 		} catch (error) {
 			return fail(400, { error: error instanceof Error ? error.message : 'Could not send invite.' });
 		}
@@ -153,11 +152,11 @@ export const actions: Actions = {
 		const email = String(form.get('email') ?? '').trim();
 		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
 
-		const granted = await tryDirectGrant(ctx.leader.id, 'ambassador', email);
+		const granted = await tryDirectGrant(ctx.profileUser.id, 'ambassador', email);
 		if (granted) return { granted: { email, role: 'Ambassador' } };
 
 		try {
-			await createInvite(ctx.leader.id, 'ambassador', domainUser.id, email, event.url.origin);
+			await createInvite(ctx.profileUser.id, 'ambassador', domainUser.id, email, event.url.origin);
 		} catch (error) {
 			return fail(400, { error: error instanceof Error ? error.message : 'Could not send invite.' });
 		}
@@ -175,13 +174,13 @@ export const actions: Actions = {
 		const [invite] = await db
 			.select({ role: invites.role })
 			.from(invites)
-			.where(and(eq(invites.id, inviteId), eq(invites.leaderId, ctx.leader.id)));
+			.where(and(eq(invites.id, inviteId), eq(invites.subjectUserId, ctx.profileUser.id)));
 		if (!invite) return fail(404, { error: 'Invite not found.' });
 
 		if (invite.role === 'manager' && !(await isCampaignAdmin(domainUser.id, ctx))) {
 			return fail(403, { error: 'Only an admin manager can revoke manager invites.' });
 		}
-		await revokeInvite(ctx.leader.id, inviteId);
+		await revokeInvite(ctx.profileUser.id, inviteId);
 		return { revoked: true };
 	},
 

@@ -72,7 +72,7 @@ export const actions: Actions = {
 			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
 		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
 
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
 			profile: { firstName, otherNames, bio, positionId }
 		});
 		return { saved: true };
@@ -99,7 +99,7 @@ export const actions: Actions = {
 		}
 		if (!uploadedAny) return fail(400, { error: 'Choose a file to upload.' });
 
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, { documentation: staged });
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, { documentation: staged });
 		return { uploaded: true };
 	},
 
@@ -113,7 +113,7 @@ export const actions: Actions = {
 		const nationalId = (claim?.evidence as ClaimEvidence | null)?.signoff?.nationalId;
 		if (!nationalId) return fail(400, { claimError: 'Complete the Signoff tab before submitting.' });
 
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
 			nationalId,
 			submittedAt: new Date().toISOString()
 		});
@@ -128,7 +128,7 @@ export const actions: Actions = {
 	// "Just testing" escape hatch: drops the pending claim and everything staged in it.
 	deleteClaim: async (event) => {
 		const { domainUser, resolved } = await resolveClaimRequest(event);
-		await deletePendingClaim(resolved.currentTerm.leaders.id, domainUser.id);
+		await deletePendingClaim(resolved.row.users.id, domainUser.id);
 		redirectWithFlash(event.cookies, '/dashboard', 'Claim deleted.');
 	}
 };

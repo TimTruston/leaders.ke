@@ -59,12 +59,12 @@ export const load: LayoutServerLoad = async (event) => {
 	// is no leader context — just the claimed leader's name for the header.
 	let ctx: Awaited<ReturnType<typeof getRouteLeaderContext>> = null;
 	let claimName: string | null = null;
-	let claimLeaderId: number | null = null;
+	let claimSubjectUserId: number | null = null;
 	if (family === 'claim') {
 		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
 		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
 		claimName = fullName(resolved.row.users);
-		claimLeaderId = resolved.currentTerm.leaders.id;
+		claimSubjectUserId = resolved.row.users.id;
 	} else {
 		// apply/[id] and [slug] resolve by their URL param (access-checked);
 		// citizen pages fall back to the viewer's own/first-managed context.
@@ -95,7 +95,7 @@ export const load: LayoutServerLoad = async (event) => {
 	let rejection: Awaited<ReturnType<typeof getLatestRejection>> = null;
 	let application: ApplicationChecklist | null = null;
 	let claimSubmitted = false;
-	if (family === 'claim' && claimLeaderId) {
+	if (family === 'claim' && claimSubjectUserId) {
 		// The claim's checklist reads off what's been STAGED in the pending claim,
 		// not the profile's real data — same shape as the apply checklist so the
 		// tab `*`s and the submit widget work identically. Team is a claim
@@ -103,7 +103,7 @@ export const load: LayoutServerLoad = async (event) => {
 		const [claimRow] = await db
 			.select({ evidence: profileClaims.evidence })
 			.from(profileClaims)
-			.where(and(eq(profileClaims.leaderId, claimLeaderId), eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+			.where(and(eq(profileClaims.subjectUserId, claimSubjectUserId), eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
 		const ev = (claimRow?.evidence ?? {}) as ClaimEvidence;
 		application = {
 			profile: toTab([[!ev.profile, 'Profile details']]),
@@ -144,7 +144,7 @@ export const load: LayoutServerLoad = async (event) => {
 			// Active team, each with their own sign-off roles and whether their account
 			// email is verified — the two verification gates count across the whole team.
 			db
-				.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified })
+				.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified, idFrontUrl: users.idFrontUrl, idBackUrl: users.idBackUrl })
 				.from(managers)
 				.innerJoin(users, eq(managers.userId, users.id))
 				.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
@@ -152,7 +152,7 @@ export const load: LayoutServerLoad = async (event) => {
 		]);
 
 		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
-		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles)).length;
+		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
 
 		// Each entry: the human label shown to the user, and whether it's still missing.
 		const profileMissing = [
@@ -173,7 +173,7 @@ export const load: LayoutServerLoad = async (event) => {
 				? [`${managersShort} more verified team member${managersShort === 1 ? '' : 's'} (${requiredManagers} needed)`]
 				: [];
 		const docsMissing = [
-			[!ctx.leader.photoUrl, 'Photo'],
+			[!ctx.profileUser.photoUrl, 'Photo'],
 			[!ctx.leader.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 		];
 		// Sign-off gate: enough managers who've each completed their own sign-off
@@ -239,8 +239,7 @@ export const load: LayoutServerLoad = async (event) => {
 	const pendingClaimRows = await db
 		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
 		.from(profileClaims)
-		.innerJoin(leaders, eq(profileClaims.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(profileClaims.subjectUserId, users.id))
 		.where(and(eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
 	const pendingClaims = pendingClaimRows
 		.filter((r) => r.slug)

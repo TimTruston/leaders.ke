@@ -44,7 +44,7 @@ function toCandidate(row: {
 			.join('')
 			.slice(0, 2)
 			.toUpperCase(),
-		photoUrl: row.leaders.photoUrl,
+		photoUrl: row.users.photoUrl,
 		party: null,
 		path: leaderPath(row.users),
 		verified: !!row.leaders.verifiedAt

@@ -84,7 +84,7 @@ async function computeLeaderMetrics(
 	return {
 		name: fullName(user),
 		path: leaderPath(user),
-		photoUrl: leader.photoUrl,
+		photoUrl: user.photoUrl,
 		positionTitle: position.title,
 		regionLabel: position.region,
 		party,
@@ -180,7 +180,7 @@ export async function listPositionMetrics(
 			slug: users.slug,
 			firstName: users.firstName,
 			otherNames: users.otherNames,
-			photoUrl: leaders.photoUrl,
+			photoUrl: users.photoUrl,
 			status: leaders.status,
 			region: positions.region
 		})

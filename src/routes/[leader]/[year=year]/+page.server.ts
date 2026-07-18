@@ -9,7 +9,7 @@ import {
 	pledges,
 	posts
 } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, fullName, getDomainUser, leaderPath, resolveCurrentTerm } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderPath, resolveCurrentTerm } from '$lib/server/leader';
 import {
 	getFlaggedReviewCounts,
 	getMyReview,
@@ -35,6 +35,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const leaderId = row.leaders.id;
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
+
+	// Fundraising lives on the run's main campaign (read-only here; the donate
+	// action creates it on first write). No campaign yet = goal 0, nothing raised.
+	const [mainCampaign] = await db
+		.select({ id: campaigns.id, fundraisingGoal: campaigns.fundraisingGoal })
+		.from(campaigns)
+		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
 	const [
 		pillarRows,
@@ -97,7 +104,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.from(donations)
 			.where(
 				and(
-					eq(donations.leaderId, leaderId),
+					eq(donations.campaignId, mainCampaign?.id ?? 0),
 					eq(donations.status, 'confirmed'),
 					isNull(donations.deletedAt)
 				)
@@ -118,7 +125,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.join('')
 				.slice(0, 2)
 				.toUpperCase(),
-			photoUrl: row.leaders.photoUrl,
+			photoUrl: row.users.photoUrl,
 			party: null as string | null,
 			regionLabel: row.positions.region,
 			positionTitle: row.positions.title,
@@ -136,7 +143,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		signedIn: !!locals.user,
 		pledgeCount: pledgeRow.n,
 		fundraising: {
-			goal: row.leaders.fundraisingGoal,
+			goal: mainCampaign?.fundraisingGoal ?? 0,
 			raised: Number(raisedRow.total ?? 0)
 		}
 	};
@@ -235,8 +242,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'Your name and an amount (KES 10 or more) are required.' });
 		}
 
+		// Donations attach to the run's main campaign, created on first donation.
+		const campaign = await getOrCreateMainCampaign(row.leaders.id, row.users.id, fullName(row.users));
 		await db.insert(donations).values({
-			leaderId: row.leaders.id,
+			campaignId: campaign.id,
 			donorName,
 			phoneNumber: phone || null,
 			amount: Math.round(amount)

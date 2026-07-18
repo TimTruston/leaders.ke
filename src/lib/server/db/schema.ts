@@ -48,6 +48,13 @@ export const users = pgTable('users', {
     .$type<{ email: boolean; sms: boolean; whatsapp: boolean }>()
     .default({ email: false, sms: false, whatsapp: false })
     .notNull(),
+  // The person's portrait and national-ID scans. On the PERSON (not a leaders term):
+  // a photo and an identity follow someone across every candidacy and term, and a
+  // manager's own ID sign-off lives on their own row too. ID scans are never public.
+  // Local-disk URLs for now (see $lib/server/storage.ts).
+  photoUrl: text('photo_url'),
+  idFrontUrl: text('id_front_url'),
+  idBackUrl: text('id_back_url'),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
   // Channel-level opt-in for platform notifications (new posts from followed leaders,
   // invite alerts, etc.) — simple on/off per channel, not per notification category.
@@ -105,12 +112,9 @@ export const leaders = pgTable('leaders', {
   contacts: jsonb('contacts').default({}),
   status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'current' | 'former'
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
-  fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES; campaign goal (leader == main campaign in v1)
-  // Campaign-application documents (Documentation tab). Local-disk URLs for now
-  // (see $lib/server/storage.ts); swap for S3 URLs later without touching these columns.
-  photoUrl: text('photo_url'),
-  idFrontUrl: text('id_front_url'),
-  idBackUrl: text('id_back_url'),
+  // The IEBC nomination certificate is the one document that genuinely belongs to a
+  // candidacy — it is issued per election, per seat. The person's photo and ID scans
+  // live on `users` (they follow the person across terms).
   iebcCertificateUrl: text('iebc_certificate_url'),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
@@ -187,8 +191,13 @@ export const campaigns = pgTable('campaigns', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
   leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  // A campaign IS one run at one seat in one cycle, so it names them itself
+  // (not via its leaders row): the seat contested and the election year.
+  positionId: integer('position_id').references(() => positions.id).notNull(),
+  cycleYear: integer('cycle_year').notNull(), // e.g. 2027 — the election year of this run
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(), // Rich text payload
+  fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES — money belongs to the run, not the term
   faq: jsonb('faq').default([]),
   parentCampaignId: integer('parent_campaign_id').references((): any => campaigns.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -207,18 +216,20 @@ export const managers = pgTable('managers', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id).notNull(), // the manager granted access; soft delete handles detachment
   // The PERSON being managed (users, not a leaders term): one manages a person, never a
-  // single candidacy — authority spans their whole Track Record. `campaignId` below still
-  // records which campaign the manager joined through, but it never narrows that authority.
+  // single candidacy — authority spans their whole Track Record and every campaign.
   subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
-  // Per-manager: admin flag + this manager's own sign-off (role, national ID, ID
-  // images). Never shared across the team — each member attests separately.
+  // Per-manager: admin flag + this manager's own sign-off (their role title and national
+  // ID number). Never shared across the team — each member attests separately. Their ID
+  // images live on the manager's own users row (idFrontUrl/idBackUrl), not here.
   roles: jsonb('roles').$type<ManagerRoles>().default({}).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
+}, (t) => [
+  // One live manager row per (manager, person) — person-scoped management can't duplicate.
+  uniqueIndex('one_manager_per_person').on(t.userId, t.subjectUserId).where(sql`${t.deletedAt} is null`),
+]);
 
 // A person who mobilizes citizens on the ground for a leader's campaign.
 export const ambassadors = pgTable('ambassadors', {
@@ -241,7 +252,9 @@ export const inviteRoleEnum = pgEnum('invite_role', ['manager', 'ambassador', 'f
 export const invites = pgTable('invites', {
   id: serial('id').primaryKey(),
   token: varchar('token', { length: 64 }).notNull().unique(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  // The PERSON whose team the invitee joins (managers are person-scoped; an
+  // ambassador accept resolves this person to their active term at accept time).
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   role: inviteRoleEnum('role').notNull(),
   email: varchar('email', { length: 255 }).notNull(), // who it was sent to; only they can accept it
   createdBy: integer('created_by').references(() => users.id).notNull(),
@@ -284,7 +297,9 @@ export const claimOutcomeEnum = pgEnum('claim_outcome', ['approved', 'rejected']
 // One signed-in user's claim to be the real person behind an existing leader profile.
 export const profileClaims = pgTable('profile_claims', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  // The PERSON being claimed — a claim asserts "I am / I represent this person",
+  // never one candidacy term of theirs.
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   claimedBy: integer('claimed_by').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   evidence: jsonb('evidence').default({}).notNull(), // national ID + a note on why it's them
   requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
@@ -293,8 +308,8 @@ export const profileClaims = pgTable('profile_claims', {
   outcome: claimOutcomeEnum('outcome'), // null = pending
   notes: text('notes'),
 }, (t) => [
-  uniqueIndex('one_pending_claim_per_leader_per_user')
-    .on(t.leaderId, t.claimedBy)
+  uniqueIndex('one_pending_claim_per_person_per_user')
+    .on(t.subjectUserId, t.claimedBy)
     .where(sql`${t.outcome} is null`),
 ]);
 
@@ -554,7 +569,10 @@ export const subscriptionOriginEnum = pgEnum('subscription_origin', ['new', 'ren
 // A campaign's paid package (tier + billing cycle), one live row per campaign.
 export const subscriptions = pgTable('subscriptions', {
   id: serial('id').primaryKey(),
-  campaignId: integer('campaign_id').references(() => campaigns.id).notNull(), // no cascade, financial record must outlive the campaign row
+  // The PERSON the subscription is for (billing is user-scoped: a leader pays for their
+  // presence on the platform, whatever they are running for). No cascade — a financial
+  // record must outlive any profile row.
+  subjectUserId: integer('subject_user_id').references(() => users.id).notNull(),
   payerId: integer('payer_id').references(() => users.id).notNull(), // candidate or manager who paid
   tier: subscriptionTierEnum('tier').notNull(),
   billingCycle: billingCycleEnum('billing_cycle').notNull(),
@@ -573,9 +591,9 @@ export const subscriptions = pgTable('subscriptions', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
-  // At most one live (active/pending) subscription per campaign; renewals supersede via previousSubscriptionId
-  uniqueIndex('one_live_subscription_per_campaign')
-    .on(t.campaignId)
+  // At most one live (active/pending) subscription per person; renewals supersede via previousSubscriptionId
+  uniqueIndex('one_live_subscription_per_person')
+    .on(t.subjectUserId)
     .where(sql`${t.status} in ('active', 'pending')`),
 ]);
 
@@ -811,10 +829,10 @@ export const reviews = pgTable('reviews', {
 // confirm flow once Daraja credentials land; reference then stores the receipt.)
 export const donationStatusEnum = pgEnum('donation_status', ['pending', 'confirmed', 'failed']);
 
-// One campaign-fundraising donation from a citizen.
+// One campaign-fundraising donation from a citizen — money belongs to the run.
 export const donations = pgTable('donations', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
   donorName: varchar('donor_name', { length: 100 }).notNull(),
   phoneNumber: varchar('phone_number', { length: 20 }),
   amount: integer('amount').notNull(), // KES
@@ -825,7 +843,7 @@ export const donations = pgTable('donations', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  index('donations_leader_idx').on(t.leaderId, t.status),
+  index('donations_campaign_idx').on(t.campaignId, t.status),
 ]);
 
 // 23. BALLOT SIMULATIONS (/vote/2027: a single simulated ballot event per citizen, not one row

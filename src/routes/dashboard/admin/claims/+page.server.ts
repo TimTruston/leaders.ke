@@ -53,7 +53,7 @@ export const actions: Actions = {
 
 		const [claim] = await db
 			.select({
-				leaderId: profileClaims.leaderId,
+				subjectUserId: profileClaims.subjectUserId,
 				claimedBy: profileClaims.claimedBy,
 				evidence: profileClaims.evidence,
 				claimantFirstName: users.firstName,
@@ -66,15 +66,14 @@ export const actions: Actions = {
 
 		const [subject] = await db
 			.select({ firstName: users.firstName, otherNames: users.otherNames })
-			.from(leaders)
-			.innerJoin(users, eq(leaders.userId, users.id))
-			.where(eq(leaders.id, claim.leaderId));
+			.from(users)
+			.where(eq(users.id, claim.subjectUserId));
 		if (!subject) return fail(400, { error: 'Claimed profile not found.' });
 
 		const evidence = (claim.evidence ?? {}) as ClaimEvidence;
 		const leaderToken = evidence.leaderToken ?? randomBytes(16).toString('hex');
 		if (!evidence.leaderToken) {
-			await stageClaimEvidence(claim.leaderId, claim.claimedBy, { leaderToken });
+			await stageClaimEvidence(claim.subjectUserId, claim.claimedBy, { leaderToken });
 		}
 
 		const claimantName = fullName({ firstName: claim.claimantFirstName, otherNames: claim.claimantOtherNames });

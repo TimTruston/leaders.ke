@@ -187,7 +187,7 @@ export async function seedAdminFixture(db: AnyDb) {
 	if (!campaign) {
 		[campaign] = await db
 			.insert(campaigns)
-			.values({ creatorId: leaderUserId, leaderId: aspirantId, title: 'Nairobi Forward', description: BIO })
+			.values({ creatorId: leaderUserId, leaderId: aspirantId, positionId: govId, cycleYear: 2027, title: 'Nairobi Forward', description: BIO })
 			.returning({ id: campaigns.id });
 	}
 	const pillarRows = [
@@ -284,10 +284,10 @@ export async function seedAdminFixture(db: AnyDb) {
 		const [ex] = await db
 			.select({ id: donations.id })
 			.from(donations)
-			.where(and(eq(donations.leaderId, aspirantId), eq(donations.reference, d.reference), isNull(donations.deletedAt)));
+			.where(and(eq(donations.campaignId, campaign.id), eq(donations.reference, d.reference), isNull(donations.deletedAt)));
 		if (ex) continue;
 		await db.insert(donations).values({
-			leaderId: aspirantId,
+			campaignId: campaign.id,
 			donorName: d.donorName,
 			phoneNumber: d.phoneNumber,
 			amount: d.amount,
@@ -311,7 +311,6 @@ export async function seedAdminFixture(db: AnyDb) {
 		await db.insert(managers).values({
 			userId: m.userId,
 			subjectUserId: leaderUserId,
-			campaignId: campaign.id,
 			roles: { admin: true, title: m.title },
 			isActive: true,
 			verifiedAt: new Date()

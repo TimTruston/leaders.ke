@@ -50,7 +50,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 				.slice(0, 2)
 				.toUpperCase(),
 			path: leaderPath(r.users),
-			photoUrl: r.leaders.photoUrl,
+			photoUrl: r.users.photoUrl,
 			party,
 			partyPath: party ? `/parties/${slugify(party)}` : null,
 			status: r.leaders.status,

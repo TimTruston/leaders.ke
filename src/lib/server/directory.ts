@@ -55,7 +55,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			slug: users.slug,
 			firstName: users.firstName,
 			otherNames: users.otherNames,
-			photoUrl: leaders.photoUrl,
+			photoUrl: users.photoUrl,
 			status: leaders.status,
 			region: positions.region,
 			startAt: leaders.startAt,

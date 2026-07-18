@@ -16,18 +16,21 @@ export function isCampaignRole(value: string): boolean {
 }
 
 // Everything held on a manager's `managers.roles` jsonb: their admin flag plus
-// their own sign-off (role, national ID, and ID images) — per manager, never
-// shared, so each team member attests separately.
+// their own sign-off (role title and national ID number) — per manager, never
+// shared, so each team member attests separately. Their ID IMAGES live on the
+// manager's own `users` row (idFrontUrl/idBackUrl): an identity follows the
+// person, so a manager who joins a second team never re-uploads.
 export type ManagerRoles = {
 	admin?: boolean;
 	title?: string;
 	nationalId?: string;
-	idFrontUrl?: string;
-	idBackUrl?: string;
 };
 
 /** A manager's sign-off is complete once they've named their role, national ID,
- * and uploaded both sides of their ID. */
-export function signoffComplete(roles: ManagerRoles | null | undefined): boolean {
-	return !!(roles?.title && roles?.nationalId && roles?.idFrontUrl && roles?.idBackUrl);
+ * and their own users row carries both sides of their ID. */
+export function signoffComplete(
+	roles: ManagerRoles | null | undefined,
+	idImages: { idFrontUrl: string | null; idBackUrl: string | null } | null | undefined
+): boolean {
+	return !!(roles?.title && roles?.nationalId && idImages?.idFrontUrl && idImages?.idBackUrl);
 }

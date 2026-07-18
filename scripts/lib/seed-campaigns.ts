@@ -4,7 +4,7 @@
 // Idempotent: skips a leader who already has a live main campaign (matches the
 // DB's own one-main-campaign-per-leader constraint).
 import { and, eq, isNull } from 'drizzle-orm';
-import { campaigns } from '../../src/lib/server/db/schema';
+import { campaigns, leaders } from '../../src/lib/server/db/schema';
 import { findLeader } from './people';
 import type { AnyDb } from './names';
 import campaignsData from '../../src/lib/data/campaigns.json';
@@ -39,9 +39,13 @@ export async function seedCampaigns(db: AnyDb) {
 			continue;
 		}
 
+		// A campaign is one run at one seat in one cycle — stamped from its term.
+		const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leader.id));
 		await db.insert(campaigns).values({
 			creatorId: leader.userId,
 			leaderId: leader.id,
+			positionId: term.positionId,
+			cycleYear: term.startAt.getFullYear(),
 			title: row.title,
 			description: row.description
 		});

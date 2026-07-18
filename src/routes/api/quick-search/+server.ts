@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				title: positions.title,
 				region: positions.region,
 				status: leaders.status,
-				photoUrl: leaders.photoUrl
+				photoUrl: users.photoUrl
 			})
 			.from(leaders)
 			.innerJoin(users, eq(leaders.userId, users.id))

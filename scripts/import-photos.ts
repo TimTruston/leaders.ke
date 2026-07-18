@@ -1,6 +1,6 @@
 // One-time LOCAL photo pipeline for scraped leader profiles. Production never
 // downloads anything: processed images are git-tracked under static/leaders/ and
-// arrive with the deploy; only leaders.photoUrl (set here) points at them.
+// arrive with the deploy; only users.photoUrl (set here) points at them.
 //
 // Per current leader with no photoUrl:
 //   1. Find their photo source: mzalendo.com 13th-parliament render (MPs, Woman
@@ -10,7 +10,7 @@
 //   3. Square it WITHOUT cutting the face — top-anchored width x width crop (the
 //      head sits in the top square of these 320x400 portraits) — resize to 320,
 //      and step JPEG quality down until the file is <= ~50 KB. Write to
-//      static/leaders/<slug>.jpg and set leaders.photoUrl = /leaders/<slug>.jpg.
+//      static/leaders/<slug>.jpg and set users.photoUrl = /leaders/<slug>.jpg.
 //
 // Never overwrites a non-null photoUrl (manager uploads win) and skips slugs whose
 // processed file already exists, so re-runs are cheap and safe.
@@ -160,9 +160,9 @@ const rows = await db
 	.from(leaders)
 	.innerJoin(users, eq(leaders.userId, users.id))
 	.innerJoin(positions, eq(leaders.positionId, positions.id))
-	// All photo-less rows, former terms included: the name check below stops a seat's
+	// All photo-less people, former terms included: the name check below stops a seat's
 	// CURRENT photo from landing on a different person's former term for that seat.
-	.where(and(isNull(leaders.photoUrl), isNull(leaders.deletedAt)));
+	.where(and(isNull(users.photoUrl), isNull(leaders.deletedAt)));
 
 mkdirSync(ORIGINALS_DIR, { recursive: true });
 mkdirSync(OUT_DIR, { recursive: true });
@@ -212,7 +212,7 @@ for (const row of rows) {
 			writeFileSync(outFile, await processPhoto(original));
 			await sleep(DELAY_MS);
 		}
-		await db.update(leaders).set({ photoUrl: `/leaders/${row.slug}.jpg` }).where(eq(leaders.id, row.leaderId));
+		await db.update(users).set({ photoUrl: `/leaders/${row.slug}.jpg` }).where(eq(users.id, row.userId));
 		imported++;
 	} catch (error) {
 		console.warn(`[photos] ${row.slug}: ${error instanceof Error ? error.message : error} — will retry on next run`);

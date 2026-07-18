@@ -5,7 +5,7 @@ import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
-import { fullName, personIdForLeader, resolveCurrentTerm } from '$lib/server/leader';
+import { fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
 
@@ -57,7 +57,7 @@ export async function resolveClaimRequest(event: RequestEvent) {
 		.from(profileClaims)
 		.where(
 			and(
-				eq(profileClaims.leaderId, resolved.currentTerm.leaders.id),
+				eq(profileClaims.subjectUserId, resolved.row.users.id),
 				eq(profileClaims.claimedBy, domainUser.id),
 				isNull(profileClaims.outcome)
 			)
@@ -67,23 +67,23 @@ export async function resolveClaimRequest(event: RequestEvent) {
 
 /** Merges one tab's values into the claimant's pending claim, creating the claim
  * on the first save — so it appears in the admin queue as soon as anything is staged. */
-export async function stageClaimEvidence(leaderId: number, claimedBy: number, patch: Partial<ClaimEvidence>) {
+export async function stageClaimEvidence(subjectUserId: number, claimedBy: number, patch: Partial<ClaimEvidence>) {
 	const [existing] = await db
 		.select({ id: profileClaims.id, evidence: profileClaims.evidence })
 		.from(profileClaims)
-		.where(and(eq(profileClaims.leaderId, leaderId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
 
 	if (existing) {
 		const evidence = { ...((existing.evidence as ClaimEvidence | null) ?? {}), ...patch };
 		await db.update(profileClaims).set({ evidence }).where(eq(profileClaims.id, existing.id));
 	} else {
-		await db.insert(profileClaims).values({ leaderId, claimedBy, evidence: patch });
+		await db.insert(profileClaims).values({ subjectUserId, claimedBy, evidence: patch });
 	}
 }
 
 export type ClaimRow = {
 	claimId: number;
-	leaderId: number;
+	subjectUserId: number;
 	claimedByUserId: number;
 	claimantName: string;
 	subjectName: string;
@@ -109,12 +109,12 @@ export async function stageClaimVerifiedContact(
 ) {
 	const resolved = await resolveCurrentTerm(slug);
 	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
-	const leaderId = resolved.currentTerm.leaders.id;
+	const subjectUserId = resolved.row.users.id;
 
 	const [existing] = await db
 		.select({ id: profileClaims.id, evidence: profileClaims.evidence })
 		.from(profileClaims)
-		.where(and(eq(profileClaims.leaderId, leaderId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
 
 	const prior = ((existing?.evidence as ClaimEvidence | null) ?? {}).contacts;
 	const contacts = {
@@ -130,7 +130,7 @@ export async function stageClaimVerifiedContact(
 		[channel]: destination,
 		[`${channel}Verified`]: true
 	};
-	await stageClaimEvidence(leaderId, claimedBy, { contacts });
+	await stageClaimEvidence(subjectUserId, claimedBy, { contacts });
 }
 
 /**
@@ -143,7 +143,7 @@ export async function findClaimByLeaderToken(token: string) {
 	const [row] = await db
 		.select({
 			claimId: profileClaims.id,
-			leaderId: profileClaims.leaderId,
+			subjectUserId: profileClaims.subjectUserId,
 			claimantFirstName: users.firstName,
 			claimantOtherNames: users.otherNames
 		})
@@ -154,14 +154,12 @@ export async function findClaimByLeaderToken(token: string) {
 
 	const [subject] = await db
 		.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames })
-		.from(leaders)
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(eq(leaders.id, row.leaderId));
+		.from(users)
+		.where(eq(users.id, row.subjectUserId));
 	if (!subject) return null;
 
 	return {
 		claimId: row.claimId,
-		leaderId: row.leaderId,
 		// The profile's own users row — recorded as the reviewer on approval.
 		subjectUserId: subject.id,
 		subjectName: fullName(subject),
@@ -171,23 +169,23 @@ export async function findClaimByLeaderToken(token: string) {
 
 /** Drops the viewer's pending claim entirely — the "just testing" escape hatch.
  * Decided (approved/rejected) claims stay as history. */
-export async function deletePendingClaim(leaderId: number, claimedBy: number) {
+export async function deletePendingClaim(subjectUserId: number, claimedBy: number) {
 	await db
 		.delete(profileClaims)
-		.where(and(eq(profileClaims.leaderId, leaderId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
 }
 
 /** Submits a claim. Fails if this user already has one pending for this leader. */
-export async function requestClaim(leaderId: number, claimedBy: number, evidence: Record<string, string>) {
+export async function requestClaim(subjectUserId: number, claimedBy: number, evidence: Record<string, string>) {
 	const [existing] = await db
 		.select({ id: profileClaims.id })
 		.from(profileClaims)
 		.where(
-			and(eq(profileClaims.leaderId, leaderId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome))
+			and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome))
 		);
 	if (existing) return { ok: false as const, error: 'You already have a claim pending review for this profile.' };
 
-	await db.insert(profileClaims).values({ leaderId, claimedBy, evidence });
+	await db.insert(profileClaims).values({ subjectUserId, claimedBy, evidence });
 	return { ok: true as const };
 }
 
@@ -198,7 +196,7 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 		db
 			.select({
 				claimId: profileClaims.id,
-				leaderId: profileClaims.leaderId,
+				subjectUserId: profileClaims.subjectUserId,
 				claimedByUserId: profileClaims.claimedBy,
 				requestedAt: profileClaims.requestedAt,
 				outcome: profileClaims.outcome,
@@ -215,10 +213,9 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 	]);
 
 	const subjectRows = await db
-		.select({ leaderId: leaders.id, userId: users.id, firstName: users.firstName, otherNames: users.otherNames })
-		.from(leaders)
-		.innerJoin(users, eq(leaders.userId, users.id));
-	const subjectByLeaderId = new Map(subjectRows.map((r) => [r.leaderId, r]));
+		.select({ userId: users.id, firstName: users.firstName, otherNames: users.otherNames })
+		.from(users);
+	const subjectByUserId = new Map(subjectRows.map((r) => [r.userId, r]));
 
 	// The leader's best email on file — prefills the admin "Email the leader" form.
 	// Verified beats sourced (see contacts.source) beats any other live row.
@@ -232,10 +229,10 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 	}
 
 	const claims = rows.map((r) => {
-		const subject = subjectByLeaderId.get(r.leaderId);
+		const subject = subjectByUserId.get(r.subjectUserId);
 		return {
 			claimId: r.claimId,
-			leaderId: r.leaderId,
+			subjectUserId: r.subjectUserId,
 			claimedByUserId: r.claimedByUserId,
 			claimantName: fullName({ firstName: r.claimantFirstName, otherNames: r.claimantOtherNames }),
 			subjectName: subject ? fullName(subject) : 'Unknown',
@@ -257,10 +254,7 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
 	if (!claim) return { ok: false as const, error: 'Claim not found.' };
 
-	// A claim targets a specific candidacy term, but the manager row it grants is
-	// person-scoped: the claimant manages the whole person behind that term.
-	const subjectUserId = await personIdForLeader(claim.leaderId);
-	if (!subjectUserId) return { ok: false as const, error: 'Claimed profile not found.' };
+	const subjectUserId = claim.subjectUserId;
 
 	if (outcome === 'approved') {
 		const [existing] = await db
@@ -295,9 +289,8 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 	// Tell the claimant (in-app notification + email) what was decided and why.
 	const [subject] = await db
 		.select({ firstName: users.firstName, otherNames: users.otherNames })
-		.from(leaders)
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(eq(leaders.id, claim.leaderId));
+		.from(users)
+		.where(eq(users.id, claim.subjectUserId));
 	const profileName = subject ? fullName(subject) : 'the profile';
 	await notifyUser(claim.claimedBy, {
 		kind: 'claim',

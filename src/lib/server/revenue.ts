@@ -36,9 +36,7 @@ export async function listSubscriptions(): Promise<SubscriptionRow[]> {
 			leaderOtherNames: users.otherNames
 		})
 		.from(subscriptions)
-		.innerJoin(campaigns, eq(subscriptions.campaignId, campaigns.id))
-		.innerJoin(leaders, eq(campaigns.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(subscriptions.subjectUserId, users.id))
 		.innerJoin(payer, eq(subscriptions.payerId, payer.id))
 		.orderBy(desc(subscriptions.createdAt));
 

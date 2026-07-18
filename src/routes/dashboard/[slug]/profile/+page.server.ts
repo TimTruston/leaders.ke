@@ -19,7 +19,8 @@ import type { Actions, PageServerLoad } from './$types';
 // Election day anchors every 2027 aspirant profile's term start.
 const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
 
-// The campaign's public documents, uploaded from the Profile tab onto the leaders row.
+// Documents from the Profile tab: the photo lands on the PERSON (users.photoUrl —
+// it follows them across terms); the IEBC certificate is per-candidacy (leaders row).
 const DOC_COLUMN_BY_KIND = { photo: 'photoUrl', 'iebc-certificate': 'iebcCertificateUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
@@ -106,7 +107,7 @@ export const load: PageServerLoad = async (event) => {
 			verified: !!ctx?.leader.verifiedAt
 		},
 		// Documentation (photo + IEBC certificate) is edited on this tab now.
-		photoUrl: ctx?.leader.photoUrl ?? null,
+		photoUrl: ctx?.profileUser.photoUrl ?? null,
 		iebcCertificateUrl: ctx?.leader.iebcCertificateUrl ?? null,
 		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
 	};
@@ -340,10 +341,16 @@ export const actions: Actions = {
 		}
 		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
 
-		await db
-			.update(leaders)
-			.set({ ...updates, updatedAt: new Date() })
-			.where(eq(leaders.id, ctx.leader.id));
+		const { photoUrl, ...leaderUpdates } = updates;
+		if (photoUrl) {
+			await db.update(users).set({ photoUrl }).where(eq(users.id, ctx.profileUser.id));
+		}
+		if (Object.keys(leaderUpdates).length) {
+			await db
+				.update(leaders)
+				.set({ ...leaderUpdates, updatedAt: new Date() })
+				.where(eq(leaders.id, ctx.leader.id));
+		}
 		return { uploaded: true };
 	},
 
@@ -378,7 +385,7 @@ export const actions: Actions = {
 		// completed their own sign-off (role + national ID + ID images) on the Team tab.
 		const settings = await getPlatformSettings();
 		const managerRows = await db
-			.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified })
+			.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified, idFrontUrl: users.idFrontUrl, idBackUrl: users.idBackUrl })
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
@@ -391,7 +398,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles)).length;
+		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
 		if (completedSignoffs < settings.requiredSignoffs) {
 			return fail(400, {
 				verificationError: `${settings.requiredSignoffs} completed team sign-off${settings.requiredSignoffs === 1 ? '' : 's'} required — finish your sign-off on the Team tab before submitting.`

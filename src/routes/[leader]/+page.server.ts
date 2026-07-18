@@ -135,7 +135,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.join('')
 				.slice(0, 2)
 				.toUpperCase(),
-			photoUrl: currentTerm.leaders.photoUrl,
+			photoUrl: row.users.photoUrl,
 			party: null as string | null,
 			regionLabel: currentTerm.positions.region,
 			positionTitle: currentTerm.positions.title,

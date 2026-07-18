@@ -75,7 +75,7 @@ export const actions: Actions = {
 		const socials: Record<string, string> = {};
 		for (const s of socialEntries) if (s.value?.trim()) socials[s.kind] = s.value.trim();
 
-		await stageClaimEvidence(resolved.currentTerm.leaders.id, domainUser.id, {
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
 			contacts: {
 				address,
 				sms: phones.sms,

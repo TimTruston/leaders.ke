@@ -1,8 +1,9 @@
 import { fail } from '@sveltejs/kit';
 import { and, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { donations, leaders } from '$lib/server/db/schema';
+import { campaigns, donations } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
+import { fullName, getOrCreateMainCampaign } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 // Fundraising desk: goal + donation ledger. Donations arrive from the public
@@ -11,7 +12,9 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
 
-	const scope = and(eq(donations.leaderId, ctx.leader.id), isNull(donations.deletedAt));
+	// Fundraising belongs to the run: goal + ledger live on the main campaign.
+	const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
+	const scope = and(eq(donations.campaignId, campaign.id), isNull(donations.deletedAt));
 
 	const [rows, [confirmedRow]] = await Promise.all([
 		db.select().from(donations).where(scope).orderBy(desc(donations.createdAt)),
@@ -22,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 	]);
 
 	return {
-		goal: ctx.leader.fundraisingGoal,
+		goal: campaign.fundraisingGoal,
 		raised: Number(confirmedRow.total ?? 0),
 		donations: rows.map((d) => ({
 			id: d.id,
@@ -43,10 +46,11 @@ export const actions: Actions = {
 		const goal = Number(form.get('goal') ?? 0);
 		if (!Number.isFinite(goal) || goal < 0) return fail(400, { error: 'Enter a valid goal in KES.' });
 
+		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
-			.update(leaders)
+			.update(campaigns)
 			.set({ fundraisingGoal: Math.round(goal), updatedAt: new Date() })
-			.where(eq(leaders.id, ctx.leader.id));
+			.where(eq(campaigns.id, campaign.id));
 		return { saved: true };
 	},
 
@@ -56,10 +60,11 @@ export const actions: Actions = {
 		const donationId = Number(form.get('donationId') ?? 0);
 		const reference = String(form.get('reference') ?? '').trim();
 
+		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
 			.update(donations)
 			.set({ status: 'confirmed', reference: reference || null, updatedAt: new Date() })
-			.where(and(eq(donations.id, donationId), eq(donations.leaderId, ctx.leader.id)));
+			.where(and(eq(donations.id, donationId), eq(donations.campaignId, campaign.id)));
 		return { saved: true };
 	},
 
@@ -68,10 +73,11 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const donationId = Number(form.get('donationId') ?? 0);
 
+		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
 			.update(donations)
 			.set({ status: 'failed', updatedAt: new Date() })
-			.where(and(eq(donations.id, donationId), eq(donations.leaderId, ctx.leader.id)));
+			.where(and(eq(donations.id, donationId), eq(donations.campaignId, campaign.id)));
 		return { saved: true };
 	}
 };
