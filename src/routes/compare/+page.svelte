@@ -48,7 +48,7 @@
 	<title>Compare Leaders — leaders.ke</title>
 	<meta
 		name="description"
-		content="Compare Leaders. A candidate vs current, same seat across regions, same seat across regimes..."
+		content="Compare Leaders. A candidate vs current, same seat across regions, regimes..."
 	/>
 </svelte:head>
 
@@ -56,7 +56,7 @@
 	<div class="">
 		<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">Compare Leaders</h1>
 		<p class="mt-3 text-base leading-relaxed">
-			Pick any two leaders - a candidate vs current, same seat across regions, same seat across regimes...
+			Pick any two leaders - a candidate vs current, same seat across regions, regimes...
 		</p>
 	</div>
 

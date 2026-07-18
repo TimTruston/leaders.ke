@@ -46,19 +46,15 @@
 </svelte:head>
 
 <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-	<div class="flex flex-wrap items-end justify-between gap-4">
-		<div class="">
-			<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">The Leader Rank</h1>
-			<p class="mt-3 text-base leading-relaxed">
-				Ranked by a transparent engagement score: followers + 5× vote pledges + 10× public posts +
-				100× delivered manifesto pillars.
-			</p>
-		</div>
-		<div class="flex flex-wrap items-center gap-4">
+	<div class="flex flex-col gap-2">
+		<div class="flex items-center justify-between gap-4">
 			<!-- Leader quick-jump (leaders-only groups) beside the position pill bar -->
-			<QuickSearch include={['Executive', 'Parliament', 'MCAs']} expand={false} placeholder="Find a leader…" />
+			<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">The Leader Rank</h1>
 			<PositionBadges positions={RANK_POSITIONS.map((p) => p.title)} value={data.title} {hrefFor} />
 		</div>
+		<p class="mt-3 text-base leading-relaxed">
+			Ranked by manifesto delivery, number of votes pledged, followers and review scores.
+		</p>
 	</div>
 
 	<div class="mt-8">

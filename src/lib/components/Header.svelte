@@ -12,7 +12,7 @@
 
 	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
 	const links = [
-		{ href: '/presidents', label: 'Leaders' },
+		{ href: '/presidents', label: 'All' },
 		{ href: '/rank/presidents', label: 'Ranks' },
 		{ href: '/compare', label: 'Compare' },
 		{ href: '/features', label: 'Features' },
@@ -43,7 +43,11 @@
 					{/each}
 				</nav>
 			{/if}
-			<QuickSearch bind:open={searchOpen} hotkey />
+			<!-- Only stretch while the search is open (it then covers the nav's space, capped and
+			     centered); closed, the span shrink-wraps so nav + search center as one group. -->
+			<span class="hidden lg:flex {searchOpen ? 'w-full justify-center' : ''}">
+				<QuickSearch bind:open={searchOpen} hotkey />
+			</span>
 		</div>
 
 		<div class="flex items-center gap-2">
@@ -99,7 +103,7 @@
 
 	<!-- Mobile nav panel -->
 	{#if menuOpen}
-		<nav class="border-t border-border bg-surface md:hidden">
+		<nav class="border-t border-border bg-surface lg:hidden">
 			<div class="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6">
 				{#each links as link (link.href)}
 					<a
@@ -122,4 +126,9 @@
 			</div>
 		</nav>
 	{/if}
+	<!-- Mobile: the search gets its own full-width row under the bar (a block wrapper,
+	     and expand={false} so the input is always w-full instead of shrink-until-focused). -->
+	<div class="block px-4 pb-3 lg:hidden">
+		<QuickSearch bind:open={searchOpen} expand={false} />
+	</div>
 </header>
