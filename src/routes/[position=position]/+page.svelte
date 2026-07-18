@@ -3,6 +3,7 @@
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import PositionBadges from '$lib/components/PositionBadges.svelte';
+	import RegimeLinks from '$lib/components/RegimeLinks.svelte';
 	import SearchFilter from '$lib/components/SearchFilter.svelte';
 	import { pluralPositionTitle, POSITION_SLUG_BY_TITLE } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
@@ -27,16 +28,25 @@
 		query = data.filters.q;
 	});
 
-	function directoryUrl(page: number, q = query) {
+	function directoryUrl(page: number, q = query, regime = data.filters.regime) {
 		const params = new URLSearchParams();
 		if (region) params.set('region', region);
 		if (party) params.set('party', party);
 		if (status) params.set('status', status);
 		if (q.trim()) params.set('q', q.trim());
+		if (regime) params.set('regime', String(regime));
 		if (page > 1) params.set('page', String(page));
 		const qs = params.toString();
 		return `/${slug}${qs ? `?${qs}` : ''}`;
 	}
+
+	// Regime links reslice the directory to that year's holders; the active
+	// cycle (2027) is the default today-view (no ?regime param).
+	const regimeOptions = $derived([
+		{ year: data.cycle, label: String(data.cycle) },
+		...data.directory.regimeOptions.map((y: number) => ({ year: y, label: String(y) }))
+	]);
+	const regimeUrl = (year: number) => directoryUrl(1, query, year === data.cycle ? null : year);
 
 	// Dropdown/toggle changes navigate immediately…
 	$effect(() => {
@@ -80,9 +90,18 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 			<h1 class="text-3xl font-extrabold tracking-tight w-fit text-balance">{pluralPositionTitle(data.positionTitle)}</h1>
 			<PositionBadges positions={PILL_TITLES} value={data.positionTitle} {hrefFor} />
 		</div>
-		<p class="flex-1 mt-2 text-sm leading-relaxed text-muted">
-			Verified {pluralPositionTitle(data.positionTitle)} and 2027 contestants.
-		</p>
+		<div class="mt-4 flex flex-col flex-wrap sm:flex-row justify-between gap-2 items-start">
+			<p class="flex-1 mt-2 text-sm leading-relaxed text-muted whitespace-nowrap">
+				Verified {pluralPositionTitle(data.positionTitle)} and 2027 contestants.
+			</p>
+			<RegimeLinks
+				regimes={regimeOptions}
+				hrefFor={regimeUrl}
+				cycle={data.cycle}
+				regime={data.filters.regime ?? data.cycle}
+				startYearsOnly
+			/>
+		</div>
 	</div>
 
 

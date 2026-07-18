@@ -16,6 +16,9 @@ export type DirectoryFilters = {
 	party: string;
 	status: '' | 'current' | 'aspirant';
 	query: string;
+	/** Regime year: reslice the directory to who held the position that year
+	 * (term covering it); null = today's view (currents + aspirants preferred). */
+	regime: number | null;
 };
 
 export type DirectoryCard = {
@@ -63,21 +66,36 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
 
-	// One card per person: several `leaders` rows (Track Record) share one slug —
-	// prefer the non-'former' row, else the most recent term.
+	// Regime options: every year a recorded (non-aspirant) term started, newest first.
+	const regimeOptions = [
+		...new Set(rows.filter((r) => r.status !== 'aspirant').map((r) => r.startAt.getFullYear()))
+	].sort((a, b) => b - a);
+
+	// One card per person. Today's view prefers the non-'former' row (else the
+	// most recent term); a regime year reslices to the terms COVERING that year,
+	// each person wearing that era's seat.
+	const eligible = f.regime
+		? rows.filter(
+				(r) =>
+					r.status !== 'aspirant' &&
+					r.startAt.getFullYear() <= f.regime! &&
+					(!r.endAt || r.endAt.getFullYear() >= f.regime!)
+			)
+		: rows;
 	const bySlug = new Map<string, (typeof rows)[number]>();
-	for (const r of rows) {
+	for (const r of eligible) {
 		if (!r.slug) continue;
 		const existing = bySlug.get(r.slug);
-		const better =
-			!existing ||
-			(existing.status === 'former' &&
-				(r.status !== 'former' || (r.endAt?.getTime() ?? 0) > (existing.endAt?.getTime() ?? 0)));
+		const better = f.regime
+			? !existing || r.startAt.getTime() > existing.startAt.getTime()
+			: !existing ||
+				(existing.status === 'former' &&
+					(r.status !== 'former' || (r.endAt?.getTime() ?? 0) > (existing.endAt?.getTime() ?? 0)));
 		if (better) bySlug.set(r.slug, r);
 	}
 	const people = [...bySlug.values()];
 	if (people.length === 0) {
-		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[] };
+		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[], regimeOptions };
 	}
 	const ids = people.map((p) => p.leaderId);
 
@@ -147,5 +165,5 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		} satisfies DirectoryCard;
 	});
 
-	return { total: sorted.length, leaders: cards, regionOptions, partyOptions };
+	return { total: sorted.length, leaders: cards, regionOptions, partyOptions, regimeOptions };
 }

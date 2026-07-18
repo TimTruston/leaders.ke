@@ -3,6 +3,7 @@ import { isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { positions } from '$lib/server/db/schema';
 import { positionSlug } from '$lib/utils/seat';
+import { ACTIVE_CYCLE } from '$lib/server/leader';
 import { listPositionDirectory } from '$lib/server/directory';
 import type { PageServerLoad } from './$types';
 
@@ -20,11 +21,14 @@ export const load: PageServerLoad = async ({ params, url, setHeaders }) => {
 
 	// Directory filters ride the URL so pages are shareable and back/forward-safe.
 	const rawStatus = url.searchParams.get('status') ?? '';
+	const rawRegime = url.searchParams.get('regime') ?? '';
 	const filters = {
 		region: url.searchParams.get('region') ?? '',
 		party: url.searchParams.get('party') ?? '',
 		status: (rawStatus === 'current' || rawStatus === 'aspirant' ? rawStatus : '') as '' | 'current' | 'aspirant',
 		q: url.searchParams.get('q') ?? '',
+		// A 4-digit year reslices the directory to that regime's holders.
+		regime: /^\d{4}$/.test(rawRegime) ? Number(rawRegime) : null,
 		page: Math.max(1, Number(url.searchParams.get('page') ?? 1) || 1)
 	};
 	const directory = await listPositionDirectory(positionTitle, {
@@ -33,11 +37,12 @@ export const load: PageServerLoad = async ({ params, url, setHeaders }) => {
 		region: filters.region,
 		party: filters.party,
 		status: filters.status,
-		query: filters.q
+		query: filters.q,
+		regime: filters.regime
 	});
 
 	// Browser-cache briefly so pill hops back to a seen position render from cache.
 	setHeaders({ 'cache-control': 'private, max-age=60' });
 
-	return { positionTitle, directory, filters, pageSize: PAGE_SIZE };
+	return { positionTitle, directory, filters, pageSize: PAGE_SIZE, cycle: ACTIVE_CYCLE };
 };
