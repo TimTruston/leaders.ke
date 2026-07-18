@@ -31,3 +31,11 @@ test-results
 # Custom
 .uploads/
 .ignore/
+
+# Seeder-generated conflict reports: rewritten on every `db:seed:full` (including
+# on production during deploy), so tracking them makes `git pull` fail after a
+# seed. The reviewable copies live in the Drive docs/ folder, not here.
+scripts/out/seed-conflicts.md
+scripts/out/seed-conflicts.json
+scripts/out/seed-former-conflicts.md
+scripts/out/seed-former-conflicts.json
