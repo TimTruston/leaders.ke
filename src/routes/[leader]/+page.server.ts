@@ -3,6 +3,7 @@ import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, experience, followers, managers, pillars, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, getDomainUser, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import {
 	getFlaggedReviewCounts,
 	getMyReview,
@@ -117,7 +118,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.map((t) => ({
 			positionTitle: t.positions.title,
 			regionLabel: t.positions.region,
-			seatPath: `/${slugify(t.positions.title)}/${slugify(t.positions.region)}`,
+			seatPath: `/${positionSlug(t.positions.title)}/${slugify(t.positions.region)}`,
 			status: t.leaders.status,
 			note: t.leaders.description,
 			startYear: t.leaders.startAt.getFullYear(),
@@ -218,12 +219,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			positionTitle: currentTerm.positions.title,
 			// Single-region national seats (President) omit the region segment, matching /president.
 			regionLabel: currentTerm.positions.boundary === 'Country' ? null : currentTerm.positions.region,
-			positionPath: `/${slugify(currentTerm.positions.title)}`,
+			positionPath: `/${positionSlug(currentTerm.positions.title)}`,
+			// Country-wide seats' hub lives at the SINGULAR slug (/president).
 			seatPath:
 				currentTerm.positions.boundary === 'Country'
-					? `/${slugify(currentTerm.positions.title)}`
-					: `/${slugify(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`,
-			seatCyclePath: `/${slugify(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`
+					? `/${SINGULAR_SLUG_BY_TITLE[currentTerm.positions.title]}`
+					: `/${positionSlug(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`,
+			seatCyclePath: `/${positionSlug(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`
 		}
 	};
 };

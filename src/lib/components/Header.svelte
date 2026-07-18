@@ -12,7 +12,7 @@
 
 	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
 	const links = [
-		{ href: '/leaders', label: 'Leaders' },
+		{ href: '/presidents', label: 'Leaders' },
 		{ href: '/rank/presidents', label: 'Ranks' },
 		{ href: '/compare', label: 'Compare' },
 		{ href: '/features', label: 'Features' },

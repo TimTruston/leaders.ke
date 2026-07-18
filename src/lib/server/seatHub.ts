@@ -13,12 +13,18 @@ import {
 } from '$lib/server/leader';
 import { counties, findCountyBySlug, findConstituencyBySlug, findWardBySlug, geoSlug } from '$lib/data/geo';
 
-export async function loadSeatHub(position: string, region: string) {
+export async function loadSeatHub(position: string, region: string, regimeYear?: number) {
 	const positionRow = await findPositionByPath(position, region);
 
 	if (!positionRow) return null;
 
 	const rows = await listLeadersForSeat(position, region);
+
+	// Which regime this hub shows: the active cycle by default, or a past
+	// election year (from /[position]/[region]/[year]) — same component, the
+	// seat as it stood under that regime.
+	const regime = regimeYear ?? ACTIVE_CYCLE;
+	const isActiveRegime = regime === ACTIVE_CYCLE;
 
 	const leaderIds = rows.map((r) => r.leaders.id);
 	const partyRows = leaderIds.length
@@ -51,8 +57,17 @@ export async function loadSeatHub(position: string, region: string) {
 		};
 	};
 
-	const currentRow = rows.find((r) => r.leaders.status === 'current');
-	const dbContestants = rows.filter((r) => r.leaders.status === 'aspirant').map(toCard);
+	// Active regime: today's holder + the 2027 aspirants (an incumbent seeking
+	// re-election appears once they hold an aspirant term row for the cycle).
+	// Past regime: the term(s) that started that year — who won that cycle.
+	const currentRow = isActiveRegime
+		? rows.find((r) => r.leaders.status === 'current')
+		: rows.find((r) => r.leaders.status !== 'aspirant' && r.leaders.startAt.getFullYear() === regime);
+	const dbContestants = (
+		isActiveRegime
+			? rows.filter((r) => r.leaders.status === 'aspirant')
+			: rows.filter((r) => r.leaders.status !== 'aspirant' && r.leaders.startAt.getFullYear() === regime)
+	).map(toCard);
 
 	// Manifesto delivery rollup for the seat's current holder (same shape the
 	// public leader profile shows), so the hub can score the incumbent.
@@ -118,6 +133,16 @@ export async function loadSeatHub(position: string, region: string) {
 		];
 	}
 
+	// Regime line options: the active cycle plus each recorded term's start year
+	// (deduped — a by-election shares its era's entry), most recent first.
+	const seenYears = new Set<number>();
+	const regimes = [
+		{ year: ACTIVE_CYCLE, label: String(ACTIVE_CYCLE) },
+		...history
+			.filter((t) => (seenYears.has(t.startYear) ? false : (seenYears.add(t.startYear), true)))
+			.map((t) => ({ year: t.startYear, label: `${t.startYear}-${t.endYear ?? 'Now'}` }))
+	];
+
 	return {
 		positionTitle,
 		regionLabel,
@@ -128,6 +153,8 @@ export async function loadSeatHub(position: string, region: string) {
 		contestants: dbContestants,
 		history,
 		cycle: ACTIVE_CYCLE,
+		regime,
+		regimes,
 		basePath: seatPath,
 		seatVoters,
 		county: county

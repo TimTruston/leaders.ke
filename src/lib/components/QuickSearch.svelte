@@ -31,7 +31,7 @@
 	} = $props();
 
 	const PLATFORM: Item[] = [
-		{ label: 'All Leaders', sub: 'Platform', path: '/leaders' },
+		{ label: 'All Leaders', sub: 'Platform', path: '/presidents' },
 		{ label: 'Leaders Rank', sub: 'Platform', path: '/rank/presidents' },
 		{ label: 'Compare Leaders', sub: 'Platform', path: '/compare' },
 		{ label: '2027 Vote Simulator', sub: 'Platform', path: '/vote/2027' },
@@ -40,13 +40,13 @@
 
 	// Regions: counties, constituencies and wards, each linking to its seat hub.
 	const REGIONS: Item[] = counties.flatMap((county) => [
-		{ label: county.name, sub: 'County', path: `/governor/${geoSlug(county.name)}` },
+		{ label: county.name, sub: 'County', path: `/governors/${geoSlug(county.name)}` },
 		...county.constituencies.flatMap((constituency) => [
-			{ label: constituency.name, sub: `Constituency, ${county.name}`, path: `/mp/${geoSlug(constituency.name)}` },
+			{ label: constituency.name, sub: `Constituency, ${county.name}`, path: `/mps/${geoSlug(constituency.name)}` },
 			...constituency.wards.map((ward) => ({
 				label: ward.name,
 				sub: `Ward, ${constituency.name}`,
-				path: `/mca/${geoSlug(ward.name)}`
+				path: `/mcas/${geoSlug(ward.name)}`
 			}))
 		])
 	]);

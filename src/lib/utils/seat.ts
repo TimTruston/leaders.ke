@@ -1,7 +1,33 @@
 // Client-safe seat-page URL builder for the public taxonomy
 // (/[position]/[region], see src/params/position.ts). Kept out of
 // $lib/server/leader so components can link seats without pulling server-only env.
-const SLUG_BY_TITLE: Record<string, string> = {
+// Canonical position slugs are PLURAL (/governors/mombasa); the singular forms
+// 301 to them (src/routes/[position=positionSingular]).
+export const POSITION_SLUG_BY_TITLE: Record<string, string> = {
+	President: 'presidents',
+	'Deputy President': 'deputy-presidents',
+	Governor: 'governors',
+	Senator: 'senators',
+	'Woman Rep': 'women-reps',
+	MP: 'mps',
+	MCA: 'mcas'
+};
+
+/** Singular → canonical plural, for the singular URL routes. Multi-region
+ * singulars 301 to the plural directory; Country-wide ones (/president) render
+ * the seat hub directly — the singular IS the seat. */
+export const SINGULAR_POSITION_SLUGS: Record<string, string> = {
+	president: 'presidents',
+	'deputy-president': 'deputy-presidents',
+	governor: 'governors',
+	senator: 'senators',
+	'woman-rep': 'women-reps',
+	mp: 'mps',
+	mca: 'mcas'
+};
+
+/** Title → singular slug (the hub URL for Country-wide seats, e.g. /president). */
+export const SINGULAR_SLUG_BY_TITLE: Record<string, string> = {
 	President: 'president',
 	'Deputy President': 'deputy-president',
 	Governor: 'governor',
@@ -10,6 +36,9 @@ const SLUG_BY_TITLE: Record<string, string> = {
 	MP: 'mp',
 	MCA: 'mca'
 };
+
+/** The canonical URL slug for a position title, or null for unknown titles. */
+export const positionSlug = (title: string): string | null => POSITION_SLUG_BY_TITLE[title] ?? null;
 
 const slugify = (input: string) =>
 	input
@@ -21,10 +50,11 @@ const slugify = (input: string) =>
 		.replace(/(^-|-$)/g, '');
 
 /** The seat hub path for a (position, region) pair, or null when the title isn't
- * a known seat. Country-wide seats (region "Kenya") live at /<position> alone. */
+ * a known seat. Country-wide seats (region "Kenya") live at the SINGULAR
+ * /<position> (e.g. /president — a single seat, not a directory). */
 export function seatPath(positionTitle?: string, region?: string): string | null {
-	const slug = positionTitle ? SLUG_BY_TITLE[positionTitle] : undefined;
+	const slug = positionTitle ? POSITION_SLUG_BY_TITLE[positionTitle] : undefined;
 	if (!slug) return null;
-	if (!region || region === 'Kenya') return `/${slug}`;
+	if (!region || region === 'Kenya') return `/${SINGULAR_SLUG_BY_TITLE[positionTitle!]}`;
 	return `/${slug}/${slugify(region)}`;
 }

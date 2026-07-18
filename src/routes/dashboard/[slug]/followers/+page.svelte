@@ -8,7 +8,7 @@
 	let { data, form }: PageProps = $props();
 
 	// The public profile URL is where followers sign up; surfaced here for sharing.
-	const publicPath = $derived(page.data.leaderContext?.publicPath ?? '/leaders');
+	const publicPath = $derived(page.data.leaderContext?.publicPath ?? '/presidents');
 	const leaderId = $derived(page.data.leaderContext?.leaderId ?? 0);
 	const county = $derived(page.data.leaderContext?.region ?? null);
 

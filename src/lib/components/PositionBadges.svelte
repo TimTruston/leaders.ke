@@ -43,8 +43,8 @@
 
 {#snippet label(p: string)}
 	{#if p !== '' && SHORT[p]}
-		<span class="sm:hidden">{SHORT[p]}</span>
-		<span class="hidden sm:inline">{p}</span>
+		<span class="lg:hidden">{SHORT[p]}</span>
+		<span class="hidden lg:inline">{p}</span>
 	{:else}
 		{p === '' ? 'All' : p}
 	{/if}

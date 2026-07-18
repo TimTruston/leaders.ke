@@ -72,7 +72,7 @@
 						: 'Follow a leader from their public page to see their updates here.'}
 				</p>
 				<a
-					href="/leaders"
+					href="/presidents"
 					class="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
 				>
 					Browse leaders

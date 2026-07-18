@@ -18,16 +18,33 @@
 </svelte:head>
 
 <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-	<nav class="text-sm text-muted" aria-label="Breadcrumb">
-		{#each data.breadcrumb as crumb, i (crumb.path + i)}
-			{#if i > 0}<span class="mx-1">/</span>{/if}
-			{#if i === data.breadcrumb.length - 1}
-				<span>{crumb.label}</span>
-			{:else}
-				<a href={crumb.path} class="hover:text-heading hover:underline">{crumb.label}</a>
-			{/if}
-		{/each}
-	</nav>
+	<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+		<nav class="text-sm text-muted" aria-label="Breadcrumb">
+			{#each data.breadcrumb as crumb, i (crumb.path + i)}
+				{#if i > 0}<span class="mx-1">/</span>{/if}
+				{#if i === data.breadcrumb.length - 1}
+					<span>{crumb.label}</span>
+				{:else}
+					<a href={crumb.path} class="hover:text-heading hover:underline">{crumb.label}</a>
+				{/if}
+			{/each}
+		</nav>
+
+		<!-- Regime line: subtle year-range links; each loads this seat's hub for that regime -->
+		<p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
+			<span>Regimes:</span>
+			{#each data.regimes as r (r.year)}
+				<a
+					href={r.year === data.cycle ? data.basePath : `${data.basePath}/${r.year}`}
+					class="transition hover:text-heading {r.year === data.regime
+						? 'font-semibold text-primary underline underline-offset-4'
+						: ''}"
+				>
+					{r.label}
+				</a>
+			{/each}
+		</p>
+	</div>
 
 	<div class="mt-6 lg:mt-8 flex flex-wrap items-end justify-between gap-4">
 		<div>
@@ -58,7 +75,8 @@
 	<!-- Current and Salary-->
 	<div class="mt-6 lg:mt-8 flex flex-col gap-4 lg:gap-4 lg:flex-row">
 		<div class="flex-1">
-			<h2 class="text-xl font-bold text-heading mb-4">Current</h2>
+			<!-- Past regimes show that era's holder, not today's current. -->
+			<h2 class="text-xl font-bold text-heading mb-4">{data.regime === data.cycle ? 'Current' : `${data.regime} Holder`}</h2>
 			{#if data.current}
 				<!-- Stretched name link keeps the whole card clickable while the party
 				stays its own link on top — nesting an <a> in an <a> is invalid HTML. -->
@@ -106,10 +124,14 @@
 	<!-- Contestants -->
 	<div class="mt-6 lg:mt-8">
 		<div class="flex items-end justify-between gap-2">
-			<h2 class="text-xl font-bold text-heading">{data.cycle} Candidates</h2>
-			<a href="{data.basePath}/{data.cycle}" class="text-sm font-semibold text-primary hover:underline">
-				Compare all →
-			</a>
+			<h2 class="text-xl font-bold text-heading">
+				{data.regime} Candidates
+			</h2>
+			{#if data.regime === data.cycle}
+				<a href="{data.basePath}/{data.cycle}" class="text-sm font-semibold text-primary hover:underline">
+					Compare all →
+				</a>
+			{/if}
 		</div>
 
 		{#if data.contestants.length > 0}

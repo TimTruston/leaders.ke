@@ -9,6 +9,7 @@ import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getPlatformSettings } from '$lib/server/settings';
+import { positionSlug } from '$lib/utils/seat';
 
 /**
  * Creates the leader's own `users` row, separate from whichever citizen account
@@ -250,11 +251,11 @@ export function campaignPath(leader: { slug: string | null }, year: number = ACT
 	return `${leaderPath(leader)}/${year}`;
 }
 
-/** Resolves /[position]/[region] to its positions row (or null). */
+/** Resolves /[position]/[region] (canonical plural position slug) to its positions row (or null). */
 export async function findPositionByPath(position: string, region: string) {
 	const rows = await db.select().from(positions).where(isNull(positions.deletedAt));
 	return (
-		rows.find((p) => slugify(p.title) === position && slugify(p.region) === region) ?? null
+		rows.find((p) => positionSlug(p.title) === position && slugify(p.region) === region) ?? null
 	);
 }
 
@@ -304,7 +305,7 @@ export async function listLeadersForSeat(position: string, region: string) {
 		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
 
 	return rows.filter(
-		(r) => slugify(r.positions.title) === position && slugify(r.positions.region) === region
+		(r) => positionSlug(r.positions.title) === position && slugify(r.positions.region) === region
 	);
 }
 

@@ -247,7 +247,7 @@ export async function listInvitesForEmail(
 			token: r.token,
 			role: r.role,
 			leaderName: fullName(r),
-			leaderPath: r.slug ? `/${r.slug}` : '/leaders',
+			leaderPath: r.slug ? `/${r.slug}` : '/presidents',
 			positionTitle: r.positionTitle,
 			region: r.region,
 			createdAt: r.createdAt.toISOString()

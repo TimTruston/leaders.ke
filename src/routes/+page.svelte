@@ -172,7 +172,7 @@
 					Claim your profile
 				</a>
 				<a
-					href="/leaders"
+					href="/presidents"
 					class="rounded-full border border-border bg-surface px-6 py-3 font-semibold text-heading transition hover:bg-surface-2"
 				>
 					Explore leaders
