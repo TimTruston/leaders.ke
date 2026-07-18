@@ -2,6 +2,7 @@
 	import Avatar from '$lib/components/Avatar.svelte';
 	import DeliveryScore from '$lib/components/DeliveryScore.svelte';
 	import LeaderCard from '$lib/components/LeaderCard.svelte';
+	import RegimeLinks from '$lib/components/RegimeLinks.svelte';
 	import type { SeatHubData } from '$lib/server/seatHub';
 
 	let { data }: { data: SeatHubData } = $props();
@@ -30,20 +31,13 @@
 			{/each}
 		</nav>
 
-		<!-- Regime line: subtle year-range links; each loads this seat's hub for that regime -->
-		<p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-			<span>Regimes:</span>
-			{#each data.regimes as r (r.year)}
-				<a
-					href={r.year === data.cycle ? data.basePath : `${data.basePath}/${r.year}`}
-					class="transition hover:text-heading {r.year === data.regime
-						? 'font-semibold text-primary underline underline-offset-4'
-						: ''}"
-				>
-					{r.label}
-				</a>
-			{/each}
-		</p>
+		<RegimeLinks
+			regimes={data.regimes}
+			basePath={data.basePath}
+			cycle={data.cycle}
+			regime={data.regime}
+			startYearsOnly
+		/>
 	</div>
 
 	<div class="mt-6 lg:mt-8 flex flex-wrap items-end justify-between gap-4">
@@ -62,21 +56,13 @@
 				· Next vote: 10 August {data.cycle}
 			</p>
 		</div>
-		<div class="flex flex-wrap gap-2">
-			<a
-				href="{data.basePath}/{data.cycle}"
-				class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-			>
-				🗳️ {data.cycle} contestants
-			</a>
-		</div>
 	</div>
 
 	<!-- Current and Salary-->
 	<div class="mt-6 lg:mt-8 flex flex-col gap-4 lg:gap-4 lg:flex-row">
 		<div class="flex-1">
 			<!-- Past regimes show that era's holder, not today's current. -->
-			<h2 class="text-xl font-bold text-heading mb-4">{data.regime === data.cycle ? 'Current' : `${data.regime} Holder`}</h2>
+			<h2 class="text-xl font-bold text-heading mb-4">{data.regime === data.cycle ? 'Current' : `${data.regime}`}</h2>
 			{#if data.current}
 				<!-- Stretched name link keeps the whole card clickable while the party
 				stays its own link on top — nesting an <a> in an <a> is invalid HTML. -->
@@ -121,17 +107,13 @@
 	</div>
 
 
-	<!-- Contestants -->
+	<!-- Contestants: active cycle only — a past regime's holder card IS its result -->
+	{#if data.regime === data.cycle}
 	<div class="mt-6 lg:mt-8">
 		<div class="flex items-end justify-between gap-2">
 			<h2 class="text-xl font-bold text-heading">
-				{data.regime} Candidates
+				{data.cycle} Candidates
 			</h2>
-			{#if data.regime === data.cycle}
-				<a href="{data.basePath}/{data.cycle}" class="text-sm font-semibold text-primary hover:underline">
-					Compare all →
-				</a>
-			{/if}
 		</div>
 
 		{#if data.contestants.length > 0}
@@ -162,10 +144,21 @@
 			</div>
 		{/if}
 	</div>
+	{/if}
 
 	<!-- History: every recorded term for this seat, most recent first -->
 	<div class="mt-6 lg:mt-8">
-		<h2 class="text-xl font-bold text-heading">History</h2>
+		<div class="flex justify-between items-center gap-2">
+			<h2 class="text-xl font-bold text-heading">History</h2>
+			{#if data.regime !== data.cycle}
+				<a
+					href="{data.basePath}/{data.cycle}"
+					class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+				>
+					🗳️ {data.cycle} contestants
+				</a>
+			{/if}
+		</div>
 		<p class="mt-1 text-sm text-muted">Every recorded term, most recent first.</p>
 
 		{#if data.history.length > 0}

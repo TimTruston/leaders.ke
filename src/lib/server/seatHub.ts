@@ -20,10 +20,11 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 
 	const rows = await listLeadersForSeat(position, region);
 
-	// Which regime this hub shows: the active cycle by default, or a past
-	// election year (from /[position]/[region]/[year]) — same component, the
-	// seat as it stood under that regime.
-	const regime = regimeYear ?? ACTIVE_CYCLE;
+	// Which regime this hub shows: the active cycle by default, or a past year
+	// (from /[position]/[region]/[year]) — same component, the seat as it stood
+	// under that regime. Any mid-term year works (/2026 → the 2022 regime);
+	// `regime` normalizes to the covering term's start year below.
+	let regime = regimeYear ?? ACTIVE_CYCLE;
 	const isActiveRegime = regime === ACTIVE_CYCLE;
 
 	const leaderIds = rows.map((r) => r.leaders.id);
@@ -59,15 +60,24 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 
 	// Active regime: today's holder + the 2027 aspirants (an incumbent seeking
 	// re-election appears once they hold an aspirant term row for the cycle).
-	// Past regime: the term(s) that started that year — who won that cycle.
-	const currentRow = isActiveRegime
-		? rows.find((r) => r.leaders.status === 'current')
-		: rows.find((r) => r.leaders.status !== 'aspirant' && r.leaders.startAt.getFullYear() === regime);
-	const dbContestants = (
-		isActiveRegime
-			? rows.filter((r) => r.leaders.status === 'aspirant')
-			: rows.filter((r) => r.leaders.status !== 'aspirant' && r.leaders.startAt.getFullYear() === regime)
-	).map(toCard);
+	// Past year: the term COVERING it — most recent start ≤ the year, still
+	// running through it — so /2026 shows the 2022 regime's holder. Past regimes
+	// list no contestants; the holder card IS that cycle's result.
+	let currentRow: (typeof rows)[number] | undefined;
+	if (isActiveRegime) {
+		currentRow = rows.find((r) => r.leaders.status === 'current');
+	} else {
+		currentRow = rows
+			.filter(
+				(r) =>
+					r.leaders.status !== 'aspirant' &&
+					r.leaders.startAt.getFullYear() <= regime &&
+					(!r.leaders.endAt || r.leaders.endAt.getFullYear() >= regime)
+			)
+			.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0];
+		if (currentRow) regime = currentRow.leaders.startAt.getFullYear();
+	}
+	const dbContestants = isActiveRegime ? rows.filter((r) => r.leaders.status === 'aspirant').map(toCard) : [];
 
 	// Manifesto delivery rollup for the seat's current holder (same shape the
 	// public leader profile shows), so the hub can score the incumbent.
