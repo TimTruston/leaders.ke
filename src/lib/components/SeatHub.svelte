@@ -167,9 +167,12 @@
 		{#if data.history.length > 0}
 			<ol class="mt-6 space-y-0 border-l-2 border-border pl-6">
 				{#each data.history as term (term.path + term.startYear)}
+					<!-- The dot highlights the regime on screen: today's current on the
+					active cycle, else the term the viewed year resolved to. -->
+					{@const inAction = data.regime === data.cycle ? term.status === 'current' : term.startYear === data.regime}
 					<li class="relative pb-8 last:pb-0">
 						<span
-							class="absolute -left-7.75 top-1 size-3 rounded-full {term.status === 'current'
+							class="absolute -left-7.75 top-1 size-3 rounded-full {inAction
 								? 'bg-primary'
 								: 'bg-border'}"
 						></span>
