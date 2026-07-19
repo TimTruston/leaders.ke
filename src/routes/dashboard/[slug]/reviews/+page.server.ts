@@ -9,6 +9,7 @@ import {
 	type ReviewFlagReason
 } from '$lib/server/reviews';
 import { getPageSize } from '$lib/server/settings';
+import { getRunCampaign } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 // Moderation queue for citizen reviews of this leader (the person, across every
@@ -18,9 +19,11 @@ export const load: PageServerLoad = async (event) => {
 	const pageSize = await getPageSize();
 	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
 
+	// Pillar options come from the person's run this cycle (their 2027 campaign).
+	const run = await getRunCampaign(ctx.profileUser.id);
 	const [{ reviews, total }, pillarOptions] = await Promise.all([
 		listReviewsForModeration(ctx.profileUser.id, page, pageSize),
-		listReviewPillarOptions(ctx.leader.id)
+		listReviewPillarOptions(run?.id ?? 0)
 	]);
 
 	return { reviews, total, page, pageSize, pillarOptions, flagReasons: REVIEW_FLAG_REASONS };

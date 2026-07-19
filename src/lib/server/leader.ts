@@ -380,3 +380,37 @@ export async function getOrCreateMainCampaign(leaderId: number, creatorId: numbe
 		.returning();
 	return created;
 }
+
+/**
+ * The person's run for the active cycle (their 2027 campaign) — what the dashboard
+ * workspace (manifesto/fundraising) targets, since a run belongs to the person, not a
+ * held term. Created lazily on first write; an incumbent editing their manifesto is
+ * declaring/continuing their re-election run. `positionId` is the seat they're running
+ * for (their lead seat). A newly created run is unverified (pending admin verification).
+ */
+export async function getOrCreateRunCampaign(subjectUserId: number, positionId: number, creatorId: number, name: string) {
+	const existing = await getRunCampaign(subjectUserId);
+	if (existing) return existing;
+	const [created] = await db
+		.insert(campaigns)
+		.values({
+			creatorId,
+			subjectUserId,
+			leaderId: null,
+			positionId,
+			cycleYear: ACTIVE_CYCLE,
+			title: `${name}'s Campaign`,
+			description: `${name}'s campaign for office.`
+		})
+		.returning();
+	return created;
+}
+
+/** Read-only: the person's active-cycle run (2027 main campaign), or null if none yet. */
+export async function getRunCampaign(subjectUserId: number) {
+	const [c] = await db
+		.select()
+		.from(campaigns)
+		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+	return c ?? null;
+}

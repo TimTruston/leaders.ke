@@ -3,7 +3,7 @@ import { and, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, donations } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
-import { fullName, getOrCreateMainCampaign } from '$lib/server/leader';
+import { fullName, getOrCreateRunCampaign } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 // Fundraising desk: goal + donation ledger. Donations arrive from the public
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
 
 	// Fundraising belongs to the run: goal + ledger live on the main campaign.
-	const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
+	const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position.id, ctx.profileUser.id, fullName(ctx.profileUser));
 	const scope = and(eq(donations.campaignId, campaign.id), isNull(donations.deletedAt));
 
 	const [rows, [confirmedRow]] = await Promise.all([
@@ -46,7 +46,7 @@ export const actions: Actions = {
 		const goal = Number(form.get('goal') ?? 0);
 		if (!Number.isFinite(goal) || goal < 0) return fail(400, { error: 'Enter a valid goal in KES.' });
 
-		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
+		const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
 			.update(campaigns)
 			.set({ fundraisingGoal: Math.round(goal), updatedAt: new Date() })
@@ -60,7 +60,7 @@ export const actions: Actions = {
 		const donationId = Number(form.get('donationId') ?? 0);
 		const reference = String(form.get('reference') ?? '').trim();
 
-		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
+		const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
 			.update(donations)
 			.set({ status: 'confirmed', reference: reference || null, updatedAt: new Date() })
@@ -73,7 +73,7 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const donationId = Number(form.get('donationId') ?? 0);
 
-		const campaign = await getOrCreateMainCampaign(ctx.leader.id, ctx.profileUser.id, fullName(ctx.profileUser));
+		const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position.id, ctx.profileUser.id, fullName(ctx.profileUser));
 		await db
 			.update(donations)
 			.set({ status: 'failed', updatedAt: new Date() })
