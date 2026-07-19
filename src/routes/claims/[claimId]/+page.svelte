@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import LeaderProfile from '$lib/components/LeaderProfile.svelte';
+	import Previews from '$lib/components/admin/Previews.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
 	const p = $derived(data.preview);
-	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
-	const dateTimeFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
 	let emailing = $state(false);
 </script>
 
@@ -15,236 +13,62 @@
 	<title>Claim #{p.request.id} — Admin</title>
 </svelte:head>
 
-{#snippet idThumb(label: string, url: string | null)}
-	<div>
-		<p class="text-xs font-semibold tracking-wide text-muted uppercase">{label}</p>
-		{#if url}
-			<a href={url} target="_blank" rel="noopener" class="mt-1.5 block overflow-hidden rounded-xl border border-border">
-				<img src={url} alt={label} class="aspect-3/2 w-full object-cover" />
-			</a>
-		{:else}
-			<div class="mt-1.5 flex aspect-3/2 w-full items-center justify-center rounded-xl border border-dashed border-border">
-				<p class="text-xs font-medium text-red-500">Missing</p>
-			</div>
-		{/if}
-	</div>
+{#snippet actionsExtra()}
+	{#if !p.request.outcome}
+		<button
+			type="button"
+			onclick={() => (emailing = !emailing)}
+			class="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
+		>
+			{emailing ? 'Cancel' : 'Email the leader'}
+		</button>
+	{/if}
 {/snippet}
 
-<div class="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
-	<a href="/dashboard/admin/claims" class="text-sm text-muted hover:text-heading">&larr; Profile claims</a>
-
-	<div class="mt-2 flex flex-wrap items-center gap-3">
-		<h1 class="text-xl font-bold text-heading">{p.data.leader.name}</h1>
-		<span
-			class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {p.request.outcome === 'approved'
-				? 'bg-primary-soft text-on-primary'
-				: p.request.outcome === 'rejected'
-					? 'bg-surface-2 text-muted'
-					: 'border border-border text-muted'}"
-		>
-			{p.request.outcome ?? 'pending'}
-		</span>
-		<span class="text-sm text-muted">
-			Requested at {dateFmt.format(new Date(p.request.requestedAt))}
-			{#if p.request.requestedByName}by {p.request.requestedByName}{/if}
-		</span>
-	</div>
-
-	{#if form?.error}
-		<div class="mt-4 rounded-2xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
-			{form.error}
-		</div>
-	{/if}
+{#snippet belowActions()}
 	{#if form?.emailed}
-		<div class="mt-4 rounded-2xl border border-border bg-primary-soft p-4 text-sm font-medium text-on-primary">
-			Approve link sent to {form.sentTo}.
-		</div>
+		<p class="mt-3 text-sm font-medium text-on-primary">Approve link sent to {form.sentTo}.</p>
 	{/if}
-
-	<!-- Decision controls: kept above the profile preview + claim history. -->
-	<div class="mt-4 rounded-2xl border border-border bg-surface p-5">
-		{#if p.request.outcome === 'rejected' && p.request.notes}
-			<p class="mb-3 text-sm text-muted">
-				<span class="font-semibold text-heading">Rejection reason:</span>
-				{p.request.notes}
-			</p>
-		{/if}
-		<div class="flex flex-wrap items-center gap-2">
-			{#if p.request.outcome !== 'approved'}
-				<form method="post" action="?/review" use:enhance>
-					<button
-						type="submit"
-						name="outcome"
-						value="approved"
-						class="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
-					>
-						Approve
-					</button>
-				</form>
-			{/if}
-			{#if p.request.outcome !== 'rejected'}
-				<form
-					method="post"
-					action="?/review"
-					class="flex min-w-0 flex-1 flex-wrap items-center gap-2"
-					use:enhance={({ cancel }) => {
-						if (
-							p.request.outcome === 'approved' &&
-							!confirm(`Revert this claim on ${p.data.leader.name}'s profile? This removes their manager access immediately.`)
-						) {
-							cancel();
-						}
-					}}
-				>
-					<input type="hidden" name="outcome" value="rejected" />
-					<input
-						type="text"
-						name="notes"
-						placeholder="Reason for {p.request.outcome === 'approved' ? 'reverting' : 'rejection'} (shown to the claimant)"
-						class="min-w-64 flex-1 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-					/>
-					<button
-						type="submit"
-						class="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
-					>
-						{p.request.outcome === 'approved' ? 'Revert' : 'Reject'}
-					</button>
-				</form>
-			{/if}
-			{#if !p.request.outcome}
-				<button
-					type="button"
-					onclick={() => (emailing = !emailing)}
-					class="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
-				>
-					{emailing ? 'Cancel' : 'Email the leader'}
-				</button>
-			{/if}
-		</div>
-		{#if emailing}
-			<form
-				method="post"
-				action="?/emailLeader"
-				class="mt-3 flex flex-wrap items-center gap-2"
-				use:enhance={() => {
-					return async ({ update }) => {
-						emailing = false;
-						await update();
-					};
-				}}
+	{#if emailing}
+		<form
+			method="post"
+			action="?/emailLeader"
+			class="mt-3 flex flex-wrap items-center gap-2"
+			use:enhance={() => {
+				return async ({ update }) => {
+					emailing = false;
+					await update();
+				};
+			}}
+		>
+			<input
+				type="email"
+				name="email"
+				required
+				placeholder="Leader's email address"
+				class="min-w-64 flex-1 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+			/>
+			<button
+				type="submit"
+				class="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
 			>
-				<input
-					type="email"
-					name="email"
-					required
-					placeholder="Leader's email address"
-					class="min-w-64 flex-1 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				/>
-				<button
-					type="submit"
-					class="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
-				>
-					Send approval email
-				</button>
-			</form>
-		{/if}
-	</div>
+				Send approval email
+			</button>
+		</form>
+	{/if}
+{/snippet}
 
-	<!-- IEBC certificate submitted with this run -->
-	<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-		<h2 class="text-xl font-bold text-heading">IEBC certificate</h2>
-		{#if p.iebcCertificateUrl}
-			<a href={p.iebcCertificateUrl} target="_blank" rel="noopener" class="mt-2 block text-sm text-primary hover:underline">
-				View uploaded file
-			</a>
-		{:else}
-			<p class="mt-2 text-sm font-medium text-red-500">Missing</p>
-		{/if}
-	</div>
-
-	<!-- Every claim ever made on this profile, newest first. -->
-	<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-		<h2 class="text-xl font-bold text-heading">Claim history</h2>
-		{#if p.requestHistory.length > 0}
-			<div class="mt-4 overflow-x-auto rounded-2xl border border-border">
-				<table class="w-full min-w-160 border-collapse text-left">
-					<thead>
-						<tr class="bg-surface-2">
-							<th class="px-4 py-2.5 text-xs font-semibold text-heading">Requested</th>
-							<th class="px-4 py-2.5 text-xs font-semibold text-heading">Outcome</th>
-							<th class="px-4 py-2.5 text-xs font-semibold text-heading">Reviewed</th>
-							<th class="px-4 py-2.5 text-xs font-semibold text-heading">Reviewer</th>
-							<th class="px-4 py-2.5 text-xs font-semibold text-heading">Notes</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each p.requestHistory as h (h.id)}
-							<tr class="border-t border-border">
-								<td class="px-4 py-2.5 text-xs text-muted">{dateTimeFmt.format(new Date(h.requestedAt))}</td>
-								<td class="px-4 py-2.5 text-xs capitalize text-heading">{h.outcome ?? 'pending'}</td>
-								<td class="px-4 py-2.5 text-xs text-muted">{h.reviewedAt ? dateTimeFmt.format(new Date(h.reviewedAt)) : '—'}</td>
-								<td class="px-4 py-2.5 text-xs text-muted">{h.reviewerName ?? '—'}</td>
-								<td class="px-4 py-2.5 text-xs text-muted">{h.notes ?? '—'}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		{:else}
-			<p class="mt-2 text-sm text-muted">No requests yet.</p>
-		{/if}
-	</div>
-
-	<!-- Team, each with their own sign-off (role, national ID, ID images) -->
-	<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-		<h2 class="text-xl font-bold text-heading">Team &amp; sign-offs</h2>
-		<p class="mt-1 text-sm text-muted">Each manager attests separately: their role, national ID, and ID images.</p>
-		{#if p.team.length > 0}
-			<div class="mt-5 grid gap-4 sm:grid-cols-2">
-				{#each p.team as member (member.name)}
-					<div class="rounded-2xl border border-border bg-surface-2/40 p-4">
-						<div class="flex items-start gap-3">
-							<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm font-bold text-primary">
-								{member.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
-							</div>
-							<div class="min-w-0">
-								<p class="truncate text-sm font-semibold text-heading">{member.name}</p>
-								<p class="truncate text-xs text-muted">
-									{member.email ?? 'No email'}{member.email && member.phone ? ' · ' : ''}{member.phone ?? (member.email ? '' : 'No phone')}
-								</p>
-							</div>
-						</div>
-						<div class="mt-3 flex flex-wrap gap-1.5">
-							{#if member.isApplicant}
-								<span class="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-muted">applicant</span>
-							{/if}
-							{#if member.signoffComplete}
-								<span class="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">Signed off</span>
-							{:else}
-								<span class="rounded-full border border-border px-2 py-0.5 text-xs font-semibold text-muted">No sign-off</span>
-							{/if}
-						</div>
-						<div class="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-3">
-							<div>
-								<p class="text-xs font-semibold tracking-wide text-muted uppercase">Role</p>
-								<p class="mt-0.5 text-sm {member.title ? 'text-heading' : 'font-medium text-red-500'}">{member.title ?? 'Missing'}</p>
-							</div>
-							<div>
-								<p class="text-xs font-semibold tracking-wide text-muted uppercase">National ID</p>
-								<p class="mt-0.5 text-sm {member.nationalId ? 'text-heading' : 'font-medium text-red-500'}">{member.nationalId ?? 'Missing'}</p>
-							</div>
-						</div>
-						<div class="mt-3 grid grid-cols-2 gap-3">
-							{@render idThumb('ID front', member.idFrontUrl)}
-							{@render idThumb('ID back', member.idBackUrl)}
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<p class="mt-3 text-sm text-muted">No team members yet.</p>
-		{/if}
-	</div>
-</div>
-
-<LeaderProfile data={p.data} preview />
+<Previews
+	backHref="/dashboard/admin/claims"
+	backLabel="Profile claims"
+	reviewNoun="claimant"
+	data={p.data}
+	request={p.request}
+	iebcCertificateUrl={p.iebcCertificateUrl}
+	team={p.team}
+	requestHistory={p.requestHistory}
+	historyLabel="Claim history"
+	{form}
+	{actionsExtra}
+	{belowActions}
+/>
