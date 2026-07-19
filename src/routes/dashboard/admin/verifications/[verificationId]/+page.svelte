@@ -62,16 +62,8 @@
 		>
 			{d.request.outcome ?? 'pending'}
 		</span>
+		Requested at {dateFmt.format(new Date(d.request.requestedAt))}
 	</div>
-	<p class="mt-1 text-sm text-muted">
-		{#if d.profile.seat}{d.profile.seat.title}, {d.profile.seat.region} &middot;{/if}
-		requested {dateFmt.format(new Date(d.request.requestedAt))}
-		{#if d.request.requestedByName}by {d.request.requestedByName}{/if}
-		{#if d.profile.publicPath}
-			&middot; <a href={d.profile.publicPath} target="_blank" rel="noopener" class="text-primary hover:underline">public profile</a>
-		{/if}
-	</p>
-
 	{#if form?.error}
 		<div class="mt-4 rounded-2xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
 			{form.error}
@@ -217,6 +209,12 @@
 								{:else}
 									<span class="ml-1 rounded-full border border-border px-2 py-0.5 text-xs font-semibold text-muted">no sign-off</span>
 								{/if}
+								<span class="mt-0.5 text-xs text-muted">
+									{member.email ?? 'No email'}
+								</span>
+								<span class="mt-0.5 text-xs text-muted">
+									{member.phone ?? (member.email ? '' : 'No phone')}
+								</span>
 							</p>
 							<div class="mt-3 grid gap-4 sm:grid-cols-2">
 								{@render field('Role', member.title)}

@@ -2,9 +2,10 @@
 // admin reviews it; approval sets campaigns.verifiedAt (the run's public/ballot flag)
 // and locks the person's slug. A candidacy (campaign) is the verifiable unit — an
 // aspirant has no leaders row. Payment (subscriptions) is a separate, later concern.
-import { and, count, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, users, verifications } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { fullName, isSlugAvailable, leaderPath } from '$lib/server/leader';
 import { notifyUser } from '$lib/server/notifications';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
@@ -122,10 +123,14 @@ export async function getVerificationDetail(verificationId: number) {
 				firstName: users.firstName,
 				otherNames: users.otherNames,
 				idFrontUrl: users.idFrontUrl,
-				idBackUrl: users.idBackUrl
+				idBackUrl: users.idBackUrl,
+				// Fallback when this manager has no domain `contacts` row yet (e.g. never
+				// went through /verify/email) — every account still has its login email.
+				authEmail: authUsers.email
 			})
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
+			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
 			.where(and(eq(managers.subjectUserId, campaign.subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt))),
 		// The person's live party membership, if any (person-scoped).
 		db
@@ -148,6 +153,22 @@ export async function getVerificationDetail(verificationId: number) {
 			.where(eq(verifications.campaignId, request.campaignId))
 			.orderBy(desc(verifications.requestedAt))
 	]);
+
+	// Each team member's own phone/email (their account, not the profile subject's) —
+	// one grouped query across every manager, keyed by userId.
+	const teamContactRows = teamRows.length
+		? await db
+				.select({ userId: contacts.userId, channel: contacts.channel, value: contacts.value })
+				.from(contacts)
+				.where(and(inArray(contacts.userId, teamRows.map((t) => t.userId)), isNull(contacts.deletedAt)))
+		: [];
+	const teamContactsByUser = new Map<number, { sms?: string; email?: string }>();
+	for (const c of teamContactRows) {
+		const entry = teamContactsByUser.get(c.userId) ?? {};
+		if (c.channel === 'sms') entry.sms = c.value;
+		if (c.channel === 'email') entry.email = c.value;
+		teamContactsByUser.set(c.userId, entry);
+	}
 
 	return {
 		request: {
@@ -175,6 +196,7 @@ export async function getVerificationDetail(verificationId: number) {
 		contacts: contactRows.map((c) => ({ channel: c.channel, value: c.value, verified: !!c.verifiedAt })),
 		team: teamRows.map((t) => {
 			const roles = (t.roles ?? {}) as ManagerRoles;
+			const teamContact = teamContactsByUser.get(t.userId);
 			return {
 				name: fullName(t),
 				title: roles.title ?? null,
@@ -182,7 +204,9 @@ export async function getVerificationDetail(verificationId: number) {
 				idFrontUrl: t.idFrontUrl,
 				idBackUrl: t.idBackUrl,
 				signoffComplete: signoffComplete(roles, t),
-				isApplicant: t.userId === request.requestedBy
+				isApplicant: t.userId === request.requestedBy,
+				phone: teamContact?.sms ?? null,
+				email: teamContact?.email ?? t.authEmail
 			};
 		}),
 		documentation: { photoUrl: profileUser.photoUrl, iebcCertificateUrl: campaign.iebcCertificateUrl },

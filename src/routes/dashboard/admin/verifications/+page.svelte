@@ -36,7 +36,7 @@
 			<table class="w-full min-w-220 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader ID</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Campaign ID</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">User ID</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Slug</th>
