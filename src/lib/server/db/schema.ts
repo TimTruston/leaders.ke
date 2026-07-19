@@ -132,10 +132,12 @@ export const leaders = pgTable('leaders', {
 // 3.1 EXPERIENCE (education, professional and leadership history on a leader's profile)
 export const experienceTypeEnum = pgEnum('experience_type', ['education', 'professional']);
 
-// One line of a leader's history: a school, a job, or a prior office held.
+// One line of a person's history: a school, a job, or a prior office held. On the
+// PERSON (not a leaders term): education and professional history follow someone
+// across every candidacy and term, and an aspirant with no leaders row still has one.
 export const experience = pgTable('experience', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   type: experienceTypeEnum('type').notNull(),
   positionId: integer('position_id').references(() => positions.id), // set when type = 'leadership'
   title: varchar('title', { length: 255 }).notNull(),
@@ -147,7 +149,7 @@ export const experience = pgTable('experience', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  index('experience_leader_idx').on(t.leaderId),
+  index('experience_subject_idx').on(t.subjectUserId),
 ]);
 
 // 4. MANIFESTO PILLARS - A leader's policy platform
@@ -190,13 +192,22 @@ export const pillarTemplates = pgTable('pillar_templates', {
 export const campaigns = pgTable('campaigns', {
   id: serial('id').primaryKey(),
   creatorId: integer('creator_id').references(() => users.id).notNull(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  // The PERSON whose run this is. A campaign belongs to a person (their run at a
+  // seat in a cycle), not to a leaders term — an aspirant has a campaign and no
+  // leaders row at all. leaderId below is set only once the run is tied to a held
+  // term (a graduated winner, or an incumbent's re-election), null for a pure run.
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }),
   // A campaign IS one run at one seat in one cycle, so it names them itself
   // (not via its leaders row): the seat contested and the election year.
   positionId: integer('position_id').references(() => positions.id).notNull(),
   cycleYear: integer('cycle_year').notNull(), // e.g. 2027 — the election year of this run
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(), // Rich text payload
+  // A run is admin-verified independently of any held term (the aspirant has no
+  // leaders row to carry verifiedAt). Set = the run is public and ballot-eligible;
+  // null = still under review / dashboard-only. Mirrors leaders.verifiedAt for held office.
+  verifiedAt: timestamp('verified_at', { withTimezone: true }),
   fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES — money belongs to the run, not the term
   faq: jsonb('faq').default([]),
   parentCampaignId: integer('parent_campaign_id').references((): any => campaigns.id, { onDelete: 'set null' }),
@@ -204,10 +215,14 @@ export const campaigns = pgTable('campaigns', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
-  // Exactly one live MAIN campaign per leader; sub-campaigns (parentCampaignId set) are unrestricted
-  uniqueIndex('one_main_campaign_per_leader')
-    .on(t.leaderId)
+  // Exactly one live MAIN campaign per person per cycle: someone runs for at most
+  // one seat in a given election year. Sub-campaigns (parentCampaignId set) are
+  // unrestricted. Keyed on the person (not a leaders term) so an aspirant with no
+  // leaders row is still bound by it.
+  uniqueIndex('one_main_campaign_per_person_cycle')
+    .on(t.subjectUserId, t.cycleYear)
     .where(sql`${t.parentCampaignId} is null and ${t.deletedAt} is null`),
+  index('campaigns_leader_idx').on(t.leaderId),
 ]);
 
 // 6. MANAGEMENT & AMBASSADORS (JSONB Configured Access Controls)

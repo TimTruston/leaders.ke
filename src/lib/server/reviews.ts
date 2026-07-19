@@ -192,19 +192,12 @@ export async function getMyReview(subjectId: number, reviewerId: number): Promis
 }
 
 /** The leader's live main-campaign pillars, as options for the review form's pillar dropdown. */
-export async function listReviewPillarOptions(leaderId: number) {
+export async function listReviewPillarOptions(campaignId: number) {
+	if (!campaignId) return [];
 	return await db
 		.select({ id: pillars.id, title: pillars.title })
 		.from(pillars)
-		.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-		.where(
-			and(
-				eq(campaigns.leaderId, leaderId),
-				isNull(campaigns.parentCampaignId),
-				isNull(campaigns.deletedAt),
-				isNull(pillars.deletedAt)
-			)
-		)
+		.where(and(eq(pillars.campaignId, campaignId), isNull(pillars.deletedAt)))
 		.orderBy(asc(pillars.id));
 }
 
@@ -219,7 +212,7 @@ export async function listReviewPillarOptions(leaderId: number) {
  * team hasn't responded yet — either one locks the review's content in
  * place; delete it and post a new one instead.
  */
-export async function handleReviewAction(event: RequestEvent, subjectId: number, leaderId: number) {
+export async function handleReviewAction(event: RequestEvent, subjectId: number, campaignId: number) {
 	if (!event.locals.user) return fail(401, { reviewError: 'Sign in to leave a review.' });
 	const domainUser = await getDomainUser(event.locals.user.id);
 	if (!domainUser) return fail(401, { reviewError: 'Sign in to leave a review.' });
@@ -241,7 +234,7 @@ export async function handleReviewAction(event: RequestEvent, subjectId: number,
 	// A pillar choice only counts if it actually belongs to this campaign.
 	let pillarId: number | null = null;
 	if (pillarIdRaw) {
-		const options = await listReviewPillarOptions(leaderId);
+		const options = await listReviewPillarOptions(campaignId);
 		pillarId = options.find((p) => p.id === Number(pillarIdRaw))?.id ?? null;
 	}
 

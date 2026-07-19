@@ -50,7 +50,7 @@ export async function resolveClaimRequest(event: RequestEvent) {
 	const { domainUser } = await requireDashboardUser(event);
 	const slug = (event.params as { slug?: string }).slug ?? '';
 	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+	if (!resolved || !resolved.currentTerm || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
 
 	const [claim] = await db
 		.select()
@@ -108,7 +108,7 @@ export async function stageClaimVerifiedContact(
 	destination: string
 ) {
 	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+	if (!resolved || !resolved.currentTerm || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
 	const subjectUserId = resolved.row.users.id;
 
 	const [existing] = await db

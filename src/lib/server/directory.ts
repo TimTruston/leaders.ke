@@ -4,7 +4,7 @@
 // server-side, and only the requested page's cards ship.
 import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { campaigns, followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import { counties } from '$lib/data/geo';
 
@@ -49,7 +49,21 @@ const STATUS_ORDER: Record<string, number> = { current: 0, aspirant: 1, former: 
  * the UI's dropdowns always reflect what exists, not what the page shows.
  */
 export async function listPositionDirectory(positionTitle: string, f: DirectoryFilters) {
-	const rows = await db
+	type Row = {
+		leaderId: number | null;
+		userId: number;
+		slug: string | null;
+		firstName: string;
+		otherNames: string;
+		photoUrl: string | null;
+		status: string;
+		region: string;
+		startAt: Date;
+		endAt: Date | null;
+	};
+
+	// Held terms (current/former) at this position.
+	const leaderRows: Row[] = await db
 		.select({
 			leaderId: leaders.id,
 			userId: users.id,
@@ -66,6 +80,44 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
+
+	// Verified 2027 runs (campaigns) at this position — the aspirants (no leaders row).
+	const runRows = await db
+		.select({
+			userId: users.id,
+			slug: users.slug,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			photoUrl: users.photoUrl,
+			region: positions.region,
+			cycleYear: campaigns.cycleYear
+		})
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+		.where(
+			and(
+				eq(positions.title, positionTitle),
+				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
+				isNull(campaigns.deletedAt)
+			)
+		);
+	const rows: Row[] = [
+		...leaderRows,
+		...runRows.map((r) => ({
+			leaderId: null,
+			userId: r.userId,
+			slug: r.slug,
+			firstName: r.firstName,
+			otherNames: r.otherNames,
+			photoUrl: r.photoUrl,
+			status: 'aspirant',
+			region: r.region,
+			startAt: new Date(r.cycleYear, 7, 10), // election day of the cycle, for ordering only
+			endAt: null
+		}))
+	];
 
 	// Regime options: every year a recorded (non-aspirant) term started, newest first.
 	const regimeOptions = [
@@ -98,7 +150,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	if (people.length === 0) {
 		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[], regimeOptions };
 	}
-	const ids = people.map((p) => p.leaderId);
+	// Party lives on the held term, so only leaders rows have one (aspirant runs carry none).
+	const ids = people.map((p) => p.leaderId).filter((id): id is number => id !== null);
 	const personIds = people.map((p) => p.userId);
 
 	// Follower counts (per PERSON — follows are user-scoped) + live party per leader.
@@ -127,7 +180,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	const q = f.query.trim().toLowerCase();
 	const filtered = people.filter((p) => {
 		if (f.region && (isMca ? CONSTITUENCY_BY_WARD.get(p.region) !== f.region : p.region !== f.region)) return false;
-		if (f.party && partyBy.get(p.leaderId) !== f.party) return false;
+		if (f.party && partyBy.get(p.leaderId ?? -1) !== f.party) return false;
 		if (f.status && p.status !== f.status) return false;
 		if (q && !fullName(p).toLowerCase().includes(q)) return false;
 		return true;
@@ -146,7 +199,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 
 	const cards = sorted.slice((f.page - 1) * f.pageSize, f.page * f.pageSize).map((p) => {
 		const name = fullName(p);
-		const party = partyBy.get(p.leaderId) ?? null;
+		const party = partyBy.get(p.leaderId ?? -1) ?? null;
 		return {
 			path: leaderPath(p),
 			name,

@@ -14,7 +14,7 @@ import {
 	posts,
 	users
 } from '$lib/server/db/schema';
-import { fullName, leaderPath, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, leaderPath, resolveCurrentTerm, slugify } from '$lib/server/leader';
 
 export type LeaderMetrics = {
 	name: string;
@@ -51,23 +51,27 @@ export function engagementScore(m: {
 // fetch so both compute the score identically. `party` is passed in so callers can
 // batch it (listing) or fetch it once (single) as they prefer.
 async function computeLeaderMetrics(
-	leader: typeof leaders.$inferSelect,
-	position: typeof positions.$inferSelect,
-	user: typeof users.$inferSelect,
+	ctx: {
+		user: typeof users.$inferSelect;
+		position: typeof positions.$inferSelect;
+		status: string;
+		verified: boolean;
+		campaignId: number; // the lead campaign (0 = none); pillars read off it
+	},
 	party: string | null
 ): Promise<LeaderMetrics> {
-	const leaderId = leader.id;
+	const { user, position, campaignId } = ctx;
 	const [[followerRow], [pledgeRow], [postRow], pillarRows] = await Promise.all([
 		db
 			.select({ n: count() })
 			.from(followers)
 			.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, user.id), isNull(followers.deletedAt))),
-		// Live vote pledges across all of the leader's campaigns
+		// Live vote pledges across all of the person's runs.
 		db
 			.select({ n: count() })
 			.from(pledges)
 			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(pledges.deletedAt))),
+			.where(and(eq(campaigns.subjectUserId, user.id), isNull(pledges.deletedAt))),
 		db
 			.select({ n: count() })
 			.from(posts)
@@ -75,8 +79,7 @@ async function computeLeaderMetrics(
 		db
 			.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus })
 			.from(pillars)
-			.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(pillars.deletedAt)))
+			.where(and(eq(pillars.campaignId, campaignId), isNull(pillars.deletedAt)))
 	]);
 
 	const delivered = pillarRows.filter((p) => p.deliveryStatus === 'delivered').length;
@@ -89,8 +92,8 @@ async function computeLeaderMetrics(
 		regionLabel: position.region,
 		party,
 		partyPath: party ? `/parties/${slugify(party)}` : null,
-		status: leader.status,
-		verified: !!leader.verifiedAt,
+		status: ctx.status,
+		verified: ctx.verified,
 		pillarCount: pillarRows.length,
 		bio: user.bio ?? '',
 		pillars: pillarRows,
@@ -121,25 +124,46 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	const slug = path.replace(/^\//, '').trim();
 	if (!slug) return null;
 	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) return null;
-	const { leaders: leaderRow, positions: positionRow } = resolved.currentTerm;
-	const party = await currentPartyName(leaderRow.id);
-	return computeLeaderMetrics(leaderRow, positionRow, resolved.row.users, party);
+	if (!resolved) return null;
+	const { row, currentTerm, activeRun } = resolved;
+
+	// Lead seat: a live/held term if any, else the active run (aspirant, no leaders row).
+	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
+	if (!verified) return null;
+
+	const position = leadsWithRun ? activeRun!.positions : currentTerm!.positions;
+	const status = leadsWithRun ? 'aspirant' : currentTerm!.leaders.status;
+	let campaignId = 0;
+	let party: string | null = null;
+	if (leadsWithRun) {
+		campaignId = activeRun!.campaigns.id;
+	} else {
+		party = await currentPartyName(currentTerm!.leaders.id);
+		const [c] = await db
+			.select({ id: campaigns.id })
+			.from(campaigns)
+			.where(and(eq(campaigns.leaderId, currentTerm!.leaders.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		campaignId = c?.id ?? 0;
+	}
+	return computeLeaderMetrics({ user: row.users, position, status, verified, campaignId }, party);
 }
 
-/** A random verified aspirant path for one position (e.g. the /compare default). */
+/** A random verified aspirant path for one position (e.g. the /compare default).
+ * An aspirant is a verified 2027 run (campaign), not a leaders row. */
 export async function randomVerifiedAspirantPath(positionTitle: string): Promise<string | null> {
 	const rows = await db
 		.select({ slug: users.slug })
-		.from(leaders)
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
 		.where(
 			and(
-				isNull(leaders.deletedAt),
-				isNotNull(leaders.verifiedAt),
 				eq(positions.title, positionTitle),
-				eq(leaders.status, 'aspirant')
+				eq(campaigns.cycleYear, ACTIVE_CYCLE),
+				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
+				isNull(campaigns.deletedAt)
 			)
 		);
 	const slugs = rows.map((r) => r.slug).filter((s): s is string => !!s);
@@ -174,9 +198,9 @@ export async function listPositionMetrics(
 	page: number,
 	pageSize: number
 ): Promise<{ total: number; leaders: RankedLeaderMetrics[] }> {
-	const rows = await db
+	// Held terms (current/former) at this position.
+	const leaderRows = await db
 		.select({
-			leaderId: leaders.id,
 			userId: users.id,
 			slug: users.slug,
 			firstName: users.firstName,
@@ -190,21 +214,47 @@ export async function listPositionMetrics(
 		.innerJoin(users, eq(leaders.userId, users.id))
 		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
 
-	// A person can have several `leaders` rows (Track Record) sharing one flat
-	// URL; keep one entry per slug, preferring their non-'former' row.
-	const bySlug = new Map<string, (typeof rows)[number]>();
-	for (const r of rows) {
-		if (!r.slug) continue;
-		const existing = bySlug.get(r.slug);
-		if (!existing || (existing.status === 'former' && r.status !== 'former')) bySlug.set(r.slug, r);
-	}
+	// Verified 2027 runs (campaigns) at this position — the aspirants.
+	const runRows = await db
+		.select({
+			userId: users.id,
+			slug: users.slug,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			photoUrl: users.photoUrl,
+			region: positions.region
+		})
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+		.where(
+			and(
+				eq(positions.title, positionTitle),
+				eq(campaigns.cycleYear, ACTIVE_CYCLE),
+				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
+				isNull(campaigns.deletedAt)
+			)
+		);
+
+	// One card per person (flat URL). Status precedence for the active cycle:
+	// current officeholder > aspirant (has a 2027 run) > former.
+	type Card = { userId: number; slug: string | null; firstName: string; otherNames: string; photoUrl: string | null; status: string; region: string };
+	const STATUS_RANK: Record<string, number> = { current: 0, aspirant: 1, former: 2 };
+	const bySlug = new Map<string, Card>();
+	const consider = (c: Card) => {
+		if (!c.slug) return;
+		const existing = bySlug.get(c.slug);
+		if (!existing || (STATUS_RANK[c.status] ?? 3) < (STATUS_RANK[existing.status] ?? 3)) bySlug.set(c.slug, c);
+	};
+	for (const r of leaderRows) consider(r);
+	for (const r of runRows) consider({ ...r, status: 'aspirant' });
 	const people = [...bySlug.values()];
 	if (people.length === 0) return { total: 0, leaders: [] };
-	const ids = people.map((p) => p.leaderId);
 	const personIds = people.map((p) => p.userId);
 
-	// The four score inputs, each one grouped query over the whole position.
-	// Follows and posts are PERSON-scoped; pledges/pillars stay per-campaign.
+	// The four score inputs, each one grouped query over the whole position — all
+	// PERSON-scoped now (follows/posts on the person; pledges/pillars on the person's runs).
 	const [followerRows, pledgeRows, postRows, pillarRows] = await Promise.all([
 		db
 			.select({ userId: followers.digestId, n: count() })
@@ -212,11 +262,11 @@ export async function listPositionMetrics(
 			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, personIds), isNull(followers.deletedAt)))
 			.groupBy(followers.digestId),
 		db
-			.select({ leaderId: campaigns.leaderId, n: count() })
+			.select({ userId: campaigns.subjectUserId, n: count() })
 			.from(pledges)
 			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
-			.where(and(inArray(campaigns.leaderId, ids), isNull(pledges.deletedAt)))
-			.groupBy(campaigns.leaderId),
+			.where(and(inArray(campaigns.subjectUserId, personIds), isNull(pledges.deletedAt)))
+			.groupBy(campaigns.subjectUserId),
 		db
 			.select({ userId: posts.subjectUserId, n: count() })
 			.from(posts)
@@ -224,27 +274,27 @@ export async function listPositionMetrics(
 			.groupBy(posts.subjectUserId),
 		db
 			.select({
-				leaderId: campaigns.leaderId,
+				userId: campaigns.subjectUserId,
 				n: count(),
 				delivered: sql<number>`count(*) filter (where ${pillars.deliveryStatus} = 'delivered')`.mapWith(Number)
 			})
 			.from(pillars)
 			.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-			.where(and(inArray(campaigns.leaderId, ids), isNull(pillars.deletedAt)))
-			.groupBy(campaigns.leaderId)
+			.where(and(inArray(campaigns.subjectUserId, personIds), isNull(pillars.deletedAt)))
+			.groupBy(campaigns.subjectUserId)
 	]);
 	const followersBy = new Map(followerRows.map((r) => [r.userId, r.n]));
-	const pledgesBy = new Map(pledgeRows.map((r) => [r.leaderId, r.n]));
+	const pledgesBy = new Map(pledgeRows.map((r) => [r.userId, r.n]));
 	const postsBy = new Map(postRows.map((r) => [r.userId, r.n]));
-	const pillarsBy = new Map(pillarRows.map((r) => [r.leaderId, r]));
+	const pillarsBy = new Map(pillarRows.map((r) => [r.userId, r]));
 
 	const scored = people
 		.map((p) => {
 			const base = {
 				followers: followersBy.get(p.userId) ?? 0,
-				pledges: pledgesBy.get(p.leaderId) ?? 0,
+				pledges: pledgesBy.get(p.userId) ?? 0,
 				postCount: postsBy.get(p.userId) ?? 0,
-				delivered: pillarsBy.get(p.leaderId)?.delivered ?? 0
+				delivered: pillarsBy.get(p.userId)?.delivered ?? 0
 			};
 			return {
 				name: fullName(p),
@@ -252,7 +302,7 @@ export async function listPositionMetrics(
 				photoUrl: p.photoUrl,
 				regionLabel: p.region,
 				status: p.status,
-				pillarCount: pillarsBy.get(p.leaderId)?.n ?? 0,
+				pillarCount: pillarsBy.get(p.userId)?.n ?? 0,
 				...base,
 				score: engagementScore(base)
 			};

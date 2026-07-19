@@ -247,6 +247,9 @@ export async function getLeaderContextBySlug(slug: string, domainUserId: number)
 	const resolved = await resolveCurrentTerm(slug);
 	if (!resolved) return null;
 	const { row, currentTerm } = resolved;
+	// A person with only a run (no leaders term) has no manageable seat context yet —
+	// declaring/graduating a candidacy is a separate flow.
+	if (!currentTerm) return null;
 
 	if (currentTerm.leaders.userId === domainUserId) {
 		return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'leader' };
@@ -299,20 +302,37 @@ export async function findLeaderBySlug(slug: string) {
  * a person can hold several `leaders` rows, and picking different ones per
  * route was a real bug (reviews/verification diverging between the two pages). */
 export async function resolveCurrentTerm(slug: string) {
-	const row = await findLeaderBySlug(slug);
-	if (!row) return null;
+	// Person-first: a slug is a PERSON's URL, and a pure aspirant has no leaders row
+	// at all — only a run (campaign). So resolve the user, then their held terms and
+	// their active run separately.
+	const [userRow] = await db.select().from(users).where(and(eq(users.slug, slug), isNull(users.deletedAt)));
+	if (!userRow) return null;
+	const row = { users: userRow };
 
 	const terms = await db
 		.select()
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(leaders.userId, row.users.id), isNull(leaders.deletedAt)));
+		.where(and(eq(leaders.userId, userRow.id), isNull(leaders.deletedAt)));
 
+	// The leaders term the profile leads with: a live (non-former) term, else the most
+	// recent past one. Null for a person who has only ever run, never held office.
 	const currentTerm =
 		terms.find((t) => t.leaders.status !== 'former') ??
-		terms.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0];
+		terms.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0] ??
+		null;
 
-	return { row, terms, currentTerm };
+	// The person's active RUN (verified main campaign + its seat), latest cycle first —
+	// how an aspirant with no leaders row becomes public. Null when they aren't running.
+	const runs = await db
+		.select()
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.where(and(eq(campaigns.subjectUserId, userRow.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)))
+		.orderBy(desc(campaigns.cycleYear));
+	const activeRun = runs.find((r) => r.campaigns.verifiedAt) ?? null;
+
+	return { row, terms, currentTerm, activeRun };
 }
 
 /** All verified leaders (joined to person + seat) for one position/region pair —
@@ -343,12 +363,14 @@ export async function getOrCreateMainCampaign(leaderId: number, creatorId: numbe
 		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	if (existing) return existing;
 
-	// A campaign is one run at one seat in one cycle — stamp both from its term.
-	const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leaderId));
+	// A campaign is one run at one seat in one cycle — stamp both from its term,
+	// and anchor it to the person holding the term (campaigns are person-scoped).
+	const [term] = await db.select({ userId: leaders.userId, positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leaderId));
 	const [created] = await db
 		.insert(campaigns)
 		.values({
 			creatorId,
+			subjectUserId: term.userId,
 			leaderId,
 			positionId: term.positionId,
 			cycleYear: term.startAt.getFullYear(),

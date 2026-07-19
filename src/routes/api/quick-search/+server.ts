@@ -5,7 +5,7 @@
 import { json } from '@sveltejs/kit';
 import { and, eq, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, parties, positions, users } from '$lib/server/db/schema';
+import { campaigns, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import type { RequestHandler } from './$types';
 
@@ -24,7 +24,8 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (q.length < 2) return json({ executive: [], parliament: [], mcas: [], parties: [] });
 	const like = `%${q}%`;
 
-	const [leaderRows, partyRows] = await Promise.all([
+	const nameMatch = or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(sql`${users.firstName} || ' ' || ${users.otherNames}`, like));
+	const [heldRows, runRows, partyRows] = await Promise.all([
 		db
 			.select({
 				slug: users.slug,
@@ -38,13 +39,22 @@ export const GET: RequestHandler = async ({ url }) => {
 			.from(leaders)
 			.innerJoin(users, eq(leaders.userId, users.id))
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
-			.where(
-				and(
-					isNull(leaders.deletedAt),
-					isNotNull(leaders.verifiedAt),
-					or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(sql`${users.firstName} || ' ' || ${users.otherNames}`, like))
-				)
-			)
+			.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), nameMatch))
+			.limit(120),
+		// Verified 2027 runs (campaigns) — aspirants with no leaders row.
+		db
+			.select({
+				slug: users.slug,
+				firstName: users.firstName,
+				otherNames: users.otherNames,
+				title: positions.title,
+				region: positions.region,
+				photoUrl: users.photoUrl
+			})
+			.from(campaigns)
+			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+			.innerJoin(positions, eq(campaigns.positionId, positions.id))
+			.where(and(isNull(campaigns.parentCampaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), nameMatch))
 			.limit(120),
 		db
 			.select({ name: parties.name, abbreviation: parties.abbreviation })
@@ -52,6 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			.where(and(isNull(parties.deletedAt), or(ilike(parties.name, like), ilike(parties.abbreviation, like))))
 			.limit(6)
 	]);
+	const leaderRows = [...heldRows, ...runRows.map((r) => ({ ...r, status: 'aspirant' }))];
 
 	// One row per person (their non-former row when they have one), then bucket by
 	// seat family, current officeholders first.

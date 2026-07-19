@@ -33,15 +33,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	if (!row) error(404, 'Campaign not found');
 
-	const leaderId = row.leaders.id;
+	const campaignId = row.campaignId;
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 
-	// Fundraising lives on the run's main campaign (read-only here; the donate
-	// action creates it on first write). No campaign yet = goal 0, nothing raised.
-	const [mainCampaign] = await db
-		.select({ id: campaigns.id, fundraisingGoal: campaigns.fundraisingGoal })
-		.from(campaigns)
-		.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+	// Fundraising lives on the run's main campaign. No campaign yet = goal 0, nothing raised.
+	const [mainCampaign] = campaignId
+		? await db
+				.select({ id: campaigns.id, fundraisingGoal: campaigns.fundraisingGoal })
+				.from(campaigns)
+				.where(and(eq(campaigns.id, campaignId), isNull(campaigns.deletedAt)))
+		: [];
 
 	const [
 		pillarRows,
@@ -61,8 +62,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				evidence: pillars.evidence
 			})
 			.from(pillars)
-			.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(pillars.deletedAt)))
+			.where(and(eq(pillars.campaignId, campaignId), isNull(pillars.deletedAt)))
 			.orderBy(asc(pillars.id)),
 		db
 			.select({ id: posts.id, title: posts.title, body: posts.body, createdAt: posts.createdAt })
@@ -91,14 +91,14 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		// Citizen reviews of this person (follows them across every seat), plus
 		// this campaign's pillar options for the review form.
 		listApprovedReviews(row.users.id, viewer?.id),
-		listReviewPillarOptions(leaderId),
+		listReviewPillarOptions(campaignId),
 		getFlaggedReviewCounts(row.users.id),
-		// Live vote pledges across all of the leader's campaigns
+		// Live vote pledges across all of this person's runs.
 		db
 			.select({ n: count() })
 			.from(pledges)
 			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(pledges.deletedAt))),
+			.where(and(eq(campaigns.subjectUserId, row.users.id), isNull(pledges.deletedAt))),
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
@@ -129,8 +129,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			party: null as string | null,
 			regionLabel: row.positions.region,
 			positionTitle: row.positions.title,
-			status: row.leaders.status,
-			verified: !!row.leaders.verifiedAt,
+			status: row.status,
+			verified: row.verified,
 			followers: followerRow.n,
 			bio: row.users.bio ?? '',
 			pillars: pillarRows
@@ -149,17 +149,37 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	};
 };
 
-// Resolves the same leader row the /[leader] profile page would show (whichever
-// term isn't 'former'), and requires it to be verified — a campaign workspace is
-// never public before the profile it belongs to is.
+// Resolves the seat + run the /[leader] profile leads with (a live term, else the
+// active run), and requires it to be verified — a campaign workspace is never public
+// before the profile it belongs to is. Returns the person, the lead seat, and the
+// lead campaign id (0 = none yet); `leaderId` is null for a pure aspirant (no term).
 async function requireLiveLeader(params: { leader: string }) {
 	const resolved = await resolveCurrentTerm(params.leader);
-	if (!resolved || !resolved.currentTerm.leaders.verifiedAt) return null;
-	return {
-		users: resolved.row.users,
-		leaders: resolved.currentTerm.leaders,
-		positions: resolved.currentTerm.positions
-	};
+	if (!resolved) return null;
+	const { row, currentTerm, activeRun } = resolved;
+	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
+	if (!verified) return null;
+
+	let campaignId = 0;
+	let positions;
+	let status: string;
+	let leaderId: number | null = null;
+	if (leadsWithRun) {
+		campaignId = activeRun!.campaigns.id;
+		positions = activeRun!.positions;
+		status = 'aspirant';
+	} else {
+		positions = currentTerm!.positions;
+		status = currentTerm!.leaders.status;
+		leaderId = currentTerm!.leaders.id;
+		const [c] = await db
+			.select({ id: campaigns.id })
+			.from(campaigns)
+			.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		campaignId = c?.id ?? 0;
+	}
+	return { users: row.users, positions, status, verified, campaignId, leaderId };
 }
 
 export const actions: Actions = {
@@ -221,7 +241,7 @@ export const actions: Actions = {
 	review: async (event) => {
 		const row = await requireLiveLeader(event.params);
 		if (!row) return fail(400, { reviewError: 'Campaign not found.' });
-		return await handleReviewAction(event, row.users.id, row.leaders.id);
+		return await handleReviewAction(event, row.users.id, row.campaignId);
 	},
 
 	deleteReview: async (event) => {
@@ -242,10 +262,15 @@ export const actions: Actions = {
 			return fail(400, { error: 'Your name and an amount (KES 10 or more) are required.' });
 		}
 
-		// Donations attach to the run's main campaign, created on first donation.
-		const campaign = await getOrCreateMainCampaign(row.leaders.id, row.users.id, fullName(row.users));
+		// Donations attach to the run's main campaign. A verified run already has one;
+		// a held officeholder's is created on first donation.
+		let campaignId = row.campaignId;
+		if (!campaignId && row.leaderId) {
+			campaignId = (await getOrCreateMainCampaign(row.leaderId, row.users.id, fullName(row.users))).id;
+		}
+		if (!campaignId) return fail(400, { error: 'Campaign not found.' });
 		await db.insert(donations).values({
-			campaignId: campaign.id,
+			campaignId,
 			donorName,
 			phoneNumber: phone || null,
 			amount: Math.round(amount)
@@ -273,8 +298,7 @@ export const actions: Actions = {
 					evidence: pillars.evidence
 				})
 				.from(pillars)
-				.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-				.where(and(eq(campaigns.leaderId, row.leaders.id), isNull(pillars.deletedAt))),
+				.where(and(eq(pillars.campaignId, row.campaignId), isNull(pillars.deletedAt))),
 			db
 				.select({ title: posts.title, body: posts.body })
 				.from(posts)
@@ -293,7 +317,7 @@ export const actions: Actions = {
 			name: fullName(row.users),
 			positionTitle: row.positions.title,
 			regionLabel: row.positions.region,
-			status: row.leaders.status,
+			status: row.status,
 			bio: row.users.bio ?? '',
 			pillars: pillarRows,
 			posts: postRows

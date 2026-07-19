@@ -1,6 +1,6 @@
-import { and, eq, inArray, ilike, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, eq, exists, inArray, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { alliances, experience, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { alliances, campaigns, experience, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
@@ -81,6 +81,49 @@ export const load: PageServerLoad = async ({ url }) => {
 		};
 	});
 
+	// Verified 2027 runs (campaigns) matching by name/bio — aspirants with no leaders
+	// row. Appended after held-office results, skipping anyone already matched above.
+	const heldSlugs = new Set(matchedLeaders.map((r) => r.users.slug));
+	const runMatches = await db
+		.select({
+			slug: users.slug,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			photoUrl: users.photoUrl,
+			bio: users.bio,
+			title: positions.title,
+			region: positions.region
+		})
+		.from(campaigns)
+		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.where(
+			and(
+				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
+				isNull(campaigns.deletedAt),
+				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
+			)
+		)
+		.limit(20);
+	for (const r of runMatches) {
+		if (!r.slug || heldSlugs.has(r.slug)) continue;
+		heldSlugs.add(r.slug);
+		const name = fullName(r);
+		leaderResults.push({
+			name,
+			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
+			verified: true,
+			photoUrl: r.photoUrl,
+			path: leaderPath({ slug: r.slug }),
+			positionTitle: r.title,
+			region: r.region,
+			party: null,
+			partyPath: null,
+			bio: r.bio
+		});
+	}
+
 	const experienceRows = await db
 		.select({
 			title: experience.title,
@@ -90,13 +133,16 @@ export const load: PageServerLoad = async ({ url }) => {
 			otherNames: users.otherNames
 		})
 		.from(experience)
-		.innerJoin(leaders, eq(experience.leaderId, leaders.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
+		.innerJoin(users, eq(experience.subjectUserId, users.id))
 		.where(
 			and(
 				isNull(experience.deletedAt),
-				isNotNull(leaders.verifiedAt),
-				or(ilike(experience.title, like), ilike(experience.institution, like))
+				or(ilike(experience.title, like), ilike(experience.institution, like)),
+				// Only surface people who are publicly visible: a verified held term or a verified run.
+				or(
+					exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, users.id), isNotNull(leaders.verifiedAt), isNull(leaders.deletedAt)))),
+					exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, users.id), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt))))
+				)
 			)
 		)
 		.limit(20);

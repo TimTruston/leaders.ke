@@ -125,7 +125,7 @@ for (const entry of entries) {
 					.from(experience)
 					.where(
 						and(
-							eq(experience.leaderId, leader.id),
+							eq(experience.subjectUserId, person.id),
 							eq(experience.type, row.kind),
 							eq(experience.title, row.title),
 							eq(experience.institution, row.institution)
@@ -140,7 +140,7 @@ for (const entry of entries) {
 				}
 				if (flags.apply) {
 					await db.insert(experience).values({
-						leaderId: leader.id,
+						subjectUserId: person.id,
 						type: row.kind,
 						title: row.title,
 						institution: row.institution,

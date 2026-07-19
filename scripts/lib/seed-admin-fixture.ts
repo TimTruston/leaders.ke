@@ -134,11 +134,11 @@ export async function seedAdminFixture(db: AnyDb) {
 		.set({ bio: BIO, address: 'City Hall, Nairobi', socials: { twitter: 'https://twitter.com/leaders_ke' } })
 		.where(eq(users.id, leaderUserId));
 
-	// Seats. Held Nairobi Governor and Nairobi Senator in prior regimes; vying for
-	// Nairobi Governor again — the aspirant term leads the profile (resolveCurrentTerm).
+	// Seats. Held Nairobi Governor and Nairobi Senator in prior regimes (leaders rows);
+	// vying for Nairobi Governor again in 2027 — that run is a campaign, not a leaders
+	// row (see the manifesto block below). The whole fixture stays unverified/admin-only.
 	await ensureLeader(db, leaderUserId, govId, 'former', new Date('2013-08-27T00:00:00+03:00'), new Date('2017-08-08T00:00:00+03:00'), null);
 	await ensureLeader(db, leaderUserId, senId, 'former', new Date('2017-08-08T00:00:00+03:00'), new Date('2022-08-09T00:00:00+03:00'), null);
-	const aspirantId = await ensureLeader(db, leaderUserId, govId, 'aspirant', new Date('2027-08-10T00:00:00+03:00'), null, null);
 
 	// Contacts (marked verified so the "Verified" chip renders on the profile).
 	for (const c of [
@@ -148,7 +148,7 @@ export async function seedAdminFixture(db: AnyDb) {
 		await db.insert(contacts).values({ userId: leaderUserId, channel: c.channel, value: c.value, verifiedAt: new Date() }).onConflictDoNothing();
 	}
 
-	// Education + professional history, hung on the leading (aspirant) term.
+	// Education + professional history belongs to the person (spans every term/run).
 	const expRows = [
 		{ type: 'education' as const, title: 'Bachelor of Laws (LLB)', institution: 'University of Nairobi', from: '2004-09-01', to: '2008-06-01' },
 		{ type: 'education' as const, title: 'Master of Public Policy', institution: 'Strathmore University', from: '2009-09-01', to: '2011-06-01' },
@@ -161,7 +161,7 @@ export async function seedAdminFixture(db: AnyDb) {
 			.from(experience)
 			.where(
 				and(
-					eq(experience.leaderId, aspirantId),
+					eq(experience.subjectUserId, leaderUserId),
 					eq(experience.type, e.type),
 					eq(experience.title, e.title),
 					eq(experience.institution, e.institution)
@@ -169,7 +169,7 @@ export async function seedAdminFixture(db: AnyDb) {
 			);
 		if (ex) continue;
 		await db.insert(experience).values({
-			leaderId: aspirantId,
+			subjectUserId: leaderUserId,
 			type: e.type,
 			title: e.title,
 			institution: e.institution,
@@ -179,15 +179,16 @@ export async function seedAdminFixture(db: AnyDb) {
 		});
 	}
 
-	// Manifesto: 5 pillars, 4 delivered + 1 in progress, on the aspirant term's main campaign.
+	// The 2027 run: a person-anchored campaign (no leaders row), verifiedAt left null so
+	// the whole demo profile stays admin-only. Manifesto pillars hang off it below.
 	let [campaign] = await db
 		.select({ id: campaigns.id })
 		.from(campaigns)
-		.where(and(eq(campaigns.leaderId, aspirantId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		.where(and(eq(campaigns.subjectUserId, leaderUserId), eq(campaigns.cycleYear, 2027), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	if (!campaign) {
 		[campaign] = await db
 			.insert(campaigns)
-			.values({ creatorId: leaderUserId, leaderId: aspirantId, positionId: govId, cycleYear: 2027, title: 'Nairobi Forward', description: BIO })
+			.values({ creatorId: leaderUserId, subjectUserId: leaderUserId, leaderId: null, positionId: govId, cycleYear: 2027, title: 'Nairobi Forward', description: BIO })
 			.returning({ id: campaigns.id });
 	}
 	const pillarRows = [

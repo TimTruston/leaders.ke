@@ -51,11 +51,12 @@ function toDate(iso: string | null | undefined): Date | null {
 }
 
 /** Writes a candidate profile's scraped bio/education/professional/leadership/contacts/social
- * onto an already-created leader + domain user. Shared by the fresh-insert and already-seeded-
+ * onto an already-created domain user. Shared by the fresh-insert and already-seeded-
  * backfill paths below, and safe to re-run (contacts dedupe on the channel+value unique index).
- * `ownPositionId` is the position this leaderId row itself already represents, so a
- * `leadership[]` entry for that same seat doesn't get double-inserted as a second row. */
-async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPositionId: number, row: PersonRow) {
+ * `ownPositionId` is the seat this person's own row/run represents, so a `leadership[]` entry
+ * for that same seat doesn't get double-inserted as a Track Record term. `mainCampaignId` is
+ * the person's run this cycle — pillars (their manifesto) attach to it. */
+async function applyProfile(db: AnyDb, userId: number, mainCampaignId: number, ownPositionId: number, row: PersonRow) {
 	const office = row.contacts?.find((c) => c.title.trim().toLowerCase() === 'office');
 	if (row.bio || office) {
 		await db
@@ -99,7 +100,7 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 				.from(experience)
 				.where(
 					and(
-						eq(experience.leaderId, leaderId),
+						eq(experience.subjectUserId, userId),
 						eq(experience.type, type),
 						eq(experience.title, expRow.title),
 						eq(experience.institution, expRow.institution)
@@ -113,7 +114,7 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 				continue;
 			}
 			await db.insert(experience).values({
-				leaderId,
+				subjectUserId: userId,
 				type,
 				title: expRow.title,
 				institution: expRow.institution,
@@ -156,38 +157,15 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 	}
 
 	if (row.pillars?.length) {
-		// Pillars belong to the leader's main campaign, not the leader directly (mirrors
-		// getOrCreateMainCampaign in src/lib/server/leader.ts — duplicated here rather than
-		// imported since that module pulls in $env/dynamic/private via $lib/server/db, which
-		// only resolves inside SvelteKit/Vite, not a plain `bun run` script).
-		let [campaign] = await db
-			.select({ id: campaigns.id })
-			.from(campaigns)
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
-		if (!campaign) {
-			// A campaign is one run at one seat in one cycle — stamped from its term.
-			const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, leaderId));
-			[campaign] = await db
-				.insert(campaigns)
-				.values({
-					creatorId: userId,
-					leaderId,
-					positionId: term.positionId,
-					cycleYear: term.startAt.getFullYear(),
-					title: `${row.name}'s Campaign`,
-					description: `${row.name}'s campaign for office.`
-				})
-				.returning({ id: campaigns.id });
-		}
-
+		// Pillars (the manifesto) belong to the person's run this cycle: its main campaign.
 		for (const pillarRow of row.pillars) {
 			const [existing] = await db
 				.select({ id: pillars.id })
 				.from(pillars)
-				.where(and(eq(pillars.campaignId, campaign.id), eq(pillars.title, pillarRow.title), isNull(pillars.deletedAt)));
+				.where(and(eq(pillars.campaignId, mainCampaignId), eq(pillars.title, pillarRow.title), isNull(pillars.deletedAt)));
 			if (existing) continue;
 			await db.insert(pillars).values({
-				campaignId: campaign.id,
+				campaignId: mainCampaignId,
 				title: pillarRow.title,
 				summary: pillarRow.summary,
 				deliveryStatus: pillarRow.deliveryStatus ?? 'promised',
@@ -202,6 +180,36 @@ async function applyProfile(db: AnyDb, userId: number, leaderId: number, ownPosi
 // future start date (2027 election day), matching the schema's convention.
 const INCUMBENT_START = new Date('2022-09-13T00:00:00+03:00');
 const ASPIRANT_START = new Date('2027-08-10T00:00:00+03:00');
+
+/** Find-or-create a person's main campaign for one cycle (the run their pillars attach to).
+ * Keyed on (person, cycle) to match the DB's one-main-campaign-per-person-cycle rule.
+ * `leaderId` is set only for a held-term run (null for a pure aspirant); `verifiedAt`
+ * makes an aspirant run public/ballot-eligible (held runs leave it null — the leaders
+ * row drives their visibility). */
+async function ensureMainCampaign(
+	db: AnyDb,
+	opts: { subjectUserId: number; positionId: number; cycleYear: number; leaderId: number | null; verifiedAt: Date | null; name: string }
+): Promise<number> {
+	const [existing] = await db
+		.select({ id: campaigns.id })
+		.from(campaigns)
+		.where(and(eq(campaigns.subjectUserId, opts.subjectUserId), eq(campaigns.cycleYear, opts.cycleYear), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+	if (existing) return existing.id;
+	const [created] = await db
+		.insert(campaigns)
+		.values({
+			creatorId: opts.subjectUserId,
+			subjectUserId: opts.subjectUserId,
+			leaderId: opts.leaderId,
+			positionId: opts.positionId,
+			cycleYear: opts.cycleYear,
+			verifiedAt: opts.verifiedAt,
+			title: `${opts.name}'s Campaign`,
+			description: `${opts.name}'s campaign for office.`
+		})
+		.returning({ id: campaigns.id });
+	return created.id;
+}
 
 export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 	let seeded = 0;
@@ -267,7 +275,13 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 						await db.insert(partyMemberships).values({ partyId, leaderId: existingLeader.id, role: 'Member', startAt });
 					}
 				}
-				await applyProfile(db, existingLeader.userId, existingLeader.id, position.id, row);
+				const campId = row.pillars?.length
+					? await (async () => {
+							const [term] = await db.select({ positionId: leaders.positionId, startAt: leaders.startAt }).from(leaders).where(eq(leaders.id, existingLeader.id));
+							return ensureMainCampaign(db, { subjectUserId: existingLeader.userId, positionId: term.positionId, cycleYear: term.startAt.getFullYear(), leaderId: existingLeader.id, verifiedAt: null, name: row.name });
+						})()
+					: 0;
+				await applyProfile(db, existingLeader.userId, campId, position.id, row);
 				skipped++;
 				continue;
 			}
@@ -314,7 +328,23 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				}
 			}
 
-			const startAt = toDate(row.startAt) ?? (row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START);
+			if (row.status === 'aspirant') {
+				// A run for office, not a held term: no leaders row. The verified 2027 campaign
+				// IS the candidacy (party stays a held-term fact, so a pure aspirant carries none).
+				const cycleYear = (toDate(row.startAt) ?? ASPIRANT_START).getFullYear();
+				const campId = await ensureMainCampaign(tx, {
+					subjectUserId: domainUserId,
+					positionId: position.id,
+					cycleYear,
+					leaderId: null,
+					verifiedAt: new Date(),
+					name: row.name
+				});
+				await applyProfile(tx, domainUserId, campId, position.id, row);
+				return;
+			}
+
+			const startAt = toDate(row.startAt) ?? INCUMBENT_START;
 			const [leader] = await tx
 				.insert(leaders)
 				.values({
@@ -324,7 +354,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 					startAt,
 					endAt: toDate(row.endAt),
 					description: row.description ?? null,
-					verifiedAt: new Date() // required to surface on the /vote/2027 ballot (verified-only)
+					verifiedAt: new Date() // held office is public
 				})
 				.returning({ id: leaders.id });
 
@@ -332,7 +362,11 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				await tx.insert(partyMemberships).values({ partyId, leaderId: leader.id, role: 'Member', startAt });
 			}
 
-			await applyProfile(tx, domainUserId, leader.id, position.id, row);
+			// A held run only needs a campaign when it carries a manifesto (pillars).
+			const campId = row.pillars?.length
+				? await ensureMainCampaign(tx, { subjectUserId: domainUserId, positionId: position.id, cycleYear: startAt.getFullYear(), leaderId: leader.id, verifiedAt: null, name: row.name })
+				: 0;
+			await applyProfile(tx, domainUserId, campId, position.id, row);
 		});
 
 		seeded++;

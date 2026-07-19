@@ -1,11 +1,11 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { randomBytes } from 'node:crypto';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ballotSimulations, leaders, pledges, users } from '$lib/server/db/schema';
+import { ballotSimulations, campaigns, pledges } from '$lib/server/db/schema';
 import { counties, findCountyBySlug, findConstituencyBySlug, findWardBySlug } from '$lib/data/geo';
 import { BALLOT_LEVELS, resolveCandidates, type BallotLevel } from '$lib/server/ballot';
-import { fullName, getDomainUser, getOrCreateMainCampaign } from '$lib/server/leader';
+import { getDomainUser } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 function publicId(): string {
@@ -94,9 +94,9 @@ export const actions: Actions = {
 			})
 			.returning({ id: ballotSimulations.id });
 
-		// Every real-candidate pick ("db:<leaderId>") becomes a live vote pledge on
-		// that leader's main campaign. Signed-in voters pledge by userId; anonymous
-		// voters by the long-lived 'anon_id' device cookie.
+		// Every real-candidate pick ("campaign:<id>") becomes a live vote pledge on that
+		// run. Signed-in voters pledge by userId; anonymous voters by the long-lived
+		// 'anon_id' device cookie.
 		const domainUser = event.locals.user ? await getDomainUser(event.locals.user.id) : undefined;
 		let anonId: string | null = null;
 		if (!domainUser) {
@@ -133,28 +133,22 @@ export const actions: Actions = {
 			? { name: voterName, sms: contactNumber, whatsapp: contactNumber, email: contactEmail, constituency, ward }
 			: { name: null, sms: null, whatsapp: null, email: null, constituency: null, ward: null };
 
-		const pledgedLeaderIds = [
+		const pledgedCampaignIds = [
 			...new Set(
 				BALLOT_LEVELS.map((level) => selections[level])
-					.filter((s): s is string => !!s && s.startsWith('db:'))
-					.map((s) => Number(s.slice(3)))
+					.filter((s): s is string => !!s && s.startsWith('campaign:'))
+					.map((s) => Number(s.slice('campaign:'.length)))
 					.filter((n) => Number.isInteger(n))
 			)
 		];
 
-		for (const leaderId of pledgedLeaderIds) {
-			const [candidate] = await db
-				.select()
-				.from(leaders)
-				.innerJoin(users, eq(leaders.userId, users.id))
-				.where(and(eq(leaders.id, leaderId), isNull(leaders.deletedAt)));
-			if (!candidate) continue;
-
-			const campaign = await getOrCreateMainCampaign(
-				leaderId,
-				candidate.users.id,
-				fullName(candidate.users)
-			);
+		for (const campaignId of pledgedCampaignIds) {
+			// Only pledge to a live, verified run (the ballot only ever offered these).
+			const [campaign] = await db
+				.select({ id: campaigns.id })
+				.from(campaigns)
+				.where(and(eq(campaigns.id, campaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt)));
+			if (!campaign) continue;
 
 			// The partial unique indexes keep one live pledge per (campaign, user/anon device);
 			// a repeat submission just keeps the existing pledge.

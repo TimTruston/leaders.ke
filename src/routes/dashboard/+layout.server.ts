@@ -62,7 +62,7 @@ export const load: LayoutServerLoad = async (event) => {
 	let claimSubjectUserId: number | null = null;
 	if (family === 'claim') {
 		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
-		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+		if (!resolved || !resolved.currentTerm || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
 		claimName = fullName(resolved.row.users);
 		claimSubjectUserId = resolved.row.users.id;
 	} else {

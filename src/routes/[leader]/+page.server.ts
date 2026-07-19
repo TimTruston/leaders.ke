@@ -21,16 +21,32 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const resolved = await resolveCurrentTerm(params.leader);
 
 	if (!resolved) error(404, 'Leader not found');
-	const { row, terms, currentTerm } = resolved;
+	const { row, terms, currentTerm, activeRun } = resolved;
 
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 
-	// Only verified profiles are public; unverified ones stay dashboard-only until
-	// IEBC-verified. Admins get through so they can inspect a submission under review.
-	if (!currentTerm.leaders.verifiedAt && !viewer?.adminAt) error(404, 'Leader not found');
+	// The seat the profile leads with: a live/held term if they hold or held office,
+	// else their active RUN (a campaign — how an aspirant with no leaders row is public).
+	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	const leadPosition = leadsWithRun ? activeRun!.positions : (currentTerm?.positions ?? activeRun?.positions ?? null);
+	const leadStatus = leadsWithRun ? 'aspirant' : (currentTerm?.leaders.status ?? 'aspirant');
+	const leadVerified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
 
-	const leaderId = currentTerm.leaders.id;
-	const allLeaderIds = terms.map((t) => t.leaders.id);
+	// Public only when the lead seat (held term or run) is verified. Admins see drafts.
+	if (!leadPosition || (!leadVerified && !viewer?.adminAt)) error(404, 'Leader not found');
+
+	// The lead campaign carries the manifesto shown this cycle: the run if vying, else
+	// the current term's own campaign (0 = none, e.g. a former officeholder not running).
+	let leadCampaignId = 0;
+	if (leadsWithRun) {
+		leadCampaignId = activeRun!.campaigns.id;
+	} else if (currentTerm) {
+		const [c] = await db
+			.select({ id: campaigns.id })
+			.from(campaigns)
+			.where(and(eq(campaigns.leaderId, currentTerm.leaders.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		leadCampaignId = c?.id ?? 0;
+	}
 
 	const [
 		[pillarRow],
@@ -47,8 +63,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ n: count() })
 				.from(pillars)
-				.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-				.where(and(eq(campaigns.leaderId, leaderId), isNull(pillars.deletedAt))),
+				.where(and(eq(pillars.campaignId, leadCampaignId), isNull(pillars.deletedAt))),
 			db
 				.select({ n: count() })
 				.from(followers)
@@ -63,8 +78,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ deliveryStatus: pillars.deliveryStatus })
 				.from(pillars)
-				.innerJoin(campaigns, eq(pillars.campaignId, campaigns.id))
-				.where(and(eq(campaigns.leaderId, leaderId), isNull(pillars.deletedAt))),
+				.where(and(eq(pillars.campaignId, leadCampaignId), isNull(pillars.deletedAt))),
 			// "In the news": aggregated coverage tagged to this person.
 			db
 				.select({ id: posts.id, title: posts.title, summary: posts.aiSummary, body: posts.body, createdAt: posts.createdAt })
@@ -73,12 +87,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.where(and(eq(tags.subjectUserId, row.users.id), isNull(tags.deletedAt), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
 				.limit(10),
-			// Education + professional history spans every term (attached to whichever
-			// leaderId existed when it was seeded, not necessarily the current one).
+			// Education + professional history belongs to the person, so it spans every
+			// term and shows even for an aspirant with no leaders row.
 			db
 				.select({ type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
 				.from(experience)
-				.where(and(inArray(experience.leaderId, allLeaderIds), isNull(experience.deletedAt)))
+				.where(and(eq(experience.subjectUserId, row.users.id), isNull(experience.deletedAt)))
 				.orderBy(desc(experience.startAt)),
 			// Public contact channels (email/sms), verified ones surface first.
 			db
@@ -88,7 +102,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Citizen reviews of this person (follows them across every seat), plus
 			// this campaign's pillar options for the review form.
 			listApprovedReviews(row.users.id, viewer?.id),
-			listReviewPillarOptions(leaderId),
+			listReviewPillarOptions(leadCampaignId),
 			getFlaggedReviewCounts(row.users.id)
 		]);
 
@@ -108,7 +122,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const inProgressCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'in_progress').length;
 
 	const name = fullName(row.users);
-	const isVying = currentTerm.leaders.status !== 'former';
+	// Vying = leads with a current term or an active run (anything but a retired former).
+	const isVying = leadStatus !== 'former';
 
 	// Vying (a future-dated aspirant term) isn't a track record yet — only seats
 	// whose term actually started belong here. Folded into `experience.professional`
@@ -137,11 +152,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.toUpperCase(),
 			photoUrl: row.users.photoUrl,
 			party: null as string | null,
-			regionLabel: currentTerm.positions.region,
-			positionTitle: currentTerm.positions.title,
-			positionId: currentTerm.positions.id,
-			status: currentTerm.leaders.status,
-			verified: !!currentTerm.leaders.verifiedAt,
+			regionLabel: leadPosition.region,
+			positionTitle: leadPosition.title,
+			positionId: leadPosition.id,
+			status: leadStatus,
+			verified: leadVerified,
 			followers: followerRow.n,
 			bio: row.users.bio ?? '',
 			address: row.users.address ?? null,
@@ -216,34 +231,52 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		// canonical hub link (collapses to positionPath for single-region seats like President);
 		// seatCyclePath always carries the region, since the /[year] cycle grid route needs it.
 		breadcrumb: {
-			positionTitle: currentTerm.positions.title,
+			positionTitle: leadPosition.title,
 			// Single-region national seats (President) omit the region segment, matching /president.
-			regionLabel: currentTerm.positions.boundary === 'Country' ? null : currentTerm.positions.region,
-			positionPath: `/${positionSlug(currentTerm.positions.title)}`,
+			regionLabel: leadPosition.boundary === 'Country' ? null : leadPosition.region,
+			positionPath: `/${positionSlug(leadPosition.title)}`,
 			// Country-wide seats' hub lives at the SINGULAR slug (/president).
 			seatPath:
-				currentTerm.positions.boundary === 'Country'
-					? `/${SINGULAR_SLUG_BY_TITLE[currentTerm.positions.title]}`
-					: `/${positionSlug(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`,
-			seatCyclePath: `/${positionSlug(currentTerm.positions.title)}/${slugify(currentTerm.positions.region)}`
+				leadPosition.boundary === 'Country'
+					? `/${SINGULAR_SLUG_BY_TITLE[leadPosition.title]}`
+					: `/${positionSlug(leadPosition.title)}/${slugify(leadPosition.region)}`,
+			seatCyclePath: `/${positionSlug(leadPosition.title)}/${slugify(leadPosition.region)}`
 		}
 	};
 };
 
+// Resolves a slug to its public review target: the person id plus the lead campaign
+// (for pillar validation). Null when the profile isn't public (unverified term/run).
+async function publicLead(slug: string): Promise<{ subjectId: number; leadCampaignId: number } | null> {
+	const resolved = await resolveCurrentTerm(slug);
+	if (!resolved) return null;
+	const { row, currentTerm, activeRun } = resolved;
+	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	const leadVerified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
+	if (!leadVerified) return null;
+	let leadCampaignId = 0;
+	if (leadsWithRun) {
+		leadCampaignId = activeRun!.campaigns.id;
+	} else if (currentTerm) {
+		const [c] = await db
+			.select({ id: campaigns.id })
+			.from(campaigns)
+			.where(and(eq(campaigns.leaderId, currentTerm.leaders.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		leadCampaignId = c?.id ?? 0;
+	}
+	return { subjectId: row.users.id, leadCampaignId };
+}
+
 export const actions: Actions = {
 	review: async (event) => {
-		const resolved = await resolveCurrentTerm(event.params.leader);
-		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
-			error(404, 'Leader not found');
-		}
-		return await handleReviewAction(event, resolved.row.users.id, resolved.currentTerm.leaders.id);
+		const lead = await publicLead(event.params.leader);
+		if (!lead) error(404, 'Leader not found');
+		return await handleReviewAction(event, lead.subjectId, lead.leadCampaignId);
 	},
 
 	deleteReview: async (event) => {
-		const resolved = await resolveCurrentTerm(event.params.leader);
-		if (!resolved || !resolved.currentTerm.leaders.verifiedAt) {
-			error(404, 'Leader not found');
-		}
-		return await handleDeleteReviewAction(event, resolved.row.users.id);
+		const lead = await publicLead(event.params.leader);
+		if (!lead) error(404, 'Leader not found');
+		return await handleDeleteReviewAction(event, lead.subjectId);
 	}
 };

@@ -1,15 +1,16 @@
 // Candidate resolution for /vote/2027 (the ballot simulator). Only surfaces
-// verified DB candidates — this simulates a real ballot, not a claims directory.
-import { and, eq, isNull } from 'drizzle-orm';
+// verified 2027 runs (campaigns) — a real ballot lists candidates, which are runs
+// for office, not held terms. ACTIVE_CYCLE (2027) is the cycle this ballot covers.
+import { and, eq, isNull, isNotNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, positions, users } from '$lib/server/db/schema';
-import { fullName, leaderPath } from '$lib/server/leader';
+import { campaigns, positions, users } from '$lib/server/db/schema';
+import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
 import type { County, Constituency, Ward } from '$lib/data/geo';
 
 export type BallotLevel = 'president' | 'governor' | 'senator' | 'womanRep' | 'mp' | 'mca';
 
 export type Candidate = {
-	candidateId: string; // "db:<leaderId>" — resolved back to live data on the share page
+	candidateId: string; // "campaign:<id>" — resolved back to live data on the share page
 	name: string;
 	initials: string;
 	photoUrl: string | null;
@@ -30,13 +31,12 @@ const LEVEL_TITLE: Record<BallotLevel, string> = {
 export const BALLOT_LEVELS: BallotLevel[] = ['president', 'governor', 'senator', 'womanRep', 'mp', 'mca'];
 
 function toCandidate(row: {
-	leaders: typeof leaders.$inferSelect;
-	positions: typeof positions.$inferSelect;
+	campaigns: typeof campaigns.$inferSelect;
 	users: typeof users.$inferSelect;
 }): Candidate {
 	const name = fullName(row.users);
 	return {
-		candidateId: `db:${row.leaders.id}`,
+		candidateId: `campaign:${row.campaigns.id}`,
 		name,
 		initials: name
 			.split(/\s+/)
@@ -47,19 +47,28 @@ function toCandidate(row: {
 		photoUrl: row.users.photoUrl,
 		party: null,
 		path: leaderPath(row.users),
-		verified: !!row.leaders.verifiedAt
+		verified: !!row.campaigns.verifiedAt
 	};
 }
 
-/** Verified DB leaders for one position title + exact region name. */
-async function verifiedLeadersFor(title: string, region: string): Promise<Candidate[]> {
+/** Verified 2027 runs (campaigns) for one position title + exact region name. */
+async function verifiedCampaignsFor(title: string, region: string): Promise<Candidate[]> {
 	const rows = await db
-		.select()
-		.from(leaders)
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(eq(positions.title, title), eq(positions.region, region), isNull(leaders.deletedAt)));
-	return rows.filter((r) => r.leaders.verifiedAt).map(toCandidate);
+		.select({ campaigns, users })
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+		.where(
+			and(
+				eq(positions.title, title),
+				eq(positions.region, region),
+				eq(campaigns.cycleYear, ACTIVE_CYCLE),
+				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
+				isNull(campaigns.deletedAt)
+			)
+		);
+	return rows.map(toCandidate);
 }
 
 /**
@@ -91,21 +100,20 @@ export async function resolveCandidates(
 			break;
 	}
 
-	return verifiedLeadersFor(title, region);
+	return verifiedCampaignsFor(title, region);
 }
 
-/** Re-resolves a stored candidateId ("db:<id>") to live display data, or null if gone. */
+/** Re-resolves a stored candidateId ("campaign:<id>") to live display data, or null if gone. */
 export async function resolveCandidateById(candidateId: string | null): Promise<Candidate | null> {
 	if (!candidateId) return null;
 
-	if (candidateId.startsWith('db:')) {
-		const id = Number(candidateId.slice('db:'.length));
+	if (candidateId.startsWith('campaign:')) {
+		const id = Number(candidateId.slice('campaign:'.length));
 		const [row] = await db
-			.select()
-			.from(leaders)
-			.innerJoin(positions, eq(leaders.positionId, positions.id))
-			.innerJoin(users, eq(leaders.userId, users.id))
-			.where(and(eq(leaders.id, id), isNull(leaders.deletedAt)));
+			.select({ campaigns, users })
+			.from(campaigns)
+			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+			.where(and(eq(campaigns.id, id), isNull(campaigns.deletedAt)));
 		return row ? toCandidate(row) : null;
 	}
 

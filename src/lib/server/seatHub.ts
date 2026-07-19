@@ -1,8 +1,8 @@
 // Shared loader for the seat civic hub, used by both /[position]/[region] and
 // (for single-region national seats like President) /[position] directly.
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, parties, partyMemberships, pillars } from '$lib/server/db/schema';
+import { campaigns, parties, partyMemberships, pillars, positions, users } from '$lib/server/db/schema';
 import {
 	ACTIVE_CYCLE,
 	findPositionByPath,
@@ -78,7 +78,43 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 			.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0];
 		if (currentRow) regime = currentRow.leaders.startAt.getFullYear();
 	}
-	const dbContestants = isActiveRegime ? rows.filter((r) => r.leaders.status === 'aspirant').map(toCard) : [];
+	// Contestants for the active cycle are verified 2027 runs (campaigns) at this seat —
+	// aspirants have no leaders row. Past regimes list no contestants (the holder IS the result).
+	const runRows = isActiveRegime
+		? await db
+				.select({ users, verifiedAt: campaigns.verifiedAt })
+				.from(campaigns)
+				.innerJoin(positions, eq(campaigns.positionId, positions.id))
+				.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+				.where(
+					and(
+						eq(positions.id, positionRow.id),
+						eq(campaigns.cycleYear, ACTIVE_CYCLE),
+						isNull(campaigns.parentCampaignId),
+						isNotNull(campaigns.verifiedAt),
+						isNull(campaigns.deletedAt)
+					)
+				)
+		: [];
+	const dbContestants = runRows.map((r) => {
+		const name = fullName(r.users);
+		return {
+			name,
+			initials: name
+				.split(/\s+/)
+				.map((w) => w[0])
+				.join('')
+				.slice(0, 2)
+				.toUpperCase(),
+			path: leaderPath(r.users),
+			photoUrl: r.users.photoUrl,
+			party: null as string | null,
+			partyPath: null as string | null,
+			status: 'aspirant',
+			verified: !!r.verifiedAt,
+			followers: 0
+		};
+	});
 
 	// Manifesto delivery rollup for the seat's current holder (same shape the
 	// public leader profile shows), so the hub can score the incumbent.

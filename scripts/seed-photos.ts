@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { and, eq, isNull } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { leaders, users } from '../src/lib/server/db/schema';
+import { users } from '../src/lib/server/db/schema';
 
 const PHOTOS_DIR = join(import.meta.dir, '..', 'static', 'leaders');
 
@@ -17,12 +17,13 @@ if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(process.env.DATABASE_URL, { max: 1 });
 const db = drizzle(client);
 
+// Photos are person-scoped (static/leaders/<slug>.jpg, keyed by the person's slug),
+// so match on users directly — an aspirant with only a campaign (no leaders row) has
+// a photo too. The existsSync check below means only people with a shipped file get one.
 const rows = await db
 	.select({ userId: users.id, slug: users.slug })
 	.from(users)
-	.innerJoin(leaders, eq(leaders.userId, users.id))
-	.where(and(isNull(users.photoUrl), isNull(users.deletedAt), isNull(leaders.deletedAt)))
-	.groupBy(users.id, users.slug);
+	.where(and(isNull(users.photoUrl), isNull(users.deletedAt)));
 
 let assigned = 0;
 for (const row of rows) {
@@ -30,5 +31,5 @@ for (const row of rows) {
 	await db.update(users).set({ photoUrl: `/leaders/${row.slug}.jpg` }).where(eq(users.id, row.userId));
 	assigned++;
 }
-console.log(`[seed-photos] assigned ${assigned} photo URLs (${rows.length - assigned} leaders have no shipped photo)`);
+console.log(`[seed-photos] assigned ${assigned} photo URLs (${rows.length - assigned} people have no shipped photo)`);
 await client.end();

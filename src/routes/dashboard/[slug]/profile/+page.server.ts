@@ -58,7 +58,7 @@ export const load: PageServerLoad = async (event) => {
 				db
 					.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
 					.from(experience)
-					.where(and(eq(experience.leaderId, ctx.leader.id), isNull(experience.deletedAt)))
+					.where(and(eq(experience.subjectUserId, subject.id), isNull(experience.deletedAt)))
 					.orderBy(experience.startAt),
 				db
 					.select({ id: leaders.id, positionTitle: positions.title, region: positions.region, description: leaders.description, from: leaders.startAt, to: leaders.endAt })
@@ -284,7 +284,7 @@ export const actions: Actions = {
 
 		for (const e of pendingExperience) {
 			await db.insert(experience).values({
-				leaderId: leaderId!,
+				subjectUserId: subjectId,
 				type: e.type,
 				title: e.title.trim(),
 				institution: e.institution.trim(),
@@ -305,12 +305,12 @@ export const actions: Actions = {
 			});
 		}
 
-		// Scoped to this leader/user so nobody can remove someone else's rows by id-guessing.
-		if (removedExperienceIds.length > 0 && leaderId) {
+		// Scoped to this person so nobody can remove someone else's rows by id-guessing.
+		if (removedExperienceIds.length > 0) {
 			await db
 				.update(experience)
 				.set({ deletedAt: new Date() })
-				.where(and(inArray(experience.id, removedExperienceIds), eq(experience.leaderId, leaderId)));
+				.where(and(inArray(experience.id, removedExperienceIds), eq(experience.subjectUserId, subjectId)));
 		}
 		if (removedLeadershipIds.length > 0) {
 			await db
