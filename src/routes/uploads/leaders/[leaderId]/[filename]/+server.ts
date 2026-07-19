@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
-import { managers } from '$lib/server/db/schema';
+import { managers, profileClaims } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import type { RequestHandler } from './$types';
 
@@ -30,12 +30,20 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	if (!domainUser.adminAt && domainUser.id !== subjectUserId) {
-		// Not the person themself: must be an active manager of them.
+		// Not the person themself: allow an active manager, or a claimant with a pending
+		// claim on this person (they staged these documents as claim evidence and must be
+		// able to review their own upload before approval grants them management).
 		const [membership] = await db
 			.select({ id: managers.id })
 			.from(managers)
 			.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)));
-		if (!membership) error(403, 'Not authorized to view this document.');
+		if (!membership) {
+			const [pendingClaim] = await db
+				.select({ id: profileClaims.id })
+				.from(profileClaims)
+				.where(and(eq(profileClaims.claimedBy, domainUser.id), eq(profileClaims.subjectUserId, subjectUserId), isNull(profileClaims.outcome)));
+			if (!pendingClaim) error(403, 'Not authorized to view this document.');
+		}
 	}
 
 	const localDir = env.STORAGE_LOCAL_DIR || '.uploads';

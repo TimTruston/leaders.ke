@@ -294,6 +294,13 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 				await db.insert(partyMemberships).values({ partyId: stagedPartyId, subjectUserId, role: 'Member', startAt: new Date() });
 			}
 		}
+
+		// Apply the staged leader photo onto the real profile now that the claim is
+		// approved (it was held in the claim's evidence until this point).
+		const stagedPhotoUrl = (claim.evidence as ClaimEvidence | null)?.documentation?.photoUrl;
+		if (stagedPhotoUrl) {
+			await db.update(users).set({ photoUrl: stagedPhotoUrl }).where(eq(users.id, subjectUserId));
+		}
 	} else {
 		await db
 			.update(managers)

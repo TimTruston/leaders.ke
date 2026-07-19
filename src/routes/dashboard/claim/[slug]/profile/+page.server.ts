@@ -7,12 +7,8 @@ import { db } from '$lib/server/db';
 import { parties, partyMemberships, positions } from '$lib/server/db/schema';
 import { deletePendingClaim, resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
 import { redirectWithFlash } from '$lib/server/flash';
-import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
+import { saveLeaderDocument } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
-
-// The campaign documents the Profile tab uploads — staged into the claim's
-// evidence, never onto the real leaders row (the claimant isn't the owner yet).
-const DOC_KEY_BY_KIND = { photo: 'photoUrl', 'iebc-certificate': 'iebcCertificateUrl' } as const;
 
 export const load: PageServerLoad = async (event) => {
 	const { resolved, claim } = await resolveClaimRequest(event);
@@ -54,7 +50,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	save: async (event) => {
-		const { domainUser, resolved } = await resolveClaimRequest(event);
+		const { domainUser, resolved, claim } = await resolveClaimRequest(event);
 
 		const form = await event.request.formData();
 		const firstName = String(form.get('firstName') ?? '').trim();
@@ -72,35 +68,24 @@ export const actions: Actions = {
 			if (!party) return fail(400, { error: 'That party does not exist.' });
 		}
 
-		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
-			profile: { firstName, otherNames, bio, partyId }
-		});
-		return { saved: true };
-	},
-
-	// Photo + IEBC certificate upload (moved here from the old Documentation tab).
-	// Files land on disk (UUID-named) but their URLs stage into the claim evidence
-	// only — never onto the profile's real leaders row.
-	upload: async (event) => {
-		const { domainUser, resolved, claim } = await resolveClaimRequest(event);
-		const form = await event.request.formData();
-
-		const staged = { ...((claim?.evidence as ClaimEvidence | null)?.documentation ?? {}) };
-		let uploadedAny = false;
-		for (const kind of Object.keys(DOC_KEY_BY_KIND) as (keyof typeof DOC_KEY_BY_KIND)[]) {
-			const file = form.get(kind);
-			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
+		// The photo rides this same submit but STAGES into the claim's evidence — the
+		// file lands on disk (person-keyed), its URL is recorded on the pending claim
+		// only, and the real users.photoUrl is untouched until an admin approves.
+		const documentation = { ...((claim?.evidence as ClaimEvidence | null)?.documentation ?? {}) };
+		const photoFile = form.get('photo');
+		if (photoFile instanceof File && photoFile.size > 0) {
 			try {
-				staged[DOC_KEY_BY_KIND[kind]] = await saveLeaderDocument(resolved.row.users.id, kind as UploadKind, file);
-				uploadedAny = true;
+				documentation.photoUrl = await saveLeaderDocument(resolved.row.users.id, 'photo', photoFile);
 			} catch (err) {
-				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+				return fail(400, { error: err instanceof Error ? err.message : 'Photo upload failed.' });
 			}
 		}
-		if (!uploadedAny) return fail(400, { error: 'Choose a file to upload.' });
 
-		await stageClaimEvidence(resolved.row.users.id, domainUser.id, { documentation: staged });
-		return { uploaded: true };
+		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
+			profile: { firstName, otherNames, bio, partyId },
+			documentation
+		});
+		return { saved: true };
 	},
 
 	// The layout's claim widget posts here (like Submit Application in apply mode):
