@@ -53,7 +53,9 @@
 					{#each data.claims as claim (claim.claimId)}
 						<tr class="border-t border-border">
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{claim.subjectUserId}</td>
-							<td class="px-4 py-3 text-sm text-heading">{claim.subjectName}</td>
+							<td class="px-4 py-3 text-sm text-heading">
+							<a href="/claims/{claim.claimId}" class="text-primary hover:underline">{claim.subjectName}</a>
+						</td>
 							<td class="px-4 py-3 text-sm text-muted">{claim.claimantName}</td>
 							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(claim.requestedAt))}</td>
 							<td class="px-4 py-3 text-sm">
@@ -69,6 +71,14 @@
 							</td>
 							<td class="px-4 py-3">
 								<div class="flex flex-wrap gap-2">
+									<!-- The profile as it would look once approved (LeaderProfile preview),
+									plus the same decision controls as here. -->
+									<a
+										href="/claims/{claim.claimId}"
+										class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+									>
+										Preview
+									</a>
 									<!-- Approve submits immediately; Reject (pending) and Revert (approved)
 									open the reason row below instead — same design as the verification tab. -->
 									{#if claim.outcome !== 'approved'}

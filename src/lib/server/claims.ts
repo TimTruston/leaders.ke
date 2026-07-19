@@ -4,10 +4,13 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, leaders, managers, partyMemberships, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, contacts, managers, parties, partyMemberships, profileClaims, users } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
+import { loadPublicProfileData, type PublicProfileData } from '$lib/server/publicProfile';
+import { signoffComplete } from '$lib/utils/campaignRoles';
 
 /** What a claimant stages tab by tab under /dashboard/claim/[slug]/* — held in
  * profileClaims.evidence until an admin approves; the public profile is never
@@ -330,4 +333,132 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 	});
 
 	return { ok: true as const };
+}
+
+/** Overlays a claim's staged evidence onto the profile's real (live) data — what
+ * the profile will look like once this claim is approved. Only fields a claim can
+ * actually stage move; everything else (experience, delivery, followers…) is real. */
+function overlayClaimEvidence(data: PublicProfileData, evidence: ClaimEvidence): PublicProfileData {
+	const p = evidence.profile;
+	const c = evidence.contacts;
+	const photoUrl = evidence.documentation?.photoUrl;
+
+	const contactsOverlay = data.contacts.filter((row) => !c || !['sms', 'whatsapp', 'email'].includes(row.channel));
+	if (c) {
+		if (c.sms) contactsOverlay.push({ channel: 'sms', value: c.sms, verified: !!c.smsVerified });
+		if (c.whatsapp) contactsOverlay.push({ channel: 'whatsapp', value: c.whatsapp, verified: !!c.whatsappVerified });
+		if (c.email) contactsOverlay.push({ channel: 'email', value: c.email, verified: !!c.emailVerified });
+	}
+
+	return {
+		...data,
+		leader: {
+			...data.leader,
+			name: p ? fullName({ firstName: p.firstName, otherNames: p.otherNames }) : data.leader.name,
+			bio: p?.bio ?? data.leader.bio,
+			photoUrl: photoUrl ?? data.leader.photoUrl,
+			address: c?.address || data.leader.address,
+			socials: c ? { ...data.leader.socials, ...c.socials, ...(c.website ? { website: c.website } : {}) } : data.leader.socials
+		},
+		contacts: contactsOverlay
+	};
+}
+
+export type ClaimPreview = NonNullable<Awaited<ReturnType<typeof getClaimPreview>>>;
+
+/**
+ * Everything an admin needs to review one claim: the profile as it would look
+ * once approved (its real live data with the claim's staged edits overlaid),
+ * plus the review-only extras (IEBC cert, the claimant's own sign-off as a
+ * one-person "team", and every claim ever made on this profile).
+ */
+export async function getClaimPreview(claimId: number) {
+	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
+	if (!claim) return null;
+	const evidence = (claim.evidence as ClaimEvidence | null) ?? {};
+
+	const [subject] = await db.select().from(users).where(eq(users.id, claim.subjectUserId));
+	if (!subject?.slug) return null;
+	const [claimant] = await db.select().from(users).where(eq(users.id, claim.claimedBy));
+
+	const liveData = await loadPublicProfileData(subject.slug, { isAdmin: true });
+	if (!liveData) return null;
+	const data = overlayClaimEvidence(liveData, evidence);
+
+	// The person's active run's IEBC cert (staged replacement takes precedence).
+	const [run] = await db.select({ iebcCertificateUrl: campaigns.iebcCertificateUrl }).from(campaigns).where(eq(campaigns.id, liveData.leadCampaignId));
+	const iebcCertificateUrl = evidence.documentation?.iebcCertificateUrl ?? run?.iebcCertificateUrl ?? null;
+
+	// Overlay the staged party name, if the claim changes it.
+	if (evidence.profile?.partyId !== undefined) {
+		const [party] = evidence.profile.partyId
+			? await db.select({ name: parties.name, abbreviation: parties.abbreviation }).from(parties).where(eq(parties.id, evidence.profile.partyId))
+			: [];
+		data.leader.party = party ? `${party.name}${party.abbreviation ? ` (${party.abbreviation})` : ''}` : null;
+	}
+
+	// The claimant's own contacts (their account), falling back to their login email.
+	const [claimantContactRows, [claimantAuth]] = await Promise.all([
+		claimant
+			? db.select({ channel: contacts.channel, value: contacts.value }).from(contacts).where(and(eq(contacts.userId, claimant.id), isNull(contacts.deletedAt)))
+			: Promise.resolve([]),
+		claimant ? db.select({ email: authUsers.email }).from(authUsers).where(eq(authUsers.id, claimant.authUserId)) : Promise.resolve([])
+	]);
+	const signoff = evidence.signoff ?? {};
+	const team = claimant
+		? [
+				{
+					name: fullName(claimant),
+					title: signoff.myRole ?? null,
+					nationalId: signoff.nationalId ?? null,
+					idFrontUrl: signoff.idFrontUrl ?? null,
+					idBackUrl: signoff.idBackUrl ?? null,
+					signoffComplete: signoffComplete(
+						{ title: signoff.myRole, nationalId: signoff.nationalId },
+						{ idFrontUrl: signoff.idFrontUrl ?? null, idBackUrl: signoff.idBackUrl ?? null }
+					),
+					isApplicant: true,
+					phone: claimantContactRows.find((r) => r.channel === 'sms')?.value ?? null,
+					email: claimantContactRows.find((r) => r.channel === 'email')?.value ?? claimantAuth?.email ?? null
+				}
+			]
+		: [];
+
+	// Every claim ever made on this profile, newest first.
+	const historyRows = await db
+		.select({
+			id: profileClaims.id,
+			requestedAt: profileClaims.requestedAt,
+			outcome: profileClaims.outcome,
+			notes: profileClaims.notes,
+			reviewedAt: profileClaims.reviewedAt,
+			reviewerFirstName: users.firstName,
+			reviewerOtherNames: users.otherNames
+		})
+		.from(profileClaims)
+		.leftJoin(users, eq(profileClaims.reviewedBy, users.id))
+		.where(eq(profileClaims.subjectUserId, claim.subjectUserId))
+		.orderBy(desc(profileClaims.requestedAt));
+
+	return {
+		request: {
+			id: claim.id,
+			requestedAt: claim.requestedAt.toISOString(),
+			outcome: claim.outcome,
+			notes: claim.notes,
+			reviewedAt: claim.reviewedAt ? claim.reviewedAt.toISOString() : null,
+			requestedByName: claimant ? fullName(claimant) : null
+		},
+		data,
+		iebcCertificateUrl,
+		team,
+		requestHistory: historyRows.map((h) => ({
+			id: h.id,
+			requestedAt: h.requestedAt.toISOString(),
+			outcome: h.outcome,
+			notes: h.notes,
+			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
+			reviewerName: h.reviewerFirstName ? `${h.reviewerFirstName} ${h.reviewerOtherNames}` : null
+		}))
+	};
 }

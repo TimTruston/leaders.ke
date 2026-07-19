@@ -4,9 +4,10 @@
 // aspirant has no leaders row. Payment (subscriptions) is a separate, later concern.
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, users, verifications } from '$lib/server/db/schema';
+import { campaigns, contacts, managers, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { fullName, isSlugAvailable, leaderPath } from '$lib/server/leader';
+import { fullName, isSlugAvailable } from '$lib/server/leader';
+import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { notifyUser } from '$lib/server/notifications';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 
@@ -93,29 +94,25 @@ export async function listVerifications(page: number, pageSize: number): Promise
 	};
 }
 
-export type VerificationDetail = NonNullable<Awaited<ReturnType<typeof getVerificationDetail>>>;
+export type VerificationPreview = NonNullable<Awaited<ReturnType<typeof getVerificationPreview>>>;
 
-/** Everything an admin needs to review one request in full (mirrors the applicant's tabs). */
-export async function getVerificationDetail(verificationId: number) {
+/**
+ * Everything an admin needs to review one request: the same public-page data the
+ * profile will render once verified (LeaderProfile in `preview` mode), plus the
+ * review-only extras (IEBC cert, team sign-offs, request history) and the decision
+ * request itself. An application writes directly onto the real (unverified) profile
+ * — no staging — so this is simply the live profile, admin-bypassed past the gate.
+ */
+export async function getVerificationPreview(verificationId: number) {
 	const [request] = await db.select().from(verifications).where(eq(verifications.id, verificationId));
 	if (!request) return null;
 
-	const [campaignRow] = await db
-		.select()
-		.from(campaigns)
-		.leftJoin(positions, eq(campaigns.positionId, positions.id))
-		.where(eq(campaigns.id, request.campaignId));
-	if (!campaignRow) return null;
-	const campaign = campaignRow.campaigns;
-	const seat = campaignRow.positions;
+	const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, request.campaignId));
+	if (!campaign) return null;
 
-	const [[profileUser], [applicant], contactRows, teamRows, [membership], historyRows] = await Promise.all([
+	const [[profileUser], [applicant], teamRows, historyRows] = await Promise.all([
 		db.select().from(users).where(eq(users.id, campaign.subjectUserId)),
 		db.select().from(users).where(eq(users.id, request.requestedBy)),
-		db
-			.select({ channel: contacts.channel, value: contacts.value, verifiedAt: contacts.verifiedAt })
-			.from(contacts)
-			.where(and(eq(contacts.userId, campaign.subjectUserId), isNull(contacts.deletedAt))),
 		db
 			.select({
 				userId: managers.userId,
@@ -132,12 +129,6 @@ export async function getVerificationDetail(verificationId: number) {
 			.innerJoin(users, eq(managers.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
 			.where(and(eq(managers.subjectUserId, campaign.subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt))),
-		// The person's live party membership, if any (person-scoped).
-		db
-			.select({ name: parties.name, abbreviation: parties.abbreviation })
-			.from(partyMemberships)
-			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(eq(partyMemberships.subjectUserId, campaign.subjectUserId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt))),
 		db
 			.select({
 				id: verifications.id,
@@ -153,6 +144,10 @@ export async function getVerificationDetail(verificationId: number) {
 			.where(eq(verifications.campaignId, request.campaignId))
 			.orderBy(desc(verifications.requestedAt))
 	]);
+	if (!profileUser.slug) return null; // every application gets a slug on first save
+
+	const data = await loadPublicProfileData(profileUser.slug, { isAdmin: true });
+	if (!data) return null;
 
 	// Each team member's own phone/email (their account, not the profile subject's) —
 	// one grouped query across every manager, keyed by userId.
@@ -177,23 +172,10 @@ export async function getVerificationDetail(verificationId: number) {
 			outcome: request.outcome,
 			notes: request.notes,
 			reviewedAt: request.reviewedAt ? request.reviewedAt.toISOString() : null,
-			requestedByName: applicant ? fullName(applicant) : null,
-			evidence: request.evidence as Record<string, string>
+			requestedByName: applicant ? fullName(applicant) : null
 		},
-		profile: {
-			campaignId: campaign.id,
-			name: fullName(profileUser),
-			slug: profileUser.slug,
-			publicPath: profileUser.slug ? leaderPath(profileUser) : null,
-			status: 'aspirant',
-			verifiedAt: campaign.verifiedAt ? campaign.verifiedAt.toISOString() : null,
-			bio: profileUser.bio,
-			address: profileUser.address,
-			socials: (profileUser.socials ?? {}) as Record<string, string>,
-			seat: seat ? { title: seat.title, region: seat.region } : null,
-			party: membership ? `${membership.name}${membership.abbreviation ? ` (${membership.abbreviation})` : ''}` : null
-		},
-		contacts: contactRows.map((c) => ({ channel: c.channel, value: c.value, verified: !!c.verifiedAt })),
+		data,
+		iebcCertificateUrl: campaign.iebcCertificateUrl,
 		team: teamRows.map((t) => {
 			const roles = (t.roles ?? {}) as ManagerRoles;
 			const teamContact = teamContactsByUser.get(t.userId);
@@ -209,8 +191,7 @@ export async function getVerificationDetail(verificationId: number) {
 				email: teamContact?.email ?? t.authEmail
 			};
 		}),
-		documentation: { photoUrl: profileUser.photoUrl, iebcCertificateUrl: campaign.iebcCertificateUrl },
-		history: historyRows.map((h) => ({
+		requestHistory: historyRows.map((h) => ({
 			id: h.id,
 			requestedAt: h.requestedAt.toISOString(),
 			outcome: h.outcome,

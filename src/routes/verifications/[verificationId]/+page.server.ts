@@ -1,16 +1,17 @@
 import { error, fail } from '@sveltejs/kit';
 import { requireAdmin } from '$lib/server/dashboard';
-import { getVerificationDetail, reviewVerification } from '$lib/server/verifications';
+import { getVerificationPreview, reviewVerification } from '$lib/server/verifications';
 import type { Actions, PageServerLoad } from './$types';
 
-// One verification request in full: the whole application (profile, contacts,
-// team, documentation, signoff) plus the leader's request history, so the admin
-// reviews the actual submission instead of a bare queue row.
+// One verification request in full: the actual profile as it would render once
+// verified (LeaderProfile in preview mode), plus review-only extras (IEBC cert,
+// team sign-offs, request history) — the admin reviews the real submission, not
+// a bare queue row.
 export const load: PageServerLoad = async (event) => {
 	await requireAdmin(event);
-	const detail = await getVerificationDetail(Number(event.params.verificationId));
-	if (!detail) error(404, 'Verification request not found');
-	return { detail };
+	const preview = await getVerificationPreview(Number(event.params.verificationId));
+	if (!preview) error(404, 'Verification request not found');
+	return { preview };
 };
 
 export const actions: Actions = {
