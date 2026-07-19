@@ -5,7 +5,7 @@
 import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
-import { fullName, leaderPath, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
 import { counties } from '$lib/data/geo';
 
 export type DirectoryFilters = {
@@ -120,8 +120,13 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	];
 
 	// Regime options: every year a recorded (non-aspirant) term started, newest first.
+	// The active cycle is excluded — it's already the default "today" view, and a
+	// freshly graduated winner's term starts within it (swearing-in), which would
+	// otherwise duplicate that entry.
 	const regimeOptions = [
-		...new Set(rows.filter((r) => r.status !== 'aspirant').map((r) => r.startAt.getFullYear()))
+		...new Set(
+			rows.filter((r) => r.status !== 'aspirant' && r.startAt.getFullYear() !== ACTIVE_CYCLE).map((r) => r.startAt.getFullYear())
+		)
 	].sort((a, b) => b - a);
 
 	// One card per person. Today's view prefers the non-'former' row (else the

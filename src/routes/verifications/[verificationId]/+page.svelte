@@ -117,7 +117,7 @@
 	</div>
 
 	<!-- Every request ever made for this profile/run, newest first. -->
-	<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+	<div class="mt-6">
 		<h2 class="text-xl font-bold text-heading">Verification history</h2>
 		{#if p.requestHistory.length > 0}
 			<div class="mt-4 overflow-x-auto rounded-2xl border border-border">
@@ -150,7 +150,7 @@
 	</div>
 
 	<!-- Team, each with their own sign-off (role, national ID, ID images) -->
-	<div class="mt-6 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+	<div class="mt-6">
 		<h2 class="text-xl font-bold text-heading">Team &amp; sign-offs</h2>
 		<p class="mt-1 text-sm text-muted">Each manager attests separately: their role, national ID, and ID images.</p>
 		{#if p.team.length > 0}

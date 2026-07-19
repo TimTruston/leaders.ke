@@ -39,7 +39,13 @@
 								<a href={c.path} class="hover:text-primary">{c.name}</a>
 							</td>
 							<td class="px-4 py-3 text-sm text-muted">{c.positionTitle}</td>
-							<td class="px-4 py-3 text-sm text-muted">{c.region}</td>
+							<td class="px-4 py-3 text-sm text-muted">
+								{#if c.regionPath}
+									<a href={c.regionPath} target="_blank" rel="noopener" class="hover:text-primary hover:underline">{c.region}</a>
+								{:else}
+									{c.region}
+								{/if}
+							</td>
 							<td class="px-4 py-3 text-sm capitalize text-muted">{c.status}</td>
 							<td class="px-4 py-3 text-sm">
 								{#if c.verified}

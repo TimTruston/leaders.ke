@@ -94,6 +94,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 						eq(campaigns.cycleYear, ACTIVE_CYCLE),
 						isNull(campaigns.parentCampaignId),
 						isNotNull(campaigns.verifiedAt),
+						isNull(campaigns.leaderId), // dropped once graduated into a term (that IS the current holder)
 						isNull(campaigns.deletedAt)
 					)
 				)
@@ -200,7 +201,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 
 	// Regime line options: the active cycle plus each recorded term's start year
 	// (deduped — a by-election shares its era's entry), most recent first.
-	const seenYears = new Set<number>();
+	const seenYears = new Set<number>([ACTIVE_CYCLE]);
 	const regimes = [
 		{ year: ACTIVE_CYCLE, label: String(ACTIVE_CYCLE) },
 		...history

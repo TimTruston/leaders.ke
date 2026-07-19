@@ -4,7 +4,7 @@
 // aspirant has no leaders row. Payment (subscriptions) is a separate, later concern.
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, managers, users, verifications } from '$lib/server/db/schema';
+import { campaigns, contacts, managers, positions, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { fullName, isSlugAvailable } from '$lib/server/leader';
 import { loadPublicProfileData } from '$lib/server/publicProfile';
@@ -18,6 +18,8 @@ export type VerificationRow = {
 	firstName: string;
 	otherNames: string;
 	slug: string | null;
+	positionTitle: string;
+	region: string;
 	requestedAt: string;
 	verifiedAt: string | null; // campaigns.verifiedAt — the run's live/public state
 	outcome: 'approved' | 'rejected' | null; // null = pending
@@ -70,6 +72,8 @@ export async function listVerifications(page: number, pageSize: number): Promise
 				firstName: users.firstName,
 				otherNames: users.otherNames,
 				slug: users.slug,
+				positionTitle: positions.title,
+				region: positions.region,
 				requestedAt: verifications.requestedAt,
 				verifiedAt: campaigns.verifiedAt,
 				outcome: verifications.outcome,
@@ -78,6 +82,7 @@ export async function listVerifications(page: number, pageSize: number): Promise
 			.from(verifications)
 			.innerJoin(campaigns, eq(verifications.campaignId, campaigns.id))
 			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+			.innerJoin(positions, eq(campaigns.positionId, positions.id))
 			.orderBy(desc(verifications.requestedAt))
 			.limit(pageSize)
 			.offset((page - 1) * pageSize),

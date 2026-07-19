@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
+	import { seatPath } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -36,10 +37,11 @@
 			<table class="w-full min-w-220 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Campaign ID</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">User ID</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Cmpn</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">User</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Slug</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Verified at</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Outcome</th>
@@ -51,15 +53,13 @@
 						<tr class="border-t border-border">
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.campaignId}</td>
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.userId}</td>
-							<td class="px-4 py-3 text-sm">
+							<td class="px-4 py-3 text-xs flex flex-col">
 								<!-- The full submission (profile, contacts, docs, signoff, history) lives
 								on the request's detail page. -->
 								<a href="/verifications/{req.verificationId}" class="font-medium text-primary hover:underline">
 									{req.firstName}
 									{req.otherNames}
 								</a>
-							</td>
-							<td class="px-4 py-3 text-sm text-muted">
 								{#if req.slug}
 									<!-- Admins bypass the unverified-404 on the public record page. -->
 									<a href="/{req.slug}" target="_blank" rel="noopener" class="hover:text-primary hover:underline">{req.slug}</a>
@@ -67,13 +67,24 @@
 									—
 								{/if}
 							</td>
-							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(req.requestedAt))}</td>
-							<td class="px-4 py-3 text-sm text-muted">
+							<td class="px-4 py-3 text-xs text-muted">{req.positionTitle}</td>
+							<td class="px-4 py-3 text-xs text-muted">
+								{#if seatPath(req.positionTitle, req.region)}
+									<a href={seatPath(req.positionTitle, req.region)} target="_blank" rel="noopener" class="hover:text-primary hover:underline">
+										{req.region}
+									</a>
+								{:else}
+									{req.region}
+								{/if}
+							</td>
+							
+							<td class="px-4 py-3 text-xs text-muted">{dateFmt.format(new Date(req.requestedAt))}</td>
+							<td class="px-4 py-3 text-xs text-muted">
 								{req.verifiedAt ? dateFmt.format(new Date(req.verifiedAt)) : '—'}
 							</td>
-							<td class="px-4 py-3 text-sm">
+							<td class="px-4 py-3 text-xs">
 								<span
-									class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {req.outcome === 'approved'
+									class="rounded-full px-2 py-0.5 text-xs capitalize {req.outcome === 'approved'
 										? 'bg-primary-soft text-on-primary'
 										: req.outcome === 'rejected'
 											? 'bg-surface-2 text-muted'
@@ -82,13 +93,13 @@
 									{req.outcome ?? 'pending'}
 								</span>
 							</td>
-							<td class="px-4 py-3">
+							<td class="px-4 py-3 text-xs">
 								<div class="flex flex-wrap gap-2">
 									<!-- The profile as it would look once verified (LeaderProfile preview),
 									plus the same decision controls as here. -->
 									<a
 										href="/verifications/{req.verificationId}"
-										class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+										class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
 									>
 										Preview
 									</a>
@@ -101,7 +112,7 @@
 												type="submit"
 												name="outcome"
 												value="approved"
-												class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95"
+												class="rounded-full bg-primary px-2 py-0.5 text-xs text-on-primary transition hover:brightness-95"
 											>
 												Approve
 											</button>
@@ -112,7 +123,7 @@
 											<button
 												type="button"
 												onclick={() => (rejectingId = null)}
-												class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
+												class="rounded-full border border-border px-2 py-0.5 text-xs text-muted transition hover:bg-surface-2 hover:text-heading"
 											>
 												Cancel
 											</button>
@@ -120,7 +131,7 @@
 											<button
 												type="button"
 												onclick={() => (rejectingId = req.verificationId)}
-												class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+												class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
 											>
 												{req.outcome === 'approved' ? 'Revert' : 'Reject'}
 											</button>
@@ -131,7 +142,7 @@
 						</tr>
 						{#if req.outcome === 'rejected' && req.notes}
 							<tr class="border-t border-border">
-								<td colspan="8" class="px-4 py-2 text-sm text-muted">
+								<td colspan="10" class="px-4 py-2 text-sm text-muted">
 									<span class="font-semibold text-heading">Rejection reason:</span>
 									{req.notes}
 								</td>
@@ -139,7 +150,7 @@
 						{/if}
 						{#if req.outcome !== 'rejected' && rejectingId === req.verificationId}
 							<tr class="border-t border-border bg-surface-2">
-								<td colspan="8" class="px-4 py-3">
+								<td colspan="10" class="px-4 py-3">
 									<form
 										method="post"
 										action="?/review"
