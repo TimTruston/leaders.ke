@@ -4,7 +4,7 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import { contacts, leaders, managers, partyMemberships, profileClaims, users } from '$lib/server/db/schema';
 import { fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
@@ -13,7 +13,7 @@ import { notifyUser } from '$lib/server/notifications';
  * profileClaims.evidence until an admin approves; the public profile is never
  * touched before then. */
 export type ClaimEvidence = {
-	profile?: { firstName: string; otherNames: string; bio: string; positionId: number };
+	profile?: { firstName: string; otherNames: string; bio: string; partyId?: number | null };
 	contacts?: {
 		address: string;
 		sms: string;
@@ -50,7 +50,9 @@ export async function resolveClaimRequest(event: RequestEvent) {
 	const { domainUser } = await requireDashboardUser(event);
 	const slug = (event.params as { slug?: string }).slug ?? '';
 	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+	// Claimable when the profile is publicly live: a verified held term OR a verified
+	// run (an aspirant has no leaders row). Managers attach to the person either way.
+	if (!resolved || (!resolved.currentTerm?.leaders.verifiedAt && !resolved.activeRun)) redirect(302, '/dashboard');
 
 	const [claim] = await db
 		.select()
@@ -108,7 +110,9 @@ export async function stageClaimVerifiedContact(
 	destination: string
 ) {
 	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved || !resolved.currentTerm || !resolved.currentTerm.leaders.verifiedAt) redirect(302, '/dashboard');
+	// Claimable when the profile is publicly live: a verified held term OR a verified
+	// run (an aspirant has no leaders row). Managers attach to the person either way.
+	if (!resolved || (!resolved.currentTerm?.leaders.verifiedAt && !resolved.activeRun)) redirect(302, '/dashboard');
 	const subjectUserId = resolved.row.users.id;
 
 	const [existing] = await db
@@ -273,6 +277,22 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 				subjectUserId,
 				roles: { admin: true }
 			});
+		}
+
+		// Apply the staged party choice to the person: party membership is a
+		// person-level timeline, so end the current live row and start the new one.
+		const stagedPartyId = (claim.evidence as ClaimEvidence | null)?.profile?.partyId ?? null;
+		const [live] = await db
+			.select({ id: partyMemberships.id, partyId: partyMemberships.partyId })
+			.from(partyMemberships)
+			.where(and(eq(partyMemberships.subjectUserId, subjectUserId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+		if ((live?.partyId ?? null) !== stagedPartyId) {
+			if (live) {
+				await db.update(partyMemberships).set({ endAt: new Date(), updatedAt: new Date() }).where(eq(partyMemberships.id, live.id));
+			}
+			if (stagedPartyId) {
+				await db.insert(partyMemberships).values({ partyId: stagedPartyId, subjectUserId, role: 'Member', startAt: new Date() });
+			}
 		}
 	} else {
 		await db
