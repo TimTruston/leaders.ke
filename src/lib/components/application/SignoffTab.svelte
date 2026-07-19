@@ -153,6 +153,6 @@
 </div>
 
 {#if cropping}
-	<!-- National ID images crop to a 7:9 portrait. -->
-	<ImageCropper file={cropping.file} aspect={7 / 9} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
+	<!-- National ID images crop to a landscape card ratio (~1.586:1, ISO/IEC 7810 ID-1). -->
+	<ImageCropper file={cropping.file} aspect={1.58/1} onconfirm={onCropConfirm} oncancel={() => (cropping = null)} />
 {/if}
