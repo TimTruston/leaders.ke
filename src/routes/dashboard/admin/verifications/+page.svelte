@@ -49,7 +49,7 @@
 				<tbody>
 					{#each data.requests as req (req.verificationId)}
 						<tr class="border-t border-border">
-							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.leaderId}</td>
+							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.campaignId}</td>
 							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.userId}</td>
 							<td class="px-4 py-3 text-sm">
 								<!-- The full submission (profile, contacts, docs, signoff, history) lives

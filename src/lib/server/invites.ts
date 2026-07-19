@@ -9,7 +9,7 @@ import { and, count, desc, eq, gt, gte, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ambassadors, followers, invites, leaders, managers, positions, subscriptions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { activeTermForPerson, fullName } from '$lib/server/leader';
+import { activeTermForPerson, fullName, getRunCampaign } from '$lib/server/leader';
 import { sendEmail } from '$lib/server/email';
 import { getPlatformSettings } from '$lib/server/settings';
 
@@ -365,8 +365,10 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 
 	// The team's dashboard home: verified profiles live under their slug,
 	// in-progress applications under their pre-minted UUID (the phantom's auth id).
-	const dashboardBase =
-		activeTerm?.leaders.verifiedAt && person.slug ? `/dashboard/${person.slug}` : `/dashboard/apply/${person.authUserId}`;
+	// "Verified" is a held term OR a verified run — a pure aspirant has no term.
+	const run = await getRunCampaign(invite.subjectUserId);
+	const verified = !!activeTerm?.leaders.verifiedAt || !!run?.verifiedAt;
+	const dashboardBase = verified && person.slug ? `/dashboard/${person.slug}` : `/dashboard/apply/${person.authUserId}`;
 
 	return { ok: true as const, role: invite.role, leaderName: fullName(person), dashboardBase, leaderId: activeTerm?.leaders.id ?? 0 };
 }

@@ -37,7 +37,7 @@ export const load: PageServerLoad = async (event) => {
 		db.select({ n: count() }).from(followers).where(and(target, gte(followers.createdAt, weekAgo))),
 		db.select({ n: count() }).from(followers).where(filtered),
 		db.selectDistinct({ ward: followers.ward }).from(followers).where(target),
-		listOpenInvites(ctx.leader.id)
+		listOpenInvites(ctx.profileUser.id)
 	]);
 
 	return {
@@ -70,7 +70,7 @@ export const actions: Actions = {
 		const email = String(form.get('email') ?? '').trim();
 		if (!email) return fail(400, { error: 'Enter an email address to invite.' });
 
-		await createInvite(ctx.leader.id, 'follower', domainUser.id, email, event.url.origin);
+		await createInvite(ctx.profileUser.id, 'follower', domainUser.id, email, event.url.origin);
 		return { invited: { email } };
 	},
 
@@ -79,7 +79,7 @@ export const actions: Actions = {
 	addFollower: async (event) => {
 		const { domainUser, ctx } = await requireLeader(event);
 		const form = await event.request.formData();
-		const result = await addCitizenFollower(domainUser.id, ctx.leader.id, {
+		const result = await addCitizenFollower(domainUser.id, (ctx.leader?.id ?? 0), {
 			name: String(form.get('name') ?? ''),
 			phone: String(form.get('phone') ?? ''),
 			email: String(form.get('email') ?? ''),

@@ -90,11 +90,55 @@ export async function generateLeaderSlug(name: string): Promise<string> {
 }
 
 export type LeaderContext = {
-	leader: typeof leaders.$inferSelect;
-	position: typeof positions.$inferSelect;
+	// The held term the dashboard anchors to, if any. NULL for a pure aspirant who has
+	// only a run (campaign) and no leaders row — held-office-only ops guard on this.
+	leader: typeof leaders.$inferSelect | null;
+	// The lead seat (from the held term or the run). NULL for a fresh application
+	// whose Campaign tab (seat + cycle) hasn't been saved yet — seat-scoped pages guard.
+	position: typeof positions.$inferSelect | null;
+	campaignId: number; // the person's run this cycle (0 if none) — manifesto/fundraising/verification target it
+	verified: boolean; // publicly live: a verified held term OR a verified run
 	profileUser: typeof users.$inferSelect; // the person the leader page is about
 	role: 'leader' | 'manager';
 };
+
+/** Builds a dashboard context for a person: their lead held term (if any) + their run
+ * this cycle. With `allowEmpty` (URL-named or managed profiles) a person with neither
+ * still resolves — a fresh application declares its seat later, on the Campaign tab.
+ * Without it (the viewer's own fallback) null keeps plain citizens on the citizen view. */
+async function buildContext(
+	profileUser: typeof users.$inferSelect,
+	role: 'leader' | 'manager',
+	allowEmpty = false
+): Promise<LeaderContext | null> {
+	const terms = await db
+		.select()
+		.from(leaders)
+		.innerJoin(positions, eq(leaders.positionId, positions.id))
+		.where(and(eq(leaders.userId, profileUser.id), isNull(leaders.deletedAt)));
+	const term =
+		terms.find((t) => t.leaders.status !== 'former') ??
+		terms.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0] ??
+		null;
+
+	const [run] = await db
+		.select()
+		.from(campaigns)
+		.innerJoin(positions, eq(campaigns.positionId, positions.id))
+		.where(and(eq(campaigns.subjectUserId, profileUser.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+
+	const position = term?.positions ?? run?.positions ?? null;
+	if (!position && !allowEmpty) return null; // neither a held term nor a run
+
+	return {
+		leader: term?.leaders ?? null,
+		position,
+		campaignId: run?.campaigns.id ?? 0,
+		verified: !!term?.leaders.verifiedAt || !!run?.campaigns.verifiedAt,
+		profileUser,
+		role
+	};
+}
 
 /** The domain profile bridged to the signed-in auth user. */
 export async function getDomainUser(authUserId: string) {
@@ -107,45 +151,22 @@ export async function getDomainUser(authUserId: string) {
  * otherwise the first leader they actively manage. Null before onboarding.
  */
 export async function getLeaderContext(domainUserId: number): Promise<LeaderContext | null> {
-	const [own] = await db
-		.select()
-		.from(leaders)
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(eq(leaders.userId, domainUserId), isNull(leaders.deletedAt)))
-		.limit(1);
+	// Their own profile (person = them) if any.
+	const [own] = await db.select().from(users).where(and(eq(users.id, domainUserId), isNull(users.deletedAt)));
 	if (own) {
-		return { leader: own.leaders, position: own.positions, profileUser: own.users, role: 'leader' };
+		const ownCtx = await buildContext(own, 'leader');
+		if (ownCtx) return ownCtx;
 	}
 
-	// Most recently joined first — someone managing several people should land on the
-	// one they just accepted an invite for, not an arbitrary older one. Managers attach
-	// to the person, so join through subjectUserId and anchor to that person's active
-	// term (latest start = their current/aspirant seat, the workspace anchor).
+	// Otherwise the person they most recently began managing (managers attach to the person).
 	const [managed] = await db
-		.select()
+		.select({ users })
 		.from(managers)
 		.innerJoin(users, eq(managers.subjectUserId, users.id))
-		.innerJoin(leaders, eq(leaders.userId, users.id))
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(
-			and(
-				eq(managers.userId, domainUserId),
-				eq(managers.isActive, true),
-				isNull(managers.deletedAt),
-				isNull(leaders.deletedAt)
-			)
-		)
-		.orderBy(desc(managers.id), desc(leaders.startAt))
+		.where(and(eq(managers.userId, domainUserId), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(users.deletedAt)))
+		.orderBy(desc(managers.id))
 		.limit(1);
-	if (managed) {
-		return {
-			leader: managed.leaders,
-			position: managed.positions,
-			profileUser: managed.users,
-			role: 'manager'
-		};
-	}
+	if (managed) return buildContext(managed.users, 'manager', true);
 
 	return null;
 }
@@ -211,27 +232,15 @@ export async function getLeaderContextByApplyId(
 	domainUserId: number
 ): Promise<LeaderContext | 'denied' | null> {
 	if (!isApplyId(applyId)) return 'denied';
-	// A person can hold several leaders rows (a Track Record spanning terms); resolve
-	// to the active one (latest start = current/aspirant seat), mirroring
-	// resolveCurrentTerm, so the team/manager check runs against the seat being worked
-	// on — not an arbitrary former term the manager was never added to.
-	const [row] = await db
-		.select()
-		.from(users)
-		.innerJoin(leaders, eq(leaders.userId, users.id))
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(eq(users.authUserId, applyId), isNull(users.deletedAt), isNull(leaders.deletedAt)))
-		.orderBy(desc(leaders.startAt));
-	if (!row) return null;
+	// The apply UUID is the person's auth id. A pure aspirant has only a run (no leaders
+	// row), so resolve the PERSON, then build their context from term-or-run.
+	const [profileUser] = await db.select().from(users).where(and(eq(users.authUserId, applyId), isNull(users.deletedAt)));
+	if (!profileUser) return null;
 
-	if (row.leaders.userId === domainUserId) {
-		return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'leader' };
-	}
-	// Person-level: a manager of any of this person's terms may work the profile.
-	const manager = await findPersonManager(domainUserId, row.users.id);
-	if (!manager) return 'denied';
+	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
+	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id))) return 'denied';
 
-	return { leader: row.leaders, position: row.positions, profileUser: row.users, role: 'manager' };
+	return await buildContext(profileUser, role, true);
 }
 
 /**
@@ -241,25 +250,13 @@ export async function getLeaderContextByApplyId(
  * (not the leader's own profile and not an active manager of it).
  */
 export async function getLeaderContextBySlug(slug: string, domainUserId: number): Promise<LeaderContext | null> {
-	// One person can hold several `leaders` rows (Track Record) — resolveCurrentTerm
-	// picks the live campaign as the anchor term, not whichever row a bare slug join
-	// happens to hit.
-	const resolved = await resolveCurrentTerm(slug);
-	if (!resolved) return null;
-	const { row, currentTerm } = resolved;
-	// A person with only a run (no leaders term) has no manageable seat context yet —
-	// declaring/graduating a candidacy is a separate flow.
-	if (!currentTerm) return null;
+	const [profileUser] = await db.select().from(users).where(and(eq(users.slug, slug), isNull(users.deletedAt)));
+	if (!profileUser) return null;
 
-	if (currentTerm.leaders.userId === domainUserId) {
-		return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'leader' };
-	}
+	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
+	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id))) return null;
 
-	// Person-level: a manager of any of this person's terms may work the profile.
-	const manager = await findPersonManager(domainUserId, row.users.id);
-	if (!manager) return null;
-
-	return { leader: currentTerm.leaders, position: currentTerm.positions, profileUser: row.users, role: 'manager' };
+	return await buildContext(profileUser, role, true);
 }
 
 /** The active election cycle; campaign workspace URLs end with this year. */

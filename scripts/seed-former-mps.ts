@@ -335,10 +335,10 @@ for (const parliament of PARLIAMENTS) {
 				partiesMissing.set(entry.party, (partiesMissing.get(entry.party) ?? 0) + 1);
 			} else {
 				membershipsAdded++;
-				if (flags.apply && leaderId) {
+				if (flags.apply) {
 					await db.insert(partyMemberships).values({
 						partyId,
-						leaderId,
+						subjectUserId: userId,
 						role: 'Member',
 						startAt: parliament.startAt,
 						endAt: parliament.endAt

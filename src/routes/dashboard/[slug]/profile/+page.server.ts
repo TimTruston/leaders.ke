@@ -6,22 +6,18 @@ import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { campaigns, experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { createPhantomUser, fullName, generateLeaderSlug, isSlugAvailable, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
-// Election day anchors every 2027 aspirant profile's term start.
-const ELECTION_DAY = new Date('2027-08-10T00:00:00+03:00');
-
-// Documents from the Profile tab: the photo lands on the PERSON (users.photoUrl —
-// it follows them across terms); the IEBC certificate is per-candidacy (leaders row).
-const DOC_COLUMN_BY_KIND = { photo: 'photoUrl', 'iebc-certificate': 'iebcCertificateUrl' } as const;
+// The photo rides the ?/save submit itself (multipart) and lands on the PERSON
+// (users.photoUrl — it follows them across terms and runs).
 
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
@@ -46,7 +42,7 @@ export const load: PageServerLoad = async (event) => {
 		const [membership] = await db
 			.select({ partyId: partyMemberships.partyId })
 			.from(partyMemberships)
-			.where(and(eq(partyMemberships.leaderId, ctx.leader.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+			.where(and(eq(partyMemberships.subjectUserId, ctx.profileUser.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
 		partyId = membership?.partyId ?? null;
 	}
 
@@ -64,10 +60,13 @@ export const load: PageServerLoad = async (event) => {
 					.select({ id: leaders.id, positionTitle: positions.title, region: positions.region, description: leaders.description, from: leaders.startAt, to: leaders.endAt })
 					.from(leaders)
 					.innerJoin(positions, eq(leaders.positionId, positions.id))
-					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader.id), isNull(leaders.deletedAt)))
+					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader?.id ?? 0), isNull(leaders.deletedAt)))
 					.orderBy(leaders.startAt)
 			])
 		: [[], []];
+
+	// Verification + IEBC cert live on the person's run (campaign), not a held term.
+	const runCampaign = ctx ? await getRunCampaign(ctx.profileUser.id) : null;
 
 	return {
 		positions: positionRows.map((p) => ({
@@ -100,16 +99,15 @@ export const load: PageServerLoad = async (event) => {
 			firstName: subject.firstName,
 			otherNames: subject.otherNames,
 			bio: subject.bio ?? '',
-			positionId: ctx?.leader.positionId ?? null,
+			positionId: ctx?.position?.id ?? null,
 			partyId,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
-			verified: !!ctx?.leader.verifiedAt
+			verified: (ctx?.verified ?? false)
 		},
-		// Documentation (photo + IEBC certificate) is edited on this tab now.
+		// The photo is edited on this tab (staged client-side, uploaded with ?/save).
 		photoUrl: ctx?.profileUser.photoUrl ?? null,
-		iebcCertificateUrl: ctx?.leader.iebcCertificateUrl ?? null,
-		pendingVerification: ctx ? !!(await getPendingVerification(ctx.leader.id)) : false
+		pendingVerification: runCampaign ? !!(await getPendingVerification(runCampaign.id)) : false
 	};
 };
 
@@ -125,9 +123,19 @@ export const actions: Actions = {
 		const firstName = String(form.get('firstName') ?? '').trim();
 		const otherNames = String(form.get('otherNames') ?? '').trim();
 		const bio = String(form.get('bio') ?? '').trim();
-		const positionId = Number(form.get('positionId') ?? 0);
 		const partyId = Number(form.get('partyId') ?? 0) || null; // null = independent
 		const slugInput = slugify(String(form.get('slug') ?? '').trim());
+
+		// Staged photo rides this same submit. Validate it up front so a bad file
+		// fails the save cleanly before anything is written.
+		const photoFile = form.get('photo');
+		const hasPhoto = photoFile instanceof File && photoFile.size > 0;
+		if (hasPhoto) {
+			if (photoFile.size > 10 * 1024 * 1024) return fail(400, { error: 'The photo is larger than 10 MB.' });
+			if (!['image/jpeg', 'image/png', 'image/webp'].includes(photoFile.type)) {
+				return fail(400, { error: 'The photo must be a JPEG, PNG, or WebP image.' });
+			}
+		}
 
 		let pendingExperience: PendingExperience[] = [];
 		let pendingLeadership: PendingLeadership[] = [];
@@ -147,13 +155,8 @@ export const actions: Actions = {
 		}
 		if (!otherNames) return fail(400, { error: 'Other names are required.', missingFields: ['otherNames'] });
 		if (!bio) return fail(400, { error: 'Add a short bio.', missingFields: ['bio'] });
-		if (!positionId) return fail(400, { error: 'Pick the elective position.', missingFields: ['positionId'] });
-
-		const [position] = await db
-			.select()
-			.from(positions)
-			.where(and(eq(positions.id, positionId), isNull(positions.deletedAt)));
-		if (!position) return fail(400, { error: 'That position does not exist.', missingFields: ['positionId'] });
+		// The seat contested is no longer part of this form — the run (seat + cycle)
+		// is declared on the Campaign tab.
 
 		if (partyId) {
 			const [party] = await db
@@ -178,7 +181,7 @@ export const actions: Actions = {
 				return fail(400, { error: 'Experience descriptions are limited to 500 characters.' });
 			}
 		}
-		const leadershipPositions = new Map<number, typeof position>();
+		const leadershipPositions = new Map<number, typeof positions.$inferSelect>();
 		for (const l of pendingLeadership) {
 			if (!l.positionId) return fail(400, { error: 'Pick a position for every added leadership entry.' });
 			if (!l.from) return fail(400, { error: 'Every added leadership entry needs a start date.' });
@@ -196,21 +199,13 @@ export const actions: Actions = {
 		}
 
 		let subjectId: number;
-		let leaderId = ctx?.leader.id;
+		let leaderId = ctx?.leader?.id;
 
 		if (ctx) {
 			// The person the profile is about: the leader's own (phantom) user row —
 			// separate from whichever citizen account is editing it.
 			subjectId = ctx.profileUser.id;
 			await db.update(users).set({ firstName, otherNames, bio }).where(eq(users.id, subjectId));
-
-			// Verified profiles keep their seat locked; unverified ones may switch races.
-			if (ctx.leader.positionId !== positionId && !ctx.leader.verifiedAt) {
-				await db
-					.update(leaders)
-					.set({ positionId, updatedAt: new Date() })
-					.where(eq(leaders.id, ctx.leader.id));
-			}
 
 			// The slug is this person's permanent URL, editable but unique; every one
 			// of their leaders rows (Track Record entries) shares it since it lives on `users`.
@@ -242,16 +237,8 @@ export const actions: Actions = {
 				slug = await generateLeaderSlug(fullName({ firstName, otherNames }));
 			}
 			await db.update(users).set({ slug }).where(eq(users.id, subjectId));
-			const [created] = await db
-				.insert(leaders)
-				.values({
-					userId: subjectId,
-					positionId,
-					status: 'aspirant',
-					startAt: ELECTION_DAY
-				})
-				.returning({ id: leaders.id });
-			leaderId = created.id;
+			// No campaign yet: the run (seat + cycle + manifesto title) is declared on
+			// the Campaign tab. This save only creates the person.
 
 			// onboarding.md: the creator is the campaign's first manager, with admin
 			// permissions (invite/remove team, fundraising, delete campaign) — "leader"
@@ -264,12 +251,13 @@ export const actions: Actions = {
 			});
 		}
 
-		// Party membership: one live row (endAt null) per leader. A change ends the
-		// current membership and starts the new one; clearing to independent just ends it.
+		// Party membership is a person-level timeline: one live row (endAt null) per
+		// person. A change ends the current row and starts a new one — the dated
+		// history of switches is kept. Aspirants (no leaders row) set party too.
 		const [currentMembership] = await db
 			.select({ id: partyMemberships.id, partyId: partyMemberships.partyId })
 			.from(partyMemberships)
-			.where(and(eq(partyMemberships.leaderId, leaderId!), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+			.where(and(eq(partyMemberships.subjectUserId, subjectId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
 		if ((currentMembership?.partyId ?? null) !== partyId) {
 			if (currentMembership) {
 				await db
@@ -278,7 +266,7 @@ export const actions: Actions = {
 					.where(eq(partyMemberships.id, currentMembership.id));
 			}
 			if (partyId) {
-				await db.insert(partyMemberships).values({ partyId, leaderId: leaderId!, role: 'Member', startAt: new Date() });
+				await db.insert(partyMemberships).values({ partyId, subjectUserId: subjectId, role: 'Member', startAt: new Date() });
 			}
 		}
 
@@ -319,39 +307,18 @@ export const actions: Actions = {
 				.where(and(inArray(leaders.id, removedLeadershipIds), eq(leaders.userId, subjectId), ne(leaders.id, leaderId!)));
 		}
 
-		return { saved: true };
-	},
-
-	// Photo + IEBC certificate upload (moved here from the old Documentation tab).
-	// Picking a file auto-submits; the image passes through a crop first, the PDF
-	// goes straight up. Files are UUID-named, so re-uploads never collide.
-	upload: async (event) => {
-		const { ctx } = await requireLeader(event);
-		const form = await event.request.formData();
-
-		const updates: Partial<Record<(typeof DOC_COLUMN_BY_KIND)[keyof typeof DOC_COLUMN_BY_KIND], string>> = {};
-		for (const kind of Object.keys(DOC_COLUMN_BY_KIND) as (keyof typeof DOC_COLUMN_BY_KIND)[]) {
-			const file = form.get(kind);
-			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
+		// The staged photo, validated above: written to disk keyed by the PERSON and
+		// wired onto their users row — part of this same save, no separate upload step.
+		if (hasPhoto) {
 			try {
-				updates[DOC_COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+				const photoUrl = await saveLeaderDocument(subjectId, 'photo', photoFile);
+				await db.update(users).set({ photoUrl }).where(eq(users.id, subjectId));
 			} catch (err) {
-				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
+				return fail(400, { error: err instanceof Error ? err.message : 'Photo upload failed.' });
 			}
 		}
-		if (Object.keys(updates).length === 0) return fail(400, { error: 'Choose a file to upload.' });
 
-		const { photoUrl, ...leaderUpdates } = updates;
-		if (photoUrl) {
-			await db.update(users).set({ photoUrl }).where(eq(users.id, ctx.profileUser.id));
-		}
-		if (Object.keys(leaderUpdates).length) {
-			await db
-				.update(leaders)
-				.set({ ...leaderUpdates, updatedAt: new Date() })
-				.where(eq(leaders.id, ctx.leader.id));
-		}
-		return { uploaded: true };
+		return { saved: true };
 	},
 
 	// "Just testing" escape hatch (mirrors the claim form's Delete): soft-deletes
@@ -361,11 +328,22 @@ export const actions: Actions = {
 		const { domainUser } = await requireDashboardUser(event);
 		const ctx = await getRouteLeaderContext(event, domainUser.id);
 		if (!ctx) return fail(400, { verificationError: 'Nothing to delete yet.' });
-		if (ctx.leader.verifiedAt) {
+		if (ctx.verified) {
 			return fail(400, { verificationError: 'A verified campaign cannot be deleted from here.' });
 		}
 
-		await db.update(leaders).set({ deletedAt: new Date() }).where(eq(leaders.id, ctx.leader.id));
+		// A run application soft-deletes its campaign; a held-term one its leaders row.
+		if (ctx.leader) {
+			await db.update(leaders).set({ deletedAt: new Date() }).where(eq(leaders.id, ctx.leader.id));
+		} else {
+			await db
+				.update(campaigns)
+				.set({ deletedAt: new Date() })
+				.where(and(eq(campaigns.subjectUserId, ctx.profileUser.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		}
+		// The team's manager rows retire with the application (else the switcher and
+		// context fallbacks keep resolving a dead profile).
+		await db.update(managers).set({ deletedAt: new Date() }).where(eq(managers.subjectUserId, ctx.profileUser.id));
 		// The phantom identity goes with it — but never the citizen's own users row
 		// (legacy self-profiles point leaders.userId at the citizen).
 		if (ctx.profileUser.id !== domainUser.id) {
@@ -378,7 +356,10 @@ export const actions: Actions = {
 		const { domainUser } = await requireDashboardUser(event);
 		const ctx = await getRouteLeaderContext(event, domainUser.id);
 		if (!ctx) return fail(400, { verificationError: 'Save your profile before requesting verification.' });
-		if (ctx.leader.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
+		// Verification is for the run (campaign), declared on the Campaign tab first.
+		const run = await getRunCampaign(ctx.profileUser.id);
+		if (!run) return fail(400, { verificationError: 'Set up your campaign (seat + cycle) on the Campaign tab first.' });
+		if (run.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
 
 		// The two verification gates are admin-tunable (Platform settings): a credible
 		// campaign needs enough email-verified managers, enough of whom have each
@@ -410,7 +391,7 @@ export const actions: Actions = {
 
 		const form = await event.request.formData();
 		const notes = String(form.get('notes') ?? '').trim();
-		const result = await requestVerification(ctx.leader.id, domainUser.id, { nationalId: myRoles.nationalId ?? '', myRole: myRoles.title ?? '', notes });
+		const result = await requestVerification(run.id, domainUser.id, { nationalId: myRoles.nationalId ?? '', myRole: myRoles.title ?? '', notes });
 		if (!result.ok) return fail(400, { verificationError: result.error });
 
 		return { requestedVerification: true };

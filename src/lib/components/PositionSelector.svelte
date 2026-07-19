@@ -71,7 +71,7 @@
 	}
 </script>
 
-<div class="block">
+<div class="flex flex-col w-full">
 	<span class="text-sm font-medium text-heading">{label}</span>
 	{#if verified}
 		<p class="mt-1.5 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm text-muted">
@@ -79,7 +79,7 @@
 		</p>
 		<input type="hidden" {name} value={initialPositionId} />
 	{:else}
-		<div class="mt-1.5 grid gap-3 grid-cols-3">
+		<div class="mt-1.5 flex gap-3">
 			<select
 				bind:value={selectedTitle}
 				onchange={onTitleChange}

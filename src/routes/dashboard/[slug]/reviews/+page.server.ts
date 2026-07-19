@@ -61,7 +61,7 @@ export const actions: Actions = {
 
 		const ok = await respondToReview(
 			ctx.profileUser.id,
-			ctx.leader.id,
+			(ctx.leader?.id ?? 0),
 			reviewId,
 			ctx.role,
 			domainUser.id,

@@ -28,7 +28,7 @@ export const load: PageServerLoad = async (event) => {
 			deliveryStatus: p.deliveryStatus,
 			evidence: p.evidence ?? ''
 		})),
-		templates: await listTemplatesForLevel(ctx.position.title)
+		templates: ctx.position ? await listTemplatesForLevel(ctx.position.title) : []
 	};
 };
 
@@ -43,7 +43,7 @@ export const actions: Actions = {
 		const summary = String(form.get('summary') ?? '').trim();
 		if (!title || !summary) return fail(400, { error: 'A pillar needs both a title and a summary.' });
 
-		const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position.id, domainUser.id, fullName(ctx.profileUser));
+		const campaign = await getOrCreateRunCampaign(ctx.profileUser.id, ctx.position?.id ?? 0, domainUser.id, fullName(ctx.profileUser));
 
 		const [last] = await db
 			.select({ sortOrder: pillars.sortOrder })

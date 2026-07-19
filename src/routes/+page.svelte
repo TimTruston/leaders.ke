@@ -127,6 +127,7 @@
 		{ value: '8,900+', label: 'Leader profiles' },
 		{ value: '47', label: 'Counties covered' }
 	];
+	const launchHref = `/dashboard/apply/${crypto.randomUUID()}/profile`;
 
 </script>
 
@@ -336,23 +337,16 @@
 	<div
 		class="flex flex-col items-center gap-4 rounded-3xl bg-primary px-6 py-12 text-center text-on-primary"
 	>
-		<h2 class="text-2xl font-bold text-on-primary sm:text-3xl">Ready to run in 2027?</h2>
+		<h2 class="text-2xl font-bold text-on-primary sm:text-3xl">Running in 2027?</h2>
 		<p class="max-w-xl text-on-primary/80">
-			Packages from KES 1,000/month, priced by the office you are vying for. Claim your profile,
-			get verified, and go public before your opponents do.
+			Claim your profile, get verified, and go public before your opponents do.
 		</p>
 		<div class="mt-2 flex flex-wrap justify-center gap-3">
 			<a
-				href="/signup"
+				href={launchHref}
 				class="rounded-full bg-surface px-6 py-3 font-semibold text-heading transition hover:bg-surface-2"
 			>
-				Get started free
-			</a>
-			<a
-				href="/pricing"
-				class="rounded-full border border-on-primary/40 px-6 py-3 font-semibold text-on-primary transition hover:bg-on-primary/10"
-			>
-				View pricing
+				Launch Your Campaign
 			</a>
 		</div>
 	</div>

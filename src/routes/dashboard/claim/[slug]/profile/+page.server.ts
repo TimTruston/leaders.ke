@@ -45,7 +45,6 @@ export const load: PageServerLoad = async (event) => {
 			verified: false
 		},
 		photoUrl: stagedDocs.photoUrl ?? null,
-		iebcCertificateUrl: stagedDocs.iebcCertificateUrl ?? null,
 		pendingVerification: false
 	};
 };
@@ -91,7 +90,7 @@ export const actions: Actions = {
 			const file = form.get(kind);
 			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
 			try {
-				staged[DOC_KEY_BY_KIND[kind]] = await saveLeaderDocument(resolved.currentTerm.leaders.id, kind as UploadKind, file);
+				staged[DOC_KEY_BY_KIND[kind]] = await saveLeaderDocument(resolved.row.users.id, kind as UploadKind, file);
 				uploadedAny = true;
 			} catch (err) {
 				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });

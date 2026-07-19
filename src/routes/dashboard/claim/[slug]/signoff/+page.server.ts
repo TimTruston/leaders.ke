@@ -48,7 +48,7 @@ export const actions: Actions = {
 			const file = form.get(kind);
 			if (!(file instanceof File) || file.size === 0) continue;
 			try {
-				staged[URL_BY_KIND[kind]] = await saveLeaderDocument(resolved.currentTerm.leaders.id, kind as UploadKind, file);
+				staged[URL_BY_KIND[kind]] = await saveLeaderDocument(resolved.row.users.id, kind as UploadKind, file);
 				uploadedAny = true;
 			} catch (err) {
 				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });

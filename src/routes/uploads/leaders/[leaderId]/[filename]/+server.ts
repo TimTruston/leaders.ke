@@ -9,7 +9,6 @@ import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { managers } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { personIdForLeader } from '$lib/server/leader';
 import type { RequestHandler } from './$types';
 
 const EXT_CONTENT_TYPE: Record<string, string> = {
@@ -22,28 +21,25 @@ const EXT_CONTENT_TYPE: Record<string, string> = {
 export const GET: RequestHandler = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 
-	const leaderId = Number(event.params.leaderId);
+	// The URL segment is the PERSON's users.id (documents are person-keyed).
+	const subjectUserId = Number(event.params.leaderId);
 	const filename = event.params.filename;
 	// No path separators allowed in either segment — blocks directory traversal.
-	if (!leaderId || !filename || /[/\\]/.test(filename) || filename.includes('..')) {
+	if (!subjectUserId || !filename || /[/\\]/.test(filename) || filename.includes('..')) {
 		error(404, 'Not found');
 	}
 
-	if (!domainUser.adminAt) {
-		// The URL names a candidacy term; access is granted to a manager of the person
-		// behind it (managers attach to the person, not the term).
-		const subjectUserId = await personIdForLeader(leaderId);
-		const [membership] = subjectUserId
-			? await db
-					.select({ id: managers.id })
-					.from(managers)
-					.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)))
-			: [];
+	if (!domainUser.adminAt && domainUser.id !== subjectUserId) {
+		// Not the person themself: must be an active manager of them.
+		const [membership] = await db
+			.select({ id: managers.id })
+			.from(managers)
+			.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, subjectUserId), isNull(managers.deletedAt)));
 		if (!membership) error(403, 'Not authorized to view this document.');
 	}
 
 	const localDir = env.STORAGE_LOCAL_DIR || '.uploads';
-	const filePath = path.join(process.cwd(), localDir, 'leaders', String(leaderId), filename);
+	const filePath = path.join(process.cwd(), localDir, 'leaders', String(subjectUserId), filename);
 
 	let buffer: Buffer;
 	try {

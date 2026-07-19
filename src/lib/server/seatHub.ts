@@ -28,19 +28,21 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 	let regime = regimeYear ?? ACTIVE_CYCLE;
 	const isActiveRegime = regime === ACTIVE_CYCLE;
 
-	const leaderIds = rows.map((r) => r.leaders.id);
-	const partyRows = leaderIds.length
+	// Live party per PERSON (membership is person-scoped) — covers holders,
+	// formers AND the 2027 contestants fetched below.
+	const personIds = rows.map((r) => r.users.id);
+	const partyRows = personIds.length
 		? await db
-				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
+				.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
 				.from(partyMemberships)
 				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(and(inArray(partyMemberships.leaderId, leaderIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+				.where(and(inArray(partyMemberships.subjectUserId, personIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 		: [];
-	const partyByLeaderId = new Map(partyRows.map((p) => [p.leaderId, p.partyName]));
+	const partyByPerson = new Map(partyRows.map((p) => [p.userId, p.partyName]));
 
 	const toCard = (r: (typeof rows)[number]) => {
 		const name = fullName(r.users);
-		const party = partyByLeaderId.get(r.leaders.id) ?? null;
+		const party = partyByPerson.get(r.users.id) ?? null;
 		return {
 			name,
 			initials: name
@@ -96,8 +98,19 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 					)
 				)
 		: [];
+	// Contestants' live party (person-scoped, they may not appear in `rows` above).
+	const contestantIds = runRows.map((r) => r.users.id).filter((id) => !partyByPerson.has(id));
+	if (contestantIds.length) {
+		const extra = await db
+			.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
+			.from(partyMemberships)
+			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
+			.where(and(inArray(partyMemberships.subjectUserId, contestantIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+		for (const e of extra) partyByPerson.set(e.userId, e.partyName);
+	}
 	const dbContestants = runRows.map((r) => {
 		const name = fullName(r.users);
+		const party = partyByPerson.get(r.users.id) ?? null;
 		return {
 			name,
 			initials: name
@@ -108,8 +121,8 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 				.toUpperCase(),
 			path: leaderPath(r.users),
 			photoUrl: r.users.photoUrl,
-			party: null as string | null,
-			partyPath: null as string | null,
+			party,
+			partyPath: party ? `/parties/${slugify(party)}` : null,
 			status: 'aspirant',
 			verified: !!r.verifiedAt,
 			followers: 0

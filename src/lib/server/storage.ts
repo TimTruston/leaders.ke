@@ -26,10 +26,11 @@ const EXT_BY_MIME: Record<string, string> = {
 	'application/pdf': 'pdf'
 };
 
-/** Saves an uploaded file for a given leader + document kind, returning the
- * public URL to persist on the leaders row. Rejects the wrong file type/size
- * before anything touches disk. */
-export async function saveLeaderDocument(leaderId: number, kind: UploadKind, file: File): Promise<string> {
+/** Saves an uploaded document for a PERSON (users.id) + document kind, returning
+ * the public URL to persist. Keyed by the person — documents follow them across
+ * terms and runs, and a pure aspirant has no leaders row to key on. Rejects the
+ * wrong file type/size before anything touches disk. */
+export async function saveLeaderDocument(subjectUserId: number, kind: UploadKind, file: File): Promise<string> {
 	if (file.size > MAX_UPLOAD_BYTES) {
 		throw new Error('File is larger than 10 MB.');
 	}
@@ -42,11 +43,11 @@ export async function saveLeaderDocument(leaderId: number, kind: UploadKind, fil
 	const ext = EXT_BY_MIME[file.type] ?? 'bin';
 	const filename = `${randomUUID()}.${ext}`;
 	const localDir = env.STORAGE_LOCAL_DIR || '.uploads';
-	const dir = path.join(process.cwd(), localDir, 'leaders', String(leaderId));
+	const dir = path.join(process.cwd(), localDir, 'leaders', String(subjectUserId));
 	await mkdir(dir, { recursive: true });
 
 	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(path.join(dir, filename), buffer);
 
-	return `/uploads/leaders/${leaderId}/${filename}`;
+	return `/uploads/leaders/${subjectUserId}/${filename}`;
 }

@@ -42,26 +42,27 @@ export const load: PageServerLoad = async ({ url }) => {
 	}
 
 	const matchedLeaders = [...bySlug.values()].slice(0, 20);
-	const matchedLeaderIds = matchedLeaders.map((r) => r.leaders.id);
+	const matchedPersonIds = matchedLeaders.map((r) => r.users.id);
 
-	const partyRowsForLeaders = matchedLeaderIds.length
+	// Live party per matched PERSON (membership is person-scoped).
+	const partyRowsForLeaders = matchedPersonIds.length
 		? await db
-				.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
+				.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
 				.from(partyMemberships)
 				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
 				.where(
 					and(
-						inArray(partyMemberships.leaderId, matchedLeaderIds),
+						inArray(partyMemberships.subjectUserId, matchedPersonIds),
 						isNull(partyMemberships.deletedAt),
 						isNull(partyMemberships.endAt)
 					)
 				)
 		: [];
-	const partyByLeaderId = new Map(partyRowsForLeaders.map((p) => [p.leaderId, p.partyName]));
+	const partyByPerson = new Map(partyRowsForLeaders.map((p) => [p.userId, p.partyName]));
 
 	const leaderResults = matchedLeaders.map((r) => {
 		const name = fullName(r.users);
-		const party = partyByLeaderId.get(r.leaders.id) ?? null;
+		const party = partyByPerson.get(r.users.id) ?? null;
 		return {
 			name,
 			initials: name

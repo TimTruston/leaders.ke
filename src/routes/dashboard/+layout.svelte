@@ -142,10 +142,17 @@
 			// Signoff tab. Everything beyond Profile/Contacts hangs off the saved
 			// profile, so Team only appears once one exists.
 			case 'apply':
+				// Contacts/Team unlock once a profile has been saved (they attach to the
+				// person that first save creates).
 				return [
 					{ href: `${base}/profile`, label: 'Profile' },
-					{ href: `${base}/contacts`, label: 'Contacts' },
-					...(data.leaderContext ? [{ href: `${base}/team`, label: 'Team' }] : [])
+					...(data.leaderContext
+						? [
+								{ href: `${base}/contacts`, label: 'Contacts' },
+								{ href: `${base}/campaign`, label: 'Campaign' },
+								{ href: `${base}/team`, label: 'Team' }
+							]
+						: [])
 				];
 			case 'claim':
 				return [
@@ -157,6 +164,7 @@
 				return [
 					{ href: `${base}/profile`, label: 'Profile' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
+					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/manifesto`, label: 'Manifesto' },
 					{ href: `${base}/posts`, label: 'Posts' },
 					{ href: `${base}/reviews`, label: 'Reviews' },
@@ -188,6 +196,7 @@
 	const applyTabKeys: Record<string, keyof NonNullable<typeof data.application>> = {
 		profile: 'profile',
 		contacts: 'contacts',
+		campaign: 'campaign',
 		team: 'team',
 		signoff: 'signoff'
 	};
@@ -211,6 +220,7 @@
 			? [
 					...data.application.profile.missing,
 					...data.application.contacts.missing,
+					...data.application.campaign.missing,
 					...data.application.team.missing,
 					...data.application.documentation.missing,
 					...data.application.signoff.missing

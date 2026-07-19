@@ -268,11 +268,11 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 						.select({ id: partyMemberships.id })
 						.from(partyMemberships)
 						.where(
-							and(eq(partyMemberships.leaderId, existingLeader.id), eq(partyMemberships.partyId, partyId), isNull(partyMemberships.deletedAt))
+							and(eq(partyMemberships.subjectUserId, existingLeader.userId), eq(partyMemberships.partyId, partyId), isNull(partyMemberships.deletedAt))
 						);
 					if (!existingMembership) {
 						const startAt = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
-						await db.insert(partyMemberships).values({ partyId, leaderId: existingLeader.id, role: 'Member', startAt });
+						await db.insert(partyMemberships).values({ partyId, subjectUserId: existingLeader.userId, role: 'Member', startAt });
 					}
 				}
 				const campId = row.pillars?.length
@@ -330,7 +330,10 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 
 			if (row.status === 'aspirant') {
 				// A run for office, not a held term: no leaders row. The verified 2027 campaign
-				// IS the candidacy (party stays a held-term fact, so a pure aspirant carries none).
+				// IS the candidacy; party membership attaches to the person directly.
+				if (partyId) {
+					await tx.insert(partyMemberships).values({ partyId, subjectUserId: domainUserId, role: 'Member', startAt: ASPIRANT_START });
+				}
 				const cycleYear = (toDate(row.startAt) ?? ASPIRANT_START).getFullYear();
 				const campId = await ensureMainCampaign(tx, {
 					subjectUserId: domainUserId,
@@ -359,7 +362,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 				.returning({ id: leaders.id });
 
 			if (partyId) {
-				await tx.insert(partyMemberships).values({ partyId, leaderId: leader.id, role: 'Member', startAt });
+				await tx.insert(partyMemberships).values({ partyId, subjectUserId: domainUserId, role: 'Member', startAt });
 			}
 
 			// A held run only needs a campaign when it carries a manifesto (pillars).

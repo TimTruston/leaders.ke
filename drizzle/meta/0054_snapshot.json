@@ -1,6 +1,6 @@
 {
-  "id": "baf0994b-3645-4281-b4b7-80dc250197f1",
-  "prevId": "37ecc903-f97d-47e6-9815-854f716ff95e",
+  "id": "bda385fb-1298-4df2-a850-103b36aee08b",
+  "prevId": "baf0994b-3645-4281-b4b7-80dc250197f1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -476,6 +476,12 @@
         "verified_at": {
           "name": "verified_at",
           "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iebc_certificate_url": {
+          "name": "iebc_certificate_url",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -2274,17 +2280,11 @@
           "type": "varchar(30)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'aspirant'"
+          "default": "'current'"
         },
         "description": {
           "name": "description",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "iebc_certificate_url": {
-          "name": "iebc_certificate_url",
-          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -4783,8 +4783,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "leader_id": {
-          "name": "leader_id",
+        "campaign_id": {
+          "name": "campaign_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -4836,11 +4836,11 @@
         }
       },
       "indexes": {
-        "one_pending_verification_per_leader": {
-          "name": "one_pending_verification_per_leader",
+        "one_pending_verification_per_campaign": {
+          "name": "one_pending_verification_per_campaign",
           "columns": [
             {
-              "expression": "leader_id",
+              "expression": "campaign_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -4854,12 +4854,12 @@
         }
       },
       "foreignKeys": {
-        "verifications_leader_id_leaders_id_fk": {
-          "name": "verifications_leader_id_leaders_id_fk",
+        "verifications_campaign_id_campaigns_id_fk": {
+          "name": "verifications_campaign_id_campaigns_id_fk",
           "tableFrom": "verifications",
-          "tableTo": "leaders",
+          "tableTo": "campaigns",
           "columnsFrom": [
-            "leader_id"
+            "campaign_id"
           ],
           "columnsTo": [
             "id"

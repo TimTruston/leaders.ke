@@ -1,12 +1,12 @@
 import { redirect } from '@sveltejs/kit';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import type { ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
-import { leaderPath, fullName, resolveCurrentTerm } from '$lib/server/leader';
+import { leaderPath, fullName, getRunCampaign, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
@@ -20,6 +20,7 @@ export type TabChecklist = { complete: boolean; missing: string[] };
 export type ApplicationChecklist = {
 	profile: TabChecklist;
 	contacts: TabChecklist;
+	campaign: TabChecklist;
 	team: TabChecklist;
 	documentation: TabChecklist;
 	/** The applicant's attestation: role, national ID, and their ID images. */
@@ -74,11 +75,11 @@ export const load: LayoutServerLoad = async (event) => {
 	// Keep each application/campaign under its canonical family: approved ones
 	// live at /dashboard/<slug>/*, in-progress ones at /dashboard/apply/<id>/*.
 	if (ctx) {
-		if (family === 'apply' && ctx.leader.verifiedAt && ctx.profileUser.slug) {
+		if (family === 'apply' && ctx.verified && ctx.profileUser.slug) {
 			redirect(302, `/dashboard/${ctx.profileUser.slug}/${segments.slice(4).join('/')}${event.url.search}`);
 		}
 		const isCampaignFamily = !['apply', 'claim', 'admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
-		if (isCampaignFamily && !ctx.leader.verifiedAt) {
+		if (isCampaignFamily && !ctx.verified) {
 			redirect(302, `/dashboard/apply/${ctx.profileUser.authUserId}/${segments.slice(3).join('/')}${event.url.search}`);
 		}
 	}
@@ -112,11 +113,11 @@ export const load: LayoutServerLoad = async (event) => {
 				[!ev.contacts?.sms, 'Phone number'],
 				[!ev.contacts?.email, 'Email address']
 			]),
-			// Team management belongs to the profile's admins; a claim has no team requirement.
+			// A claim confirms identity only — no campaign or team requirement.
+			campaign: { complete: true, missing: [] },
 			team: { complete: true, missing: [] },
 			documentation: toTab([
-				[!ev.documentation?.photoUrl, 'Photo'],
-				[!ev.documentation?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
+				[!ev.documentation?.photoUrl, 'Photo']
 			]),
 			signoff: toTab([
 				[!ev.signoff?.myRole, 'Your role'],
@@ -131,7 +132,7 @@ export const load: LayoutServerLoad = async (event) => {
 			application.documentation.complete &&
 			application.signoff.complete;
 		claimSubmitted = !!ev.submittedAt;
-	} else if (ctx && !ctx.leader.verifiedAt) {
+	} else if (ctx && !ctx.verified) {
 		const settings = await getPlatformSettings();
 		const requiredManagers = settings.requiredTeamManagers;
 		const requiredSignoffs = settings.requiredSignoffs;
@@ -154,12 +155,21 @@ export const load: LayoutServerLoad = async (event) => {
 		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
 		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
 
+		// Verification targets the RUN (campaign): the IEBC cert and the request live on it.
+		const runCampaign = await getRunCampaign(ctx.profileUser.id);
+
 		// Each entry: the human label shown to the user, and whether it's still missing.
 		const profileMissing = [
 			[!ctx.profileUser.firstName, 'First name'],
 			[!ctx.profileUser.otherNames, 'Other names'],
-			[!ctx.leader.positionId, 'Elective position'],
 			[!ctx.profileUser.bio, 'Bio']
+		];
+		// The Campaign tab holds the run: seat, title, platform, IEBC certificate.
+		const campaignMissing = [
+			[!runCampaign?.positionId, 'Seat contested'],
+			[!runCampaign?.title, 'Campaign title'],
+			[!runCampaign?.description, 'Campaign platform'],
+			[!runCampaign?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 		];
 		const contactsMissing = [
 			[!ctx.profileUser.address, 'Office / address'],
@@ -173,8 +183,7 @@ export const load: LayoutServerLoad = async (event) => {
 				? [`${managersShort} more verified team member${managersShort === 1 ? '' : 's'} (${requiredManagers} needed)`]
 				: [];
 		const docsMissing = [
-			[!ctx.profileUser.photoUrl, 'Photo'],
-			[!ctx.leader.iebcCertificateUrl, 'IEBC Certificate of Clearance']
+			[!ctx.profileUser.photoUrl, 'Photo']
 		];
 		// Sign-off gate: enough managers who've each completed their own sign-off
 		// (role + national ID + ID images). Each manager attests on the Team tab
@@ -187,6 +196,7 @@ export const load: LayoutServerLoad = async (event) => {
 		application = {
 			profile: toTab(profileMissing),
 			contacts: toTab(contactsMissing),
+			campaign: toTab(campaignMissing),
 			team: { complete: teamMissing.length === 0, missing: teamMissing },
 			documentation: toTab(docsMissing),
 			signoff: { complete: signoffMissing.length === 0, missing: signoffMissing }
@@ -194,45 +204,55 @@ export const load: LayoutServerLoad = async (event) => {
 		applicationComplete =
 			application.profile.complete &&
 			application.contacts.complete &&
+			application.campaign.complete &&
 			application.team.complete &&
 			application.documentation.complete &&
 			application.signoff.complete;
-		pendingVerification = !!(await getPendingVerification(ctx.leader.id));
+		pendingVerification = !!(await getPendingVerification(runCampaign?.id ?? 0));
 		// Only meaningful when nothing's pending — a fresh re-submission supersedes the
 		// old rejection (getLatestRejection returns null once they resubmit).
-		if (!pendingVerification) rejection = await getLatestRejection(ctx.leader.id);
+		if (!pendingVerification) rejection = await getLatestRejection(runCampaign?.id ?? 0);
 	}
 
 	// Every campaign the viewer leads or actively manages — the switcher lists
 	// them ALL (verified ones under their slug, in-progress applications under
 	// their apply UUID), not just the first-resolved context.
-	const managedRows = await db
-		.select({
-			leaderId: leaders.id,
-			firstName: users.firstName,
-			otherNames: users.otherNames,
-			slug: users.slug,
-			authUserId: users.authUserId,
-			verifiedAt: leaders.verifiedAt,
-			startAt: leaders.startAt
-		})
+	// One entry per managed PERSON who has something to work on: a live held term
+	// OR a live run (campaign) — a fresh application is a run with no leaders row.
+	// Deleted people (withdrawn applications) drop out via users.deletedAt.
+	const managedPeople = await db
+		.select({ users })
 		.from(managers)
 		.innerJoin(users, eq(managers.subjectUserId, users.id))
-		.innerJoin(leaders, eq(leaders.userId, users.id))
-		.where(and(eq(managers.userId, domainUser.id), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(leaders.deletedAt)));
-	// Managers attach to the PERSON, not a term: one switcher entry per managed person,
-	// collapsing their terms to the active one (latest start) for the link + verified badge.
-	const byPerson = new Map<string, (typeof managedRows)[number]>();
-	for (const r of managedRows) {
-		const prev = byPerson.get(r.authUserId);
-		if (!prev || r.startAt.getTime() > prev.startAt.getTime()) byPerson.set(r.authUserId, r);
-	}
-	const myCampaigns = [...byPerson.values()].map((r) => ({
-		leaderId: r.leaderId,
-		name: fullName(r),
-		verified: !!r.verifiedAt,
-		basePath: r.verifiedAt && r.slug ? `/dashboard/${r.slug}` : `/dashboard/apply/${r.authUserId}`
-	}));
+		.where(and(eq(managers.userId, domainUser.id), eq(managers.isActive, true), isNull(managers.deletedAt), isNull(users.deletedAt)));
+	const managedIds = managedPeople.map((r) => r.users.id);
+	const [managedTerms, managedRuns] = managedIds.length
+		? await Promise.all([
+				db
+					.select({ userId: leaders.userId, verifiedAt: leaders.verifiedAt })
+					.from(leaders)
+					.where(and(inArray(leaders.userId, managedIds), isNull(leaders.deletedAt))),
+				db
+					.select({ userId: campaigns.subjectUserId, verifiedAt: campaigns.verifiedAt })
+					.from(campaigns)
+					.where(and(inArray(campaigns.subjectUserId, managedIds), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)))
+			])
+		: [[], []];
+	const termVerifiedBy = new Map<number, boolean>();
+	for (const t of managedTerms) termVerifiedBy.set(t.userId, (termVerifiedBy.get(t.userId) ?? false) || !!t.verifiedAt);
+	const runVerifiedBy = new Map<number, boolean>();
+	for (const r of managedRuns) runVerifiedBy.set(r.userId, (runVerifiedBy.get(r.userId) ?? false) || !!r.verifiedAt);
+	const myCampaigns = managedPeople
+		.filter((r) => termVerifiedBy.has(r.users.id) || runVerifiedBy.has(r.users.id))
+		.map((r) => {
+			const verified = (termVerifiedBy.get(r.users.id) ?? false) || (runVerifiedBy.get(r.users.id) ?? false);
+			return {
+				leaderId: r.users.id,
+				name: fullName(r.users),
+				verified,
+				basePath: verified && r.users.slug ? `/dashboard/${r.users.slug}` : `/dashboard/apply/${r.users.authUserId}`
+			};
+		});
 
 	// Every claim the viewer has in flight — the switcher lists them so a claim
 	// stays reachable after navigating away.
@@ -262,18 +282,18 @@ export const load: LayoutServerLoad = async (event) => {
 		rejection,
 		leaderContext: ctx
 			? {
-					leaderId: ctx.leader.id,
+					leaderId: ctx.leader?.id ?? null,
 					role: ctx.role,
 					leaderName: fullName(ctx.profileUser),
-					positionTitle: ctx.position.title,
-					region: ctx.position.region,
-					status: ctx.leader.status,
-					verified: !!ctx.leader.verifiedAt,
+					positionTitle: ctx.position?.title ?? '',
+					region: ctx.position?.region ?? '',
+					status: (ctx.leader?.status ?? 'aspirant'),
+					verified: !!ctx.verified,
 					publicPath: leaderPath(ctx.profileUser),
 					// Verified campaigns live under their slug; in-progress applications
 					// under their pre-minted UUID (the phantom's auth id).
 					basePath:
-						ctx.leader.verifiedAt && ctx.profileUser.slug
+						ctx.verified && ctx.profileUser.slug
 							? `/dashboard/${ctx.profileUser.slug}`
 							: `/dashboard/apply/${ctx.profileUser.authUserId}`
 				}

@@ -9,7 +9,7 @@
 		{
 			title: 'For leaders',
 			links: [
-				{ href: launchHref, label: 'Create a Profile' },
+				{ href: launchHref, label: 'Launch Your Campaign' },
 				{ href: '/presidents', label: 'Claim Your Page' },
 				{ href: '/features', label: 'Features' },
 				{ href: '/parties', label: 'Parties' },

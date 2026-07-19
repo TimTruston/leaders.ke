@@ -150,11 +150,9 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	if (people.length === 0) {
 		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[], regimeOptions };
 	}
-	// Party lives on the held term, so only leaders rows have one (aspirant runs carry none).
-	const ids = people.map((p) => p.leaderId).filter((id): id is number => id !== null);
 	const personIds = people.map((p) => p.userId);
 
-	// Follower counts (per PERSON — follows are user-scoped) + live party per leader.
+	// Follower counts + live party, both per PERSON (follows and party are person-scoped).
 	const [followerRows, partyRows] = await Promise.all([
 		db
 			.select({ userId: followers.digestId, n: count() })
@@ -162,13 +160,13 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, personIds), isNull(followers.deletedAt)))
 			.groupBy(followers.digestId),
 		db
-			.select({ leaderId: partyMemberships.leaderId, partyName: parties.name })
+			.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
 			.from(partyMemberships)
 			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(inArray(partyMemberships.leaderId, ids), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+			.where(and(inArray(partyMemberships.subjectUserId, personIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
 	]);
 	const followersBy = new Map(followerRows.map((r) => [r.userId, r.n]));
-	const partyBy = new Map(partyRows.map((r) => [r.leaderId, r.partyName]));
+	const partyBy = new Map(partyRows.map((r) => [r.userId, r.partyName]));
 
 	// Filter options come from the FULL position set (before filtering). Raw region
 	// labels — for MCA these are ward seat names; SearchFilter derives the
@@ -180,7 +178,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	const q = f.query.trim().toLowerCase();
 	const filtered = people.filter((p) => {
 		if (f.region && (isMca ? CONSTITUENCY_BY_WARD.get(p.region) !== f.region : p.region !== f.region)) return false;
-		if (f.party && partyBy.get(p.leaderId ?? -1) !== f.party) return false;
+		if (f.party && partyBy.get(p.userId) !== f.party) return false;
 		if (f.status && p.status !== f.status) return false;
 		if (q && !fullName(p).toLowerCase().includes(q)) return false;
 		return true;
@@ -199,7 +197,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 
 	const cards = sorted.slice((f.page - 1) * f.pageSize, f.page * f.pageSize).map((p) => {
 		const name = fullName(p);
-		const party = partyBy.get(p.leaderId ?? -1) ?? null;
+		const party = partyBy.get(p.userId) ?? null;
 		return {
 			path: leaderPath(p),
 			name,

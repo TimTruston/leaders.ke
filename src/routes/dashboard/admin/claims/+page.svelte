@@ -52,7 +52,7 @@
 				<tbody>
 					{#each data.claims as claim (claim.claimId)}
 						<tr class="border-t border-border">
-							<td class="px-4 py-3 text-sm tabular-nums text-muted">{claim.leaderId}</td>
+							<td class="px-4 py-3 text-sm tabular-nums text-muted">{claim.subjectUserId}</td>
 							<td class="px-4 py-3 text-sm text-heading">{claim.subjectName}</td>
 							<td class="px-4 py-3 text-sm text-muted">{claim.claimantName}</td>
 							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(claim.requestedAt))}</td>

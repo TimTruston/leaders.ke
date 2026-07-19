@@ -249,9 +249,9 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 	const userIdBySeedEmail = new Map(seedEmailRows.map((r) => [r.email, r.userId]));
 
 	const partyRows = await db.select({ name: parties.name, abbreviation: parties.abbreviation }).from(parties);
-	// Leaders that already carry a live party membership — enrich never touches those.
-	const memberLeaderIds = new Set(
-		(await db.select({ leaderId: partyMemberships.leaderId }).from(partyMemberships).where(isNull(partyMemberships.deletedAt))).map((r) => r.leaderId)
+	// People who already carry a live party membership — enrich never touches those.
+	const memberUserIds = new Set(
+		(await db.select({ userId: partyMemberships.subjectUserId }).from(partyMemberships).where(isNull(partyMemberships.deletedAt))).map((r) => r.userId)
 	);
 	// seedPeople resolves a membership by EXACT name/abbreviation, so flag on that.
 	const knownPartyExact = new Set(partyRows.flatMap((p) => [p.name, p.abbreviation]).filter(Boolean) as string[]);
@@ -457,7 +457,7 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 			});
 			const bio = holder.bio ? null : wikiBio; // only backfill a NULL bio
 			// Fill-gap-only party backfill: never changes an existing membership.
-			const party = !memberLeaderIds.has(holder.leaderId) && rosterParty && knownPartyExact.has(rosterParty) ? rosterParty : null;
+			const party = !memberUserIds.has(holder.userId) && rosterParty && knownPartyExact.has(rosterParty) ? rosterParty : null;
 			if (plannedContacts.length || bio || party) {
 				enriches.push({ leaderId: holder.leaderId, userId: holder.userId, holderName: dbName, title, region: position.region, contacts: plannedContacts, bio, party });
 				for (const c of plannedContacts) plannedValues.add(`${c.channel}:${c.value}`);
@@ -658,11 +658,11 @@ async function apply(db: ReturnType<typeof drizzle>, a: Analysis) {
 				? await db
 						.select({ id: partyMemberships.id })
 						.from(partyMemberships)
-						.where(and(eq(partyMemberships.leaderId, e.leaderId), isNull(partyMemberships.deletedAt)))
+						.where(and(eq(partyMemberships.subjectUserId, e.userId), isNull(partyMemberships.deletedAt)))
 				: [];
 			if (party && !existing) {
 				// Same convention as seedPeople: current members' terms start at the 2022 swearing-in.
-				await db.insert(partyMemberships).values({ partyId: party.id, leaderId: e.leaderId, role: 'Member', startAt: new Date('2022-09-13T00:00:00+03:00') });
+				await db.insert(partyMemberships).values({ partyId: party.id, subjectUserId: e.userId, role: 'Member', startAt: new Date('2022-09-13T00:00:00+03:00') });
 				membershipsAdded++;
 			}
 		}

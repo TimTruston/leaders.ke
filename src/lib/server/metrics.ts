@@ -102,13 +102,13 @@ async function computeLeaderMetrics(
 	} satisfies LeaderMetrics;
 }
 
-/** This leader's current live membership name (no end date), or null. */
-async function currentPartyName(leaderId: number): Promise<string | null> {
+/** This person's current live membership name (no end date), or null. */
+async function currentPartyName(subjectUserId: number): Promise<string | null> {
 	const [row] = await db
 		.select({ partyName: parties.name })
 		.from(partyMemberships)
 		.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-		.where(and(eq(partyMemberships.leaderId, leaderId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
+		.where(and(eq(partyMemberships.subjectUserId, subjectUserId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
 	return row?.partyName ?? null;
 }
 
@@ -135,11 +135,10 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	const position = leadsWithRun ? activeRun!.positions : currentTerm!.positions;
 	const status = leadsWithRun ? 'aspirant' : currentTerm!.leaders.status;
 	let campaignId = 0;
-	let party: string | null = null;
+	const party: string | null = await currentPartyName(row.users.id);
 	if (leadsWithRun) {
 		campaignId = activeRun!.campaigns.id;
 	} else {
-		party = await currentPartyName(currentTerm!.leaders.id);
 		const [c] = await db
 			.select({ id: campaigns.id })
 			.from(campaigns)

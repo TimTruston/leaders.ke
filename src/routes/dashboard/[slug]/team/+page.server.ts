@@ -31,7 +31,7 @@ export const load: PageServerLoad = async (event) => {
 			.from(ambassadors)
 			.innerJoin(users, eq(ambassadors.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(ambassadors.leaderId, ctx.leader.id), isNull(ambassadors.deletedAt))),
+			.where(and(eq(ambassadors.leaderId, ctx.leader?.id ?? 0), isNull(ambassadors.deletedAt))),
 		listOpenInvites(ctx.profileUser.id),
 		isCampaignAdmin(domainUser.id, ctx)
 	]);
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		id: domainUser.id,
 		isAdmin,
-		verified: !!ctx.leader.verifiedAt,
+		verified: ctx.verified,
 		signoff: {
 			myRole: mineRoles.title ?? '',
 			nationalId: mineRoles.nationalId ?? '',
@@ -115,7 +115,7 @@ export const actions: Actions = {
 			const file = form.get(kind);
 			if (!(file instanceof File) || file.size === 0) continue; // not (re)uploaded this submit
 			try {
-				updates[USER_COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.leader.id, kind as UploadKind, file);
+				updates[USER_COLUMN_BY_KIND[kind]] = await saveLeaderDocument(ctx.profileUser.id, kind as UploadKind, file);
 			} catch (err) {
 				return fail(400, { error: err instanceof Error ? err.message : 'Upload failed.' });
 			}
@@ -232,13 +232,13 @@ export const actions: Actions = {
 			.from(ambassadors)
 			.innerJoin(users, eq(ambassadors.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader.id)));
+			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader?.id ?? 0)));
 
 		// Blueprint rule: removing an ambassador leaves their subscribers attached to the campaign.
 		await db
 			.update(ambassadors)
 			.set({ isActive: false, deletedAt: new Date() })
-			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader.id)));
+			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader?.id ?? 0)));
 		return { removed: { email: member?.email ?? '' } };
 	}
 };

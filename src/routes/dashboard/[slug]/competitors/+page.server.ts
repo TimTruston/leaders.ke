@@ -9,7 +9,7 @@ import type { PageServerLoad } from './$types';
 // the public signals that matter — followers, output, coverage.
 export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
-	const seatId = ctx.leader.positionId;
+	const seatId = ctx.position?.id ?? 0;
 
 	// Rivals at this seat: other held terms, plus other verified 2027 runs (aspirants).
 	const [heldRivals, runRivals] = await Promise.all([
@@ -109,7 +109,7 @@ export const load: PageServerLoad = async (event) => {
 	const mine = await statsFor(ctx.profileUser.id);
 
 	return {
-		seat: `${ctx.position.title}, ${ctx.position.region}`,
+		seat: ctx.position ? `${ctx.position.title}, ${ctx.position.region}` : '',
 		mine,
 		rivals: dbRivals.sort((a, b) => b.followers - a.followers)
 	};

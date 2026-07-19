@@ -110,12 +110,8 @@ export const leaders = pgTable('leaders', {
   positionId: integer('position_id').references(() => positions.id).notNull(),
   faq: jsonb('faq').default([]),
   contacts: jsonb('contacts').default({}),
-  status: varchar('status', { length: 30 }).default('aspirant').notNull(), // 'aspirant' | 'current' | 'former'
+  status: varchar('status', { length: 30 }).default('current').notNull(), // 'current' | 'former' (a run for office is a campaign, not a leaders row)
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
-  // The IEBC nomination certificate is the one document that genuinely belongs to a
-  // candidacy — it is issued per election, per seat. The person's photo and ID scans
-  // live on `users` (they follow the person across terms).
-  iebcCertificateUrl: text('iebc_certificate_url'),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
   endAt: timestamp('end_at', { withTimezone: true }),
@@ -208,6 +204,9 @@ export const campaigns = pgTable('campaigns', {
   // leaders row to carry verifiedAt). Set = the run is public and ballot-eligible;
   // null = still under review / dashboard-only. Mirrors leaders.verifiedAt for held office.
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  // The IEBC nomination certificate is issued per election, per seat run.
+  // The person's photo and ID scans live on `users`.
+  iebcCertificateUrl: text('iebc_certificate_url'),
   fundraisingGoal: integer('fundraising_goal').default(0).notNull(), // KES — money belongs to the run, not the term
   faq: jsonb('faq').default([]),
   parentCampaignId: integer('parent_campaign_id').references((): any => campaigns.id, { onDelete: 'set null' }),
@@ -285,10 +284,11 @@ export const invites = pgTable('invites', {
 // profile public. One pending (outcome null) request per leader at a time.)
 export const verificationOutcomeEnum = pgEnum('verification_outcome', ['approved', 'rejected']);
 
-// One leader's request to be verified, with the admin's decision once reviewed.
+// One run's request to be verified, with the admin's decision once reviewed. A
+// candidacy (campaign) is the verifiable unit — approval sets campaigns.verifiedAt.
 export const verifications = pgTable('verifications', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
   requestedBy: integer('requested_by').references(() => users.id).notNull(),
   evidence: jsonb('evidence').default({}).notNull(), // IEBC clearance doc reference / national ID, etc.
   requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
@@ -297,7 +297,7 @@ export const verifications = pgTable('verifications', {
   outcome: verificationOutcomeEnum('outcome'), // null = pending
   notes: text('notes'), // admin's reason, shown back to the leader on rejection
 }, (t) => [
-  uniqueIndex('one_pending_verification_per_leader').on(t.leaderId).where(sql`${t.outcome} is null`),
+  uniqueIndex('one_pending_verification_per_campaign').on(t.campaignId).where(sql`${t.outcome} is null`),
 ]);
 
 // 6.3 PROFILE CLAIMS (onboarding.md option A: "Claim this Profile" on an existing
@@ -543,14 +543,20 @@ export const parties = pgTable('parties', {
 export const partyMemberships = pgTable('party_memberships', {
   id: serial('id').primaryKey(),
   partyId: integer('party_id').references(() => parties.id, { onDelete: 'cascade' }).notNull(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  // The PERSON who belongs to the party. Membership is a person-level TIMELINE
+  // (startAt/endAt rows), not a per-term fact: people switch parties across cycles,
+  // an aspirant with no leaders row still has one, and the dated history itself is
+  // civic data. Current party = the live row (endAt null).
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
   startAt: timestamp('start_at', { withTimezone: true }).notNull(),
   endAt: timestamp('end_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
+}, (t) => [
+  index('party_memberships_subject_idx').on(t.subjectUserId),
+]);
 
 // 12. ALLIANCES (Unregistered Political Alliances)
 // An informal coalition of parties/leaders, outside formal party registration.

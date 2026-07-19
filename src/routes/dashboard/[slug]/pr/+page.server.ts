@@ -91,9 +91,9 @@ export const actions: Actions = {
 		const result = await answerConstituentQuestion(
 			{
 				name: leaderName,
-				positionTitle: ctx.position.title,
-				regionLabel: ctx.position.region,
-				status: ctx.leader.status,
+				positionTitle: ctx.position?.title ?? '',
+				regionLabel: ctx.position?.region ?? '',
+				status: (ctx.leader?.status ?? 'aspirant'),
 				bio: ctx.profileUser.bio ?? '',
 				pillars: [],
 				posts: []
@@ -104,7 +104,7 @@ export const actions: Actions = {
 		const answer =
 			result.source === 'ai'
 				? result.answer
-				: `${leaderName}'s office has noted the coverage "${mention.title}". [State the position in two sentences.] We remain focused on delivering for ${ctx.position.region} and welcome scrutiny of our record.`;
+				: `${leaderName}'s office has noted the coverage "${mention.title}". [State the position in two sentences.] We remain focused on delivering for ${ctx.position?.region ?? 'the region'} and welcome scrutiny of our record.`;
 
 		await db.insert(posts).values({
 			creatorId: domainUser.id,

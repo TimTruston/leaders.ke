@@ -8,7 +8,7 @@
 	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
 	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
 	// shapes `data` and hosts the actions this form posts to (relative ?/action URLs).
-	let { data, form }: { data: any; form: any } = $props();
+	let { data, form, action = '?/save', embedded = false }: { data: any; form: any; action?: string; embedded?: boolean } = $props();
 
 	let address = $state(data.address);
 	let sms = $state(data.sms);
@@ -73,10 +73,10 @@
 
 </script>
 
-<svelte:head><title>Contacts | leaders.ke</title></svelte:head>
+<svelte:head>{#if !embedded}<title>Contacts | leaders.ke</title>{/if}</svelte:head>
 
 <div class="">
-	<h1 class="text-xl font-bold text-heading">Contacts</h1>
+	<h2 class="{embedded ? 'text-lg font-semibold' : 'text-xl font-bold'} text-heading">Contacts</h2>
 	<p class="mt-1 text-sm text-muted">How we and your citizens can reach you.</p>
 
 	{#if form?.error}
@@ -87,7 +87,7 @@
 
 	<form
 		method="post"
-		action="?/save"
+		action={action}
 		class="mt-6 space-y-5"
 		use:enhance={() => {
 			saving = true;
@@ -198,7 +198,7 @@
 				disabled={saving}
 				class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
 			>
-				{saving ? 'Saving…' : 'Save changes'}
+				{saving ? 'Saving…' : 'Save contacts'}
 			</button>
 		</div>
 	</form>
