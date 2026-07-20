@@ -7,7 +7,7 @@ export type SwitcherMode = { key: string; href: string; label: string; current: 
 
 export type DashboardModesInput = {
 	myCampaigns?: { leaderId: number; name: string; verified: boolean; basePath: string }[];
-	pendingClaims?: { slug: string; name: string }[];
+	pendingClaims?: { slug: string; name: string; outcome?: 'approved' | 'rejected' | null }[];
 	isAdmin?: boolean;
 	claimName?: string | null;
 	leaderContext?: { basePath: string } | null;

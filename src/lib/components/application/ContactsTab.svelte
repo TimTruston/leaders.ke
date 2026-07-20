@@ -112,11 +112,11 @@
 
 		<div class="grid gap-3 sm:grid-cols-2">
 			<div class="rounded-xl ">
-				<PhoneInput bind:value={sms} label="Phone number" scope={verifyScope} verified={data.smsVerified ?? false} verifiedValues={data.ownVerified?.sms ?? []} required filled={!starRed('Phone number')} />
+				<PhoneInput bind:value={sms} label="Public phone number" scope={verifyScope} verified={data.smsVerified ?? false} verifiedValues={data.ownVerified?.sms ?? []} required filled={!starRed('Phone number')} />
 				<input type="hidden" name="sms" value={sms} />
 			</div>
 			<div>
-				<PhoneInput bind:value={whatsapp} label="WhatsApp number" field="whatsapp" scope={verifyScope} verified={data.whatsappVerified ?? false} verifiedValues={data.ownVerified?.whatsapp ?? []} />
+				<PhoneInput bind:value={whatsapp} label="Whatsapp number" field="whatsapp" scope={verifyScope} verified={data.whatsappVerified ?? false} verifiedValues={data.ownVerified?.whatsapp ?? []} />
 				<input type="hidden" name="whatsapp" value={whatsapp} />
 			</div>
 		</div>

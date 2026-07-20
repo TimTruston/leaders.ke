@@ -322,10 +322,13 @@ export const profileClaims = pgTable('profile_claims', {
   reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
   outcome: claimOutcomeEnum('outcome'), // null = pending
   notes: text('notes'),
+  // The claimant's own "just testing" escape hatch — soft-deleted so a rejected
+  // claim's decision stays in the admin's audit trail instead of disappearing.
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
   uniqueIndex('one_pending_claim_per_person_per_user')
     .on(t.subjectUserId, t.claimedBy)
-    .where(sql`${t.outcome} is null`),
+    .where(sql`${t.outcome} is null and ${t.deletedAt} is null`),
 ]);
 
 // 6.4 NOTIFICATIONS (durable in-app notifications, e.g. "your verification was

@@ -2,7 +2,7 @@
 // leader row's ownership (see the comment on profileClaims in schema.ts) — it
 // makes the claimant an admin manager of the existing profile instead.
 import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { and, count, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -47,7 +47,9 @@ export type ClaimEvidence = {
  * Resolves + authorizes a /dashboard/claim/[slug]/* request. Only verified
  * (public) profiles are claimable — an unverified one belongs to the account
  * still building it. Returns the viewer, the resolved leader, and the viewer's
- * pending claim (null until the first tab save creates it).
+ * live claim: pending (null until the first tab save creates it), or a
+ * rejected one still open for editing/resubmission. An approved claim is
+ * terminal (the claimant already manages the profile), so it's excluded here.
  */
 export async function resolveClaimRequest(event: RequestEvent) {
 	const { domainUser } = await requireDashboardUser(event);
@@ -64,10 +66,22 @@ export async function resolveClaimRequest(event: RequestEvent) {
 			and(
 				eq(profileClaims.subjectUserId, resolved.row.users.id),
 				eq(profileClaims.claimedBy, domainUser.id),
-				isNull(profileClaims.outcome)
+				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+				isNull(profileClaims.deletedAt)
 			)
-		);
+		)
+		.orderBy(desc(profileClaims.requestedAt))
+		.limit(1);
 	return { domainUser, slug, resolved, claim: claim ?? null };
+}
+
+/** Resubmitting after a rejection reopens the same claim row (clearing its
+ * decision) instead of minting a new one — the claimant edits in place. */
+export async function reopenRejectedClaim(claimId: number) {
+	await db
+		.update(profileClaims)
+		.set({ outcome: null, notes: null, reviewedBy: null, reviewedAt: null })
+		.where(eq(profileClaims.id, claimId));
 }
 
 /** Merges one tab's values into the claimant's pending claim, creating the claim
@@ -76,7 +90,16 @@ export async function stageClaimEvidence(subjectUserId: number, claimedBy: numbe
 	const [existing] = await db
 		.select({ id: profileClaims.id, evidence: profileClaims.evidence })
 		.from(profileClaims)
-		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.where(
+			and(
+				eq(profileClaims.subjectUserId, subjectUserId),
+				eq(profileClaims.claimedBy, claimedBy),
+				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+				isNull(profileClaims.deletedAt)
+			)
+		)
+		.orderBy(desc(profileClaims.requestedAt))
+		.limit(1);
 
 	if (existing) {
 		const evidence = { ...((existing.evidence as ClaimEvidence | null) ?? {}), ...patch };
@@ -101,6 +124,10 @@ export type ClaimRow = {
 	notes: string | null;
 	/** The claimed profile's best email on file (verified > sourced > any live). */
 	leaderEmail: string | null;
+	/** Set when the claimant withdrew it themselves ("just testing" escape hatch,
+	 * or dropped a stale rejected claim) — the row stays for the admin's audit
+	 * trail, but it's no longer live. */
+	deletedAt: string | null;
 };
 
 /**
@@ -124,7 +151,16 @@ export async function stageClaimVerifiedContact(
 	const [existing] = await db
 		.select({ id: profileClaims.id, evidence: profileClaims.evidence })
 		.from(profileClaims)
-		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.where(
+			and(
+				eq(profileClaims.subjectUserId, subjectUserId),
+				eq(profileClaims.claimedBy, claimedBy),
+				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+				isNull(profileClaims.deletedAt)
+			)
+		)
+		.orderBy(desc(profileClaims.requestedAt))
+		.limit(1);
 
 	const prior = ((existing?.evidence as ClaimEvidence | null) ?? {}).contacts;
 	const contacts = {
@@ -177,12 +213,23 @@ export async function findClaimByLeaderToken(token: string) {
 	};
 }
 
-/** Drops the viewer's pending claim entirely — the "just testing" escape hatch.
- * Decided (approved/rejected) claims stay as history. */
+/** Drops the viewer's claim — the "just testing" escape hatch, also available
+ * on a rejected claim so they aren't forced to resubmit it. Soft-deleted: the
+ * row (and its rejection notes, if any) stays for the admin's audit trail, it
+ * just stops counting as the claimant's live claim. An approved claim can't be
+ * dropped this way (deleting it wouldn't undo the manager access it granted). */
 export async function deletePendingClaim(subjectUserId: number, claimedBy: number) {
 	await db
-		.delete(profileClaims)
-		.where(and(eq(profileClaims.subjectUserId, subjectUserId), eq(profileClaims.claimedBy, claimedBy), isNull(profileClaims.outcome)));
+		.update(profileClaims)
+		.set({ deletedAt: new Date() })
+		.where(
+			and(
+				eq(profileClaims.subjectUserId, subjectUserId),
+				eq(profileClaims.claimedBy, claimedBy),
+				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+				isNull(profileClaims.deletedAt)
+			)
+		);
 }
 
 /** Submits a claim. Fails if this user already has one pending for this leader. */
@@ -211,6 +258,7 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 				requestedAt: profileClaims.requestedAt,
 				outcome: profileClaims.outcome,
 				notes: profileClaims.notes,
+				deletedAt: profileClaims.deletedAt,
 				claimantFirstName: users.firstName,
 				claimantOtherNames: users.otherNames
 			})
@@ -298,7 +346,8 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 			leaderEmail: subject ? (emailByUserId.get(subject.userId) ?? null) : null,
 			requestedAt: r.requestedAt.toISOString(),
 			outcome: r.outcome,
-			notes: r.notes
+			notes: r.notes,
+			deletedAt: r.deletedAt ? r.deletedAt.toISOString() : null
 		};
 	});
 	return { claims, total };

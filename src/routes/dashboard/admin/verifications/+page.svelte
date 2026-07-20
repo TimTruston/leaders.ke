@@ -165,14 +165,6 @@
 								</div>
 							</td>
 						</tr>
-						{#if req.outcome === 'rejected' && req.notes}
-							<tr class="border-t border-border">
-								<td colspan="10" class="px-4 py-2 text-sm text-muted">
-									<span class="font-semibold text-heading">Rejection reason:</span>
-									{req.notes}
-								</td>
-							</tr>
-						{/if}
 						{#if expandedId === req.verificationId}
 							<tr class="border-t border-border bg-surface-2" onclick={(e) => e.stopPropagation()}>
 								<td colspan="10" class="px-4 py-4">

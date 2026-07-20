@@ -155,6 +155,12 @@
 								>
 									{claim.outcome ?? 'pending'}
 								</span>
+								{#if claim.deletedAt}
+									<!-- The claimant withdrew this claim themselves — still visible here as history. -->
+									<span class="ml-1 rounded-full border border-border px-2.5 py-0.5 text-xs font-semibold text-muted">
+										Withdrawn
+									</span>
+								{/if}
 							</td>
 							<td class="px-4 py-3" onclick={(e) => e.stopPropagation()}>
 								<a
@@ -167,14 +173,6 @@
 								</a>
 							</td>
 						</tr>
-						{#if claim.outcome === 'rejected' && claim.notes}
-							<tr class="border-t border-border">
-								<td colspan="7" class="px-4 py-2 text-sm text-muted">
-									<span class="font-semibold text-heading">Rejection reason:</span>
-									{claim.notes}
-								</td>
-							</tr>
-						{/if}
 						{#if expandedId === claim.claimId}
 							<tr class="border-t border-border bg-surface-2" onclick={(e) => e.stopPropagation()}>
 								<td colspan="7" class="px-4 py-4">

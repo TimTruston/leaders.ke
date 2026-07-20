@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -101,16 +101,30 @@ export const load: LayoutServerLoad = async (event) => {
 	let application: ApplicationChecklist | null = null;
 	let claimSubmitted = false;
 	let claimId: number | null = null;
+	let claimRejection: { notes: string | null; reviewedAt: string | null } | null = null;
 	if (family === 'claim' && claimSubjectUserId) {
 		// The claim's checklist reads off what's been STAGED in the pending claim,
 		// not the profile's real data — same shape as the apply checklist so the
 		// tab `*`s and the submit widget work identically. Team is a claim
-		// non-requirement (it unlocks after approval).
+		// non-requirement (it unlocks after approval). A rejected claim stays here
+		// too (not just a pending one) — resubmitting edits it in place.
 		const [claimRow] = await db
-			.select({ id: profileClaims.id, evidence: profileClaims.evidence })
+			.select({ id: profileClaims.id, evidence: profileClaims.evidence, outcome: profileClaims.outcome, notes: profileClaims.notes, reviewedAt: profileClaims.reviewedAt })
 			.from(profileClaims)
-			.where(and(eq(profileClaims.subjectUserId, claimSubjectUserId), eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+			.where(
+				and(
+					eq(profileClaims.subjectUserId, claimSubjectUserId),
+					eq(profileClaims.claimedBy, domainUser.id),
+					or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+					isNull(profileClaims.deletedAt)
+				)
+			)
+			.orderBy(desc(profileClaims.requestedAt))
+			.limit(1);
 		claimId = claimRow?.id ?? null;
+		if (claimRow?.outcome === 'rejected') {
+			claimRejection = { notes: claimRow.notes, reviewedAt: claimRow.reviewedAt ? claimRow.reviewedAt.toISOString() : null };
+		}
 		const ev = (claimRow?.evidence ?? {}) as ClaimEvidence;
 		application = {
 			profile: toTab([[!ev.profile, 'Profile details']]),
@@ -140,7 +154,9 @@ export const load: LayoutServerLoad = async (event) => {
 			application.contacts.complete &&
 			application.documentation.complete &&
 			application.signoff.complete;
-		claimSubmitted = !!ev.submittedAt;
+		// Not "submitted" while a rejection is still open — the resubmit widget
+		// should show again until they've re-confirmed and posted it.
+		claimSubmitted = !!ev.submittedAt && claimRow?.outcome !== 'rejected';
 	} else if (ctx && !ctx.verified) {
 		const settings = await getPlatformSettings();
 		const requiredManagers = settings.requiredTeamManagers;
@@ -264,15 +280,22 @@ export const load: LayoutServerLoad = async (event) => {
 		});
 
 	// Every claim the viewer has in flight — the switcher lists them so a claim
-	// stays reachable after navigating away.
+	// stays reachable after navigating away. A rejected one stays listed too,
+	// since it's still open for editing/resubmission.
 	const pendingClaimRows = await db
-		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
+		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames, outcome: profileClaims.outcome })
 		.from(profileClaims)
 		.innerJoin(users, eq(profileClaims.subjectUserId, users.id))
-		.where(and(eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+		.where(
+			and(
+				eq(profileClaims.claimedBy, domainUser.id),
+				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
+				isNull(profileClaims.deletedAt)
+			)
+		);
 	const pendingClaims = pendingClaimRows
 		.filter((r) => r.slug)
-		.map((r) => ({ slug: r.slug as string, name: fullName(r) }));
+		.map((r) => ({ slug: r.slug as string, name: fullName(r), outcome: r.outcome }));
 
 	return {
 		firstName: domainUser.firstName,
@@ -282,6 +305,7 @@ export const load: LayoutServerLoad = async (event) => {
 		claimSubjectSlug,
 		claimId,
 		claimSubmitted,
+		claimRejection,
 		pendingClaims,
 		myCampaigns,
 		ambassadorFor: ambassadorAssignments.map((a) => ({ leaderId: a.leaderId, name: a.leaderName })),

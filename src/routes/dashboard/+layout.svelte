@@ -331,7 +331,7 @@
 								: `Still needed before you can submit:\n• ${missingFields.join('\n• ')}`}
 							class="shrink-0 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
 						>
-							{submittingApplication ? 'Submitting…' : 'Submit Claim'}
+							{submittingApplication ? 'Submitting…' : data.claimRejection ? 'Resubmit Claim' : 'Submit Claim'}
 						</button>
 						<button
 							type="submit"
@@ -429,6 +429,17 @@
 			<p class="text-sm font-semibold text-red-500">Your application was not approved.</p>
 			{#if data.rejection.notes}
 				<p class="mt-1 text-sm text-heading">{data.rejection.notes}</p>
+			{:else}
+				<p class="mt-1 text-sm text-muted">No reason was given. Review your details and re-submit.</p>
+			{/if}
+		</div>
+	{:else if mode === 'claim' && data.claimRejection}
+		<!-- Same shape, but the claim itself stays open for editing — resubmitting
+		reopens this same claim rather than starting a fresh one. -->
+		<div class="mt-3 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
+			<p class="text-sm font-semibold text-red-500">Your claim was not approved.</p>
+			{#if data.claimRejection.notes}
+				<p class="mt-1 text-sm text-heading">{data.claimRejection.notes}</p>
 			{:else}
 				<p class="mt-1 text-sm text-muted">No reason was given. Review your details and re-submit.</p>
 			{/if}
