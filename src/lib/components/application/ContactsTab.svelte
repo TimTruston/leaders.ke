@@ -51,12 +51,12 @@
 	function handleSocialInput(e: Event, kind: string, i: number) {
 		const input = e.target as HTMLInputElement;
 		const v = input.value.replace(/\s+/g, ''); // handles never contain spaces
-		if (v !== input.value) {
-			socialLinks[i].value = v;
-			input.value = v;
-		}
+		if (v !== input.value) input.value = v;
+
 		const looksLikeUrl = /^https?:\/\//i.test(v) || /^(www\.)?[\w-]+\.\w{2,}(\/|$)/i.test(v);
 		if (!looksLikeUrl) {
+			// The normal case: a plain handle, not a pasted URL — just store what was typed.
+			socialLinks[i].value = v;
 			delete socialErrors[kind];
 			return;
 		}
