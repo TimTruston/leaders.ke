@@ -43,7 +43,9 @@ export const load: PageServerLoad = async (event) => {
 			hasLeader: false,
 			verified: false
 		},
-		photoUrl: stagedDocs.photoUrl ?? null,
+		// The real profile's current photo, unless the claimant has already staged
+		// their own replacement — either way, never blank on first visit.
+		photoUrl: stagedDocs.photoUrl ?? resolved.row.users.photoUrl ?? null,
 		pendingVerification: false
 	};
 };
