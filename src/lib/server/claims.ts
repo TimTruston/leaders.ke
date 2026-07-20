@@ -4,9 +4,9 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, managers, partyMemberships, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { findNationalIdConflict, fullName, resolveCurrentTerm } from '$lib/server/leader';
+import { ACTIVE_CYCLE, findNationalIdConflict, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
 import { signoffComplete } from '$lib/utils/campaignRoles';
@@ -92,6 +92,8 @@ export type ClaimRow = {
 	claimantName: string;
 	subjectName: string;
 	subjectSlug: string | null;
+	positionTitle: string;
+	region: string;
 	requestedAt: string;
 	outcome: 'approved' | 'rejected' | null;
 	/** The reviewer's reason, shown under a rejected row in the admin queue. */
@@ -230,17 +232,59 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 
 	// The leader's best email on file — prefills the admin "Email the leader" form.
 	// Verified beats sourced (see contacts.source) beats any other live row.
-	const emailRows = await db
-		.select({ userId: contacts.userId, value: contacts.value, verifiedAt: contacts.verifiedAt, source: contacts.source })
-		.from(contacts)
-		.where(and(eq(contacts.channel, 'email'), isNull(contacts.deletedAt)));
+	const emailRows = subjectIds.length
+		? await db
+				.select({ userId: contacts.userId, value: contacts.value, verifiedAt: contacts.verifiedAt, source: contacts.source })
+				.from(contacts)
+				.where(and(inArray(contacts.userId, subjectIds), eq(contacts.channel, 'email'), isNull(contacts.deletedAt)))
+		: [];
 	const emailByUserId = new Map<number, string>();
 	for (const row of [...emailRows].sort((a, b) => Number(!!b.verifiedAt) - Number(!!a.verifiedAt) || Number(!!b.source) - Number(!!a.source))) {
 		if (!emailByUserId.has(row.userId)) emailByUserId.set(row.userId, row.value);
 	}
 
+	// Each subject's current seat: a held term (preferring non-'former') beats a
+	// verified 2027 run — same "lead position" priority used elsewhere (an
+	// aspirant has no leaders row at all).
+	const [termRows, runRows] = subjectIds.length
+		? await Promise.all([
+				db
+					.select({ userId: leaders.userId, status: leaders.status, title: positions.title, region: positions.region })
+					.from(leaders)
+					.innerJoin(positions, eq(leaders.positionId, positions.id))
+					.where(and(inArray(leaders.userId, subjectIds), isNull(leaders.deletedAt))),
+				db
+					.select({ userId: campaigns.subjectUserId, title: positions.title, region: positions.region })
+					.from(campaigns)
+					.innerJoin(positions, eq(campaigns.positionId, positions.id))
+					.where(
+						and(
+							inArray(campaigns.subjectUserId, subjectIds),
+							eq(campaigns.cycleYear, ACTIVE_CYCLE),
+							isNull(campaigns.parentCampaignId),
+							isNull(campaigns.deletedAt)
+						)
+					)
+			])
+		: [[], []];
+	type Seat = { title: string; region: string; status: string };
+	const seatBySubject = new Map<number, Seat>();
+	for (const t of termRows) {
+		const existing = seatBySubject.get(t.userId);
+		if (!existing || (existing.status === 'former' && t.status !== 'former')) {
+			seatBySubject.set(t.userId, { title: t.title, region: t.region, status: t.status });
+		}
+	}
+	for (const r of runRows) {
+		const held = seatBySubject.get(r.userId);
+		if (!held || held.status === 'former') {
+			seatBySubject.set(r.userId, { title: r.title, region: r.region, status: 'aspirant' });
+		}
+	}
+
 	const claims = rows.map((r) => {
 		const subject = subjectByUserId.get(r.subjectUserId);
+		const seat = seatBySubject.get(r.subjectUserId);
 		return {
 			claimId: r.claimId,
 			subjectUserId: r.subjectUserId,
@@ -248,6 +292,8 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 			claimantName: fullName({ firstName: r.claimantFirstName, otherNames: r.claimantOtherNames }),
 			subjectName: subject ? fullName(subject) : 'Unknown',
 			subjectSlug: subject?.slug ?? null,
+			positionTitle: seat?.title ?? '',
+			region: seat?.region ?? '',
 			leaderEmail: subject ? (emailByUserId.get(subject.userId) ?? null) : null,
 			requestedAt: r.requestedAt.toISOString(),
 			outcome: r.outcome,

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
+	import { seatPath } from '$lib/utils/seat';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -97,6 +98,8 @@
 			<table class="w-full min-w-180 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Claimant</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
@@ -110,6 +113,22 @@
 							class="cursor-pointer border-t border-border transition hover:bg-surface-2"
 							onclick={() => toggleExpand(claim.claimId)}
 						>
+							<td class="px-4 py-3 text-sm text-muted">{claim.positionTitle}</td>
+							<td class="px-4 py-3 text-sm text-muted">
+								{#if seatPath(claim.positionTitle, claim.region)}
+									<a
+										href={seatPath(claim.positionTitle, claim.region)}
+										target="_blank"
+										rel="noopener"
+										onclick={(e) => e.stopPropagation()}
+										class="hover:text-primary hover:underline"
+									>
+										{claim.region}
+									</a>
+								{:else}
+									{claim.region}
+								{/if}
+							</td>
 							<td class="px-4 py-3 text-sm text-heading">
 								<div class="flex items-center justify-between">
 									<span class="flex items-center gap-1.5">
@@ -152,7 +171,7 @@
 						</tr>
 						{#if claim.outcome === 'rejected' && claim.notes}
 							<tr class="border-t border-border">
-								<td colspan="6" class="px-4 py-2 text-sm text-muted">
+								<td colspan="7" class="px-4 py-2 text-sm text-muted">
 									<span class="font-semibold text-heading">Rejection reason:</span>
 									{claim.notes}
 								</td>
@@ -160,7 +179,7 @@
 						{/if}
 						{#if expandedId === claim.claimId}
 							<tr class="border-t border-border bg-surface-2" onclick={(e) => e.stopPropagation()}>
-								<td colspan="6" class="px-4 py-4">
+								<td colspan="7" class="px-4 py-4">
 									{#if loadingId === claim.claimId}
 										<p class="text-sm text-muted">Loading…</p>
 									{:else if extrasCache[claim.claimId]}
