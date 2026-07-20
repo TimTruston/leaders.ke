@@ -2,8 +2,10 @@
 // previews (a pending application's live profile, a pending claim's staged
 // overlay) can render through the exact same LeaderProfile component instead of
 // a bespoke admin-only layout. `isAdmin` bypasses the verified gate (an admin
-// reviewing a submission needs to see the draft); everything else is identical
-// to what a citizen would see once the profile goes public.
+// reviewing a submission needs to see the draft); the profile's own person or
+// one of its active managers bypasses it too (the applicant previewing their
+// own not-yet-verified submission); everything else is identical to what a
+// citizen would see once the profile goes public.
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, experience, followers, managers, pillars, positions, posts, tags } from '$lib/server/db/schema';
@@ -22,10 +24,25 @@ export async function loadPublicProfileData(
 	const { row, terms, currentTerm } = resolved;
 	let { activeRun } = resolved;
 
+	// The profile's own person or one of its active managers may preview it
+	// unverified too, same as an admin — computed once, reused for the bypass
+	// below and for `canClaim` further down.
+	const viewerIsManager = opts.viewerId
+		? opts.viewerId === row.users.id ||
+			!!(
+				await db
+					.select({ id: managers.id })
+					.from(managers)
+					.where(and(eq(managers.userId, opts.viewerId), eq(managers.subjectUserId, row.users.id), isNull(managers.deletedAt)))
+			)[0]
+		: false;
+	const canPreview = !!opts.isAdmin || viewerIsManager;
+
 	// resolveCurrentTerm's activeRun is verified-only (it drives public resolution).
-	// An admin previewing a pending application has no verified run yet — fall back
-	// to the person's current-cycle run regardless of verified state.
-	if (!activeRun && opts.isAdmin) {
+	// A previewer with no held term and no verified run yet is a pure aspirant
+	// whose draft run hasn't been verified — fall back to their current-cycle
+	// run regardless of verified state.
+	if (!activeRun && canPreview) {
 		const [draftRun] = await db
 			.select()
 			.from(campaigns)
@@ -39,7 +56,7 @@ export async function loadPublicProfileData(
 	const leadStatus = leadsWithRun ? 'aspirant' : (currentTerm?.leaders.status ?? 'aspirant');
 	const leadVerified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
 
-	if (!leadPosition || (!leadVerified && !opts.isAdmin)) return null;
+	if (!leadPosition || (!leadVerified && !canPreview)) return null;
 
 	let leadCampaignId = 0;
 	if (leadsWithRun) {
@@ -98,15 +115,6 @@ export async function loadPublicProfileData(
 	]);
 
 	const myReview = opts.viewerId ? await getMyReview(row.users.id, opts.viewerId) : null;
-
-	const viewerIsManager = opts.viewerId
-		? !!(
-				await db
-					.select({ id: managers.id })
-					.from(managers)
-					.where(and(eq(managers.userId, opts.viewerId), eq(managers.subjectUserId, row.users.id), isNull(managers.deletedAt)))
-			)[0]
-		: false;
 
 	const deliveredCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'delivered').length;
 	const inProgressCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'in_progress').length;

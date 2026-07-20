@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import LeaderProfile from '$lib/components/LeaderProfile.svelte';
 	import type { Snippet } from 'svelte';
 
-	// Shared shell for the verification and claim admin preview pages: the same
-	// profile-as-it-will-render (LeaderProfile in preview mode) plus the review-only
-	// extras (IEBC cert, request history, team sign-offs) and decision controls.
-	// Only the request-review wording and the claims-only "email the leader" action
-	// differ between the two — everything else renders identically.
+	// Shared shell for the verification and claim admin preview pages: the
+	// review-only extras (IEBC cert, request history, team sign-offs) and decision
+	// controls, plus links out to the real Profile (/[slug]) and Campaign
+	// (/[slug]/[year]) preview pages — both independently previewable by an admin
+	// or the applicant themselves (see publicProfile.ts/campaign.ts), so this view
+	// no longer embeds them. Only the request-review wording and the claims-only
+	// "email the leader" action differ between the verification and claim variants.
 	let {
 		backHref,
 		backLabel,
@@ -97,13 +98,19 @@
 				{request.outcome ?? 'pending'}
 			</span>
 		</div>
-		<span class="text-sm text-muted">
+		<div class="flex flex-wrap items-center gap-3 text-sm">
+			{#if data.leader.slug}
+				<a href="/{data.leader.slug}" target="_blank" rel="noopener" class="font-semibold text-primary hover:underline">View profile ↗</a>
+			{/if}
+			{#if data.campaign}
+				<a href={data.campaign.path} target="_blank" rel="noopener" class="font-semibold text-primary hover:underline">View campaign ↗</a>
+			{/if}
 			{#if iebcCertificateUrl}
 				<a href={iebcCertificateUrl} target="_blank" rel="noopener" class="text-primary hover:underline">View IEBC Cert</a>
 			{:else}
-				<span class="mt-2 text-sm font-medium text-red-500">Missing IEBC Cert</span>
+				<span class="text-sm font-medium text-red-500">Missing IEBC Cert</span>
 			{/if}
-		</span>
+		</div>
 	</div>
 
 	{#if form?.error}
@@ -112,7 +119,7 @@
 		</div>
 	{/if}
 
-	<!-- Decision controls: kept above the profile preview + history/team. -->
+	<!-- Decision controls: kept above history/team. -->
 	<div class="mt-4 rounded-2xl border border-border bg-surface p-5">
 		{#if request.outcome === 'rejected' && request.notes}
 			<p class="mb-3 text-sm text-muted">
@@ -260,5 +267,3 @@
 		{/if}
 	</div>
 </div>
-
-<LeaderProfile {data} preview />
