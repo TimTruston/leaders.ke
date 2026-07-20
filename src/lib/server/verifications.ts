@@ -2,7 +2,7 @@
 // admin reviews it; approval sets campaigns.verifiedAt (the run's public/ballot flag)
 // and locks the person's slug. A candidacy (campaign) is the verifiable unit — an
 // aspirant has no leaders row. Payment (subscriptions) is a separate, later concern.
-import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull, or, type SQL } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, managers, positions, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';

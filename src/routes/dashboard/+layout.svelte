@@ -257,7 +257,7 @@
 							rel="noopener"
 							class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
 						>
-							Preview
+							Preview &#8599;
 						</a>
 					{/if}
 				</div>
@@ -282,7 +282,7 @@
 							rel="noopener"
 							class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
 						>
-							Preview
+							Preview &#8599;
 						</a>
 					{/if}
 				</div>

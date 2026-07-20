@@ -106,7 +106,7 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 					<tr class="bg-surface-2">
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">User</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Outcome</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Actions</th>
@@ -166,7 +166,7 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 										rel="noopener"
 										class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
 									>
-										Profile
+										Profile &#8599;
 									</a>
 									<a
 										href="{base}/2027"
@@ -174,7 +174,7 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 										rel="noopener"
 										class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
 									>
-										Campaign {req.campaignId}
+										C {req.campaignId} &#8599;
 									</a>
 								</div>
 							</td>

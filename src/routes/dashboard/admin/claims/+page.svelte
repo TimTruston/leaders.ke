@@ -157,19 +157,20 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 							</td>
 							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(claim.requestedAt))}</td>
 							<td class="px-4 py-3 text-sm">
-								<span
-									class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {claim.outcome === 'approved'
-										? 'bg-primary-soft text-on-primary'
-										: claim.outcome === 'rejected'
-											? 'bg-surface-2 text-muted'
-											: 'border border-border text-muted'}"
-								>
-									{claim.outcome ?? 'pending'}
-								</span>
 								{#if claim.deletedAt}
 									<!-- The claimant withdrew this claim themselves — still visible here as history. -->
-									<span class="ml-1 rounded-full border border-border px-2.5 py-0.5 text-xs font-semibold text-muted">
-										Withdrawn
+									<span class="ml-1 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-orange-950 text-muted">
+										Deleted
+									</span>
+								{:else}
+									<span
+										class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {claim.outcome === 'approved'
+											? 'bg-primary-soft text-on-primary'
+											: claim.outcome === 'rejected'
+												? 'bg-surface-2 text-muted'
+												: 'border border-border text-muted'}"
+									>
+										{claim.outcome ?? 'pending'}
 									</span>
 								{/if}
 							</td>
@@ -180,7 +181,7 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 									rel="noopener"
 									class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
 								>
-									Preview
+									Profile &#8599;
 								</a>
 							</td>
 						</tr>
