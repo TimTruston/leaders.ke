@@ -9,17 +9,20 @@
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, experience, followers, managers, pillars, positions, posts, tags } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
 import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
 export type PublicProfileData = NonNullable<Awaited<ReturnType<typeof loadPublicProfileData>>>;
 
 export async function loadPublicProfileData(
-	slug: string,
+	// A public slug, or a person's user id for a slugless preview (an application
+	// that hasn't been approved yet has no slug — see /previews/[userId]).
+	idOrSlug: string | number,
 	opts: { viewerId?: number; isAdmin?: boolean } = {}
 ) {
-	const resolved = await resolveCurrentTerm(slug);
+	const resolved =
+		typeof idOrSlug === 'number' ? await resolveCurrentTermByUserId(idOrSlug) : await resolveCurrentTerm(idOrSlug);
 	if (!resolved) return null;
 	const { row, terms, currentTerm } = resolved;
 	let { activeRun } = resolved;
@@ -182,7 +185,9 @@ export async function loadPublicProfileData(
 		campaign: isVying
 			? {
 					year: ACTIVE_CYCLE,
-					path: campaignPath(row.users),
+					// A slugless preview (loaded by user id) links its campaign workspace to
+					// the matching /previews/[userId]/[year] route, not the public URL.
+					path: typeof idOrSlug === 'number' ? `/previews/${idOrSlug}/${ACTIVE_CYCLE}` : campaignPath(row.users),
 					pillarCount: pillarRow.n,
 					latestPost: latestPost[0] ? { title: latestPost[0].title, createdAt: latestPost[0].createdAt.toISOString() } : null
 				}

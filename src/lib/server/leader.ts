@@ -305,6 +305,19 @@ export async function resolveCurrentTerm(slug: string) {
 	// their active run separately.
 	const [userRow] = await db.select().from(users).where(and(eq(users.slug, slug), isNull(users.deletedAt)));
 	if (!userRow) return null;
+	return resolveTermForUser(userRow);
+}
+
+/** Same resolution as resolveCurrentTerm, but keyed by the person's user id — for
+ * slugless previews (a not-yet-verified application has no slug until approval,
+ * so /previews/[userId] resolves by id instead of a public URL). */
+export async function resolveCurrentTermByUserId(userId: number) {
+	const [userRow] = await db.select().from(users).where(and(eq(users.id, userId), isNull(users.deletedAt)));
+	if (!userRow) return null;
+	return resolveTermForUser(userRow);
+}
+
+async function resolveTermForUser(userRow: typeof users.$inferSelect) {
 	const row = { users: userRow };
 
 	const terms = await db

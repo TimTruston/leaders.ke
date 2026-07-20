@@ -9,7 +9,7 @@ import { db } from '$lib/server/db';
 import { campaigns, experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
@@ -230,15 +230,10 @@ export const actions: Actions = {
 			const phantom = await createPhantomUser(firstName, otherNames, applyId);
 			subjectId = phantom.id;
 			await db.update(users).set({ bio }).where(eq(users.id, subjectId));
-
-			let slug = slugInput || slugify(fullName({ firstName, otherNames }));
-			if (!(await isSlugAvailable(slug, subjectId))) {
-				if (slugInput) return fail(400, { error: `The URL "/${slugInput}" is already taken.` });
-				slug = await generateLeaderSlug(fullName({ firstName, otherNames }));
-			}
-			await db.update(users).set({ slug }).where(eq(users.id, subjectId));
-			// No campaign yet: the run (seat + cycle + manifesto title) is declared on
-			// the Campaign tab. This save only creates the person.
+			// No public slug yet: an application stays slugless (previewed at
+			// /previews/[userId]) until an admin approves verification and sets its
+			// permanent URL — see reviewVerification. No campaign yet either: the run
+			// (seat + cycle + manifesto title) is declared on the Campaign tab.
 
 			// onboarding.md: the creator is the campaign's first manager, with admin
 			// permissions (invite/remove team, fundraising, delete campaign) — "leader"

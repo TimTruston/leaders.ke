@@ -277,7 +277,7 @@
 					<h1 class="text-2xl font-bold text-heading">Lets get onboard!</h1>
 					{#if data.leaderContext}
 						<a
-							href={data.leaderContext.publicPath}
+							href={data.leaderContext.previewPath}
 							target="_blank"
 							rel="noopener"
 							class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"

@@ -20,12 +20,13 @@ export const actions: Actions = {
 		const verificationId = Number(form.get('verificationId'));
 		const outcome = String(form.get('outcome') ?? '');
 		const notes = String(form.get('notes') ?? '').trim();
+		const slug = String(form.get('slug') ?? '').trim();
 
 		if (!verificationId || (outcome !== 'approved' && outcome !== 'rejected')) {
 			return fail(400, { error: 'Invalid request.' });
 		}
 
-		const result = await reviewVerification(verificationId, domainUser.id, outcome, notes);
+		const result = await reviewVerification(verificationId, domainUser.id, outcome, notes, slug);
 		if (!result.ok) return fail(400, { error: result.error });
 
 		return { reviewed: true };

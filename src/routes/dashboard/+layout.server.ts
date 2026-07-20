@@ -337,6 +337,10 @@ export const load: LayoutServerLoad = async (event) => {
 					status: (ctx.leader?.status ?? 'aspirant'),
 					verified: !!ctx.verified,
 					publicPath: leaderPath(ctx.profileUser),
+					// Where "Preview" points: the public URL once verified (it has a slug),
+					// else the slugless /previews/[userId] route for an in-progress application.
+					previewPath:
+						ctx.verified && ctx.profileUser.slug ? leaderPath(ctx.profileUser) : `/previews/${ctx.profileUser.id}`,
 					// Verified campaigns live under their slug; in-progress applications
 					// under their pre-minted UUID (the phantom's auth id).
 					basePath:

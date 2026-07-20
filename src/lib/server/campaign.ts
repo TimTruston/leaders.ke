@@ -6,15 +6,21 @@
 import { and, asc, count, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, donations, followers, managers, pillars, pledges, positions, posts } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, resolveCurrentTerm } from '$lib/server/leader';
+import { ACTIVE_CYCLE, resolveCurrentTerm, resolveCurrentTermByUserId } from '$lib/server/leader';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
 /** Resolves the seat + run a /[leader]/[year] workspace leads with (a live term,
  * else the active run). Verified is required UNLESS the viewer is an admin, the
  * profile's own person, or one of its active managers — the same "can this
  * account see the draft" rule used elsewhere for admin/claim previews. */
-export async function resolveCampaignRun(slug: string, opts: { viewerId?: number; isAdmin?: boolean } = {}) {
-	const resolved = await resolveCurrentTerm(slug);
+export async function resolveCampaignRun(
+	// A public slug, or a person's user id for a slugless preview (see
+	// /previews/[userId]/[year] — an unverified application has no slug yet).
+	idOrSlug: string | number,
+	opts: { viewerId?: number; isAdmin?: boolean } = {}
+) {
+	const resolved =
+		typeof idOrSlug === 'number' ? await resolveCurrentTermByUserId(idOrSlug) : await resolveCurrentTerm(idOrSlug);
 	if (!resolved) return null;
 	const { row, currentTerm } = resolved;
 	let { activeRun } = resolved;
