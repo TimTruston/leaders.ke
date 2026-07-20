@@ -6,7 +6,7 @@ import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, managers, positions, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { fullName, isSlugAvailable } from '$lib/server/leader';
+import { findNationalIdConflict, fullName, isSlugAvailable } from '$lib/server/leader';
 import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { notifyUser } from '$lib/server/notifications';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
@@ -181,21 +181,27 @@ export async function getVerificationPreview(verificationId: number) {
 		},
 		data,
 		iebcCertificateUrl: campaign.iebcCertificateUrl,
-		team: teamRows.map((t) => {
-			const roles = (t.roles ?? {}) as ManagerRoles;
-			const teamContact = teamContactsByUser.get(t.userId);
-			return {
-				name: fullName(t),
-				title: roles.title ?? null,
-				nationalId: roles.nationalId ?? null,
-				idFrontUrl: t.idFrontUrl,
-				idBackUrl: t.idBackUrl,
-				signoffComplete: signoffComplete(roles, t),
-				isApplicant: t.userId === request.requestedBy,
-				phone: teamContact?.sms ?? null,
-				email: teamContact?.email ?? t.authEmail
-			};
-		}),
+		team: await Promise.all(
+			teamRows.map(async (t) => {
+				const roles = (t.roles ?? {}) as ManagerRoles;
+				const teamContact = teamContactsByUser.get(t.userId);
+				const complete = signoffComplete(roles, t);
+				return {
+					name: fullName(t),
+					title: roles.title ?? null,
+					nationalId: roles.nationalId ?? null,
+					idFrontUrl: t.idFrontUrl,
+					idBackUrl: t.idBackUrl,
+					signoffComplete: complete,
+					// Flagged for the admin to decide — not a hard block on save (could be a
+					// genuine duplicate account for the same person).
+					nationalIdConflict: complete && roles.nationalId ? await findNationalIdConflict(roles.nationalId, t.userId) : null,
+					isApplicant: t.userId === request.requestedBy,
+					phone: teamContact?.sms ?? null,
+					email: teamContact?.email ?? t.authEmail
+				};
+			})
+		),
 		requestHistory: historyRows.map((h) => ({
 			id: h.id,
 			requestedAt: h.requestedAt.toISOString(),
@@ -244,8 +250,8 @@ export async function reviewVerification(
 		title: outcome === 'approved' ? 'Your verification was approved' : 'Your verification was rejected',
 		body:
 			outcome === 'approved'
-				? 'Congratulations — your leaders.ke verification application was approved. Your run is now live and publicly visible.'
-				: `Your leaders.ke verification application was rejected.${notes ? ` Reason: ${notes}` : ''}\n\nYou can address the reason and re-submit from your dashboard.`,
+				? 'Congratulations! Your application was approved. Your run is now live and publicly visible.'
+				: `Your leaders.ke verification application was rejected.${notes ? `\nReason: "${notes}"` : ''}`,
 		href: '/dashboard'
 	});
 

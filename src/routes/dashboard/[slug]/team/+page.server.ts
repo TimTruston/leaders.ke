@@ -6,7 +6,7 @@ import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites, revokeInvite, tryDirectGrant } from '$lib/server/invites';
 import { fullName } from '$lib/server/leader';
-import { isCampaignRole, type ManagerRoles } from '$lib/utils/campaignRoles';
+import { isCampaignRole, isValidNationalId, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -83,6 +83,7 @@ export const actions: Actions = {
 		const nationalId = String(form.get('nationalId') ?? '').trim();
 		if (!isCampaignRole(title)) return fail(400, { error: 'Pick your role in this campaign.' });
 		if (!nationalId) return fail(400, { error: 'Enter your national ID number.' });
+		if (!isValidNationalId(nationalId)) return fail(400, { error: 'Enter a valid national ID number (7-8 digits).' });
 
 		const [mine] = await db
 			.select({ id: managers.id, roles: managers.roles })

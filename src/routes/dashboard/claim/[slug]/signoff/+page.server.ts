@@ -3,7 +3,7 @@
 // The submit widget reads the national ID from here.
 import { fail } from '@sveltejs/kit';
 import { resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
-import { isCampaignRole } from '$lib/utils/campaignRoles';
+import { isCampaignRole, isValidNationalId } from '$lib/utils/campaignRoles';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -28,6 +28,7 @@ export const actions: Actions = {
 		const nationalId = String(form.get('nationalId') ?? '').trim();
 		if (!isCampaignRole(myRole)) return fail(400, { error: 'Pick your role in this campaign.' });
 		if (!nationalId) return fail(400, { error: 'Enter your national ID number.' });
+		if (!isValidNationalId(nationalId)) return fail(400, { error: 'Enter a valid national ID number (7-8 digits).' });
 
 		const staged = (claim?.evidence as ClaimEvidence | null)?.signoff;
 		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {

@@ -6,7 +6,7 @@ import { and, count, desc, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, managers, parties, partyMemberships, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { fullName, resolveCurrentTerm } from '$lib/server/leader';
+import { findNationalIdConflict, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
 import { loadPublicProfileData, type PublicProfileData } from '$lib/server/publicProfile';
@@ -405,6 +405,10 @@ export async function getClaimPreview(claimId: number) {
 		claimant ? db.select({ email: authUsers.email }).from(authUsers).where(eq(authUsers.id, claimant.authUserId)) : Promise.resolve([])
 	]);
 	const signoff = evidence.signoff ?? {};
+	const claimantSignoffComplete = signoffComplete(
+		{ title: signoff.myRole, nationalId: signoff.nationalId },
+		{ idFrontUrl: signoff.idFrontUrl ?? null, idBackUrl: signoff.idBackUrl ?? null }
+	);
 	const team = claimant
 		? [
 				{
@@ -413,10 +417,11 @@ export async function getClaimPreview(claimId: number) {
 					nationalId: signoff.nationalId ?? null,
 					idFrontUrl: signoff.idFrontUrl ?? null,
 					idBackUrl: signoff.idBackUrl ?? null,
-					signoffComplete: signoffComplete(
-						{ title: signoff.myRole, nationalId: signoff.nationalId },
-						{ idFrontUrl: signoff.idFrontUrl ?? null, idBackUrl: signoff.idBackUrl ?? null }
-					),
+					signoffComplete: claimantSignoffComplete,
+					// Flagged for the admin to decide — not a hard block on save (could be a
+					// genuine duplicate account for the same person).
+					nationalIdConflict:
+						claimantSignoffComplete && signoff.nationalId ? await findNationalIdConflict(signoff.nationalId, claimant.id) : null,
 					isApplicant: true,
 					phone: claimantContactRows.find((r) => r.channel === 'sms')?.value ?? null,
 					email: claimantContactRows.find((r) => r.channel === 'email')?.value ?? claimantAuth?.email ?? null

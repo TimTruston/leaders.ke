@@ -6,9 +6,10 @@
 import { randomUUID } from 'node:crypto';
 import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getPlatformSettings } from '$lib/server/settings';
+import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { positionSlug } from '$lib/utils/seat';
 
 /**
@@ -410,4 +411,43 @@ export async function getRunCampaign(subjectUserId: number) {
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	return c ?? null;
+}
+
+/** Finds a DIFFERENT account whose sign-off is already complete (role + national ID +
+ * both ID images) with the same national ID, if any — not a hard block (could be a
+ * genuine duplicate account for the same person), just a flag surfaced on the admin
+ * verification/claim preview so an admin can decide. Not narrowed by SQL predicate on
+ * the jsonb `roles` column (see team/+page.server.ts's removeManager for the same
+ * convention) — filtered in JS instead. */
+export async function findNationalIdConflict(
+	nationalId: string,
+	excludeUserId: number
+): Promise<{ id: number; name: string; email: string; phone: string | null } | null> {
+	const rows = await db
+		.select({
+			userId: managers.userId,
+			roles: managers.roles,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			idFrontUrl: users.idFrontUrl,
+			idBackUrl: users.idBackUrl,
+			email: authUsers.email
+		})
+		.from(managers)
+		.innerJoin(users, eq(managers.userId, users.id))
+		.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+		.where(isNull(managers.deletedAt));
+	const conflict = rows.find(
+		(r) =>
+			r.userId !== excludeUserId &&
+			(r.roles as { nationalId?: string } | null)?.nationalId === nationalId &&
+			signoffComplete(r.roles as ManagerRoles, r)
+	);
+	if (!conflict) return null;
+
+	const [phoneRow] = await db
+		.select({ value: contacts.value })
+		.from(contacts)
+		.where(and(eq(contacts.userId, conflict.userId), eq(contacts.channel, 'sms'), isNull(contacts.deletedAt)));
+	return { id: conflict.userId, name: fullName(conflict), email: conflict.email, phone: phoneRow?.value ?? null };
 }

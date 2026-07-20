@@ -41,6 +41,10 @@
 			idFrontUrl: string | null;
 			idBackUrl: string | null;
 			signoffComplete: boolean;
+			// Someone else's already-complete sign-off shares this national ID — not a
+			// hard block (could be a genuine duplicate account), just flagged here for
+			// the admin to decide during review.
+			nationalIdConflict: { id: number; name: string; email: string; phone: string | null } | null;
 			isApplicant: boolean;
 			phone: string | null;
 			email: string | null;
@@ -237,6 +241,12 @@
 								<p class="mt-0.5 text-sm {member.nationalId ? 'text-heading' : 'font-medium text-red-500'}">{member.nationalId ?? 'Missing'}</p>
 							</div>
 						</div>
+						{#if member.nationalIdConflict}
+							{@const conflict = member.nationalIdConflict}
+							<p class="mt-3 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-medium text-red-500">
+								Same National ID on {conflict.name}({conflict.id}). Email: {conflict.email} Phone: {conflict.phone}
+							</p>
+						{/if}
 						<div class="mt-3 grid grid-cols-2 gap-3">
 							{@render idThumb('ID front', member.idFrontUrl)}
 							{@render idThumb('ID back', member.idBackUrl)}

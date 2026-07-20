@@ -15,6 +15,13 @@ export function isCampaignRole(value: string): boolean {
 	return (CAMPAIGN_ROLES as readonly string[]).includes(value);
 }
 
+// A standard Kenyan National ID number is 7-8 digits.
+export const NATIONAL_ID_REGEX = /^[0-9]{7,8}$/;
+
+export function isValidNationalId(value: string): boolean {
+	return NATIONAL_ID_REGEX.test(value);
+}
+
 // Everything held on a manager's `managers.roles` jsonb: their admin flag plus
 // their own sign-off (role title and national ID number) — per manager, never
 // shared, so each team member attests separately. Their ID IMAGES live on the

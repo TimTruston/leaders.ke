@@ -9,9 +9,13 @@
 	// route hosts the ?/saveMyDetails and ?/upload actions.
 	import { enhance } from '$app/forms';
 	import ImageCropper from '$lib/components/ImageCropper.svelte';
-	import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
+	import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
 
 	let { data, form, embedded = false }: { data: any; form: any; embedded?: boolean } = $props();
+
+	// Live format check as they type — same Invalid/Valid indicator design as EmailInput.
+	let nationalId = $state(data.nationalId);
+	const nationalIdInvalid = $derived(nationalId.length > 0 && !isValidNationalId(nationalId));
 
 	const docs = $derived([
 		{ kind: 'id-front', label: 'National ID front', url: data.idFrontUrl },
@@ -80,7 +84,7 @@
 			uploading = true;
 			return async ({ update }) => {
 				uploading = false;
-				await update();
+				await update({ reset: false });
 			};
 		}}
 	>
@@ -115,7 +119,16 @@
 		{/if}
 	</form>
 
-	<form method="post" action="?/saveMyDetails" class="mt-4 rounded-2xl border border-border bg-surface p-5" use:enhance>
+	<form
+		method="post"
+		action="?/saveMyDetails"
+		class="mt-4 rounded-2xl border border-border bg-surface p-5"
+		use:enhance={() => {
+			return async ({ update }) => {
+				await update({ reset: false });
+			};
+		}}
+	>
 		<div class="flex flex-wrap items-end gap-2">
 			<label class="min-w-48 flex-1">
 				<span class="text-sm font-medium text-heading">My Role <span class={data.myRole ? 'text-muted' : 'text-red-500'}>*</span></span>
@@ -133,14 +146,24 @@
 			</label>
 			<label class="min-w-48 flex-1">
 				<span class="text-sm font-medium text-heading">My National ID <span class={data.nationalId ? 'text-muted' : 'text-red-500'}>*</span></span>
-				<input
-					type="text"
-					name="nationalId"
-					required
-					value={data.nationalId}
-					placeholder="12345678"
-					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				/>
+				<div
+					class="mt-1.5 flex items-stretch overflow-hidden rounded-xl border border-border bg-surface transition-colors
+					focus-within:border-primary focus:ring-0 focus:ring-ring outline-hidden focus:outline-none"
+				>
+					<input
+						type="text"
+						name="nationalId"
+						required
+						bind:value={nationalId}
+						placeholder="12345678"
+						class="w-full border-0 bg-transparent px-4 py-2.5 text-sm text-heading placeholder:text-muted outline-hidden focus:ring-0 focus:outline-none"
+					/>
+					{#if nationalIdInvalid}
+						<span class="grid place-items-center rounded-r-xl px-4 py-0.5 text-sm text-nowrap text-red-400">Invalid</span>
+					{:else if nationalId}
+						<span class="grid place-items-center rounded-r-xl px-4 py-0.5 text-sm text-nowrap text-primary">Valid</span>
+					{/if}
+				</div>
 			</label>
 			<button
 				type="submit"
