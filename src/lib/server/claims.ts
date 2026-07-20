@@ -2,7 +2,7 @@
 // leader row's ownership (see the comment on profileClaims in schema.ts) — it
 // makes the claimant an admin manager of the existing profile instead.
 import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { and, count, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -247,8 +247,13 @@ export async function requestClaim(subjectUserId: number, claimedBy: number, evi
 }
 
 /** One page of claims, newest first — pending, approved, and rejected — same
- * revertible shape as the verification queue. Returns the total for the pager. */
+ * revertible shape as the verification queue. Returns the total for the pager.
+ * Only SUBMITTED claims show here — a claimant still drafting (evidence staged,
+ * "Submit Claim" not yet pressed) isn't in the admin's queue yet. */
 export async function listClaims(page: number, pageSize: number): Promise<{ claims: ClaimRow[]; total: number }> {
+	// A decided claim was necessarily submitted at some point (some older rows
+	// predate the evidence.submittedAt field), so outcome set also counts.
+	const submitted = or(sql`${profileClaims.evidence}->>'submittedAt' is not null`, isNotNull(profileClaims.outcome));
 	const [rows, [{ n: total }]] = await Promise.all([
 		db
 			.select({
@@ -264,10 +269,11 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 			})
 			.from(profileClaims)
 			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
+			.where(submitted)
 			.orderBy(desc(profileClaims.requestedAt))
 			.limit(pageSize)
 			.offset((page - 1) * pageSize),
-		db.select({ n: count() }).from(profileClaims)
+		db.select({ n: count() }).from(profileClaims).where(submitted)
 	]);
 
 	const subjectIds = rows.map((r) => r.subjectUserId);
@@ -492,7 +498,8 @@ export async function getClaimExtras(claimId: number) {
 			]
 		: [];
 
-	// Every claim ever made on this profile, newest first.
+	// Every SUBMITTED claim ever made on this profile, newest first — a draft
+	// someone else abandoned before submitting isn't part of the review history.
 	const historyRows = await db
 		.select({
 			id: profileClaims.id,
@@ -505,7 +512,12 @@ export async function getClaimExtras(claimId: number) {
 		})
 		.from(profileClaims)
 		.leftJoin(users, eq(profileClaims.reviewedBy, users.id))
-		.where(eq(profileClaims.subjectUserId, claim.subjectUserId))
+		.where(
+			and(
+				eq(profileClaims.subjectUserId, claim.subjectUserId),
+				or(sql`${profileClaims.evidence}->>'submittedAt' is not null`, isNotNull(profileClaims.outcome))
+			)
+		)
 		.orderBy(desc(profileClaims.requestedAt));
 
 	return {
