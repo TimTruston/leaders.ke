@@ -61,12 +61,14 @@ export const load: LayoutServerLoad = async (event) => {
 	let ctx: Awaited<ReturnType<typeof getRouteLeaderContext>> = null;
 	let claimName: string | null = null;
 	let claimSubjectUserId: number | null = null;
+	let claimSubjectSlug: string | null = null;
 	let claimSubjectPhotoUrl: string | null = null;
 	if (family === 'claim') {
 		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
 		if (!resolved || (!resolved.currentTerm?.leaders.verifiedAt && !resolved.activeRun)) redirect(302, '/dashboard');
 		claimName = fullName(resolved.row.users);
 		claimSubjectUserId = resolved.row.users.id;
+		claimSubjectSlug = resolved.row.users.slug;
 		claimSubjectPhotoUrl = resolved.row.users.photoUrl;
 	} else {
 		// apply/[id] and [slug] resolve by their URL param (access-checked);
@@ -98,15 +100,17 @@ export const load: LayoutServerLoad = async (event) => {
 	let rejection: Awaited<ReturnType<typeof getLatestRejection>> = null;
 	let application: ApplicationChecklist | null = null;
 	let claimSubmitted = false;
+	let claimId: number | null = null;
 	if (family === 'claim' && claimSubjectUserId) {
 		// The claim's checklist reads off what's been STAGED in the pending claim,
 		// not the profile's real data — same shape as the apply checklist so the
 		// tab `*`s and the submit widget work identically. Team is a claim
 		// non-requirement (it unlocks after approval).
 		const [claimRow] = await db
-			.select({ evidence: profileClaims.evidence })
+			.select({ id: profileClaims.id, evidence: profileClaims.evidence })
 			.from(profileClaims)
 			.where(and(eq(profileClaims.subjectUserId, claimSubjectUserId), eq(profileClaims.claimedBy, domainUser.id), isNull(profileClaims.outcome)));
+		claimId = claimRow?.id ?? null;
 		const ev = (claimRow?.evidence ?? {}) as ClaimEvidence;
 		application = {
 			profile: toTab([[!ev.profile, 'Profile details']]),
@@ -275,6 +279,8 @@ export const load: LayoutServerLoad = async (event) => {
 		// Unread decision notifications (verification/claim outcomes), bannered until dismissed.
 		notifications: await listUnreadNotifications(domainUser.id),
 		claimName,
+		claimSubjectSlug,
+		claimId,
 		claimSubmitted,
 		pendingClaims,
 		myCampaigns,

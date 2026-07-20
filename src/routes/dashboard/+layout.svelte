@@ -248,7 +248,19 @@
 			{#if data.claimName}
 				<!-- The claim family (/dashboard/claim/[slug]/*) is about someone else's
 				profile, whatever campaign context the viewer otherwise has. -->
-				<h1 class="text-2xl font-bold text-heading">Claiming "{data.claimName}"</h1>
+				<div class="flex flex-wrap items-center justify-between gap-2 w-full">
+					<h1 class="text-2xl font-bold text-heading">Claiming "{data.claimName}"</h1>
+					{#if data.application?.profile.complete && data.claimSubjectSlug && data.claimId}
+						<a
+							href="/{data.claimSubjectSlug}/claims/{data.claimId}"
+							target="_blank"
+							rel="noopener"
+							class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+						>
+							Preview
+						</a>
+					{/if}
+				</div>
 			{:else if mode === 'campaign' && data.leaderContext}
 				<h1 class="text-2xl font-bold text-heading">
 					{data.leaderContext.leaderName}
@@ -261,7 +273,19 @@
 					{/if}
 				</h1>
 			{:else if mode === 'apply'}
-				<h1 class="text-2xl font-bold text-heading">Lets get onboard!</h1>
+				<div class="flex flex-wrap items-center justify-between gap-2 w-full">
+					<h1 class="text-2xl font-bold text-heading">Lets get onboard!</h1>
+					{#if data.leaderContext}
+						<a
+							href={data.leaderContext.publicPath}
+							target="_blank"
+							rel="noopener"
+							class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+						>
+							Preview
+						</a>
+					{/if}
+				</div>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}

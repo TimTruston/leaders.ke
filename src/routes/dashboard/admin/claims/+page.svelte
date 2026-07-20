@@ -157,16 +157,14 @@
 								</span>
 							</td>
 							<td class="px-4 py-3" onclick={(e) => e.stopPropagation()}>
-								{#if claim.subjectSlug}
-									<a
-										href="/{claim.subjectSlug}/claims/{claim.claimId}"
-										target="_blank"
-										rel="noopener"
-										class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
-									>
-										Preview
-									</a>
-								{/if}
+								<a
+									href="/{claim.subjectSlug}/claims/{claim.claimId}"
+									target="_blank"
+									rel="noopener"
+									class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+								>
+									Preview
+								</a>
 							</td>
 						</tr>
 						{#if claim.outcome === 'rejected' && claim.notes}
