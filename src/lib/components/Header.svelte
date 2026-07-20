@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { User } from 'better-auth';
-	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
+	import { computeDashboardModes } from '$lib/utils/dashboardModes';
 	import QuickSearch from './QuickSearch.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
@@ -9,6 +10,26 @@
 
 	// While the quick search is expanded it covers the nav links' space.
 	let searchOpen = $state(false);
+
+	// Non-empty once the dashboard layout's data (myCampaigns/pendingClaims/isAdmin/…)
+	// is in the merged page data — i.e. anywhere under /dashboard with more than one
+	// context available. Empty everywhere else, where the plain name link applies.
+	// Computed from page data/URL (not a client effect) so it's correct on first
+	// paint, SSR included — no post-hydration flash.
+	const modes = $derived(computeDashboardModes(page.url.pathname, page.params, page.data));
+
+	// The <details> dropdown doesn't auto-close on navigation — close it
+	// explicitly when a mode is picked, and on any click outside it.
+	let switcherOpen = $state(false);
+	let switcherEl: HTMLDetailsElement | undefined = $state();
+	$effect(() => {
+		if (!switcherOpen) return;
+		const onClick = (e: MouseEvent) => {
+			if (switcherEl && !switcherEl.contains(e.target as Node)) switcherOpen = false;
+		};
+		document.addEventListener('click', onClick);
+		return () => document.removeEventListener('click', onClick);
+	});
 
 	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
 	const links = [
@@ -53,7 +74,39 @@
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
 
-			{#if user}
+			{#if user && modes.length > 1}
+				<!-- Dashboard mode switcher: pick which context you're in (Citizen, a
+				campaign you run/manage, a pending claim, Platform admin). -->
+				<details class="group relative w-fit" bind:open={switcherOpen} bind:this={switcherEl}>
+					<summary
+						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
+					>
+						{modes.find((m) => m.current)?.label ?? modes[0].label}
+						<span class="text-muted transition group-open:rotate-180 leading-none h-2">^</span>
+					</summary>
+					<div class="absolute right-0 z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
+						{#each modes as m (m.key)}
+							<a
+								href={m.href}
+								onclick={() => (switcherOpen = false)}
+								class="block truncate rounded-xl px-3 py-1.5 text-sm transition hover:bg-primary hover:text-on-primary {m.current
+									? 'bg-surface-2 font-semibold text-heading'
+									: 'text-muted'}"
+							>
+								{m.label}
+							</a>
+						{/each}
+						<a
+							href="/logout"
+							data-sveltekit-preload-data="off"
+							data-sveltekit-reload
+							class="block truncate rounded-xl px-3 py-1.5 text-sm text-muted transition hover:bg-primary hover:text-on-primary"
+						>
+							Log out
+						</a>
+					</div>
+				</details>
+			{:else if user}
 				<a
 					href="/dashboard"
 					class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-medium text-heading transition hover:bg-surface-2"

@@ -3,6 +3,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+	import { computeDashboardModes } from '$lib/utils/dashboardModes';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
@@ -71,50 +72,10 @@
 		return data.leaderContext?.basePath ?? '/dashboard';
 	});
 
-	// The modes this account can switch between right now, each flagged `current`.
-	// EVERY campaign they lead/manage, every ambassador assignment, and every
-	// pending claim gets its own entry — the switcher is the full directory, not
-	// just one context per kind. A blank application (nothing saved yet) appears
-	// as "New application" while it's on screen; unsaved claims likewise.
-	const modes = $derived.by(() => {
-		const currentKey =
-			mode === 'apply' || mode === 'campaign'
-				? `campaign:${base}`
-				: mode === 'claim'
-					? `claim:${page.params.slug}`
-					: mode;
-
-		const campaignEntries = data.myCampaigns.map((c: { leaderId: number; name: string; verified: boolean; basePath: string }) => ({
-			key: `campaign:${c.basePath}`,
-			href: `${c.basePath}/profile`,
-			label: `${c.verified ? 'Manage' : 'Applying'}: ${c.name}`,
-			available: true
-		}));
-		if (mode === 'apply' && !data.myCampaigns.some((c: { basePath: string }) => c.basePath === base)) {
-			campaignEntries.push({ key: `campaign:${base}`, href: `${base}/profile`, label: 'New application', available: true });
-		}
-
-		// No ambassador entries: ambassador work lives as tabs on the Citizen view
-		// (/dashboard/mobilize/[leaderId]), not as a switcher context of its own.
-		const claimEntries = data.pendingClaims.map((c: { slug: string; name: string }) => ({
-			key: `claim:${c.slug}`,
-			href: `/dashboard/claim/${c.slug}/profile`,
-			label: `Claiming: ${c.name}`,
-			available: true
-		}));
-		if (mode === 'claim' && !data.pendingClaims.some((c: { slug: string }) => c.slug === page.params.slug)) {
-			claimEntries.push({ key: `claim:${page.params.slug}`, href: `${base}/profile`, label: `Claiming: ${data.claimName}`, available: true });
-		}
-
-		return [
-			{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
-			...campaignEntries,
-			...claimEntries,
-			{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: data.isAdmin }
-		]
-			.filter((m) => m.available)
-			.map((m) => ({ ...m, current: m.key === currentKey }));
-	});
+	// The modes this account can switch between right now — rendered by the root
+	// Header (it's above this layout in the tree), computed from the same page
+	// data/URL this layout already has so it's identical either place.
+	const modes = $derived(computeDashboardModes(page.url.pathname, page.params, data));
 
 	// This mode's tabs. Only pages that actually exist are listed (no dead links);
 	// every listed tab is always reachable, so no per-tab enable flag is needed.
@@ -243,21 +204,6 @@
 			? page.url.pathname === href
 			: page.url.pathname.startsWith(href);
 
-	// The <details> dropdown doesn't auto-close on navigation since this layout
-	// persists across route changes — close it explicitly when a mode is picked.
-	let switcherOpen = $state(false);
-	let switcherEl: HTMLDetailsElement | undefined = $state();
-
-	// <details> has no native "close on outside click" behavior — only clicking
-	// its own <summary> toggles it. Close on any click that lands outside it.
-	$effect(() => {
-		if (!switcherOpen) return;
-		const onClick = (e: MouseEvent) => {
-			if (switcherEl && !switcherEl.contains(e.target as Node)) switcherOpen = false;
-		};
-		document.addEventListener('click', onClick);
-		return () => document.removeEventListener('click', onClick);
-	});
 </script>
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -313,42 +259,9 @@
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
-			<!-- Role switcher: pick which dashboard context you're in. Each mode has its own
-			tab set below, so switching genuinely changes what's available. -->
-			{#if modes.length > 1}
-				<details class="group relative w-fit" bind:open={switcherOpen} bind:this={switcherEl}>
-					<summary
-						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
-					>
-						{modes.find((m) => m.current)?.label ?? modes[0].label}
-						<span class="text-muted transition group-open:rotate-180 leading-none h-2">^</span>
-					</summary>
-					<div class="absolute right-0 z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
-						{#each modes as m (m.key)}
-							<a
-								href={m.href}
-								onclick={() => (switcherOpen = false)}
-								class="block truncate rounded-xl px-3 py-1.5 text-sm transition hover:bg-primary hover:text-on-primary {m.current
-									? 'bg-surface-2 font-semibold text-heading'
-									: 'text-muted'}"
-							>
-								{m.label}
-							</a>
-						{/each}
-						<a
-							href="/logout"
-							data-sveltekit-preload-data="off"
-							data-sveltekit-reload
-							class="block truncate rounded-xl px-3 py-1.5 text-sm text-muted transition hover:bg-primary hover:text-on-primary"
-						>
-							Log out
-						</a>
-					</div>
-				</details>
-			{/if}
 		</div>
 
-		<div class="flex flex-wrap justify-between gap-2 w-full">
+		<div class="flex flex-wrap items-center justify-between gap-2 w-full">
 			<!-- Submit Application: apply mode only, gated on every tab (Profile/Contacts
 			minus website+socials/Team 2+/Documentation) being filled in. -->
 			{#if data.claimName}
@@ -459,9 +372,10 @@
 				{#if data.leaderContext.verified}
 					<a
 						href={data.leaderContext.publicPath}
-						class="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-on-primary transition bg-primary hover:bg-surface-2"
+						target="_blank"
+						class="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition bg-surface hover:bg-primary hover:text-on-primary"
 					>
-						View public page
+						View &#8599;
 					</a>
 				{:else}
 					<span
