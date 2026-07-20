@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import { seatPath } from '$lib/utils/seat';
+	import { formatKenyanPhoneDisplay, normalizeKenyanPhone } from '$lib/utils/phone';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -69,6 +70,16 @@
 			</div>
 		{/if}
 	</div>
+{/snippet}
+
+<!-- A stored 254… number shown as a callable 0700 000 000 (leading zero, no
+country code, two gaps); falls back to a plain label when there's no number. -->
+{#snippet phone(value: string | null, empty: string)}
+	{#if value}
+		<a href="tel:+{normalizeKenyanPhone(value) ?? value.replace(/\D/g, '')}" class="hover:text-primary hover:underline">{formatKenyanPhoneDisplay(value)}</a>
+	{:else}
+		{empty}
+	{/if}
 {/snippet}
 
 <svelte:head>
@@ -274,7 +285,7 @@
 																	{/if}
 																</div>
 																<p class="mt-1 text-xs text-muted">
-																	{member.email ?? 'No email'} · {member.phone ?? 'No phone'}
+																	{member.email ?? 'No email'} · {@render phone(member.phone, 'No phone')}
 																</p>
 																<p class="mt-1 text-xs text-muted">
 																	{member.title ?? 'No role'} · ID: {member.nationalId ?? 'Missing'}
@@ -282,7 +293,7 @@
 																{#if member.nationalIdConflict}
 																	{@const conflict = member.nationalIdConflict}
 																	<p class="mt-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-2 py-1 text-xs font-medium text-red-500">
-																		Same National ID on {conflict.name} ({conflict.email}, {conflict.phone ?? 'no phone'}), user id {conflict.id}.
+																		Same National ID on {conflict.name} ({conflict.email}, {@render phone(conflict.phone, 'no phone')}), user id {conflict.id}.
 																	</p>
 																{/if}
 																<div class="mt-2 grid grid-cols-2 gap-2">
