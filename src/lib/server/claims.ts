@@ -2,7 +2,8 @@
 // leader row's ownership (see the comment on profileClaims in schema.ts) — it
 // makes the claimant an admin manager of the existing profile instead.
 import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { and, count, desc, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNotNull, isNull, or, sql, type SQL } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -252,14 +253,54 @@ export async function requestClaim(subjectUserId: number, claimedBy: number, evi
 	return { ok: true as const };
 }
 
+// The columns the claims table header can sort by. Position/Region aren't here:
+// a claim's seat is derived post-query (held-term vs run priority), so it isn't a
+// sortable/searchable SQL column. `requested` is the default (newest first);
+// `subject` is the claimed leader, `claimant` the applicant.
+export type ClaimSort = 'subject' | 'claimant' | 'requested' | 'outcome';
+
 /** One page of claims, newest first — pending, approved, and rejected — same
  * revertible shape as the verification queue. Returns the total for the pager.
  * Only SUBMITTED claims show here — a claimant still drafting (evidence staged,
- * "Submit Claim" not yet pressed) isn't in the admin's queue yet. */
-export async function listClaims(page: number, pageSize: number): Promise<{ claims: ClaimRow[]; total: number }> {
+ * "Submit Claim" not yet pressed) isn't in the admin's queue yet. Searchable and
+ * sortable across ALL pages: `q` matches the claimed leader and the claimant (name
+ * or URL); sort covers those two plus requested/outcome (Position/Region are
+ * derived, so they aren't sortable here). */
+export async function listClaims(
+	page: number,
+	pageSize: number,
+	opts: { q?: string; sort?: ClaimSort; dir?: 'asc' | 'desc' } = {}
+): Promise<{ claims: ClaimRow[]; total: number }> {
+	// The claimant and the claimed leader are two separate users rows — alias the
+	// leader so both can be selected/searched/sorted in the one paginated query.
+	const claimant = alias(users, 'claimant');
+	const subject = alias(users, 'subject');
+
 	// A decided claim was necessarily submitted at some point (some older rows
 	// predate the evidence.submittedAt field), so outcome set also counts.
 	const submitted = or(sql`${profileClaims.evidence}->>'submittedAt' is not null`, isNotNull(profileClaims.outcome));
+	const q = opts.q?.trim();
+	const search: SQL | undefined = q
+		? or(
+				ilike(subject.firstName, `%${q}%`),
+				ilike(subject.otherNames, `%${q}%`),
+				ilike(subject.slug, `%${q}%`),
+				ilike(claimant.firstName, `%${q}%`),
+				ilike(claimant.otherNames, `%${q}%`)
+			)
+		: undefined;
+	const where = and(submitted, search);
+
+	const sortCol =
+		opts.sort === 'subject'
+			? subject.firstName
+			: opts.sort === 'claimant'
+				? claimant.firstName
+				: opts.sort === 'outcome'
+					? profileClaims.outcome
+					: profileClaims.requestedAt;
+	const orderBy = (opts.dir === 'asc' ? asc : desc)(sortCol);
+
 	const [rows, [{ n: total }]] = await Promise.all([
 		db
 			.select({
@@ -270,26 +311,28 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 				outcome: profileClaims.outcome,
 				notes: profileClaims.notes,
 				deletedAt: profileClaims.deletedAt,
-				claimantFirstName: users.firstName,
-				claimantOtherNames: users.otherNames
+				claimantFirstName: claimant.firstName,
+				claimantOtherNames: claimant.otherNames,
+				subjectFirstName: subject.firstName,
+				subjectOtherNames: subject.otherNames,
+				subjectSlug: subject.slug
 			})
 			.from(profileClaims)
-			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
-			.where(submitted)
-			.orderBy(desc(profileClaims.requestedAt))
+			.innerJoin(claimant, eq(profileClaims.claimedBy, claimant.id))
+			.innerJoin(subject, eq(profileClaims.subjectUserId, subject.id))
+			.where(where)
+			.orderBy(orderBy)
 			.limit(pageSize)
 			.offset((page - 1) * pageSize),
-		db.select({ n: count() }).from(profileClaims).where(submitted)
+		db
+			.select({ n: count() })
+			.from(profileClaims)
+			.innerJoin(claimant, eq(profileClaims.claimedBy, claimant.id))
+			.innerJoin(subject, eq(profileClaims.subjectUserId, subject.id))
+			.where(where)
 	]);
 
 	const subjectIds = rows.map((r) => r.subjectUserId);
-	const subjectRows = subjectIds.length
-		? await db
-				.select({ userId: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug })
-				.from(users)
-				.where(inArray(users.id, subjectIds))
-		: [];
-	const subjectByUserId = new Map(subjectRows.map((r) => [r.userId, r]));
 
 	// The leader's best email on file — prefills the admin "Email the leader" form.
 	// Verified beats sourced (see contacts.source) beats any other live row.
@@ -344,18 +387,17 @@ export async function listClaims(page: number, pageSize: number): Promise<{ clai
 	}
 
 	const claims = rows.map((r) => {
-		const subject = subjectByUserId.get(r.subjectUserId);
 		const seat = seatBySubject.get(r.subjectUserId);
 		return {
 			claimId: r.claimId,
 			subjectUserId: r.subjectUserId,
 			claimedByUserId: r.claimedByUserId,
 			claimantName: fullName({ firstName: r.claimantFirstName, otherNames: r.claimantOtherNames }),
-			subjectName: subject ? fullName(subject) : 'Unknown',
-			subjectSlug: subject?.slug ?? null,
+			subjectName: fullName({ firstName: r.subjectFirstName, otherNames: r.subjectOtherNames }),
+			subjectSlug: r.subjectSlug,
 			positionTitle: seat?.title ?? '',
 			region: seat?.region ?? '',
-			leaderEmail: subject ? (emailByUserId.get(subject.userId) ?? null) : null,
+			leaderEmail: emailByUserId.get(r.subjectUserId) ?? null,
 			requestedAt: r.requestedAt.toISOString(),
 			outcome: r.outcome,
 			notes: r.notes,

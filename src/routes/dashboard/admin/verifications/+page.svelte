@@ -10,6 +10,28 @@
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
 	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 
+	// Search + sort run server-side (across every page), so they live in the URL.
+	// buildHref keeps the current q/sort/dir and overrides only what's passed.
+	function buildHref(overrides: Record<string, string | number | undefined>) {
+		const p = new URLSearchParams();
+		if (data.q) p.set('q', data.q);
+		if (data.sort) p.set('sort', data.sort);
+		if (data.sort) p.set('dir', data.dir);
+		for (const [k, v] of Object.entries(overrides)) {
+			if (v === undefined || v === '') p.delete(k);
+			else p.set(k, String(v));
+		}
+		const s = p.toString();
+		return s ? `?${s}` : '?';
+	}
+	// Clicking a header sorts by it (asc first); clicking the active one flips dir.
+	// Any sort change resets to page 1.
+	function sortHref(key: string) {
+		const dir = data.sort === key && data.dir === 'asc' ? 'desc' : 'asc';
+		return buildHref({ sort: key, dir, page: undefined });
+	}
+	const sortIndicator = (key: string) => (data.sort === key ? (data.dir === 'asc' ? '▲' : '▼') : '↕');
+
 	// Which request has its history/team row expanded — clicking the row toggles
 	// it; the extras (IEBC cert, team sign-offs, request history) are fetched on
 	// demand and cached, so a page full of rows doesn't pay for all of them up front.
@@ -82,6 +104,16 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 	{/if}
 {/snippet}
 
+<!-- A sortable column header: a link that toggles server-side sort on this key. -->
+{#snippet sortableTh(key: string, label: string)}
+	<th class="px-4 py-3 text-sm font-semibold text-heading">
+		<a href={sortHref(key)} class="inline-flex items-center gap-1 hover:text-primary">
+			{label}
+			<span class="text-xs {data.sort === key ? 'text-heading' : 'text-muted'}">{sortIndicator(key)}</span>
+		</a>
+	</th>
+{/snippet}
+
 <svelte:head>
 	<title>Verifications — Admin</title>
 </svelte:head>
@@ -99,16 +131,31 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 		</div>
 	{/if}
 
+	<!-- Server-side search: a plain GET form so it spans every page. Submitting a
+	new query resets to page 1 (no page field carried) but keeps the current sort. -->
+	<form method="get" class="mt-6 flex items-center gap-2">
+		{#if data.sort}<input type="hidden" name="sort" value={data.sort} /><input type="hidden" name="dir" value={data.dir} />{/if}
+		<input
+			type="search"
+			name="q"
+			value={data.q}
+			placeholder="Search name, URL or seat…"
+			class="w-full max-w-xs rounded-full border border-border bg-surface px-4 py-2 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+		/>
+		<button type="submit" class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95">Search</button>
+		{#if data.q}<a href={buildHref({ q: undefined, page: undefined })} class="text-sm text-muted hover:text-heading">Clear</a>{/if}
+	</form>
+
 	{#if data.requests.length > 0}
-		<div class="mt-6 overflow-x-auto rounded-2xl border border-border">
+		<div class="mt-4 overflow-x-auto rounded-2xl border border-border">
 			<table class="w-full min-w-220 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Outcome</th>
+						{@render sortableTh('position', 'Position')}
+						{@render sortableTh('region', 'Region')}
+						{@render sortableTh('user', 'Leader')}
+						{@render sortableTh('requested', 'Requested')}
+						{@render sortableTh('outcome', 'Outcome')}
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Actions</th>
 					</tr>
 				</thead>
@@ -328,8 +375,8 @@ country code, two gaps); falls back to a plain label when there's no number. -->
 				</tbody>
 			</table>
 		</div>
-		<Pagination page={data.page} {totalPages} total={data.total} itemLabel="requests" href={(p) => `?page=${p}`} />
+		<Pagination page={data.page} {totalPages} total={data.total} itemLabel="requests" href={(p) => buildHref({ page: p })} />
 	{:else}
-		<p class="mt-6 text-sm text-muted">No verification requests yet.</p>
+		<p class="mt-6 text-sm text-muted">{data.q ? `No requests match “${data.q}”.` : 'No verification requests yet.'}</p>
 	{/if}
 </div>

@@ -4,18 +4,26 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders, profileClaims, users } from '$lib/server/db/schema';
 import { requireAdmin } from '$lib/server/dashboard';
-import { listClaims, reviewClaim, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
+import { listClaims, reviewClaim, stageClaimEvidence, type ClaimEvidence, type ClaimSort } from '$lib/server/claims';
 import { sendEmail } from '$lib/server/email';
 import { fullName } from '$lib/server/leader';
 import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
 
+const SORTS = new Set<ClaimSort>(['subject', 'claimant', 'requested', 'outcome']);
+
+// Search (`q`) and sort (`sort`/`dir`) run server-side so they span every page.
 export const load: PageServerLoad = async (event) => {
 	await requireAdmin(event);
 	const pageSize = await getPageSize();
-	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
-	const { claims, total } = await listClaims(page, pageSize);
-	return { claims, total, page, pageSize };
+	const params = event.url.searchParams;
+	const page = Math.max(1, Number(params.get('page') ?? 1));
+	const q = params.get('q') ?? '';
+	const sortParam = params.get('sort') ?? '';
+	const sort = SORTS.has(sortParam as ClaimSort) ? (sortParam as ClaimSort) : undefined;
+	const dir = params.get('dir') === 'asc' ? 'asc' : 'desc';
+	const { claims, total } = await listClaims(page, pageSize, { q, sort, dir });
+	return { claims, total, page, pageSize, q, sort: sort ?? null, dir };
 };
 
 export const actions: Actions = {

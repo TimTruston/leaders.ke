@@ -64,8 +64,41 @@ export async function requestVerification(campaignId: number, requestedBy: numbe
 
 export type VerificationPage = { requests: VerificationRow[]; total: number };
 
-/** Every verification request ever made, newest first — pending, approved, rejected. */
-export async function listVerifications(page: number, pageSize: number): Promise<VerificationPage> {
+// The columns the table header can sort by, mapped to their SQL expressions.
+// `requested` is the default (newest first) — same as the old fixed order.
+const VERIFICATION_SORTS = {
+	position: positions.title,
+	region: positions.region,
+	user: users.firstName,
+	requested: verifications.requestedAt,
+	outcome: verifications.outcome
+} as const;
+export type VerificationSort = keyof typeof VERIFICATION_SORTS;
+
+/** Every verification request ever made — searchable and sortable across ALL
+ * pages (the WHERE/ORDER BY run in SQL, before LIMIT/OFFSET, so paging is
+ * correct). `q` matches the person, their slug, and the seat; default order is
+ * newest-requested-first. */
+export async function listVerifications(
+	page: number,
+	pageSize: number,
+	opts: { q?: string; sort?: VerificationSort; dir?: 'asc' | 'desc' } = {}
+): Promise<VerificationPage> {
+	const q = opts.q?.trim();
+	// One ILIKE across the person, their URL, and the seat — the columns the row shows.
+	const where: SQL | undefined = q
+		? or(
+				ilike(users.firstName, `%${q}%`),
+				ilike(users.otherNames, `%${q}%`),
+				ilike(users.slug, `%${q}%`),
+				ilike(positions.title, `%${q}%`),
+				ilike(positions.region, `%${q}%`)
+			)
+		: undefined;
+
+	const sortCol = VERIFICATION_SORTS[opts.sort ?? 'requested'] ?? verifications.requestedAt;
+	const orderBy = (opts.dir === 'asc' ? asc : desc)(sortCol);
+
 	const [rows, [{ total }]] = await Promise.all([
 		db
 			.select({
@@ -86,10 +119,17 @@ export async function listVerifications(page: number, pageSize: number): Promise
 			.innerJoin(campaigns, eq(verifications.campaignId, campaigns.id))
 			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
-			.orderBy(desc(verifications.requestedAt))
+			.where(where)
+			.orderBy(orderBy)
 			.limit(pageSize)
 			.offset((page - 1) * pageSize),
-		db.select({ total: count() }).from(verifications)
+		db
+			.select({ total: count() })
+			.from(verifications)
+			.innerJoin(campaigns, eq(verifications.campaignId, campaigns.id))
+			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+			.innerJoin(positions, eq(campaigns.positionId, positions.id))
+			.where(where)
 	]);
 
 	return {
