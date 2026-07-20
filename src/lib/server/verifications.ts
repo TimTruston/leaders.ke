@@ -7,7 +7,6 @@ import { db } from '$lib/server/db';
 import { campaigns, contacts, managers, positions, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { findNationalIdConflict, fullName, isSlugAvailable } from '$lib/server/leader';
-import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { notifyUser } from '$lib/server/notifications';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 
@@ -99,25 +98,22 @@ export async function listVerifications(page: number, pageSize: number): Promise
 	};
 }
 
-export type VerificationPreview = NonNullable<Awaited<ReturnType<typeof getVerificationPreview>>>;
+export type VerificationExtras = NonNullable<Awaited<ReturnType<typeof getVerificationExtras>>>;
 
 /**
- * Everything an admin needs to review one request: the same public-page data the
- * profile will render once verified (LeaderProfile in `preview` mode), plus the
- * review-only extras (IEBC cert, team sign-offs, request history) and the decision
- * request itself. An application writes directly onto the real (unverified) profile
- * — no staging — so this is simply the live profile, admin-bypassed past the gate.
+ * The review-only extras for one request, shown inline on the admin verifications
+ * table when a row expands: IEBC cert, team sign-offs, request history. The
+ * profile/campaign themselves are previewed on their own pages (/[slug],
+ * /[slug]/[year]) now, not duplicated here.
  */
-export async function getVerificationPreview(verificationId: number) {
+export async function getVerificationExtras(verificationId: number) {
 	const [request] = await db.select().from(verifications).where(eq(verifications.id, verificationId));
 	if (!request) return null;
 
 	const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, request.campaignId));
 	if (!campaign) return null;
 
-	const [[profileUser], [applicant], teamRows, historyRows] = await Promise.all([
-		db.select().from(users).where(eq(users.id, campaign.subjectUserId)),
-		db.select().from(users).where(eq(users.id, request.requestedBy)),
+	const [teamRows, historyRows] = await Promise.all([
 		db
 			.select({
 				userId: managers.userId,
@@ -149,10 +145,6 @@ export async function getVerificationPreview(verificationId: number) {
 			.where(eq(verifications.campaignId, request.campaignId))
 			.orderBy(desc(verifications.requestedAt))
 	]);
-	if (!profileUser.slug) return null; // every application gets a slug on first save
-
-	const data = await loadPublicProfileData(profileUser.slug, { isAdmin: true });
-	if (!data) return null;
 
 	// Each team member's own phone/email (their account, not the profile subject's) —
 	// one grouped query across every manager, keyed by userId.
@@ -171,15 +163,6 @@ export async function getVerificationPreview(verificationId: number) {
 	}
 
 	return {
-		request: {
-			id: request.id,
-			requestedAt: request.requestedAt.toISOString(),
-			outcome: request.outcome,
-			notes: request.notes,
-			reviewedAt: request.reviewedAt ? request.reviewedAt.toISOString() : null,
-			requestedByName: applicant ? fullName(applicant) : null
-		},
-		data,
 		iebcCertificateUrl: campaign.iebcCertificateUrl,
 		team: await Promise.all(
 			teamRows.map(async (t) => {
