@@ -93,13 +93,10 @@
 			<table class="w-full min-w-220 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Cmpn</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">User</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">User</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Verified at</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Outcome</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Actions</th>
 					</tr>
@@ -110,27 +107,6 @@
 							class="cursor-pointer border-t border-border transition hover:bg-surface-2"
 							onclick={() => toggleExpand(req.verificationId)}
 						>
-							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.campaignId}</td>
-							<td class="px-4 py-3 text-sm tabular-nums text-muted">{req.userId}</td>
-							<td class="px-4 py-3 text-xs">
-								<div class="flex items-center gap-1.5">
-									<span class="text-muted transition {expandedId === req.verificationId ? 'rotate-90' : ''}">›</span>
-									<span class="font-medium text-heading">{req.firstName} {req.otherNames}</span>
-								</div>
-								{#if req.slug}
-									<a
-										href="/{req.slug}"
-										target="_blank"
-										rel="noopener"
-										onclick={(e) => e.stopPropagation()}
-										class="hover:text-primary hover:underline"
-									>
-										{req.slug}
-									</a>
-								{:else}
-									—
-								{/if}
-							</td>
 							<td class="px-4 py-3 text-xs text-muted">{req.positionTitle}</td>
 							<td class="px-4 py-3 text-xs text-muted">
 								{#if seatPath(req.positionTitle, req.region)}
@@ -147,11 +123,16 @@
 									{req.region}
 								{/if}
 							</td>
-
-							<td class="px-4 py-3 text-xs text-muted">{dateFmt.format(new Date(req.requestedAt))}</td>
-							<td class="px-4 py-3 text-xs text-muted">
-								{req.verifiedAt ? dateFmt.format(new Date(req.verifiedAt)) : '—'}
+							<td class="px-4 py-3 text-xs">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-1.5">
+										<span class="text-muted transition {expandedId === req.verificationId ? 'rotate-90' : ''}">›</span>
+										<span class="font-medium text-heading">{req.firstName} {req.otherNames}</span>
+									</div>
+									<span class="font-medium">{req.userId}</span>
+								</div>
 							</td>
+							<td class="px-4 py-3 text-xs text-muted">{dateFmt.format(new Date(req.requestedAt))}</td>
 							<td class="px-4 py-3 text-xs">
 								<span
 									class="rounded-full px-2 py-0.5 text-xs capitalize {req.outcome === 'approved'
@@ -164,16 +145,24 @@
 								</span>
 							</td>
 							<td class="px-4 py-3 text-xs" onclick={(e) => e.stopPropagation()}>
-								{#if req.slug}
+								<div class="flex items-center justify-between">
 									<a
 										href="/{req.slug}"
 										target="_blank"
 										rel="noopener"
 										class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
 									>
-										Preview
+										Profile
 									</a>
-								{/if}
+									<a
+										href="/{req.slug}/2027"
+										target="_blank"
+										rel="noopener"
+										class="rounded-full border border-border px-2 py-0.5 text-xs text-heading transition hover:bg-surface-2"
+									>
+										Campaign {req.campaignId}
+									</a>
+								</div>
 							</td>
 						</tr>
 						{#if req.outcome === 'rejected' && req.notes}
@@ -187,12 +176,56 @@
 						{#if expandedId === req.verificationId}
 							<tr class="border-t border-border bg-surface-2" onclick={(e) => e.stopPropagation()}>
 								<td colspan="10" class="px-4 py-4">
-									<div>
-										{#if loadingId === req.verificationId}
+									{#if loadingId === req.verificationId}
 										<p class="text-sm text-muted">Loading…</p>
 									{:else if extrasCache[req.verificationId]}
+										<!-- Decision controls, above the claim history table. -->
+										<div class="flex items-center">
+											<form
+												method="post"
+												action="?/review"
+												class="flex-1 flex flex-wrap items-center gap-2"
+												use:enhance={({ formData, cancel }) => {
+													if (
+														formData.get('outcome') === 'rejected' &&
+														req.outcome === 'approved' &&
+														!confirm(`Revert ${req.firstName} ${req.otherNames}'s verification? Their profile goes back off the public pages immediately.`)
+													) {
+														cancel();
+													}
+												}}
+											>
+												<input type="hidden" name="verificationId" value={req.verificationId} />
+												{#if req.outcome !== 'approved'}
+													<button
+														type="submit"
+														name="outcome"
+														value="approved"
+														class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95"
+													>
+														Approve
+													</button>
+												{/if}
+												<input
+													type="text"
+													name="notes"
+													placeholder="Reason for {req.outcome === 'approved' ? 'reverting' : 'rejection'} (shown to the applicant)"
+													class="min-w-64 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+												/>
+												{#if req.outcome !== 'rejected'}
+													<button
+														type="submit"
+														name="outcome"
+														value="rejected"
+														class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
+													>
+														{req.outcome === 'approved' ? 'Revert' : 'Reject'}
+													</button>
+												{/if}
+											</form>
+										</div>
 										{@const extras = extrasCache[req.verificationId]}
-										<div class="grid gap-4 lg:grid-cols-2">
+										<div class="mt-4 grid gap-4 lg:grid-cols-2">
 											<div>
 												<h3 class="text-sm font-semibold text-heading">IEBC certificate</h3>
 												{#if extras.iebcCertificateUrl}
@@ -217,52 +250,6 @@
 														</thead>
 														<tbody>
 															<!-- The decision row: always first, live-editable. -->
-															<tr class="border-t border-border bg-surface-2">
-																<td colspan="5" class="px-3 py-2">
-																	<form
-																		method="post"
-																		action="?/review"
-																		class="flex flex-wrap items-center gap-2"
-																		use:enhance={({ formData, cancel }) => {
-																			if (
-																				formData.get('outcome') === 'rejected' &&
-																				req.outcome === 'approved' &&
-																				!confirm(`Revert ${req.firstName} ${req.otherNames}'s verification? Their profile goes back off the public pages immediately.`)
-																			) {
-																				cancel();
-																			}
-																		}}
-																	>
-																		<input type="hidden" name="verificationId" value={req.verificationId} />
-																		{#if req.outcome !== 'approved'}
-																			<button
-																				type="submit"
-																				name="outcome"
-																				value="approved"
-																				class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95"
-																			>
-																				Approve
-																			</button>
-																		{/if}
-																		<input
-																			type="text"
-																			name="notes"
-																			placeholder="Reason for {req.outcome === 'approved' ? 'reverting' : 'rejection'} (shown to the applicant)"
-																			class="min-w-64 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-																		/>
-																		{#if req.outcome !== 'rejected'}
-																			<button
-																				type="submit"
-																				name="outcome"
-																				value="rejected"
-																				class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2"
-																			>
-																				{req.outcome === 'approved' ? 'Revert' : 'Reject'}
-																			</button>
-																		{/if}
-																	</form>
-																</td>
-															</tr>
 															{#each extras.requestHistory as h (h.id)}
 																<tr class="border-t border-border">
 																	<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
@@ -319,7 +306,6 @@
 											</div>
 										</div>
 									{/if}
-									</div>
 								</td>
 							</tr>
 						{/if}

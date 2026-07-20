@@ -97,8 +97,7 @@
 			<table class="w-full min-w-180 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader ID</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Profile</th>
+						<th class="px-4 py-3 text-sm font-semibold text-heading">Leader</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Claimant</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Requested</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Outcome</th>
@@ -111,14 +110,21 @@
 							class="cursor-pointer border-t border-border transition hover:bg-surface-2"
 							onclick={() => toggleExpand(claim.claimId)}
 						>
-							<td class="px-4 py-3 text-sm tabular-nums text-muted">{claim.subjectUserId}</td>
 							<td class="px-4 py-3 text-sm text-heading">
-								<div class="flex items-center gap-1.5">
-									<span class="text-muted transition {expandedId === claim.claimId ? 'rotate-90' : ''}">›</span>
-									<span class="font-medium">{claim.subjectName}</span>
+								<div class="flex items-center justify-between">
+									<span class="flex items-center gap-1.5">
+										<span class="text-muted transition {expandedId === claim.claimId ? 'rotate-90' : ''}">›</span>
+										<span class="font-medium">{claim.subjectName}</span>
+									</span>
+									<span class="font-medium">{claim.subjectUserId}</span>
 								</div>
 							</td>
-							<td class="px-4 py-3 text-sm text-muted">{claim.claimantName}</td>
+							<td class="px-4 py-3 text-sm text-muted">
+								<div class="flex items-center justify-between">
+									<span class="font-medium">{claim.claimantName}</span>
+									<span class="font-medium">{claim.claimedByUserId}</span>
+								</div>
+							</td>
 							<td class="px-4 py-3 text-sm text-muted">{dateFmt.format(new Date(claim.requestedAt))}</td>
 							<td class="px-4 py-3 text-sm">
 								<span
