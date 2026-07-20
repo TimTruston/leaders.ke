@@ -68,7 +68,7 @@
 				<QuickSearch
 					include={['Executive', 'Parliament', 'MCAs']}
 					expand={false}
-					placeholder={data.left?.name ?? 'Find leader A…'}
+					placeholder={'Type a name and select…'}
 					onPick={(item) => {
 						a = item.path;
 						maybeCompare();
@@ -82,7 +82,7 @@
 				<QuickSearch
 					include={['Executive', 'Parliament', 'MCAs']}
 					expand={false}
-					placeholder={data.right?.name ?? 'Find leader B…'}
+					placeholder={'Type a name and select…'}
 					onPick={(item) => {
 						b = item.path;
 						maybeCompare();

@@ -248,13 +248,25 @@ export async function listInvitesForEmail(
 		invites: await Promise.all(
 			rows.map(async (r) => {
 				const term = await activeTermForPerson(r.subjectUserId);
+				// A pure aspirant (no leaders row yet) has only a run — fall back to its
+				// seat so the invite still shows a position/region instead of blanks.
+				let positionTitle = term?.positions.title ?? '';
+				let region = term?.positions.region ?? '';
+				if (!term) {
+					const run = await getRunCampaign(r.subjectUserId);
+					if (run) {
+						const [position] = await db.select({ title: positions.title, region: positions.region }).from(positions).where(eq(positions.id, run.positionId));
+						positionTitle = position?.title ?? '';
+						region = position?.region ?? '';
+					}
+				}
 				return {
 					token: r.token,
 					role: r.role,
 					leaderName: fullName(r),
 					leaderPath: r.slug ? `/${r.slug}` : '/presidents',
-					positionTitle: term?.positions.title ?? '',
-					region: term?.positions.region ?? '',
+					positionTitle,
+					region,
 					createdAt: r.createdAt.toISOString()
 				};
 			})
