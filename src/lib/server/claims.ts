@@ -75,13 +75,11 @@ export async function resolveClaimRequest(event: RequestEvent) {
 	return { domainUser, slug, resolved, claim: claim ?? null };
 }
 
-/** Resubmitting after a rejection reopens the same claim row (clearing its
- * decision) instead of minting a new one — the claimant edits in place. */
-export async function reopenRejectedClaim(claimId: number) {
-	await db
-		.update(profileClaims)
-		.set({ outcome: null, notes: null, reviewedBy: null, reviewedAt: null })
-		.where(eq(profileClaims.id, claimId));
+/** Resubmitting after a rejection starts a brand-new claim row carrying over the
+ * edited evidence — the rejected row stays untouched as permanent history
+ * instead of being overwritten. */
+export async function resubmitClaim(subjectUserId: number, claimedBy: number, evidence: ClaimEvidence) {
+	await db.insert(profileClaims).values({ subjectUserId, claimedBy, evidence });
 }
 
 /** Merges one tab's values into the claimant's pending claim, creating the claim
@@ -219,9 +217,12 @@ export async function findClaimByLeaderToken(token: string) {
  * just stops counting as the claimant's live claim. An approved claim can't be
  * dropped this way (deleting it wouldn't undo the manager access it granted). */
 export async function deletePendingClaim(subjectUserId: number, claimedBy: number) {
-	await db
-		.update(profileClaims)
-		.set({ deletedAt: new Date() })
+	// Resubmitting after a rejection mints a new row each time, so more than one
+	// past-rejected row can exist for this pair — only the CURRENT (latest) one
+	// is "the claimant's live claim"; older ones are already permanent history.
+	const [current] = await db
+		.select({ id: profileClaims.id })
+		.from(profileClaims)
 		.where(
 			and(
 				eq(profileClaims.subjectUserId, subjectUserId),
@@ -229,7 +230,12 @@ export async function deletePendingClaim(subjectUserId: number, claimedBy: numbe
 				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
 				isNull(profileClaims.deletedAt)
 			)
-		);
+		)
+		.orderBy(desc(profileClaims.requestedAt))
+		.limit(1);
+	if (!current) return;
+
+	await db.update(profileClaims).set({ deletedAt: new Date() }).where(eq(profileClaims.id, current.id));
 }
 
 /** Submits a claim. Fails if this user already has one pending for this leader. */

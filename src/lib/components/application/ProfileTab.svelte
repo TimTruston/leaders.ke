@@ -21,13 +21,18 @@
 		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
 		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
-		application?: { profile: { missing: string[] }; documentation?: { missing: string[] } } | null;
+		application?: { profile: { complete: boolean; missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
 	let {
 		data,
 		form,
 		claimAttestation = false
 	}: { data: TabData; form: any; claimAttestation?: boolean } = $props();
+
+	// Claim family: auto-advance to Contacts only on the FIRST save (the one that
+	// unlocks it). Captured at load so re-editing an already-complete claim (e.g.
+	// after a rejection) stays put on Profile instead of being bounced away.
+	const advanceOnSave = claimAttestation && !data.application?.profile.complete;
 
 	let saving = $state(false);
 	// Claim family only: a false-claim attestation gates the Save button — checked
@@ -223,10 +228,11 @@
 					if (stagedPhotoUrl) URL.revokeObjectURL(stagedPhotoUrl);
 					stagedPhotoUrl = null;
 					if (photoInput) photoInput.value = '';
-					// Claim family: a first save unlocks Contacts/Signoff (see the layout's
+					// Claim family: the first save unlocks Contacts/Signoff (see the layout's
 					// tab gating) — move the claimant there instead of leaving them on a
-					// tab whose only job just finished.
-					if (claimAttestation) {
+					// tab whose only job just finished. A later re-edit (e.g. after a
+					// rejection) stays put so they can keep tweaking the profile.
+					if (advanceOnSave) {
 						await goto(page.url.pathname.replace(/\/profile$/, '/contacts'));
 						return;
 					}

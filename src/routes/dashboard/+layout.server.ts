@@ -281,7 +281,10 @@ export const load: LayoutServerLoad = async (event) => {
 
 	// Every claim the viewer has in flight — the switcher lists them so a claim
 	// stays reachable after navigating away. A rejected one stays listed too,
-	// since it's still open for editing/resubmission.
+	// since it's still open for editing/resubmission. Resubmitting mints a new
+	// row per attempt, so a subject can have several live rows here — collapse to
+	// ONE entry per profile (newest first, preferring a still-pending row over a
+	// rejected one) so the switcher's keyed-by-slug list has no duplicate keys.
 	const pendingClaimRows = await db
 		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames, outcome: profileClaims.outcome })
 		.from(profileClaims)
@@ -292,10 +295,19 @@ export const load: LayoutServerLoad = async (event) => {
 				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
 				isNull(profileClaims.deletedAt)
 			)
-		);
-	const pendingClaims = pendingClaimRows
-		.filter((r) => r.slug)
-		.map((r) => ({ slug: r.slug as string, name: fullName(r), outcome: r.outcome }));
+		)
+		.orderBy(desc(profileClaims.requestedAt));
+	const pendingBySlug = new Map<string, { slug: string; name: string; outcome: 'approved' | 'rejected' | null }>();
+	for (const r of pendingClaimRows) {
+		if (!r.slug) continue;
+		const existing = pendingBySlug.get(r.slug);
+		// A pending row wins over a rejected one for the same profile; otherwise the
+		// first (newest) row seen stays.
+		if (!existing || (existing.outcome === 'rejected' && r.outcome === null)) {
+			pendingBySlug.set(r.slug, { slug: r.slug, name: fullName(r), outcome: r.outcome });
+		}
+	}
+	const pendingClaims = [...pendingBySlug.values()];
 
 	return {
 		firstName: domainUser.firstName,

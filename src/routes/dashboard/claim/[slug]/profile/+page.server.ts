@@ -5,7 +5,7 @@ import { fail } from '@sveltejs/kit';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { parties, partyMemberships, positions } from '$lib/server/db/schema';
-import { deletePendingClaim, reopenRejectedClaim, resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
+import { deletePendingClaim, resolveClaimRequest, resubmitClaim, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
 import { redirectWithFlash } from '$lib/server/flash';
 import { saveLeaderDocument } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
@@ -104,14 +104,18 @@ export const actions: Actions = {
 		const nationalId = (claim?.evidence as ClaimEvidence | null)?.signoff?.nationalId;
 		if (!nationalId) return fail(400, { claimError: 'Complete the Signoff tab before submitting.' });
 
-		// Re-submitting after a rejection reopens the same claim (clears its decision)
-		// instead of starting a new one.
-		if (claim && claim.outcome === 'rejected') await reopenRejectedClaim(claim.id);
+		const evidence: ClaimEvidence = { ...(claim?.evidence as ClaimEvidence | null), nationalId, submittedAt: new Date().toISOString() };
 
-		await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
-			nationalId,
-			submittedAt: new Date().toISOString()
-		});
+		if (claim && claim.outcome === 'rejected') {
+			// Re-submitting after a rejection starts a fresh claim row — the rejected
+			// one stays untouched as history instead of being edited in place.
+			await resubmitClaim(resolved.row.users.id, domainUser.id, evidence);
+		} else {
+			await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
+				nationalId,
+				submittedAt: new Date().toISOString()
+			});
+		}
 
 		redirectWithFlash(
 			event.cookies,
