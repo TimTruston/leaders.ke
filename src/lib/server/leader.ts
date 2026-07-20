@@ -334,18 +334,19 @@ export async function resolveCurrentTerm(slug: string) {
 }
 
 /** All verified leaders (joined to person + seat) for one position/region pair —
- * public seat-hub pages only ever show verified profiles. */
+ * public seat-hub pages only ever show verified profiles. Resolves the seat first
+ * (positions is small and mostly static) so the leaders query is scoped to that
+ * ONE seat's positionId in SQL, instead of scanning every leader nationwide. */
 export async function listLeadersForSeat(position: string, region: string) {
-	const rows = await db
+	const positionRow = await findPositionByPath(position, region);
+	if (!positionRow) return [];
+
+	return db
 		.select()
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
-
-	return rows.filter(
-		(r) => positionSlug(r.positions.title) === position && slugify(r.positions.region) === region
-	);
+		.where(and(eq(leaders.positionId, positionRow.id), isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
 }
 
 /**
