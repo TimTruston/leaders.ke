@@ -10,7 +10,24 @@ import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, ownVerifiedContacts, requireDashboardUser } from '$lib/server/dashboard';
+import { PLATFORMS } from '$lib/components/contact/socials';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
+
+/** The client stages each social entry as a bare handle (ContactsTab.svelte's
+ * handleSocialInput strips a pasted full URL down to one) — reconstruct the full
+ * URL here so ContactLinks.svelte (which uses the stored value as an href
+ * directly, no prefix logic of its own) actually links somewhere real. */
+function buildSocialsRecord(entries: { kind: string; value: string }[], website: string): Record<string, string> {
+	const socials: Record<string, string> = {};
+	for (const s of entries) {
+		const value = s.value?.trim();
+		if (!value) continue;
+		const platform = PLATFORMS.find((p) => p.kind === s.kind);
+		socials[s.kind] = platform ? `https://${platform.prefix}${value}` : value;
+	}
+	if (website) socials.website = /^https?:\/\//i.test(website) ? website : `https://${website}`;
+	return socials;
+}
 
 // The subject is the leader profile being edited — a distinct (phantom) user from
 // the signed-in account, so this is the campaign's PUBLIC contact info, not the
@@ -68,9 +85,7 @@ export async function saveContactsTab(event: RequestEvent) {
 		return fail(400, { error: 'Could not read the social links.' });
 	}
 
-	const socials: Record<string, string> = {};
-	for (const s of socialEntries) if (s.value?.trim()) socials[s.kind] = s.value.trim();
-	if (website) socials.website = website;
+	const socials = buildSocialsRecord(socialEntries, website);
 
 	await db.update(users).set({ address: address || null, socials }).where(eq(users.id, subject.id));
 
@@ -166,7 +181,8 @@ export async function saveClaimContactsTab(event: RequestEvent) {
 
 	const form = await event.request.formData();
 	const address = String(form.get('address') ?? '').trim();
-	const website = String(form.get('website') ?? '').trim();
+	const websiteRaw = String(form.get('website') ?? '').trim();
+	const website = websiteRaw && !/^https?:\/\//i.test(websiteRaw) ? `https://${websiteRaw}` : websiteRaw;
 	const email = String(form.get('email') ?? '').trim().toLowerCase();
 	if (email && !email.includes('@')) return fail(400, { error: 'Enter a valid email address.' });
 
@@ -186,7 +202,12 @@ export async function saveClaimContactsTab(event: RequestEvent) {
 		return fail(400, { error: 'Could not read the social links.' });
 	}
 	const socials: Record<string, string> = {};
-	for (const s of socialEntries) if (s.value?.trim()) socials[s.kind] = s.value.trim();
+	for (const s of socialEntries) {
+		const value = s.value?.trim();
+		if (!value) continue;
+		const platform = PLATFORMS.find((p) => p.kind === s.kind);
+		socials[s.kind] = platform ? `https://${platform.prefix}${value}` : value;
+	}
 
 	await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
 		contacts: {

@@ -4,11 +4,12 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { and, count, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, leaders, managers, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ACTIVE_CYCLE, findNationalIdConflict, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
+import { loadPublicProfileData, type PublicProfileData } from '$lib/server/publicProfile';
 import { signoffComplete } from '$lib/utils/campaignRoles';
 
 /** What a claimant stages tab by tab under /dashboard/claim/[slug]/* — held in
@@ -469,5 +470,100 @@ export async function getClaimExtras(claimId: number) {
 			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
 			reviewerName: h.reviewerFirstName ? `${h.reviewerFirstName} ${h.reviewerOtherNames}` : null
 		}))
+	};
+}
+
+/** Overlays a claim's staged evidence onto the profile's real (live) data — what
+ * the profile will look like once this claim is approved. Only fields a claim can
+ * actually stage move; everything else (experience, delivery, followers…) is real. */
+function overlayClaimEvidence(data: PublicProfileData, evidence: ClaimEvidence): PublicProfileData {
+	const p = evidence.profile;
+	const c = evidence.contacts;
+	const photoUrl = evidence.documentation?.photoUrl;
+
+	const contactsOverlay = data.contacts.filter((row) => !c || !['sms', 'whatsapp', 'email'].includes(row.channel));
+	if (c) {
+		if (c.sms) contactsOverlay.push({ channel: 'sms', value: c.sms, verified: !!c.smsVerified });
+		if (c.whatsapp) contactsOverlay.push({ channel: 'whatsapp', value: c.whatsapp, verified: !!c.whatsappVerified });
+		if (c.email) contactsOverlay.push({ channel: 'email', value: c.email, verified: !!c.emailVerified });
+	}
+
+	return {
+		...data,
+		leader: {
+			...data.leader,
+			name: p ? fullName({ firstName: p.firstName, otherNames: p.otherNames }) : data.leader.name,
+			bio: p?.bio ?? data.leader.bio,
+			photoUrl: photoUrl ?? data.leader.photoUrl,
+			address: c?.address || data.leader.address,
+			socials: c ? { ...data.leader.socials, ...c.socials, ...(c.website ? { website: c.website } : {}) } : data.leader.socials
+		},
+		contacts: contactsOverlay
+	};
+}
+
+export type ClaimApprovalPreview = NonNullable<Awaited<ReturnType<typeof getClaimApprovalPreview>>>;
+
+/**
+ * How this profile will look once `claimId` is approved: the real live data
+ * (admin-bypassed past the verified gate) with the claim's staged edits
+ * overlaid on top. Scoped by BOTH the slug and the claimId — two different
+ * people can each have their own live claim on the same profile (profileClaims'
+ * unique index is (subjectUserId, claimedBy), not subjectUserId alone), so the
+ * claimId is what disambiguates "which one" when there's more than one.
+ * Viewable by an admin, the claim's own claimant, or an active manager of the
+ * profile; null otherwise (or if the claimId doesn't actually belong to this slug).
+ */
+export async function getClaimApprovalPreview(slug: string, claimId: number, opts: { viewerId?: number; isAdmin?: boolean }) {
+	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
+	if (!claim) return null;
+
+	const [subject] = await db.select({ slug: users.slug }).from(users).where(eq(users.id, claim.subjectUserId));
+	if (!subject?.slug || subject.slug !== slug) return null;
+
+	const canPreview =
+		!!opts.isAdmin ||
+		opts.viewerId === claim.claimedBy ||
+		(opts.viewerId
+			? !!(
+					await db
+						.select({ id: managers.id })
+						.from(managers)
+						.where(and(eq(managers.userId, opts.viewerId), eq(managers.subjectUserId, claim.subjectUserId), isNull(managers.deletedAt)))
+				)[0]
+			: false);
+	if (!canPreview) return null;
+
+	// Admin-bypassed past the verified gate — a pending claim's own profile might
+	// itself still be unverified (e.g. claiming an aspirant), and the previewer
+	// here is already authorized by the check above regardless.
+	const liveData = await loadPublicProfileData(slug, { isAdmin: true });
+	if (!liveData) return null;
+
+	const evidence = (claim.evidence as ClaimEvidence | null) ?? {};
+	const data = overlayClaimEvidence(liveData, evidence);
+
+	// The person's active run's IEBC cert (staged replacement takes precedence).
+	const [run] = await db
+		.select({ iebcCertificateUrl: campaigns.iebcCertificateUrl })
+		.from(campaigns)
+		.where(eq(campaigns.id, liveData.leadCampaignId));
+	const iebcCertificateUrl = evidence.documentation?.iebcCertificateUrl ?? run?.iebcCertificateUrl ?? null;
+
+	// Overlay the staged party name, if the claim changes it.
+	if (evidence.profile?.partyId !== undefined) {
+		const [party] = evidence.profile.partyId
+			? await db.select({ name: parties.name, abbreviation: parties.abbreviation }).from(parties).where(eq(parties.id, evidence.profile.partyId))
+			: [];
+		data.leader.party = party ? `${party.name}${party.abbreviation ? ` (${party.abbreviation})` : ''}` : null;
+	}
+
+	const [claimant] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, claim.claimedBy));
+
+	return {
+		data,
+		iebcCertificateUrl,
+		outcome: claim.outcome,
+		claimantName: claimant ? fullName(claimant) : 'Unknown'
 	};
 }

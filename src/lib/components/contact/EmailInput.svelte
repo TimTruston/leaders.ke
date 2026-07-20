@@ -70,7 +70,7 @@
 		{:else if verifiable && value && isVerifiedNow}
 			<span class="grid place-items-center px-4 py-0.5 text-sm text-primary rounded-r-xl text-nowrap" >✓ Verified</span>
 		{:else if verifiable && value}
-			<a href={verifyHref} data-sveltekit-preload-data="off" class="grid place-items-center py-0.5 text-sm text-primary">Verify</a>
+			<a href={verifyHref} data-sveltekit-preload-data="off" class="grid place-items-center py-0.5{ value === original && ' pr-3'} text-sm text-primary">Verify</a>
 			{#if value !== original}
 				<span class="grid place-items-center px-1 py-0.5 text-sm text-on-primary" >·</span>
 				<button type="button" onclick={() => value = original} class="grid place-items-center pr-3 py-0.5 text-sm text-primary rounded-r-xl">Reset</button>

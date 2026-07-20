@@ -1,0 +1,20 @@
+<script lang="ts">
+	import LeaderProfile from '$lib/components/LeaderProfile.svelte';
+	import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
+	const p = $derived(data.preview);
+</script>
+
+<svelte:head>
+	<title>{p.data.leader.name} — claim preview | leaders.ke</title>
+</svelte:head>
+
+<div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6">
+	<div class="rounded-2xl border border-primary bg-primary-soft px-4 py-3 text-sm font-medium text-on-primary">
+		Claim preview: how this profile looks with <strong>{p.claimantName}</strong>'s staged changes applied,
+		{p.outcome === 'approved' ? 'as approved.' : p.outcome === 'rejected' ? 'had it not been rejected.' : 'once approved.'}
+	</div>
+</div>
+
+<LeaderProfile data={p.data} preview />
