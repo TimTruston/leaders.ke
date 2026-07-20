@@ -61,11 +61,13 @@ export const load: LayoutServerLoad = async (event) => {
 	let ctx: Awaited<ReturnType<typeof getRouteLeaderContext>> = null;
 	let claimName: string | null = null;
 	let claimSubjectUserId: number | null = null;
+	let claimSubjectPhotoUrl: string | null = null;
 	if (family === 'claim') {
 		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
 		if (!resolved || (!resolved.currentTerm?.leaders.verifiedAt && !resolved.activeRun)) redirect(302, '/dashboard');
 		claimName = fullName(resolved.row.users);
 		claimSubjectUserId = resolved.row.users.id;
+		claimSubjectPhotoUrl = resolved.row.users.photoUrl;
 	} else {
 		// apply/[id] and [slug] resolve by their URL param (access-checked);
 		// citizen pages fall back to the viewer's own/first-managed context.
@@ -116,8 +118,11 @@ export const load: LayoutServerLoad = async (event) => {
 			// A claim confirms identity only — no campaign or team requirement.
 			campaign: { complete: true, missing: [] },
 			team: { complete: true, missing: [] },
+			// A claim's own staged photo counts, but so does the real profile's existing
+			// photo — the claim form preloads and shows that one until overridden, so it
+			// shouldn't read as "missing" when nothing's been staged yet.
 			documentation: toTab([
-				[!ev.documentation?.photoUrl, 'Photo']
+				[!ev.documentation?.photoUrl && !claimSubjectPhotoUrl, 'Photo']
 			]),
 			signoff: toTab([
 				[!ev.signoff?.myRole, 'Your role'],
