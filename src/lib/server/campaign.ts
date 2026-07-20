@@ -5,7 +5,7 @@
 // LeaderProfile's "Open campaign" link. Anyone else still hits the verified gate.
 import { and, asc, count, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, donations, followers, managers, pillars, pledges, positions, posts } from '$lib/server/db/schema';
+import { campaigns, donations, followers, managers, parties, partyMemberships, pillars, pledges, positions, posts } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, resolveCurrentTerm, resolveCurrentTermByUserId } from '$lib/server/leader';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
@@ -93,7 +93,7 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 				.where(and(eq(campaigns.id, campaignId), isNull(campaigns.deletedAt)))
 		: [];
 
-	const [pillarRows, postRows, [followerRow], reviewRows, reviewPillarOptions, flaggedReviewCounts, [pledgeRow], [raisedRow]] = await Promise.all([
+	const [pillarRows, postRows, [followerRow], reviewRows, reviewPillarOptions, flaggedReviewCounts, [pledgeRow], [raisedRow], [partyRow]] = await Promise.all([
 		db
 			.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus, evidence: pillars.evidence })
 			.from(pillars)
@@ -120,12 +120,20 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
-			.where(and(eq(donations.campaignId, mainCampaign?.id ?? 0), eq(donations.status, 'confirmed'), isNull(donations.deletedAt)))
+			.where(and(eq(donations.campaignId, mainCampaign?.id ?? 0), eq(donations.status, 'confirmed'), isNull(donations.deletedAt))),
+		// The person's live party (person-scoped, so a pure aspirant has one too).
+		db
+			.select({ name: parties.name })
+			.from(partyMemberships)
+			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
+			.where(and(eq(partyMemberships.subjectUserId, row.users.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+			.limit(1)
 	]);
 
 	const myReview = viewerId ? await getMyReview(row.users.id, viewerId) : null;
 
 	return {
+		party: partyRow?.name ?? null,
 		pillars: pillarRows,
 		posts: postRows.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() })),
 		followers: followerRow.n,

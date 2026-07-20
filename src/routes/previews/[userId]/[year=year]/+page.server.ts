@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			name,
 			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
 			photoUrl: row.users.photoUrl,
-			party: null as string | null,
+			party: workspace.party,
 			regionLabel: row.positions.region,
 			positionTitle: row.positions.title,
 			status: row.status,

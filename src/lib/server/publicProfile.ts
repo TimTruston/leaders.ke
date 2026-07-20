@@ -8,7 +8,7 @@
 // citizen would see once the profile goes public.
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, experience, followers, managers, pillars, positions, posts, tags } from '$lib/server/db/schema';
+import { campaigns, contacts, experience, followers, managers, parties, partyMemberships, pillars, positions, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
 import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
@@ -82,7 +82,8 @@ export async function loadPublicProfileData(
 		contactRows,
 		reviewRows,
 		reviewPillarOptions,
-		flaggedReviewCounts
+		flaggedReviewCounts,
+		[partyRow]
 	] = await Promise.all([
 		db.select({ n: count() }).from(pillars).where(and(eq(pillars.campaignId, leadCampaignId), isNull(pillars.deletedAt))),
 		db
@@ -114,7 +115,15 @@ export async function loadPublicProfileData(
 			.where(and(eq(contacts.userId, row.users.id), isNull(contacts.deletedAt))),
 		listApprovedReviews(row.users.id, opts.viewerId),
 		listReviewPillarOptions(leadCampaignId),
-		getFlaggedReviewCounts(row.users.id)
+		getFlaggedReviewCounts(row.users.id),
+		// The person's live party (membership is person-scoped, so a pure aspirant
+		// with no leaders row still has one) — drives the party badge on the profile.
+		db
+			.select({ name: parties.name })
+			.from(partyMemberships)
+			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
+			.where(and(eq(partyMemberships.subjectUserId, row.users.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+			.limit(1)
 	]);
 
 	const myReview = opts.viewerId ? await getMyReview(row.users.id, opts.viewerId) : null;
@@ -143,7 +152,7 @@ export async function loadPublicProfileData(
 			slug: row.users.slug,
 			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
 			photoUrl: row.users.photoUrl,
-			party: null as string | null,
+			party: (partyRow?.name ?? null) as string | null,
 			regionLabel: leadPosition.region,
 			positionTitle: leadPosition.title,
 			positionId: leadPosition.id,
