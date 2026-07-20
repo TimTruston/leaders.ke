@@ -28,7 +28,8 @@ export const load: PageServerLoad = async ({ url }) => {
 					ilike(positions.region, like)
 				)
 			)
-		);
+		)
+		.limit(15);
 
 	// A person can have several `leaders` rows (Track Record); collapse to one
 	// result per slug, preferring their non-'former' row, as the directory does.
@@ -41,7 +42,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		}
 	}
 
-	const matchedLeaders = [...bySlug.values()].slice(0, 20);
+	const matchedLeaders = [...bySlug.values()];
 	const matchedPersonIds = matchedLeaders.map((r) => r.users.id);
 
 	// Live party per matched PERSON (membership is person-scoped).
@@ -106,8 +107,9 @@ export const load: PageServerLoad = async ({ url }) => {
 				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
 			)
 		)
-		.limit(20);
+		.limit(15);
 	for (const r of runMatches) {
+		if (leaderResults.length >= 15) break;
 		if (!r.slug || heldSlugs.has(r.slug)) continue;
 		heldSlugs.add(r.slug);
 		const name = fullName(r);
@@ -146,7 +148,7 @@ export const load: PageServerLoad = async ({ url }) => {
 				)
 			)
 		)
-		.limit(20);
+		.limit(15);
 
 	const experienceResults = experienceRows
 		.filter((r) => r.slug)
@@ -161,7 +163,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.select()
 		.from(parties)
 		.where(and(isNull(parties.deletedAt), or(ilike(parties.name, like), ilike(parties.abbreviation, like))))
-		.limit(10);
+		.limit(15);
 	const partyResults = partyRows.map((p) => ({
 		name: p.name,
 		abbreviation: p.abbreviation,

@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			.innerJoin(users, eq(leaders.userId, users.id))
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
 			.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), nameMatch))
-			.limit(120),
+			.limit(5),
 		// Verified 2027 runs (campaigns) — aspirants with no leaders row.
 		db
 			.select({
@@ -55,12 +55,12 @@ export const GET: RequestHandler = async ({ url }) => {
 			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
 			.where(and(isNull(campaigns.parentCampaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), nameMatch))
-			.limit(120),
+			.limit(5),
 		db
 			.select({ name: parties.name, abbreviation: parties.abbreviation })
 			.from(parties)
 			.where(and(isNull(parties.deletedAt), or(ilike(parties.name, like), ilike(parties.abbreviation, like))))
-			.limit(6)
+			.limit(5)
 	]);
 	const leaderRows = [...heldRows, ...runRows.map((r) => ({ ...r, status: 'aspirant' }))];
 
