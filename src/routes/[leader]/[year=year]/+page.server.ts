@@ -1,190 +1,60 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import { and, asc, count, desc, eq, isNull, or, sum } from 'drizzle-orm';
+import { and, desc, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import {
-	campaigns,
-	donations,
-	followers,
-	pillars,
-	pledges,
-	posts
-} from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderPath, resolveCurrentTerm } from '$lib/server/leader';
-import {
-	getFlaggedReviewCounts,
-	getMyReview,
-	handleDeleteReviewAction,
-	handleReviewAction,
-	listApprovedReviews,
-	listReviewPillarOptions
-} from '$lib/server/reviews';
+import { donations, followers, pillars, posts } from '$lib/server/db/schema';
+import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderPath } from '$lib/server/leader';
+import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
+import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
 import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
 // tracker, updates, citizen reviews, vote pledges, fundraising and the AI
 // constituent chat. Only the active cycle has a workspace; other years bounce
-// to the permanent record.
+// to the permanent record. An admin, the profile's own person, or one of its
+// active managers may preview it before it's verified/public — see
+// resolveCampaignRun; everyone else still gets the verified-only gate.
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const recordPath = leaderPath({ slug: params.leader });
 	if (Number(params.year) !== ACTIVE_CYCLE) redirect(302, recordPath);
 
-	const row = await requireLiveLeader(params);
-
+	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
+	const row = await resolveCampaignRun(params.leader, { viewerId: viewer?.id, isAdmin: !!viewer?.adminAt });
 	if (!row) error(404, 'Campaign not found');
 
-	const campaignId = row.campaignId;
-	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
-
-	// Fundraising lives on the run's main campaign. No campaign yet = goal 0, nothing raised.
-	const [mainCampaign] = campaignId
-		? await db
-				.select({ id: campaigns.id, fundraisingGoal: campaigns.fundraisingGoal })
-				.from(campaigns)
-				.where(and(eq(campaigns.id, campaignId), isNull(campaigns.deletedAt)))
-		: [];
-
-	const [
-		pillarRows,
-		postRows,
-		[followerRow],
-		reviewRows,
-		reviewPillarOptions,
-		flaggedReviewCounts,
-		[pledgeRow],
-		[raisedRow]
-	] = await Promise.all([
-		db
-			.select({
-				title: pillars.title,
-				summary: pillars.summary,
-				deliveryStatus: pillars.deliveryStatus,
-				evidence: pillars.evidence
-			})
-			.from(pillars)
-			.where(and(eq(pillars.campaignId, campaignId), isNull(pillars.deletedAt)))
-			.orderBy(asc(pillars.id)),
-		db
-			.select({ id: posts.id, title: posts.title, body: posts.body, createdAt: posts.createdAt })
-			.from(posts)
-			.where(
-				and(
-					eq(posts.subjectUserId, row.users.id),
-					eq(posts.medium, 'web'),
-					eq(posts.public, true),
-					eq(posts.approved, true),
-					isNull(posts.deletedAt)
-				)
-			)
-			.orderBy(desc(posts.createdAt))
-			.limit(20),
-		db
-			.select({ n: count() })
-			.from(followers)
-			.where(
-				and(
-					eq(followers.digest, 'leader'),
-					eq(followers.digestId, row.users.id),
-					isNull(followers.deletedAt)
-				)
-			),
-		// Citizen reviews of this person (follows them across every seat), plus
-		// this campaign's pillar options for the review form.
-		listApprovedReviews(row.users.id, viewer?.id),
-		listReviewPillarOptions(campaignId),
-		getFlaggedReviewCounts(row.users.id),
-		// Live vote pledges across all of this person's runs.
-		db
-			.select({ n: count() })
-			.from(pledges)
-			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
-			.where(and(eq(campaigns.subjectUserId, row.users.id), isNull(pledges.deletedAt))),
-		db
-			.select({ total: sum(donations.amount) })
-			.from(donations)
-			.where(
-				and(
-					eq(donations.campaignId, mainCampaign?.id ?? 0),
-					eq(donations.status, 'confirmed'),
-					isNull(donations.deletedAt)
-				)
-			)
-	]);
-
-	const myReview = viewer ? await getMyReview(row.users.id, viewer.id) : null;
-
+	const workspace = await loadCampaignWorkspaceData(row, viewer?.id);
 	const name = fullName(row.users);
+
 	return {
 		year: Number(params.year),
 		recordPath,
 		leader: {
 			name,
-			initials: name
-				.split(/\s+/)
-				.map((w) => w[0])
-				.join('')
-				.slice(0, 2)
-				.toUpperCase(),
+			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
 			photoUrl: row.users.photoUrl,
 			party: null as string | null,
 			regionLabel: row.positions.region,
 			positionTitle: row.positions.title,
 			status: row.status,
 			verified: row.verified,
-			followers: followerRow.n,
+			followers: workspace.followers,
 			bio: row.users.bio ?? '',
-			pillars: pillarRows
+			pillars: workspace.pillars
 		},
-		posts: postRows.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() })),
-		reviews: reviewRows,
-		reviewPillarOptions,
-		flaggedReviewCounts,
-		myReview,
+		posts: workspace.posts,
+		reviews: workspace.reviews,
+		reviewPillarOptions: workspace.reviewPillarOptions,
+		flaggedReviewCounts: workspace.flaggedReviewCounts,
+		myReview: workspace.myReview,
 		signedIn: !!locals.user,
-		pledgeCount: pledgeRow.n,
-		fundraising: {
-			goal: mainCampaign?.fundraisingGoal ?? 0,
-			raised: Number(raisedRow.total ?? 0)
-		}
+		pledgeCount: workspace.pledgeCount,
+		fundraising: workspace.fundraising
 	};
 };
 
-// Resolves the seat + run the /[leader] profile leads with (a live term, else the
-// active run), and requires it to be verified — a campaign workspace is never public
-// before the profile it belongs to is. Returns the person, the lead seat, and the
-// lead campaign id (0 = none yet); `leaderId` is null for a pure aspirant (no term).
-async function requireLiveLeader(params: { leader: string }) {
-	const resolved = await resolveCurrentTerm(params.leader);
-	if (!resolved) return null;
-	const { row, currentTerm, activeRun } = resolved;
-	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
-	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
-	if (!verified) return null;
-
-	let campaignId = 0;
-	let positions;
-	let status: string;
-	let leaderId: number | null = null;
-	if (leadsWithRun) {
-		campaignId = activeRun!.campaigns.id;
-		positions = activeRun!.positions;
-		status = 'aspirant';
-	} else {
-		positions = currentTerm!.positions;
-		status = currentTerm!.leaders.status;
-		leaderId = currentTerm!.leaders.id;
-		const [c] = await db
-			.select({ id: campaigns.id })
-			.from(campaigns)
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
-		campaignId = c?.id ?? 0;
-	}
-	return { users: row.users, positions, status, verified, campaignId, leaderId };
-}
-
 export const actions: Actions = {
 	follow: async (event) => {
-		const row = await requireLiveLeader(event.params);
+		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) {
 			return fail(400, { error: 'Campaign not found.' });
 		}
@@ -239,19 +109,19 @@ export const actions: Actions = {
 	},
 
 	review: async (event) => {
-		const row = await requireLiveLeader(event.params);
+		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(400, { reviewError: 'Campaign not found.' });
 		return await handleReviewAction(event, row.users.id, row.campaignId);
 	},
 
 	deleteReview: async (event) => {
-		const row = await requireLiveLeader(event.params);
+		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(400, { reviewError: 'Campaign not found.' });
 		return await handleDeleteReviewAction(event, row.users.id);
 	},
 
 	donate: async (event) => {
-		const row = await requireLiveLeader(event.params);
+		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(400, { error: 'Campaign not found.' });
 
 		const form = await event.request.formData();
@@ -286,30 +156,18 @@ export const actions: Actions = {
 			return fail(400, { error: 'Ask a question of at least a few words.' });
 		}
 
-		const row = await requireLiveLeader(event.params);
+		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(404, { error: 'Campaign not found.' });
 
 		const [pillarRows, postRows] = await Promise.all([
 			db
-				.select({
-					title: pillars.title,
-					summary: pillars.summary,
-					deliveryStatus: pillars.deliveryStatus,
-					evidence: pillars.evidence
-				})
+				.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus, evidence: pillars.evidence })
 				.from(pillars)
 				.where(and(eq(pillars.campaignId, row.campaignId), isNull(pillars.deletedAt))),
 			db
 				.select({ title: posts.title, body: posts.body })
 				.from(posts)
-				.where(
-					and(
-						eq(posts.subjectUserId, row.users.id),
-						eq(posts.medium, 'web'),
-						eq(posts.public, true),
-						isNull(posts.deletedAt)
-					)
-				)
+				.where(and(eq(posts.subjectUserId, row.users.id), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
 				.limit(10)
 		]);

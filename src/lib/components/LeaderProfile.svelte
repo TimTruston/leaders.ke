@@ -12,7 +12,9 @@
 	// will eventually see, so what an admin approves is what actually ships.
 	// In preview mode: Reviews and "Is this you?" are hidden (not relevant pre-approval),
 	// and three review-only sections render — Request history + Team & sign-offs in the
-	// main column (below Experience), IEBC certificate in the sidebar.
+	// main column (below Experience), IEBC certificate in the sidebar. "Open campaign"
+	// stays live even in preview (relabeled "Preview campaign") — the Campaign
+	// component it links to derives its own preview state from the run's verified flag.
 
 	let {
 		data,
@@ -220,15 +222,15 @@
 							· latest update: "{data.campaign.latestPost.title}" ({dateFmt.format(new Date(data.campaign.latestPost.createdAt))})
 						{/if}
 					</p>
-					{#if !preview}
-						<a
-							href={data.campaign.path}
-							class="mt-4 inline-block w-full rounded-full bg-primary px-5 py-2.5 text-center font-semibold text-on-primary transition hover:brightness-95"
-						>
-							Open campaign
-						</a>
-						<p class="mt-2 text-center text-xs text-muted">Manifesto, updates and follow live there.</p>
-					{/if}
+					<a
+						href={data.campaign.path}
+						class="mt-4 inline-block w-full rounded-full bg-primary px-5 py-2.5 text-center font-semibold text-on-primary transition hover:brightness-95"
+					>
+						{preview ? 'Preview campaign' : 'Open campaign'}
+					</a>
+					<p class="mt-2 text-center text-xs text-muted">
+						{preview ? 'Admin/owner preview — not public yet.' : 'Manifesto, updates and follow live there.'}
+					</p>
 				</div>
 			{/if}
 
