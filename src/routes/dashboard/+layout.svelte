@@ -106,7 +106,7 @@
 				// Contacts/Team unlock once a profile has been saved (they attach to the
 				// person that first save creates).
 				return [
-					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/profile`, label: 'Leader' },
 					...(data.leaderContext
 						? [
 								{ href: `${base}/contacts`, label: 'Contacts' },
@@ -117,13 +117,13 @@
 				];
 			case 'claim':
 				return [
-					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/profile`, label: 'Leader' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
 					{ href: `${base}/signoff`, label: 'Signoff' }
 				];
 			case 'campaign':
 				return [
-					{ href: `${base}/profile`, label: 'Profile' },
+					{ href: `${base}/profile`, label: 'Leader' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
 					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/manifesto`, label: 'Manifesto' },
@@ -242,7 +242,7 @@
 			{#if data.claimName}
 				<!-- The claim family (/dashboard/claim/[slug]/*) is about someone else's
 				profile, whatever campaign context the viewer otherwise has. -->
-				<h1 class="text-2xl font-bold text-heading">Claim: {data.claimName}</h1>
+				<h1 class="text-2xl font-bold text-heading">Claiming "{data.claimName}"</h1>
 			{:else if mode === 'campaign' && data.leaderContext}
 				<h1 class="text-2xl font-bold text-heading">
 					{data.leaderContext.leaderName}
@@ -255,7 +255,7 @@
 					{/if}
 				</h1>
 			{:else if mode === 'apply'}
-				<h1 class="text-2xl font-bold text-heading">Create a Leader Profile</h1>
+				<h1 class="text-2xl font-bold text-heading">Lets get onboard!</h1>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
@@ -268,7 +268,7 @@
 				<!-- Claim widget: mirrors Submit Application, but finalizes the staged
 				claim (national ID → evidence) — Delete drops a just-testing claim. -->
 				<span class="flex items-center text-sm my-2 sm:my-0">
-					Confirm the details below to claim this profile.
+					Confirm the details below to claim this profile...
 				</span>
 				{#if data.claimSubmitted}
 					<span
@@ -316,7 +316,7 @@
 				{/if}
 			{:else if mode === 'apply'}
 				<span class="flex items-center text-sm my-2 sm:my-0">
-					Only three steps to go public ahead of 10 August 2027...
+					A few steps to go public ahead of 10 August 2027...
 				</span>
 				{#if data.pendingVerification}
 					<span

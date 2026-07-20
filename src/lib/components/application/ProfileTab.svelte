@@ -184,6 +184,7 @@
 
 <div class="">
 
+	<h2 class="text-xl font-bold text-heading">Leader's Profile</h2>
 	<p class="text-sm text-muted">This is what citizens see on the leader's public profile/page.</p>
 
 	{#if form?.error}
@@ -597,7 +598,7 @@
 
 	{#if !data.form.hasLeader}
 		<p class="mt-8 border-t border-border pt-5 text-sm text-muted">
-			Save your profile first — the Contacts and Team tabs unlock after the first save.
+			Save your profile to unlock the next step...
 		</p>
 	{/if}
 </div>

@@ -244,7 +244,8 @@
 						{#if member.nationalIdConflict}
 							{@const conflict = member.nationalIdConflict}
 							<p class="mt-3 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-medium text-red-500">
-								Same National ID on {conflict.name}({conflict.id}). Email: {conflict.email} Phone: {conflict.phone}
+								<span class="block">Same National ID on {conflict.name}. User id: {conflict.id}</span>
+								<span class="block">Email: {conflict.email} Phone: {conflict.phone}</span>
 							</p>
 						{/if}
 						<div class="mt-3 grid grid-cols-2 gap-3">
