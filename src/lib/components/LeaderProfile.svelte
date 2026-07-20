@@ -59,7 +59,7 @@
 		<!-- Only admins ever see an unverified profile here (the load function 404s
 		everyone else): reviewing a submission is the whole point. -->
 		<div class="mb-6 rounded-2xl border border-border bg-surface-2 px-4 py-3 text-sm font-medium text-heading">
-			Admin preview: this profile is unverified and hidden from the public.
+			Preview: this profile is hidden from the public until it gets verified.
 		</div>
 	{/if}
 
