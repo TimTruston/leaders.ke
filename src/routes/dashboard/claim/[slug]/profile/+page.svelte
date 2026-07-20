@@ -5,4 +5,4 @@
 	let { data, form }: PageProps = $props();
 </script>
 
-<ProfileTab {data} {form} />
+<ProfileTab {data} {form} claimAttestation />

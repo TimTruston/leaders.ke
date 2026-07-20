@@ -151,7 +151,7 @@
 						aria-label={p.label}
 						title={p.label}
 						class="grid h-10 w-10 place-items-center rounded-xl border transition-colors {isSocialActive(p.kind)
-							? 'border-primary bg-primary-soft text-on-primary'
+							? 'border-primary text-primary'
 							: 'border-border bg-surface text-muted hover:text-heading'}"
 					>
 						<ContactIcon kind={p.kind} size={18} />

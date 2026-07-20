@@ -116,10 +116,16 @@
 						: [])
 				];
 			case 'claim':
+				// Contacts/Signoff unlock once the claimant has saved the Profile tab —
+				// same gating as apply mode's Contacts/Team.
 				return [
 					{ href: `${base}/profile`, label: 'Leader' },
-					{ href: `${base}/contacts`, label: 'Contacts' },
-					{ href: `${base}/signoff`, label: 'Signoff' }
+					...(data.application?.profile.complete
+						? [
+								{ href: `${base}/contacts`, label: 'Contacts' },
+								{ href: `${base}/signoff`, label: 'Signoff' }
+							]
+						: [])
 				];
 			case 'campaign':
 				return [

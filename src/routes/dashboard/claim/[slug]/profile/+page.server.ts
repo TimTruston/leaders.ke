@@ -65,6 +65,10 @@ export const actions: Actions = {
 		}
 		if (!otherNames) return fail(400, { error: 'Other names are required.', missingFields: ['otherNames'] });
 		if (!bio) return fail(400, { error: 'Add a short bio.', missingFields: ['bio'] });
+		// The false-claims attestation checkbox — required (also enforced client-side).
+		if (form.get('attested') !== 'true') {
+			return fail(400, { error: 'Confirm the attestation checkbox before saving.' });
+		}
 		if (partyId) {
 			const [party] = await db.select({ id: parties.id }).from(parties).where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
 			if (!party) return fail(400, { error: 'That party does not exist.' });

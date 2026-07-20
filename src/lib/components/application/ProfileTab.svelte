@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import ImageCropper from '$lib/components/ImageCropper.svelte';
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
@@ -21,9 +23,16 @@
 		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
-	let { data, form }: { data: TabData; form: any } = $props();
+	let {
+		data,
+		form,
+		claimAttestation = false
+	}: { data: TabData; form: any; claimAttestation?: boolean } = $props();
 
 	let saving = $state(false);
+	// Claim family only: a false-claim attestation gates the Save button — checked
+	// server-side too (see the claim's ?/save action), this is just the live UI gate.
+	let attested = $state(false);
 	// Local editing state for the rich-text bio (the form posts it via name="bio").
 	let bio = $state(data.form.bio);
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
@@ -214,6 +223,13 @@
 					if (stagedPhotoUrl) URL.revokeObjectURL(stagedPhotoUrl);
 					stagedPhotoUrl = null;
 					if (photoInput) photoInput.value = '';
+					// Claim family: a first save unlocks Contacts/Signoff (see the layout's
+					// tab gating) — move the claimant there instead of leaving them on a
+					// tab whose only job just finished.
+					if (claimAttestation) {
+						await goto(page.url.pathname.replace(/\/profile$/, '/contacts'));
+						return;
+					}
 				}
 				await update({ reset: false });
 			};
@@ -585,10 +601,28 @@
 			</div>
 		{/if}
 
+		{#if claimAttestation}
+			<label class="flex items-start gap-3 rounded-xl border border-border bg-surface-2 p-4">
+				<input
+					type="checkbox"
+					name="attested"
+					value="true"
+					required
+					bind:checked={attested}
+					class="mt-0.5 size-4 shrink-0 rounded border-border text-primary focus:ring-ring"
+				/>
+				<span class="text-sm text-heading">
+					I confirm that I am this person, or an authorized representative acting on their
+					behalf, and I understand that submitting a false or fraudulent claim may carry legal
+					consequences.
+				</span>
+			</label>
+		{/if}
+
 		<div class="border-t border-border pt-6">
 			<button
 				type="submit"
-				disabled={saving}
+				disabled={saving || (claimAttestation && !attested)}
 				class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
 			>
 				{saving ? 'Saving…' : 'Save profile'}
