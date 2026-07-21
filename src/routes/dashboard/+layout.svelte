@@ -20,6 +20,13 @@
 		deleteBtn = e.currentTarget as HTMLButtonElement;
 	};
 
+	// Platform-admin control bar (Deactivate/Activate, Declare Winner, Delete). The
+	// clicked button stages the pending action + its confirm wording; confirming writes
+	// the action onto the shared hidden form and submits it to the profile-action endpoint.
+	let adminAction = $state<{ action: string; title: string; body: string; confirmLabel: string } | null>(null);
+	let adminFormEl = $state<HTMLFormElement | null>(null);
+	let adminActionEl = $state<HTMLInputElement | null>(null);
+
 	// Set by /invite/[token] right after accepting — a one-time "you're in" banner.
 	const joinedRole = $derived(page.url.searchParams.get('joined'));
 	const joinedLeaderName = $derived(page.url.searchParams.get('leaderName'));
@@ -144,6 +151,7 @@
 				];
 			case 'admin':
 				return [
+					{ href: '/dashboard/admin/profiles', label: 'Profiles' },
 					{ href: '/dashboard/admin/candidates', label: 'Candidates' },
 					{ href: '/dashboard/admin/accounts', label: 'Accounts' },
 					{ href: '/dashboard/admin/pillars', label: 'Pillars' },
@@ -422,6 +430,63 @@
 
 		</div>
 	</div>
+
+	<!-- Platform-admin control bar: shown on ANY profile a platform admin opens via the
+	Profiles tab "Admin" button. Source + verified badges, then the destructive lifecycle
+	actions, each behind a confirm modal with its own wording. -->
+	{#if data.adminControls}
+		{@const ac = data.adminControls}
+		<div class="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface-2 px-3 py-2">
+			<span class="text-xs font-semibold text-muted">Admin</span>
+			<span
+				title="How the profile came to exist: has a claim → claimed; else has an active manager → applied; else → seeded."
+				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.source === 'applied' ? 'bg-primary-soft text-on-primary' : ac.source === 'claimed' ? 'bg-surface text-heading' : 'border border-border text-muted'}"
+			>{ac.source}</span>
+			<span
+				title="Review-workflow state: seeded → —; claimed → latest claim outcome; applied → run verified/latest request; soft-deleted → deleted."
+				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.verified === 'approved' ? 'bg-primary-soft text-on-primary' : ac.verified === 'pending' ? 'border border-primary text-primary' : 'border border-border text-muted'}"
+			>{ac.verified ?? '—'}</span>
+
+			<div class="ml-auto flex flex-wrap items-center gap-2">
+				{#if ac.deactivated}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'activate', title: 'Reactivate this profile?', body: `${ac.profileName}'s profile becomes publicly visible again.`, confirmLabel: 'Activate' })}
+						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary"
+					>Activate</button>
+				{:else}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'deactivate', title: 'Deactivate this profile?', body: `${ac.profileName}'s profile is hidden from the public and the roster until you reactivate it.`, confirmLabel: 'Deactivate' })}
+						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
+					>Deactivate</button>
+				{/if}
+				{#if ac.graduatableCampaignId}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'declareWinner', title: 'Declare winner?', body: `Graduates ${ac.profileName}'s verified run into a current term and retires the seat's sitting holder. This cannot be undone.`, confirmLabel: 'Declare Winner' })}
+						class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95"
+					>Declare Winner</button>
+				{/if}
+				{#if !ac.deactivated}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'delete', title: 'Delete this profile?', body: `Soft-deletes ${ac.profileName}'s profile and all its terms, campaigns and claims. It disappears from every leader surface.`, confirmLabel: 'Delete' })}
+						class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
+					>Delete</button>
+				{/if}
+			</div>
+
+			<!-- One form the confirm modal submits; the chosen action is written straight
+			onto the hidden input before requestSubmit so no reactive flush is needed. -->
+			<form method="post" action="/dashboard/admin/profile-action" bind:this={adminFormEl} class="hidden">
+				<input type="hidden" name="profileId" value={ac.profileId} />
+				<input type="hidden" name="next" value={page.url.pathname} />
+				<input type="hidden" name="action" bind:this={adminActionEl} />
+			</form>
+		</div>
+	{/if}
+
 	<!-- Rejection feedback: the admin's reason from the last review, shown until the
 	applicant re-submits (getLatestRejection stops returning it once a new request is pending). -->
 	{#if mode === 'apply' && data.rejection}
@@ -504,6 +569,21 @@
 			const btn = deleteBtn;
 			deleteBtn = null;
 			btn?.form?.requestSubmit(btn);
+		}}
+	/>
+{/if}
+
+{#if adminAction}
+	<ConfirmDialog
+		title={adminAction.title}
+		body={adminAction.body}
+		confirmLabel={adminAction.confirmLabel}
+		oncancel={() => (adminAction = null)}
+		onconfirm={() => {
+			// Write the chosen action straight onto the hidden input, then submit.
+			if (adminActionEl) adminActionEl.value = adminAction!.action;
+			adminAction = null;
+			adminFormEl?.requestSubmit();
 		}}
 	/>
 {/if}

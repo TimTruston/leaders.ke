@@ -2,11 +2,12 @@
 // title + rich-text description, and the IEBC nomination certificate. One run per
 // person per cycle (getOrCreateRunCampaign). Reachable once a profile is saved.
 import { fail } from '@sveltejs/kit';
-import { and, asc, eq, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, positions } from '$lib/server/db/schema';
-import { requireLeader } from '$lib/server/dashboard';
-import { ACTIVE_CYCLE, fullName, getOrCreateRunCampaign, getRunCampaign } from '$lib/server/leader';
+import { campaigns, positions, verifications } from '$lib/server/db/schema';
+import { isCampaignAdmin, requireLeader } from '$lib/server/dashboard';
+import { ACTIVE_CYCLE, fullName, generateLeaderSlug, getOrCreateRunCampaign, getRunCampaign } from '$lib/server/leader';
+import { reviewVerification } from '$lib/server/verifications';
 import { saveLeaderDocument } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -14,7 +15,7 @@ import type { Actions, PageServerLoad } from './$types';
 const CYCLES = [ACTIVE_CYCLE, ACTIVE_CYCLE + 5];
 
 export const load: PageServerLoad = async (event) => {
-	const { ctx } = await requireLeader(event);
+	const { domainUser, ctx } = await requireLeader(event);
 	const run = await getRunCampaign(ctx.profileUser.id);
 
 	const positionRows = await db
@@ -23,9 +24,29 @@ export const load: PageServerLoad = async (event) => {
 		.where(isNull(positions.deletedAt))
 		.orderBy(asc(positions.title), asc(positions.region));
 
+	// Platform-admin verification decision (moved here from the old admin verifications
+	// table): the latest request on this run + a suggested slug to mint on approval.
+	let verificationDecision: { verificationId: number; outcome: 'approved' | 'rejected' | null; suggestedSlug: string } | null = null;
+	if (run && (await isCampaignAdmin(domainUser.id, ctx))) {
+		const [request] = await db
+			.select({ id: verifications.id, outcome: verifications.outcome })
+			.from(verifications)
+			.where(eq(verifications.campaignId, run.id))
+			.orderBy(desc(verifications.requestedAt))
+			.limit(1);
+		if (request) {
+			verificationDecision = {
+				verificationId: request.id,
+				outcome: request.outcome,
+				suggestedSlug: ctx.profileUser.slug ?? (await generateLeaderSlug(fullName(ctx.profileUser)))
+			};
+		}
+	}
+
 	return {
 		positions: positionRows,
 		cycles: CYCLES,
+		verificationDecision,
 		campaign: {
 			title: run?.title ?? '',
 			positionId: run?.positionId ?? ctx.position?.id ?? null,
@@ -38,6 +59,22 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+	// Platform-admin verification decision, embedded on the Campaign tab: approve sets
+	// the run live (verifiedAt) and mints the profile's slug; reject records the reason.
+	reviewVerification: async (event) => {
+		const { domainUser, ctx } = await requireLeader(event);
+		if (!(await isCampaignAdmin(domainUser.id, ctx))) return fail(403, { error: 'Admins only.' });
+		const form = await event.request.formData();
+		const verificationId = Number(form.get('verificationId'));
+		const outcome = String(form.get('outcome') ?? '');
+		const notes = String(form.get('notes') ?? '').trim();
+		const slug = String(form.get('slug') ?? '').trim();
+		if (!verificationId || (outcome !== 'approved' && outcome !== 'rejected')) return fail(400, { error: 'Invalid request.' });
+		const result = await reviewVerification(verificationId, domainUser.id, outcome, notes, slug);
+		if (!result.ok) return fail(400, { error: result.error });
+		return { verificationReviewed: true };
+	},
+
 	save: async (event) => {
 		const { ctx } = await requireLeader(event);
 		const form = await event.request.formData();

@@ -24,6 +24,7 @@
 			<table class="w-full min-w-180 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
+						<th class="px-4 py-3 text-sm font-semibold text-heading">ID</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
@@ -35,6 +36,9 @@
 				<tbody>
 					{#each data.candidates as c (c.key)}
 						<tr class="border-t border-border">
+							<td class="px-4 py-3 text-sm text-heading">
+								<a href={c.path} class="hover:text-primary">{c.campaignId}</a>
+							</td>
 							<td class="px-4 py-3 text-sm text-heading">
 								<a href={c.path} class="hover:text-primary">{c.name}</a>
 							</td>

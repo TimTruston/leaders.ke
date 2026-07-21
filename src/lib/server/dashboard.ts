@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { getDomainUser, getLeaderContext, getLeaderContextByApplyId, getLeaderContextBySlug, type LeaderContext } from '$lib/server/leader';
+import { getDomainUser, getLeaderContext, getLeaderContextByApplyId, getLeaderContextBySlug, isPlatformAdmin, type LeaderContext } from '$lib/server/leader';
 import { contacts as contactsTable, managers, type users } from '$lib/server/db/schema';
 
 export type DashboardUser = {
@@ -138,6 +138,8 @@ export async function requireAdmin(event: RequestEvent): Promise<DashboardUser> 
  * campaign. (Managing ambassadors, posts, etc. is open to every manager.) */
 export async function isCampaignAdmin(domainUserId: number, ctx: LeaderContext): Promise<boolean> {
 	if (ctx.role === 'leader') return true;
+	// A platform admin gets full campaign-admin powers on any profile (Profiles tab).
+	if (await isPlatformAdmin(domainUserId)) return true;
 	// Managers attach to the person: admin if the viewer's manager row for this person
 	// carries the admin role.
 	const [row] = await db

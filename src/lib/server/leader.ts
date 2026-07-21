@@ -200,6 +200,13 @@ async function findPersonManager(
 	return manager ?? null;
 }
 
+/** Whether this account is a platform admin (users.adminAt set). Platform admins may
+ * open any leader's dashboard, so the context resolvers bypass the manager check for them. */
+export async function isPlatformAdmin(domainUserId: number): Promise<boolean> {
+	const [row] = await db.select({ adminAt: users.adminAt }).from(users).where(eq(users.id, domainUserId));
+	return !!row?.adminAt;
+}
+
 /** The person (users.id) behind a leaders-row (term) id — for flows that arrive with
  * a term id but write person-scoped rows. */
 export async function personIdForLeader(leaderId: number): Promise<number | null> {
@@ -239,7 +246,9 @@ export async function getLeaderContextByApplyId(
 	if (!profileUser) return null;
 
 	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
-	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id))) return 'denied';
+	// A platform admin may open any leader's dashboard (Profiles tab "Admin" button);
+	// everyone else needs to be the leader or an active manager.
+	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id)) && !(await isPlatformAdmin(domainUserId))) return 'denied';
 
 	return await buildContext(profileUser, role, true);
 }
@@ -255,7 +264,9 @@ export async function getLeaderContextBySlug(slug: string, domainUserId: number)
 	if (!profileUser) return null;
 
 	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
-	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id))) return null;
+	// A platform admin may open any leader's dashboard; everyone else needs to be the
+	// leader or an active manager of them.
+	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id)) && !(await isPlatformAdmin(domainUserId))) return null;
 
 	return await buildContext(profileUser, role, true);
 }

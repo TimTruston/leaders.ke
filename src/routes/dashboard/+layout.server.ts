@@ -12,6 +12,7 @@ import { getPendingVerification, getLatestRejection } from '$lib/server/verifica
 import { getPlatformSettings } from '$lib/server/settings';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { listUnreadNotifications } from '$lib/server/notifications';
+import { getProfileAdminMeta } from '$lib/server/profiles';
 import type { LayoutServerLoad } from './$types';
 
 // One application tab's completion state: whether it's done, and the labels of the
@@ -309,10 +310,19 @@ export const load: LayoutServerLoad = async (event) => {
 	}
 	const pendingClaims = [...pendingBySlug.values()];
 
+	// A platform admin viewing any profile gets the header control block (source +
+	// verified badges, Deactivate/Activate, Declare Winner, Delete). Only computed
+	// when an admin is on a leader context that isn't their own onboarding.
+	const adminControls =
+		domainUser.adminAt && ctx
+			? { ...(await getProfileAdminMeta(ctx.profileUser.id)), profileId: ctx.profileUser.id, profileName: fullName(ctx.profileUser) }
+			: null;
+
 	return {
 		firstName: domainUser.firstName,
 		// Unread decision notifications (verification/claim outcomes), bannered until dismissed.
 		notifications: await listUnreadNotifications(domainUser.id),
+		adminControls,
 		claimName,
 		claimSubjectSlug,
 		claimId,
