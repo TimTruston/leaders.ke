@@ -19,6 +19,7 @@
 			<table class="w-full min-w-160 border-collapse text-left">
 				<thead>
 					<tr class="bg-surface-2">
+						<th class="px-4 py-3 text-sm font-semibold text-heading">ID</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Name</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Email</th>
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Roles</th>
@@ -28,6 +29,7 @@
 				<tbody>
 					{#each data.accounts as account (account.userId)}
 						<tr class="border-t border-border">
+							<td class="px-4 py-3 text-sm text-heading">{account.userId}</td>
 							<td class="px-4 py-3 text-sm text-heading">{account.name}</td>
 							<td class="px-4 py-3 text-sm text-muted">{account.email}</td>
 							<td class="px-4 py-3 text-sm text-muted">
