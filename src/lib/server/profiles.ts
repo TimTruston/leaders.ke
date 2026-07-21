@@ -329,6 +329,8 @@ export async function getProfileExtras(subjectUserId: number) {
 	const applicantUser = alias(users, 'applicant');
 	const candidate = alias(users, 'candidate');
 	const verificationReviewer = alias(users, 'verification_reviewer');
+	// The applicant's manager row on each candidate — carries their self-declared role.
+	const applicantManager = alias(managers, 'applicant_manager');
 
 	// The profile's controlling account — the applicant whose applications we log.
 	const [applicant] = await db
@@ -344,6 +346,8 @@ export async function getProfileExtras(subjectUserId: number) {
 				id: profileClaims.id,
 				claimantFirst: claimant.firstName,
 				claimantOther: claimant.otherNames,
+				// The claimant's self-declared role, staged in the claim's sign-off.
+				evidence: profileClaims.evidence,
 				requestedAt: profileClaims.requestedAt,
 				outcome: profileClaims.outcome,
 				deletedAt: profileClaims.deletedAt,
@@ -365,6 +369,8 @@ export async function getProfileExtras(subjectUserId: number) {
 						id: verifications.id,
 						candidateFirst: candidate.firstName,
 						candidateOther: candidate.otherNames,
+						// The applicant's role on THIS candidate's team (may differ per candidate).
+						roles: applicantManager.roles,
 						requestedAt: verifications.requestedAt,
 						outcome: verifications.outcome,
 						reviewedAt: verifications.reviewedAt,
@@ -375,6 +381,14 @@ export async function getProfileExtras(subjectUserId: number) {
 					.from(verifications)
 					.innerJoin(campaigns, eq(verifications.campaignId, campaigns.id))
 					.innerJoin(candidate, eq(campaigns.subjectUserId, candidate.id))
+					.leftJoin(
+						applicantManager,
+						and(
+							eq(applicantManager.userId, verifications.requestedBy),
+							eq(applicantManager.subjectUserId, campaigns.subjectUserId),
+							isNull(applicantManager.deletedAt)
+						)
+					)
 					.leftJoin(verificationReviewer, eq(verifications.reviewedBy, verificationReviewer.id))
 					.where(eq(verifications.requestedBy, applicant.userId))
 					.orderBy(desc(verifications.requestedAt))
@@ -383,24 +397,34 @@ export async function getProfileExtras(subjectUserId: number) {
 
 	return {
 		applicantName: applicant ? fullName({ firstName: applicant.first, otherNames: applicant.other }) : null,
-		claimHistory: claimRows.map((h) => ({
+		claimHistory: claimRows.map((h) => {
+			const ev = (h.evidence as { signoff?: { myRole?: string; nationalId?: string }; nationalId?: string } | null) ?? {};
+			return {
 			id: h.id,
 			claimantName: fullName({ firstName: h.claimantFirst, otherNames: h.claimantOther }),
+			role: ev.signoff?.myRole ?? null,
+			nationalId: ev.signoff?.nationalId ?? ev.nationalId ?? null,
 			requestedAt: h.requestedAt.toISOString(),
 			outcome: h.outcome,
 			deleted: !!h.deletedAt,
 			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
 			reviewerName: h.reviewerFirst ? fullName({ firstName: h.reviewerFirst, otherNames: h.reviewerOther ?? '' }) : null,
 			notes: h.notes
-		})),
-		applications: applicationRows.map((h) => ({
+			};
+		}),
+		applications: applicationRows.map((h) => {
+			const roles = (h.roles as { title?: string; nationalId?: string } | null) ?? {};
+			return {
 			id: h.id,
 			candidateName: fullName({ firstName: h.candidateFirst, otherNames: h.candidateOther }),
+			role: roles.title ?? null,
+			nationalId: roles.nationalId ?? null,
 			requestedAt: h.requestedAt.toISOString(),
 			outcome: h.outcome,
 			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
 			reviewerName: h.reviewerFirst ? fullName({ firstName: h.reviewerFirst, otherNames: h.reviewerOther ?? '' }) : null,
 			notes: h.notes
-		}))
+			};
+		})
 	};
 }

@@ -12,8 +12,8 @@
 	// doesn't pay for all their histories up front.
 	type Extras = {
 		applicantName: string | null;
-		claimHistory: { id: number; claimantName: string; requestedAt: string; outcome: string | null; deleted: boolean; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
-		applications: { id: number; candidateName: string; requestedAt: string; outcome: string | null; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
+		claimHistory: { id: number; claimantName: string; role: string | null; nationalId: string | null; requestedAt: string; outcome: string | null; deleted: boolean; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
+		applications: { id: number; candidateName: string; role: string | null; nationalId: string | null; requestedAt: string; outcome: string | null; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
 	};
 	let expandedId = $state<number | null>(null);
 	let loadingId = $state<number | null>(null);
@@ -164,6 +164,8 @@
 															<thead>
 																<tr class="bg-surface">
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Claimant</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Role</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">National ID</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Requested</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewed</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewer</th>
@@ -175,6 +177,8 @@
 																{#each extras.claimHistory as h (h.id)}
 																	<tr class="border-t border-border">
 																		<td class="px-3 py-2 text-xs text-heading">{h.claimantName}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.role ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.nationalId ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.reviewedAt ? dateFmt.format(new Date(h.reviewedAt)) : '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.reviewerName ?? '—'}</td>
@@ -202,6 +206,8 @@
 															<thead>
 																<tr class="bg-surface">
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Candidate</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Role</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">National ID</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Requested</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewed</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewer</th>
@@ -213,6 +219,8 @@
 																{#each extras.applications as h (h.id)}
 																	<tr class="border-t border-border">
 																		<td class="px-3 py-2 text-xs text-heading">{h.candidateName}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.role ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.nationalId ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.reviewedAt ? dateFmt.format(new Date(h.reviewedAt)) : '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.reviewerName ?? '—'}</td>
