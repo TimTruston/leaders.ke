@@ -7,10 +7,10 @@
 //   status   — aspirant | current | former   (the person's lead seat)
 //   source   — seeded | applied | claimed     (how the profile came to exist)
 //   verified — null | pending | approved | rejected | deleted  (review-workflow state)
-import { and, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 
 export type ProfileSource = 'seeded' | 'applied' | 'claimed';
@@ -202,15 +202,20 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	verified: ProfileVerified;
 	deactivated: boolean;
 	graduatableCampaignId: number | null;
+	// The pending decisions the admin control bar surfaces inline (moved off the
+	// Team/Campaign tabs): a live claim to approve/reject, and a run verification.
+	pendingClaim: { id: number; claimantName: string } | null;
+	verification: { id: number; suggestedSlug: string } | null;
 }> {
 	const [person] = await db
-		.select({ id: users.id, deletedAt: users.deletedAt })
+		.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, deletedAt: users.deletedAt })
 		.from(users)
 		.where(eq(users.id, subjectUserId));
 
 	const [claim] = await db
-		.select({ outcome: profileClaims.outcome })
+		.select({ id: profileClaims.id, outcome: profileClaims.outcome, deletedAt: profileClaims.deletedAt, first: users.firstName, other: users.otherNames })
 		.from(profileClaims)
+		.innerJoin(users, eq(profileClaims.claimedBy, users.id))
 		.where(eq(profileClaims.subjectUserId, subjectUserId))
 		.orderBy(desc(profileClaims.requestedAt))
 		.limit(1);
@@ -229,25 +234,36 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 
 	const source: ProfileSource = claim ? 'claimed' : manager ? 'applied' : 'seeded';
 
+	// The run's latest verification request (for the verified state + the decision form).
+	const [latestVerification] = run
+		? await db
+				.select({ id: verifications.id, outcome: verifications.outcome })
+				.from(verifications)
+				.where(eq(verifications.campaignId, run.id))
+				.orderBy(desc(verifications.requestedAt))
+				.limit(1)
+		: [];
+
 	let verified: ProfileVerified;
 	if (person?.deletedAt) verified = 'deleted';
 	else if (source === 'seeded') verified = null;
 	else if (source === 'claimed') verified = claim!.outcome ?? 'pending';
 	else if (run?.verifiedAt) verified = 'approved';
-	else {
-		const [v] = await db
-			.select({ outcome: verifications.outcome })
-			.from(verifications)
-			.where(run ? eq(verifications.campaignId, run.id) : isNotNull(verifications.id))
-			.orderBy(desc(verifications.requestedAt))
-			.limit(1);
-		verified = run ? (v ? (v.outcome ?? 'pending') : null) : null;
-	}
+	else verified = latestVerification ? (latestVerification.outcome ?? 'pending') : null;
 
 	return {
 		source,
 		verified,
 		deactivated: !!person?.deletedAt,
-		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null
+		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
+		// A live (pending) claim is decidable here; a decided/withdrawn one isn't.
+		pendingClaim:
+			claim && claim.outcome === null && !claim.deletedAt
+				? { id: claim.id, claimantName: fullName({ firstName: claim.first, otherNames: claim.other }) }
+				: null,
+		// A submitted verification request is decidable; approving mints the slug.
+		verification: latestVerification
+			? { id: latestVerification.id, suggestedSlug: person?.slug ?? (person ? await generateLeaderSlug(fullName(person)) : '') }
+			: null
 	};
 }

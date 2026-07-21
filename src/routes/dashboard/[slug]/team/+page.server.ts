@@ -1,11 +1,10 @@
 import { fail } from '@sveltejs/kit';
-import { and, desc, eq, isNull, or } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ambassadors, invites, managers, profileClaims, users } from '$lib/server/db/schema';
+import { ambassadors, invites, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, isCampaignAdmin, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { createInvite, listOpenInvites, revokeInvite, tryDirectGrant } from '$lib/server/invites';
-import { reviewClaim } from '$lib/server/claims';
 import { fullName } from '$lib/server/leader';
 import { isCampaignRole, isValidNationalId, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
@@ -43,24 +42,9 @@ export const load: PageServerLoad = async (event) => {
 	// anyone else's. Shows only while the campaign is still an application.
 	const mineRoles = (managerRows.find((r) => r.managers.userId === domainUser.id)?.managers.roles ?? {}) as ManagerRoles;
 
-	// The live claim on this profile, if any — a platform admin decides it here (approve
-	// grants the claimant manager access). Only surfaced to admins.
-	let pendingClaim: { id: number; claimantName: string } | null = null;
-	if (isAdmin) {
-		const [claim] = await db
-			.select({ id: profileClaims.id, first: users.firstName, other: users.otherNames })
-			.from(profileClaims)
-			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
-			.where(and(eq(profileClaims.subjectUserId, ctx.profileUser.id), or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')), isNull(profileClaims.deletedAt)))
-			.orderBy(desc(profileClaims.requestedAt))
-			.limit(1);
-		if (claim) pendingClaim = { id: claim.id, claimantName: fullName({ firstName: claim.first, otherNames: claim.other }) };
-	}
-
 	return {
 		id: domainUser.id,
 		isAdmin,
-		pendingClaim,
 		verified: ctx.verified,
 		signoff: {
 			myRole: mineRoles.title ?? '',
@@ -89,22 +73,6 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-	// Platform-admin claim decision, embedded on the Team tab: approve grants the
-	// claimant manager access; reject records the reason. Same review as the old
-	// admin claims table, just reached from the profile the claim is on.
-	reviewClaim: async (event) => {
-		const { domainUser, ctx } = await requireLeader(event);
-		if (!(await isCampaignAdmin(domainUser.id, ctx))) return fail(403, { error: 'Admins only.' });
-		const form = await event.request.formData();
-		const claimId = Number(form.get('claimId'));
-		const outcome = String(form.get('outcome') ?? '');
-		const notes = String(form.get('notes') ?? '').trim();
-		if (!claimId || (outcome !== 'approved' && outcome !== 'rejected')) return fail(400, { error: 'Invalid request.' });
-		const result = await reviewClaim(claimId, domainUser.id, outcome, notes);
-		if (!result.ok) return fail(400, { error: result.error });
-		return { claimReviewed: true };
-	},
-
 	// Sign-off: the current user's attestation, embedded on this tab. Role,
 	// national ID, and ID images all save onto their OWN manager row's roles jsonb,
 	// so team members never overwrite each other's sign-off.

@@ -6,17 +6,37 @@ import { requireAdmin } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { getProfileAdminMeta } from '$lib/server/profiles';
 import { graduateCampaign } from '$lib/server/candidates';
+import { reviewClaim } from '$lib/server/claims';
+import { reviewVerification } from '$lib/server/verifications';
 import type { RequestHandler } from './$types';
 
-// The admin header block on any leader dashboard posts here (Deactivate/Activate,
-// Declare Winner, Delete). A plain POST + 303 back, like /dashboard/notifications —
-// the confirm modal in the layout gates each one.
+// The admin control bar on any leader dashboard posts here — the lifecycle actions
+// (Deactivate/Activate, Declare Winner, Delete) and the inline decision forms
+// (claim + verification review). A plain POST + 303 back, like /dashboard/notifications;
+// the confirm modal in the layout gates the destructive ones.
 export const POST: RequestHandler = async (event) => {
-	await requireAdmin(event);
+	const { domainUser } = await requireAdmin(event);
 	const form = await event.request.formData();
 	const profileId = Number(form.get('profileId'));
 	const action = String(form.get('action') ?? '');
 	const next = String(form.get('next') ?? '/dashboard/admin/profiles');
+
+	// Decision forms carry their own target id, not a profileId.
+	if (action === 'reviewClaim') {
+		await reviewClaim(Number(form.get('claimId')), domainUser.id, form.get('outcome') === 'approved' ? 'approved' : 'rejected', String(form.get('notes') ?? '').trim());
+		redirect(303, next);
+	}
+	if (action === 'reviewVerification') {
+		await reviewVerification(
+			Number(form.get('verificationId')),
+			domainUser.id,
+			form.get('outcome') === 'approved' ? 'approved' : 'rejected',
+			String(form.get('notes') ?? '').trim(),
+			String(form.get('slug') ?? '').trim()
+		);
+		redirect(303, next);
+	}
+
 	if (!profileId) redirect(303, next);
 
 	if (action === 'deactivate') {

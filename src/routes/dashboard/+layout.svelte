@@ -477,6 +477,35 @@
 				{/if}
 			</div>
 
+			<!-- Inline claim decision (was the Team-tab banner): approve grants the claimant
+			manager access, reject records a reason. Posts to the shared admin endpoint. -->
+			{#if ac.pendingClaim}
+				<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
+					<input type="hidden" name="action" value="reviewClaim" />
+					<input type="hidden" name="claimId" value={ac.pendingClaim.id} />
+					<input type="hidden" name="next" value={page.url.pathname} />
+					<span class="text-xs font-medium text-heading">Claim by {ac.pendingClaim.claimantName}</span>
+					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
+					<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
+					<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
+				</form>
+			{/if}
+
+			<!-- Inline verification decision (was the Campaign-tab banner): approve mints the
+			prefilled slug + takes the run live, reject records a reason. -->
+			{#if ac.verification}
+				<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
+					<input type="hidden" name="action" value="reviewVerification" />
+					<input type="hidden" name="verificationId" value={ac.verification.id} />
+					<input type="hidden" name="next" value={page.url.pathname} />
+					<span class="text-xs font-medium text-heading">Verify · leaders.ke/</span>
+					<input type="text" name="slug" value={ac.verification.suggestedSlug} placeholder="enter-a-slug" class="min-w-48 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
+					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
+					<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
+					<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
+				</form>
+			{/if}
+
 			<!-- One form the confirm modal submits; the chosen action is written straight
 			onto the hidden input before requestSubmit so no reactive flush is needed. -->
 			<form method="post" action="/dashboard/admin/profile-action" bind:this={adminFormEl} class="hidden">
