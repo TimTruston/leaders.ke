@@ -245,11 +245,14 @@ export const managers = pgTable('managers', {
   uniqueIndex('one_manager_per_person').on(t.userId, t.subjectUserId).where(sql`${t.deletedAt} is null`),
 ]);
 
-// A person who mobilizes citizens on the ground for a leader's campaign.
+// A person who mobilizes citizens on the ground for a candidate's campaign.
+// Attached to the PERSON (subjectUserId), not a leaders term — a pure aspirant
+// has no leaders row but can still take on ambassadors (they mobilize for the
+// person's run). Follows the ambassador creates are person-scoped too.
 export const ambassadors = pgTable('ambassadors', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id).notNull(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   managerId: integer('manager_id').references(() => managers.id),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
   roles: jsonb('roles').default({}).notNull(),

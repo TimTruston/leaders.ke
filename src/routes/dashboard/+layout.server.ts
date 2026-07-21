@@ -320,7 +320,7 @@ export const load: LayoutServerLoad = async (event) => {
 		claimRejection,
 		pendingClaims,
 		myCampaigns,
-		ambassadorFor: ambassadorAssignments.map((a) => ({ leaderId: a.leaderId, name: a.leaderName })),
+		ambassadorFor: ambassadorAssignments.map((a) => ({ subjectId: a.subjectId, name: a.leaderName })),
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,

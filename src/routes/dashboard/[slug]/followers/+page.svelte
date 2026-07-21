@@ -9,7 +9,6 @@
 
 	// The public profile URL is where followers sign up; surfaced here for sharing.
 	const publicPath = $derived(page.data.leaderContext?.publicPath ?? '/presidents');
-	const leaderId = $derived(page.data.leaderContext?.leaderId ?? 0);
 	const county = $derived(page.data.leaderContext?.region ?? null);
 
 	function onWardChange(event: Event) {
@@ -108,7 +107,6 @@
 		page={data.page}
 		pageSize={data.pageSize}
 		pagerHref={(p) => (data.ward ? `?ward=${encodeURIComponent(data.ward)}&page=${p}` : `?page=${p}`)}
-		{leaderId}
 		{county}
 	/>
 </div>

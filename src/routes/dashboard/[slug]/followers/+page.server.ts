@@ -79,7 +79,7 @@ export const actions: Actions = {
 	addFollower: async (event) => {
 		const { domainUser, ctx } = await requireLeader(event);
 		const form = await event.request.formData();
-		const result = await addCitizenFollower(domainUser.id, (ctx.leader?.id ?? 0), {
+		const result = await addCitizenFollower(domainUser.id, ctx.profileUser.id, {
 			name: String(form.get('name') ?? ''),
 			phone: String(form.get('phone') ?? ''),
 			email: String(form.get('email') ?? ''),

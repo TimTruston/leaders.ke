@@ -31,7 +31,7 @@ export const load: PageServerLoad = async (event) => {
 			.from(ambassadors)
 			.innerJoin(users, eq(ambassadors.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(ambassadors.leaderId, ctx.leader?.id ?? 0), isNull(ambassadors.deletedAt))),
+			.where(and(eq(ambassadors.subjectUserId, ctx.profileUser.id), isNull(ambassadors.deletedAt))),
 		listOpenInvites(ctx.profileUser.id),
 		isCampaignAdmin(domainUser.id, ctx)
 	]);
@@ -233,13 +233,13 @@ export const actions: Actions = {
 			.from(ambassadors)
 			.innerJoin(users, eq(ambassadors.userId, users.id))
 			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader?.id ?? 0)));
+			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.subjectUserId, ctx.profileUser.id)));
 
 		// Blueprint rule: removing an ambassador leaves their subscribers attached to the campaign.
 		await db
 			.update(ambassadors)
 			.set({ isActive: false, deletedAt: new Date() })
-			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.leaderId, ctx.leader?.id ?? 0)));
+			.where(and(eq(ambassadors.id, memberId), eq(ambassadors.subjectUserId, ctx.profileUser.id)));
 		return { removed: { email: member?.email ?? '' } };
 	}
 };

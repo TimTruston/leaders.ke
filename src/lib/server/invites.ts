@@ -53,20 +53,18 @@ export async function tryDirectGrant(subjectUserId: number, role: 'manager' | 'a
 		.select({ id: managers.id })
 		.from(managers)
 		.where(and(eq(managers.userId, account.userId), eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
-	// Ambassadors are per-run: their existing membership lives on the person's active term.
-	const activeTerm = await activeTermForPerson(subjectUserId);
-	const [isAmbassador] = activeTerm
-		? await db
-				.select({ id: ambassadors.id })
-				.from(ambassadors)
-				.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.leaderId, activeTerm.leaders.id), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)))
-		: [];
+	// Ambassadors attach to the PERSON (subjectUserId), so a pure aspirant with no
+	// leaders term can still take them on.
+	const [isAmbassador] = await db
+		.select({ id: ambassadors.id })
+		.from(ambassadors)
+		.where(and(eq(ambassadors.userId, account.userId), eq(ambassadors.subjectUserId, subjectUserId), eq(ambassadors.isActive, true), isNull(ambassadors.deletedAt)));
 	if (!isManager && !isAmbassador) return null;
 
 	if (role === 'manager' && !isManager) {
 		await db.insert(managers).values({ userId: account.userId, subjectUserId, roles: {} });
-	} else if (role === 'ambassador' && !isAmbassador && activeTerm) {
-		await db.insert(ambassadors).values({ userId: account.userId, leaderId: activeTerm.leaders.id, roles: {} });
+	} else if (role === 'ambassador' && !isAmbassador) {
+		await db.insert(ambassadors).values({ userId: account.userId, subjectUserId, roles: {} });
 	}
 	return { userId: account.userId };
 }
@@ -340,15 +338,16 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 			await db.insert(managers).values({ userId, subjectUserId: invite.subjectUserId, roles: {} });
 		}
 	} else if (invite.role === 'ambassador') {
-		if (!activeTerm) return { ok: false as const, error: 'This invite link is no longer valid.' };
+		// Ambassadors attach to the PERSON, so no active term is required (an
+		// aspirant with only a run can still onboard ambassadors).
 		const [existing] = await db
 			.select({ id: ambassadors.id })
 			.from(ambassadors)
 			.where(
-				and(eq(ambassadors.userId, userId), eq(ambassadors.leaderId, activeTerm.leaders.id), isNull(ambassadors.deletedAt))
+				and(eq(ambassadors.userId, userId), eq(ambassadors.subjectUserId, invite.subjectUserId), isNull(ambassadors.deletedAt))
 			);
 		if (!existing) {
-			await db.insert(ambassadors).values({ userId, leaderId: activeTerm.leaders.id, roles: {} });
+			await db.insert(ambassadors).values({ userId, subjectUserId: invite.subjectUserId, roles: {} });
 		}
 	} else {
 		// Follows are person-scoped: digestId is the followed person's users.id.
@@ -382,15 +381,15 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 	const verified = !!activeTerm?.leaders.verifiedAt || !!run?.verifiedAt;
 	const dashboardBase = verified && person.slug ? `/dashboard/${person.slug}` : `/dashboard/apply/${person.authUserId}`;
 
-	return { ok: true as const, role: invite.role, leaderName: fullName(person), dashboardBase, leaderId: activeTerm?.leaders.id ?? 0 };
+	return { ok: true as const, role: invite.role, leaderName: fullName(person), dashboardBase, subjectId: invite.subjectUserId };
 }
 
 /** Where each accepted role actually lands: managers go straight into the
  * campaign they joined; ambassadors to that campaign's tab on the citizen view;
  * followers to the citizen overview. */
-export function inviteDestination(role: InviteRole, dashboardBase: string, leaderId: number): string {
+export function inviteDestination(role: InviteRole, dashboardBase: string, subjectId: number): string {
 	if (role === 'manager') return `${dashboardBase}/profile`;
-	if (role === 'ambassador') return `/dashboard/mobilize/${leaderId}`;
+	if (role === 'ambassador') return `/dashboard/mobilize/${subjectId}`;
 	return '/dashboard';
 }
 

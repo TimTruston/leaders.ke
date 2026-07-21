@@ -15,15 +15,15 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
-	const leaderId = Number(event.params.leaderId);
+	const subjectId = Number(event.params.subjectId);
 
 	const assignments = await listAmbassadorAssignments(domainUser.id);
-	const assignment = assignments.find((a) => a.leaderId === leaderId);
+	const assignment = assignments.find((a) => a.subjectId === subjectId);
 	if (!assignment) error(404, 'You are not an ambassador for this campaign.');
 
 	const pageSize = await getPageSize();
 	const page = Math.max(1, Number(event.url.searchParams.get('page') ?? 1));
-	const { recruits, total } = await listRecruits(domainUser.id, leaderId, page, pageSize);
+	const { recruits, total } = await listRecruits(domainUser.id, subjectId, page, pageSize);
 
 	return { assignment, recruits, total, page, pageSize };
 };
@@ -31,14 +31,14 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	addFollower: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
-		const leaderId = Number(event.params.leaderId);
+		const subjectId = Number(event.params.subjectId);
 		const assignments = await listAmbassadorAssignments(domainUser.id);
-		if (!assignments.some((a) => a.leaderId === leaderId)) {
+		if (!assignments.some((a) => a.subjectId === subjectId)) {
 			return fail(403, { error: 'You can only add citizens to campaigns you mobilize for.' });
 		}
 
 		const form = await event.request.formData();
-		const result = await addCitizenFollower(domainUser.id, leaderId, {
+		const result = await addCitizenFollower(domainUser.id, subjectId, {
 			name: String(form.get('name') ?? ''),
 			phone: String(form.get('phone') ?? ''),
 			email: String(form.get('email') ?? ''),

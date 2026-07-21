@@ -268,7 +268,7 @@
 				<div class="rounded-3xl bg-primary p-6 text-on-primary">
 					<h2 class="text-lg font-bold text-on-primary">Is this you?</h2>
 					<p class="mt-2 text-sm text-on-primary/80">
-						Claim this profile and get manager access to run its campaign toolkit.
+						Get access to modify how it looks.
 					</p>
 					<a
 						href="/dashboard/claim/{leader.slug}/profile"

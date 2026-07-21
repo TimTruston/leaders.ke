@@ -52,7 +52,6 @@
 			page={data.page}
 			pageSize={data.pageSize}
 			pagerHref={(p) => `?page=${p}`}
-			leaderId={data.assignment.leaderId}
 			county={data.assignment.region}
 		/>
 	</div>

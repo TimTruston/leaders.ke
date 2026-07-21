@@ -87,8 +87,8 @@
 				return [
 					{ href: '/dashboard', label: 'Overview' },
 					{ href: '/dashboard/invites', label: 'Invites' },
-					...data.ambassadorFor.map((a: { leaderId: number; name: string }) => ({
-						href: `/dashboard/mobilize/${a.leaderId}`,
+					...data.ambassadorFor.map((a: { subjectId: number; name: string }) => ({
+						href: `/dashboard/mobilize/${a.subjectId}`,
 						label: a.name
 					})),
 					{ href: '/dashboard/account', label: 'Account' }
@@ -200,7 +200,7 @@
 	const activeAssignment = $derived.by(() => {
 		const [, , second, third] = page.url.pathname.split('/');
 		if (second !== 'mobilize') return null;
-		return data.ambassadorFor.find((a: { leaderId: number; name: string }) => a.leaderId === Number(third)) ?? null;
+		return data.ambassadorFor.find((a: { subjectId: number; name: string }) => a.subjectId === Number(third)) ?? null;
 	});
 
 	// Exact match for any tab that's a URL-prefix of a sibling tab (e.g. Overview at

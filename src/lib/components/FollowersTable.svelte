@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Follower roster shared by the manager view (/dashboard/[slug]/followers, all
-	// followers) and the ambassador view (/dashboard/mobilize/[leaderId], only the
+	// followers) and the ambassador view (/dashboard/mobilize/[subjectId], only the
 	// citizens they recruited — addedBy scoping happens server-side). "Add a citizen"
 	// (blueprint funnel A) sits on top; the contact channels double as digest opt-ins.
 	import { enhance } from '$app/forms';
@@ -21,7 +21,6 @@
 		page,
 		pageSize,
 		pagerHref,
-		leaderId,
 		county = null,
 		addAction = '?/addFollower'
 	}: {
@@ -30,7 +29,6 @@
 		page: number;
 		pageSize: number;
 		pagerHref: (page: number) => string;
-		leaderId: number;
 		county?: string | null;
 		addAction?: string;
 	} = $props();
@@ -65,7 +63,6 @@
 			};
 		}}
 	>
-		<input type="hidden" name="leaderId" value={leaderId} />
 		{#if county}<input type="hidden" name="county" value={county} />{/if}
 		<div class="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-5">
 			<label class="block">
