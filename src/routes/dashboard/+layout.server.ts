@@ -311,12 +311,14 @@ export const load: LayoutServerLoad = async (event) => {
 	const pendingClaims = [...pendingBySlug.values()];
 
 	// A platform admin viewing a SPECIFIC leader's dashboard gets the header control
-	// block (source/verified badges, lifecycle actions, decision forms). Gated on an
-	// explicit slug/apply-id route param — otherwise the citizen pages' fallback ctx
-	// (the admin's own/first-managed profile) would leak the bar onto /dashboard.
-	const onLeaderRoute = !!(event.params as { slug?: string; id?: string }).slug || !!(event.params as { id?: string }).id;
+	// block (source/verified badges, lifecycle actions, decision forms). Gated on the
+	// route FAMILY (a campaign slug or the apply flow), derived from the path rather
+	// than event.params — a layout load doesn't reliably carry the deeper [id]/[slug].
+	// Otherwise the citizen pages' fallback ctx (the admin's own/first-managed profile)
+	// would leak the bar onto /dashboard.
+	const isLeaderFamily = family === 'apply' || !['apply', 'claim', 'admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
 	const adminControls =
-		domainUser.adminAt && ctx && onLeaderRoute
+		domainUser.adminAt && ctx && isLeaderFamily
 			? { ...(await getProfileAdminMeta(ctx.profileUser.id)), profileId: ctx.profileUser.id, profileName: fullName(ctx.profileUser) }
 			: null;
 

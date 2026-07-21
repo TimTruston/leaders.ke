@@ -9,7 +9,8 @@
 //   verified — null | pending | approved | rejected | deleted  (review-workflow state)
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
+import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ACTIVE_CYCLE, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 
@@ -202,9 +203,10 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	verified: ProfileVerified;
 	deactivated: boolean;
 	graduatableCampaignId: number | null;
+	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
 	// The pending decisions the admin control bar surfaces inline (moved off the
 	// Team/Campaign tabs): a live claim to approve/reject, and a run verification.
-	pendingClaim: { id: number; claimantName: string } | null;
+	claim: { id: number; claimantId: number; claimantName: string; email: string | null; phone: string | null } | null;
 	verification: { id: number; suggestedSlug: string } | null;
 }> {
 	const [person] = await db
@@ -212,18 +214,56 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		.from(users)
 		.where(eq(users.id, subjectUserId));
 
+	// The claimant is profileClaims.claimedBy (join to that account, not the subject).
 	const [claim] = await db
-		.select({ id: profileClaims.id, outcome: profileClaims.outcome, deletedAt: profileClaims.deletedAt, first: users.firstName, other: users.otherNames })
+		.select({ id: profileClaims.id, outcome: profileClaims.outcome, deletedAt: profileClaims.deletedAt, claimantId: users.id, first: users.firstName, other: users.otherNames })
 		.from(profileClaims)
 		.innerJoin(users, eq(profileClaims.claimedBy, users.id))
 		.where(eq(profileClaims.subjectUserId, subjectUserId))
 		.orderBy(desc(profileClaims.requestedAt))
 		.limit(1);
 
-	const [manager] = await db
-		.select({ id: managers.id })
+	// The applicant is the managing ACCOUNT (managers.userId), not the profile subject —
+	// prefer the admin manager (the creator/owner).
+	const [application] = await db
+		.select({ id: managers.id, applicantId: users.id, first: users.firstName, other: users.otherNames, admin: managers.roles })
 		.from(managers)
-		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+		.innerJoin(users, eq(managers.userId, users.id))
+		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)))
+		.orderBy(desc(managers.id));
+
+	// The applicant's / claimant's own contact info (email + phone) for the "…by" line,
+	// falling back to their login email when they have no saved contact rows.
+	const accountIds = [claim?.claimantId, application?.applicantId].filter((x): x is number => !!x);
+	const contactByUser = new Map<number, { email: string | null; phone: string | null; authEmail: string | null }>();
+	if (accountIds.length) {
+		const [contactRows, authRows] = await Promise.all([
+			db
+				.select({ userId: contacts.userId, channel: contacts.channel, value: contacts.value })
+				.from(contacts)
+				.where(and(inArray(contacts.userId, accountIds), isNull(contacts.deletedAt))),
+			db
+				.select({ userId: users.id, email: authUsers.email })
+				.from(users)
+				.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+				.where(inArray(users.id, accountIds))
+		]);
+		for (const r of contactRows) {
+			const e = contactByUser.get(r.userId) ?? { email: null, phone: null, authEmail: null };
+			if (r.channel === 'email') e.email = r.value;
+			if (r.channel === 'sms') e.phone = r.value;
+			contactByUser.set(r.userId, e);
+		}
+		for (const r of authRows) {
+			const e = contactByUser.get(r.userId) ?? { email: null, phone: null, authEmail: null };
+			e.authEmail = r.email;
+			contactByUser.set(r.userId, e);
+		}
+	}
+	const contactsFor = (uid: number) => {
+		const c = contactByUser.get(uid);
+		return { email: c?.email ?? c?.authEmail ?? null, phone: c?.phone ?? null };
+	};
 
 	// The person's current-cycle main run, and whether it's verified + un-graduated
 	// (Declare Winner turns a verified un-graduated run into a `current` term).
@@ -232,7 +272,7 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
-	const source: ProfileSource = claim ? 'claimed' : manager ? 'applied' : 'seeded';
+	const source: ProfileSource = claim ? 'claimed' : application ? 'applied' : 'seeded';
 
 	// The run's latest verification request (for the verified state + the decision form).
 	const [latestVerification] = run
@@ -256,10 +296,13 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		verified,
 		deactivated: !!person?.deletedAt,
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
+		application: application
+			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
+			: null,
 		// A live (pending) claim is decidable here; a decided/withdrawn one isn't.
-		pendingClaim:
+		claim:
 			claim && claim.outcome === null && !claim.deletedAt
-				? { id: claim.id, claimantName: fullName({ firstName: claim.first, otherNames: claim.other }) }
+				? { id: claim.id, claimantId: claim.claimantId, claimantName: fullName({ firstName: claim.first, otherNames: claim.other }), ...contactsFor(claim.claimantId) }
 				: null,
 		// A submitted verification request is decidable; approving mints the slug.
 		verification: latestVerification

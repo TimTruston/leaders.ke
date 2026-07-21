@@ -431,6 +431,19 @@
 		</div>
 	</div>
 
+	<!-- Inline approve/reject decision form (claim or verification) — identical but for
+	its action + target-id field; posts to the shared admin endpoint. -->
+	{#snippet decisionForm(action: string, idName: string, idValue: number)}
+		<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
+			<input type="hidden" name="action" value={action} />
+			<input type="hidden" name={idName} value={idValue} />
+			<input type="hidden" name="next" value={page.url.pathname} />
+			<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
+			<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
+			<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
+		</form>
+	{/snippet}
+
 	<!-- Platform-admin control bar: shown on ANY profile a platform admin opens via the
 	Profiles tab "Admin" button. Source + verified badges, then the destructive lifecycle
 	actions, each behind a confirm modal with its own wording. -->
@@ -442,6 +455,14 @@
 				title="How the profile came to exist: has a claim → claimed; else has an active manager → applied; else → seeded."
 				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.source === 'applied' ? 'bg-primary-soft text-on-primary' : ac.source === 'claimed' ? 'bg-surface text-heading' : 'border border-border text-muted'}"
 			>{ac.source}</span>
+			<!-- Who applied/claimed + how to reach them. A pending claim (ac.claim) names the
+			claimant; otherwise the controlling manager (ac.application) is the applicant, or
+			the now-approved claimant. -->
+			{#if ac.claim}
+				<span class="text-xs text-muted">by <span class="font-medium text-heading">{ac.claim.claimantName}</span>{#if ac.claim.email} · {ac.claim.email}{/if}{#if ac.claim.phone} · {ac.claim.phone}{/if}</span>
+			{:else if ac.application}
+				<span class="text-xs text-muted">by <span class="font-medium text-heading">{ac.application.applicantName}</span>{#if ac.application.email} · {ac.application.email}{/if}{#if ac.application.phone} · {ac.application.phone}{/if}</span>
+			{/if}
 			<span
 				title="Review-workflow state: seeded → —; claimed → latest claim outcome; applied → run verified/latest request; soft-deleted → deleted."
 				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.verified === 'approved' ? 'bg-primary-soft text-on-primary' : ac.verified === 'pending' ? 'border border-primary text-primary' : 'border border-border text-muted'}"
@@ -477,34 +498,11 @@
 				{/if}
 			</div>
 
-			<!-- Inline claim decision (was the Team-tab banner): approve grants the claimant
-			manager access, reject records a reason. Posts to the shared admin endpoint. -->
-			{#if ac.pendingClaim}
-				<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
-					<input type="hidden" name="action" value="reviewClaim" />
-					<input type="hidden" name="claimId" value={ac.pendingClaim.id} />
-					<input type="hidden" name="next" value={page.url.pathname} />
-					<span class="text-xs font-medium text-heading">Claim by {ac.pendingClaim.claimantName}</span>
-					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
-					<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
-					<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
-				</form>
-			{/if}
-
-			<!-- Inline verification decision (was the Campaign-tab banner): approve mints the
-			prefilled slug + takes the run live, reject records a reason. -->
-			{#if ac.verification}
-				<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
-					<input type="hidden" name="action" value="reviewVerification" />
-					<input type="hidden" name="verificationId" value={ac.verification.id} />
-					<input type="hidden" name="next" value={page.url.pathname} />
-					<span class="text-xs font-medium text-heading">Verify · leaders.ke/</span>
-					<input type="text" name="slug" value={ac.verification.suggestedSlug} placeholder="enter-a-slug" class="min-w-48 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
-					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
-					<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
-					<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
-				</form>
-			{/if}
+			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager access. -->
+			{#if ac.claim}{@render decisionForm('reviewClaim', 'claimId', ac.claim.id)}{/if}
+			<!-- Verification decision (was the Campaign-tab banner): approve takes the run live.
+			The slug is set on the Profile tab, not here. -->
+			{#if ac.verification}{@render decisionForm('reviewVerification', 'verificationId', ac.verification.id)}{/if}
 
 			<!-- One form the confirm modal submits; the chosen action is written straight
 			onto the hidden input before requestSubmit so no reactive flush is needed. -->
