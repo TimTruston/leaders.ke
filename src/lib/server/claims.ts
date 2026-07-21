@@ -73,6 +73,19 @@ export async function resolveClaimRequest(event: RequestEvent) {
 		)
 		.orderBy(desc(profileClaims.requestedAt))
 		.limit(1);
+
+	// Only seeded/unowned profiles are claimable — an applied (or already-claimed)
+	// profile is owned by a manager. Allow the caller's own in-flight claim through
+	// (so a pending claimant can keep editing), but never start a new claim on an
+	// owned profile.
+	if (!claim) {
+		const [owner] = await db
+			.select({ id: managers.id })
+			.from(managers)
+			.where(and(eq(managers.subjectUserId, resolved.row.users.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+		if (owner) redirect(302, '/dashboard');
+	}
+
 	return { domainUser, slug, resolved, claim: claim ?? null };
 }
 

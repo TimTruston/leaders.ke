@@ -8,11 +8,13 @@
 //   source   — seeded | applied | claimed     (how the profile came to exist)
 //   verified — null | pending | approved | rejected | deleted  (review-workflow state)
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ACTIVE_CYCLE, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
+import { formatKenyanPhoneDisplay } from '$lib/utils/phone';
 
 export type ProfileSource = 'seeded' | 'applied' | 'claimed';
 export type ProfileVerified = 'pending' | 'approved' | 'rejected' | 'deleted' | null;
@@ -262,7 +264,8 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	}
 	const contactsFor = (uid: number) => {
 		const c = contactByUser.get(uid);
-		return { email: c?.email ?? c?.authEmail ?? null, phone: c?.phone ?? null };
+		// Phone stored as 254…; show it as a local 0700 000 000 on the control bar.
+		return { email: c?.email ?? c?.authEmail ?? null, phone: c?.phone ? formatKenyanPhoneDisplay(c.phone) : null };
 	};
 
 	// The person's current-cycle main run, and whether it's verified + un-graduated
@@ -308,5 +311,96 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		verification: latestVerification
 			? { id: latestVerification.id, suggestedSlug: person?.slug ?? (person ? await generateLeaderSlug(fullName(person)) : '') }
 			: null
+	};
+}
+
+export type ProfileExtras = Awaited<ReturnType<typeof getProfileExtras>>;
+
+/** The review history for one profile's expandable row on the Profiles tab, fetched
+ * on demand. Two independent logs, shown by source:
+ *  - claimHistory: every CLAIM ever made on THIS person (past claimants + verdicts) —
+ *    for seeded/claimed profiles (an applied one can't be claimed).
+ *  - applications: every verification the profile's APPLICANT submitted, across every
+ *    candidate they represent (the agency view) — for applied profiles.
+ * Same columns the old claims/verifications tables showed, minus team & sign-off. */
+export async function getProfileExtras(subjectUserId: number) {
+	const claimant = alias(users, 'claimant');
+	const claimReviewer = alias(users, 'claim_reviewer');
+	const applicantUser = alias(users, 'applicant');
+	const candidate = alias(users, 'candidate');
+	const verificationReviewer = alias(users, 'verification_reviewer');
+
+	// The profile's controlling account — the applicant whose applications we log.
+	const [applicant] = await db
+		.select({ userId: managers.userId, first: applicantUser.firstName, other: applicantUser.otherNames })
+		.from(managers)
+		.innerJoin(applicantUser, eq(managers.userId, applicantUser.id))
+		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)))
+		.orderBy(desc(managers.id));
+
+	const [claimRows, applicationRows] = await Promise.all([
+		db
+			.select({
+				id: profileClaims.id,
+				claimantFirst: claimant.firstName,
+				claimantOther: claimant.otherNames,
+				requestedAt: profileClaims.requestedAt,
+				outcome: profileClaims.outcome,
+				deletedAt: profileClaims.deletedAt,
+				reviewedAt: profileClaims.reviewedAt,
+				reviewerFirst: claimReviewer.firstName,
+				reviewerOther: claimReviewer.otherNames,
+				notes: profileClaims.notes
+			})
+			.from(profileClaims)
+			.innerJoin(claimant, eq(profileClaims.claimedBy, claimant.id))
+			.leftJoin(claimReviewer, eq(profileClaims.reviewedBy, claimReviewer.id))
+			.where(eq(profileClaims.subjectUserId, subjectUserId))
+			.orderBy(desc(profileClaims.requestedAt)),
+		// Every application this applicant submitted — joined to the candidate each was
+		// for, so an agency's whole roster of applications shows here.
+		applicant
+			? db
+					.select({
+						id: verifications.id,
+						candidateFirst: candidate.firstName,
+						candidateOther: candidate.otherNames,
+						requestedAt: verifications.requestedAt,
+						outcome: verifications.outcome,
+						reviewedAt: verifications.reviewedAt,
+						reviewerFirst: verificationReviewer.firstName,
+						reviewerOther: verificationReviewer.otherNames,
+						notes: verifications.notes
+					})
+					.from(verifications)
+					.innerJoin(campaigns, eq(verifications.campaignId, campaigns.id))
+					.innerJoin(candidate, eq(campaigns.subjectUserId, candidate.id))
+					.leftJoin(verificationReviewer, eq(verifications.reviewedBy, verificationReviewer.id))
+					.where(eq(verifications.requestedBy, applicant.userId))
+					.orderBy(desc(verifications.requestedAt))
+			: Promise.resolve([])
+	]);
+
+	return {
+		applicantName: applicant ? fullName({ firstName: applicant.first, otherNames: applicant.other }) : null,
+		claimHistory: claimRows.map((h) => ({
+			id: h.id,
+			claimantName: fullName({ firstName: h.claimantFirst, otherNames: h.claimantOther }),
+			requestedAt: h.requestedAt.toISOString(),
+			outcome: h.outcome,
+			deleted: !!h.deletedAt,
+			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
+			reviewerName: h.reviewerFirst ? fullName({ firstName: h.reviewerFirst, otherNames: h.reviewerOther ?? '' }) : null,
+			notes: h.notes
+		})),
+		applications: applicationRows.map((h) => ({
+			id: h.id,
+			candidateName: fullName({ firstName: h.candidateFirst, otherNames: h.candidateOther }),
+			requestedAt: h.requestedAt.toISOString(),
+			outcome: h.outcome,
+			reviewedAt: h.reviewedAt ? h.reviewedAt.toISOString() : null,
+			reviewerName: h.reviewerFirst ? fullName({ firstName: h.reviewerFirst, otherNames: h.reviewerOther ?? '' }) : null,
+			notes: h.notes
+		}))
 	};
 }

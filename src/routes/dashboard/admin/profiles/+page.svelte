@@ -5,6 +5,35 @@
 	let { data }: PageProps = $props();
 
 	const totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
+	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' });
+
+	// Click a row to expand its review history (claims on this profile + verification
+	// requests on its runs), fetched on demand and cached — so a full page of rows
+	// doesn't pay for all their histories up front.
+	type Extras = {
+		applicantName: string | null;
+		claimHistory: { id: number; claimantName: string; requestedAt: string; outcome: string | null; deleted: boolean; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
+		applications: { id: number; candidateName: string; requestedAt: string; outcome: string | null; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
+	};
+	let expandedId = $state<number | null>(null);
+	let loadingId = $state<number | null>(null);
+	let extrasCache = $state<Record<number, Extras>>({});
+
+	async function toggleExpand(profileId: number) {
+		if (expandedId === profileId) {
+			expandedId = null;
+			return;
+		}
+		expandedId = profileId;
+		if (extrasCache[profileId]) return;
+		loadingId = profileId;
+		try {
+			const res = await fetch(`/dashboard/admin/profiles/${profileId}`);
+			if (res.ok) extrasCache[profileId] = await res.json();
+		} finally {
+			loadingId = null;
+		}
+	}
 
 	// Keep the current search in the pager links.
 	function pagerHref(p: number) {
@@ -72,7 +101,7 @@
 				</thead>
 				<tbody>
 					{#each data.profiles as p (p.profileId)}
-						<tr class="border-t border-border">
+						<tr class="cursor-pointer border-t border-border transition hover:bg-surface-2" onclick={() => toggleExpand(p.profileId)}>
 							<td class="px-4 py-3 text-sm text-muted">
 								{#if p.managerName}
 									<div class="flex items-center justify-between gap-2">
@@ -85,12 +114,15 @@
 							</td>
 							<td class="px-4 py-3 text-sm text-heading">
 								<div class="flex items-center justify-between gap-2">
-									<span class="font-medium">{p.profileName}</span>
+									<span class="flex items-center gap-1.5">
+										<span class="text-muted transition {expandedId === p.profileId ? 'rotate-90' : ''}">›</span>
+										<span class="font-medium">{p.profileName}</span>
+									</span>
 									<span class="font-medium text-muted">{p.profileId}</span>
 								</div>
 							</td>
 							<td class="px-4 py-3 text-sm text-muted">{p.positionTitle}</td>
-							<td class="px-4 py-3 text-sm text-muted">
+							<td class="px-4 py-3 text-sm text-muted" onclick={(e) => e.stopPropagation()}>
 								{#if p.regionPath}
 									<a href={p.regionPath} target="_blank" rel="noopener" class="hover:text-primary hover:underline">{p.region}</a>
 								{:else}
@@ -104,16 +136,103 @@
 							<td class="px-4 py-3 text-sm">
 								<span title={VERIFIED_HELP} class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {verifiedClass(p.verified)}">{p.verified ?? '—'}</span>
 							</td>
-							<td class="px-4 py-3">
+							<td class="px-4 py-3" onclick={(e) => e.stopPropagation()}>
 								<div class="flex items-center gap-1.5">
 									<a href={p.adminPath} class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Admin</a>
-									<a href={p.profilePath} target="_blank" rel="noopener" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2">Profile &#8599;</a>
-									{#if p.campaignYear}
-										<a href="{p.profilePath}/{p.campaignYear}" target="_blank" rel="noopener" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2">Campaign &#8599;</a>
-									{/if}
+									<a href={p.profilePath} target="_blank" rel="noopener" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface-2">Preview &#8599;</a>
 								</div>
 							</td>
 						</tr>
+						{#if expandedId === p.profileId}
+							<tr class="border-t border-border bg-surface-2" onclick={(e) => e.stopPropagation()}>
+								<td colspan="8" class="px-4 py-4">
+									{#if loadingId === p.profileId}
+										<p class="text-sm text-muted">Loading…</p>
+									{:else if extrasCache[p.profileId]}
+										{@const extras = extrasCache[p.profileId]}
+										<!-- Only one of the two histories renders per profile (they're keyed on
+										source), so the single table takes the full row width. -->
+										<div>
+											<!-- Claim history: past claimants + verdicts. An applied profile can't be
+											claimed, so this shows only for seeded/claimed ones. -->
+											{#if p.source !== 'applied'}
+											<div>
+												<h3 class="text-sm font-semibold text-heading">Claim history</h3>
+												{#if extras.claimHistory.length > 0}
+													<div class="mt-2 overflow-x-auto rounded-xl border border-border">
+														<table class="w-full min-w-120 border-collapse text-left">
+															<thead>
+																<tr class="bg-surface">
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Claimant</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Requested</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewed</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewer</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Outcome</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Notes</th>
+																</tr>
+															</thead>
+															<tbody>
+																{#each extras.claimHistory as h (h.id)}
+																	<tr class="border-t border-border">
+																		<td class="px-3 py-2 text-xs text-heading">{h.claimantName}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.reviewedAt ? dateFmt.format(new Date(h.reviewedAt)) : '—'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.reviewerName ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs capitalize text-heading">{h.deleted ? 'withdrawn' : (h.outcome ?? 'pending')}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.notes ?? '—'}</td>
+																	</tr>
+																{/each}
+															</tbody>
+														</table>
+													</div>
+												{:else}
+													<p class="mt-1 text-sm text-muted">No claims on this profile.</p>
+												{/if}
+											</div>
+											{/if}
+
+											<!-- Application history: every application the profile's APPLICANT submitted,
+											across every candidate they represent — for applied profiles only. -->
+											{#if p.source === 'applied'}
+											<div>
+												<h3 class="text-sm font-semibold text-heading">Applications by {extras.applicantName ?? 'the applicant'}</h3>
+												{#if extras.applications.length > 0}
+													<div class="mt-2 overflow-x-auto rounded-xl border border-border">
+														<table class="w-full min-w-120 border-collapse text-left">
+															<thead>
+																<tr class="bg-surface">
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Candidate</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Requested</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewed</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewer</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Outcome</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Notes</th>
+																</tr>
+															</thead>
+															<tbody>
+																{#each extras.applications as h (h.id)}
+																	<tr class="border-t border-border">
+																		<td class="px-3 py-2 text-xs text-heading">{h.candidateName}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.reviewedAt ? dateFmt.format(new Date(h.reviewedAt)) : '—'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.reviewerName ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs capitalize text-heading">{h.outcome ?? 'pending'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.notes ?? '—'}</td>
+																	</tr>
+																{/each}
+															</tbody>
+														</table>
+													</div>
+												{:else}
+													<p class="mt-1 text-sm text-muted">No applications by {extras.applicantName ?? 'the applicant'}.</p>
+												{/if}
+											</div>
+											{/if}
+										</div>
+									{/if}
+								</td>
+							</tr>
+						{/if}
 					{/each}
 				</tbody>
 			</table>

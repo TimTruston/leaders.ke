@@ -41,6 +41,15 @@ export async function loadPublicProfileData(
 		: false;
 	const canPreview = !!opts.isAdmin || viewerIsManager;
 
+	// Only seeded/unowned profiles are claimable — an applied (or already-claimed)
+	// profile has an active manager, so "claim this" must not appear for it.
+	const hasActiveManager = !!(
+		await db
+			.select({ id: managers.id })
+			.from(managers)
+			.where(and(eq(managers.subjectUserId, row.users.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
+	)[0];
+
 	// resolveCurrentTerm's activeRun is verified-only (it drives public resolution).
 	// A previewer with no held term and no verified run yet is a pure aspirant
 	// whose draft run hasn't been verified — fall back to their current-cycle
@@ -206,7 +215,7 @@ export async function loadPublicProfileData(
 		reviewPillarOptions,
 		flaggedReviewCounts,
 		myReview,
-		canClaim: !viewerIsManager,
+		canClaim: !viewerIsManager && !hasActiveManager,
 		signedIn: !!opts.viewerId,
 		news: mentionRows.map((m) => ({ id: m.id, title: m.title, summary: m.summary ?? m.body.slice(0, 160), createdAt: m.createdAt.toISOString() })),
 		breadcrumb: {
