@@ -1,5 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
-import { ACTIVE_CYCLE, fullName, getDomainUser } from '$lib/server/leader';
+import { ACTIVE_CYCLE, campaignPath, fullName, getDomainUser } from '$lib/server/leader';
 import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
 import type { PageServerLoad } from './$types';
 
@@ -15,6 +15,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
 	const row = await resolveCampaignRun(Number(params.userId), { viewerId: viewer?.id, isAdmin: !!viewer?.adminAt });
 	if (!row) error(404, 'Campaign not found');
+	// Once approved the run is public — hand off to the canonical /[slug]/[year] URL.
+	if (row.verified && row.users.slug) redirect(302, campaignPath({ slug: row.users.slug }, Number(params.year)));
 
 	const workspace = await loadCampaignWorkspaceData(row, viewer?.id);
 	const name = fullName(row.users);

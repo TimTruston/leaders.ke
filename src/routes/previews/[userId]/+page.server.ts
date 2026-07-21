@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
-import { getDomainUser } from '$lib/server/leader';
+import { error, redirect } from '@sveltejs/kit';
+import { getDomainUser, leaderPath } from '$lib/server/leader';
 import { loadPublicProfileData } from '$lib/server/publicProfile';
 import type { PageServerLoad } from './$types';
 
@@ -14,5 +14,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		isAdmin: !!viewer?.adminAt
 	});
 	if (!data) error(404, 'Profile not found');
+	// Once approved the profile is public at its slug — send the preview there so the
+	// canonical URL takes over the moment verification mints the slug.
+	if (data.leader.verified && data.leader.slug) redirect(302, leaderPath({ slug: data.leader.slug }));
 	return { ...data, preview: true };
 };
