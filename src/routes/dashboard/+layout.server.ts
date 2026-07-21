@@ -310,11 +310,13 @@ export const load: LayoutServerLoad = async (event) => {
 	}
 	const pendingClaims = [...pendingBySlug.values()];
 
-	// A platform admin viewing any profile gets the header control block (source +
-	// verified badges, Deactivate/Activate, Declare Winner, Delete). Only computed
-	// when an admin is on a leader context that isn't their own onboarding.
+	// A platform admin viewing a SPECIFIC leader's dashboard gets the header control
+	// block (source/verified badges, lifecycle actions, decision forms). Gated on an
+	// explicit slug/apply-id route param — otherwise the citizen pages' fallback ctx
+	// (the admin's own/first-managed profile) would leak the bar onto /dashboard.
+	const onLeaderRoute = !!(event.params as { slug?: string; id?: string }).slug || !!(event.params as { id?: string }).id;
 	const adminControls =
-		domainUser.adminAt && ctx
+		domainUser.adminAt && ctx && onLeaderRoute
 			? { ...(await getProfileAdminMeta(ctx.profileUser.id)), profileId: ctx.profileUser.id, profileName: fullName(ctx.profileUser) }
 			: null;
 
