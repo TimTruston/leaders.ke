@@ -60,7 +60,7 @@ export function computeDashboardModes(
 		{ key: 'citizen', href: '/dashboard', label: 'Citizen', available: true },
 		...campaignEntries,
 		...claimEntries,
-		{ key: 'admin', href: '/dashboard/admin/verifications', label: 'Platform admin', available: !!data.isAdmin }
+		{ key: 'admin', href: '/dashboard/admin/profiles', label: 'Platform admin', available: !!data.isAdmin }
 	]
 		.filter((m) => m.available)
 		.map((m) => ({ ...m, current: m.key === currentKey }));

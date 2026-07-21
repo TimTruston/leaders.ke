@@ -35,13 +35,26 @@
 		}
 	}
 
-	// Keep the current search in the pager links.
+	// Keep the current search + sort in the pager links.
 	function pagerHref(p: number) {
 		const params = new URLSearchParams();
 		if (data.q) params.set('q', data.q);
+		if (data.sort !== 'recent') params.set('sort', data.sort);
+		params.set('dir', data.dir);
 		params.set('page', String(p));
 		return `?${params}`;
 	}
+
+	// Clicking a column header sorts by it — toggling asc/desc if it's already the
+	// active column, else ascending. Search is preserved; paging resets to page 1.
+	function sortHref(col: string) {
+		const params = new URLSearchParams();
+		if (data.q) params.set('q', data.q);
+		params.set('sort', col);
+		params.set('dir', data.sort === col && data.dir === 'asc' ? 'desc' : 'asc');
+		return `?${params}`;
+	}
+	const sortArrow = (col: string) => (data.sort === col ? (data.dir === 'asc' ? '↑' : '↓') : '');
 
 	// Hover explanations for the derived pills (they aren't stored — see profiles.ts).
 	const SOURCE_HELP = 'How the profile came to exist: has a claim → claimed; else has an active manager → applied; else → seeded.';
@@ -90,12 +103,19 @@
 				<thead>
 					<tr class="bg-surface-2">
 						<th title="The account controlling the profile: the claimant or the applicant (blank for a seeded profile with neither)." class="cursor-help px-4 py-3 text-sm font-semibold text-heading">Manager</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Profile</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Position</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Region</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Status</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Source</th>
-						<th class="px-4 py-3 text-sm font-semibold text-heading">Verified</th>
+						{#snippet sortable(col: string, label: string)}
+							<th class="px-4 py-3 text-sm font-semibold text-heading">
+								<a href={sortHref(col)} class="inline-flex items-center gap-1 hover:text-primary" class:text-primary={data.sort === col}>
+									{label}<span class="text-xs">{sortArrow(col)}</span>
+								</a>
+							</th>
+						{/snippet}
+						{@render sortable('name', 'Profile')}
+						{@render sortable('position', 'Position')}
+						{@render sortable('region', 'Region')}
+						{@render sortable('status', 'Status')}
+						{@render sortable('source', 'Source')}
+						{@render sortable('verified', 'Verified')}
 						<th class="px-4 py-3 text-sm font-semibold text-heading">Actions</th>
 					</tr>
 				</thead>

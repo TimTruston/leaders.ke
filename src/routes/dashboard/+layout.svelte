@@ -152,11 +152,8 @@
 			case 'admin':
 				return [
 					{ href: '/dashboard/admin/profiles', label: 'Profiles' },
-					{ href: '/dashboard/admin/candidates', label: 'Candidates' },
 					{ href: '/dashboard/admin/accounts', label: 'Accounts' },
 					{ href: '/dashboard/admin/pillars', label: 'Pillars' },
-					{ href: '/dashboard/admin/verifications', label: 'Verifications' },
-					{ href: '/dashboard/admin/claims', label: 'Claims' },
 					{ href: '/dashboard/admin/moderation', label: 'Moderation' },
 					{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue' },
 					{ href: '/dashboard/admin/packages', label: 'Packages' },

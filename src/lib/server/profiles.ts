@@ -37,23 +37,35 @@ export type ProfileRow = {
 	adminPath: string;
 	profilePath: string; // public /[slug] or /previews/[id] when slugless
 	campaignYear: number | null;
+	// The person's most recent lifecycle event (run/term/claim/manager change) — drives
+	// the default "recent first" sort; ISO string, epoch 0 if the person has no dated record.
+	lastActivityAt: string;
 };
 
 export type ProfilePage = { profiles: ProfileRow[]; total: number };
+
+// Sortable columns. `recent` (default) is the person's last lifecycle activity —
+// newest run/term/claim/manager change — newest first; the rest map to a visible column.
+export type ProfileSort = 'recent' | 'name' | 'position' | 'region' | 'status' | 'source' | 'verified';
 
 type Seat = { title: string; region: string; status: 'aspirant' | 'current' | 'former' };
 
 /** Every leader profile, one row per person. Admin-only and a few thousand rows, so
  * (like the old candidates tab) it fetches in bulk, merges/searches/sorts in JS, then
  * paginates. `q` matches name, slug, and seat. */
-export async function listProfiles(page: number, pageSize: number, opts: { q?: string } = {}): Promise<ProfilePage> {
+export async function listProfiles(
+	page: number,
+	pageSize: number,
+	opts: { q?: string; sort?: ProfileSort; dir?: 'asc' | 'desc' } = {}
+): Promise<ProfilePage> {
 	const [termRows, runRows] = await Promise.all([
 		db
 			.select({
 				userId: leaders.userId,
 				status: leaders.status,
 				title: positions.title,
-				region: positions.region
+				region: positions.region,
+				createdAt: leaders.createdAt
 			})
 			.from(leaders)
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
@@ -64,7 +76,8 @@ export async function listProfiles(page: number, pageSize: number, opts: { q?: s
 				campaignId: campaigns.id,
 				verifiedAt: campaigns.verifiedAt,
 				title: positions.title,
-				region: positions.region
+				region: positions.region,
+				createdAt: campaigns.createdAt
 			})
 			.from(campaigns)
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
@@ -81,7 +94,7 @@ export async function listProfiles(page: number, pageSize: number, opts: { q?: s
 			.from(users)
 			.where(inArray(users.id, personIds)),
 		db
-			.select({ subjectUserId: managers.subjectUserId, userId: managers.userId, roles: managers.roles, firstName: users.firstName, otherNames: users.otherNames })
+			.select({ subjectUserId: managers.subjectUserId, userId: managers.userId, roles: managers.roles, updatedAt: managers.updatedAt, firstName: users.firstName, otherNames: users.otherNames })
 			.from(managers)
 			.innerJoin(users, eq(managers.userId, users.id))
 			.where(and(inArray(managers.subjectUserId, personIds), eq(managers.isActive, true), isNull(managers.deletedAt))),
@@ -131,6 +144,19 @@ export async function listProfiles(page: number, pageSize: number, opts: { q?: s
 	const verificationByCampaign = new Map<number, (typeof verificationRows)[number]>();
 	for (const v of verificationRows) if (!verificationByCampaign.has(v.campaignId)) verificationByCampaign.set(v.campaignId, v);
 
+	// Last lifecycle activity per person — max over their run/term createdAt, claim
+	// requestedAt and manager updatedAt — for the default "recent first" sort.
+	const lastActivityBySubject = new Map<number, number>();
+	const bump = (userId: number, at: Date | null | undefined) => {
+		if (!at) return;
+		const t = at.getTime();
+		if (t > (lastActivityBySubject.get(userId) ?? 0)) lastActivityBySubject.set(userId, t);
+	};
+	for (const t of termRows) bump(t.userId, t.createdAt);
+	for (const r of runRows) bump(r.userId, r.createdAt);
+	for (const c of claimRows) bump(c.subjectUserId, c.requestedAt);
+	for (const m of managerRows) bump(m.subjectUserId, m.updatedAt);
+
 	const rows: ProfileRow[] = personIds.map((id) => {
 		const person = personById.get(id);
 		const seat = seatBySubject.get(id);
@@ -170,7 +196,8 @@ export async function listProfiles(page: number, pageSize: number, opts: { q?: s
 			// in-progress one under its apply UUID (the phantom's auth id).
 			adminPath: slug ? `/dashboard/${slug}/profile` : `/dashboard/apply/${person?.authUserId}/profile`,
 			profilePath: slug ? leaderPath({ slug }) : `/previews/${id}`,
-			campaignYear: run ? ACTIVE_CYCLE : null
+			campaignYear: run ? ACTIVE_CYCLE : null,
+			lastActivityAt: new Date(lastActivityBySubject.get(id) ?? 0).toISOString()
 		};
 	});
 
@@ -182,12 +209,34 @@ export async function listProfiles(page: number, pageSize: number, opts: { q?: s
 			)
 		: rows;
 
-	// Rows that need attention first (anything not seeded), then alphabetical.
+	// Column sort — default `recent` (last activity, newest first). A tie always
+	// falls back to name so the order is stable page to page.
+	const sort = opts.sort ?? 'recent';
+	const dir = opts.dir ?? (sort === 'recent' ? 'desc' : 'asc');
+	const sourceRank = { claimed: 0, applied: 1, seeded: 2 } as const;
+	const verifiedRank: Record<string, number> = { pending: 0, rejected: 1, approved: 2, deleted: 3 };
+	const cmp = (a: ProfileRow, b: ProfileRow) => {
+		switch (sort) {
+			case 'name':
+				return a.profileName.localeCompare(b.profileName);
+			case 'position':
+				return a.positionTitle.localeCompare(b.positionTitle) || a.region.localeCompare(b.region);
+			case 'region':
+				return a.region.localeCompare(b.region);
+			case 'status':
+				return a.status.localeCompare(b.status);
+			case 'source':
+				return sourceRank[a.source] - sourceRank[b.source];
+			case 'verified':
+				return (verifiedRank[a.verified ?? ''] ?? -1) - (verifiedRank[b.verified ?? ''] ?? -1);
+			default: // recent
+				return a.lastActivityAt.localeCompare(b.lastActivityAt);
+		}
+	};
 	filtered = filtered.sort((a, b) => {
-		const aw = a.source === 'seeded' ? 1 : 0;
-		const bw = b.source === 'seeded' ? 1 : 0;
-		if (aw !== bw) return aw - bw;
-		return a.profileName.localeCompare(b.profileName);
+		const base = cmp(a, b);
+		const signed = dir === 'desc' ? -base : base;
+		return signed || a.profileName.localeCompare(b.profileName);
 	});
 
 	return {
