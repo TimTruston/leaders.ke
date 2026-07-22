@@ -229,6 +229,10 @@ export async function loadPublicProfileData(
 		// Managed" instead of the claim button (the manager viewing their own
 		// public page doesn't need telling).
 		isManaged: !viewerIsManager && hasActiveManager,
+		// A platform admin, or one of the profile's own managers, already has
+		// dashboard access — shown an "Edit this profile" shortcut instead of the
+		// citizen-facing "Is this you?" claim flow.
+		canEdit: !!opts.isAdmin || viewerIsManager,
 		signedIn: !!opts.viewerId,
 		news: mentionRows.map((m) => ({ id: m.id, title: m.title, summary: m.summary ?? m.body.slice(0, 160), createdAt: m.createdAt.toISOString() })),
 		breadcrumb: {

@@ -6,6 +6,7 @@
 	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
 	import { seatPath } from '$lib/utils/seat';
+	import PencilIcon from './svgs/PencilIcon.svelte';
 
 	// The public /[leader] page body, shared with two admin preview contexts
 	// (a pending application, a pending claim) via `preview` — same look citizens
@@ -55,7 +56,7 @@
 	</div>
 {/snippet}
 
-<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	{#if !leader.verified}
 		<!-- Only admins ever see an unverified profile here (the load function 404s
 		everyone else): reviewing a submission is the whole point. -->
@@ -65,19 +66,29 @@
 	{/if}
 
 	<!-- Breadcrumb: current campaign's seat if vying, else last held seat -->
-	<nav class="text-sm text-muted" aria-label="Breadcrumb">
-		<a href={data.breadcrumb.positionPath} class="hover:text-heading hover:underline">
-			{data.breadcrumb.positionTitle}
-		</a>
-		{#if data.breadcrumb.regionLabel}
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<nav class="text-sm text-muted" aria-label="Breadcrumb">
+			<a href={data.breadcrumb.positionPath} class="hover:text-heading hover:underline">
+				{data.breadcrumb.positionTitle}
+			</a>
+			{#if data.breadcrumb.regionLabel}
+				<span class="mx-1">/</span>
+				<a href={data.breadcrumb.seatPath} class="hover:text-heading hover:underline">
+					{data.breadcrumb.regionLabel}
+				</a>
+			{/if}
 			<span class="mx-1">/</span>
-			<a href={data.breadcrumb.seatPath} class="hover:text-heading hover:underline">
-				{data.breadcrumb.regionLabel}
+			<span>{leader.name}</span>
+		</nav>
+		{#if !preview && data.canEdit}
+			<a
+				href="/dashboard/{leader.slug}/profile"
+				class="flex items-center gap-2 rounded-full border border-primary px-3 py-2 text-xs text-primary font-semibold transition hover:bg-primary hover:text-heading"
+			>
+				<PencilIcon /> <span>Manage</span>
 			</a>
 		{/if}
-		<span class="mx-1">/</span>
-		<span>{leader.name}</span>
-	</nav>
+	</div>
 
 	<div class="mt-6 grid gap-6 lg:grid-cols-3">
 		<div class="lg:col-span-2">
