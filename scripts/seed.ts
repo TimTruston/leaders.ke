@@ -12,12 +12,14 @@
 // at 1 same as a drop+recreate would, without having to re-run migrations after:
 //   bun run db:seed -- --clear --leaders
 //
-// Dependency order: system-user -> positions -> parties -> leaders -> mcas -> campaigns
-// -> pillars -> issues -> news -> admin-fixture (admin-fixture needs system-user +
-// positions: it turns the ADMIN_EMAIL account into a dev-only demo leader, visible only
-// to a signed-in admin since it stays unverified). (leaders/mcas look up parties by title and seed each
-// person's `leadership[]` terms as extra `leaders` rows in the same pass;
-// campaigns/pillars look up leaders; issues only needs positions and the system user
+// Dependency order: system-user -> positions -> parties -> leaders -> mcas -> photos
+// -> campaigns -> pillars -> issues -> news -> admin-fixture (admin-fixture needs
+// system-user + positions: it turns the ADMIN_EMAIL account into a dev-only demo
+// leader, visible only to a signed-in admin since it stays unverified). (leaders/mcas
+// look up parties by title and seed each person's `leadership[]` terms as extra
+// `leaders` rows in the same pass; photos matches shipped static/leaders/<slug>.jpg
+// files against every seeded slug; campaigns/pillars look up leaders; issues only
+// needs positions and the system user
 // as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
 // the lowest/first user id — it's also the ADMIN_EMAIL/PASSWORD account. pillar-templates
 // and platform-settings have no dependency, run any time.)
@@ -31,6 +33,7 @@ import { seedPositions } from './lib/seed-positions';
 import { seedParties } from './lib/seed-parties';
 import { seedLeaders } from './lib/seed-leaders';
 import { seedMcas } from './lib/seed-mcas';
+import { seedPhotos } from './lib/seed-photos';
 import { seedCampaigns } from './lib/seed-campaigns';
 import { seedPillars } from './lib/seed-pillars';
 import { seedPillarTemplates } from './lib/seed-pillar-templates';
@@ -53,6 +56,7 @@ const { values } = parseArgs({
 		parties: { type: 'boolean', default: false },
 		leaders: { type: 'boolean', default: false },
 		mcas: { type: 'boolean', default: false },
+		photos: { type: 'boolean', default: false },
 		campaigns: { type: 'boolean', default: false },
 		pillars: { type: 'boolean', default: false },
 		'pillar-templates': { type: 'boolean', default: false },
@@ -98,6 +102,8 @@ if (runAll || values.positions) await seedPositions(db);
 if (runAll || values.parties) await seedParties(db);
 if (runAll || values.leaders) await seedLeaders(db);
 if (runAll || values.mcas) await seedMcas(db);
+// After leaders/mcas so every seeded person's slug exists to match a shipped photo.
+if (runAll || values.photos) await seedPhotos(db);
 if (runAll || values.campaigns) await seedCampaigns(db);
 if (runAll || values.pillars) await seedPillars(db);
 if (runAll || values['pillar-templates']) await seedPillarTemplates(db);
