@@ -121,22 +121,27 @@
 			</div>
 		</div>
 
-		<EmailInput bind:value={email} verified={data.emailVerified} scope={verifyScope} verifiedValues={data.ownVerified?.email ?? []} required filled={!starRed('Email address')} />
-			<input type="hidden" name="email" value={email} />
+		
 
-		<label class="block">
-			<span class="text-sm font-medium text-heading">Website</span>
-			<div class="relative mt-1.5">
-				<span class="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted">
-					<ContactIcon kind="website" size={18} />
-				</span>
-				<input
-					type="text"
-					name="website"
-					bind:value={website}
-					placeholder="yourcampaign.ke"
-					class="w-full rounded-xl border border-border bg-surface py-2.5 pr-4 pl-11 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-				/>
+		<label class="grid gap-3 sm:grid-cols-2">
+			<div>
+				<EmailInput bind:value={email} verified={data.emailVerified} scope={verifyScope} verifiedValues={data.ownVerified?.email ?? []} required filled={!starRed('Email address')} />
+				<input type="hidden" name="email" value={email} />
+			</div>
+			<div>
+				<span class="text-sm font-medium text-heading">Website</span>
+				<div class="relative mt-1.5">
+					<span class="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted">
+						<ContactIcon kind="website" size={18} />
+					</span>
+					<input
+						type="text"
+						name="website"
+						bind:value={website}
+						placeholder="yourcampaign.ke"
+						class="w-full rounded-xl border border-border bg-surface py-2.5 pr-4 pl-11 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+					/>
+				</div>
 			</div>
 		</label>
 
