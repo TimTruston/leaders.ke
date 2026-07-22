@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns } from '$lib/server/db/schema';
-import { getDomainUser, resolveCurrentTerm } from '$lib/server/leader';
+import { ACTIVE_CYCLE, getDomainUser, resolveCurrentTerm } from '$lib/server/leader';
 import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import type { Actions, PageServerLoad } from './$types';
@@ -33,10 +33,13 @@ async function publicLead(slug: string): Promise<{ subjectId: number; leadCampai
 	if (leadsWithRun) {
 		leadCampaignId = activeRun!.campaigns.id;
 	} else if (currentTerm) {
+		// Person+cycle scoped (subjectUserId), same key as an aspirant's activeRun —
+		// leaderId on `campaigns` is only ever a nullable secondary link, never the
+		// lookup key (seed-campaigns.ts never sets it).
 		const [c] = await db
 			.select({ id: campaigns.id })
 			.from(campaigns)
-			.where(and(eq(campaigns.leaderId, currentTerm.leaders.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+			.where(and(eq(campaigns.subjectUserId, row.users.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 		leadCampaignId = c?.id ?? 0;
 	}
 	return { subjectId: row.users.id, leadCampaignId };

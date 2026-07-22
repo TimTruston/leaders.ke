@@ -69,10 +69,13 @@ export async function resolveCampaignRun(
 		position = currentTerm!.positions;
 		status = currentTerm!.leaders.status;
 		leaderId = currentTerm!.leaders.id;
+		// Person+cycle scoped (subjectUserId), same key as an aspirant's activeRun —
+		// leaderId on `campaigns` is only ever a nullable secondary link, never the
+		// lookup key (seed-campaigns.ts never sets it).
 		const [c] = await db
 			.select({ id: campaigns.id })
 			.from(campaigns)
-			.where(and(eq(campaigns.leaderId, leaderId), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+			.where(and(eq(campaigns.subjectUserId, row.users.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 		campaignId = c?.id ?? 0;
 	}
 	return { users: row.users, positions: position, status, verified, campaignId, leaderId };
