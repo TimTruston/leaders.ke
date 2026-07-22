@@ -9,12 +9,13 @@
 //    rewrites it on the profile tab later).
 //  - The slug is minted at creation, not admin approval — the page can be paid for and
 //    published without an admin in the loop.
-import { and, eq, ilike, inArray, isNull, or } from 'drizzle-orm';
+import { and, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
+import { notifyUser } from '$lib/server/notifications';
 
 export type OnboardStatus = 'aspirant' | 'current' | 'former';
 export const ONBOARD_STATUS_LABELS: Record<OnboardStatus, string> = {
@@ -248,7 +249,7 @@ export async function createOnboardProfile(domainUserId: number, input: OnboardI
  * source=claimed) by granting them admin manager access. Returns the profile's slug. */
 export async function linkOnboardProfile(domainUserId: number, input: OnboardInput, subjectUserId: number): Promise<{ slug: string; subjectUserId: number }> {
 	const [subject] = await db
-		.select({ id: users.id, slug: users.slug })
+		.select({ id: users.id, slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
 		.from(users)
 		.where(and(eq(users.id, subjectUserId), isNull(users.deletedAt)));
 	if (!subject?.slug) throw new Error('That profile is not available to link.');
@@ -268,6 +269,24 @@ export async function linkOnboardProfile(domainUserId: number, input: OnboardInp
 		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined },
 		verifiedAt: new Date()
 	});
+
+	// Platform admins should know a seeded/public profile just changed hands —
+	// access is granted immediately (no staged review yet), so this is their only
+	// signal something worth double-checking happened.
+	const [claimant] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, domainUserId));
+	const admins = await db.select({ id: users.id }).from(users).where(and(isNotNull(users.adminAt), isNull(users.deletedAt)));
+	const profileName = fullName(subject);
+	const claimantName = claimant ? fullName(claimant) : 'A citizen';
+	await Promise.all(
+		admins.map((admin) =>
+			notifyUser(admin.id, {
+				kind: 'claim',
+				title: 'A profile was claimed',
+				body: `${claimantName} claimed ${profileName}'s profile (/${subject.slug}).`,
+				href: `/dashboard/${subject.slug}/profile`
+			})
+		)
+	);
 
 	return { slug: subject.slug, subjectUserId };
 }
