@@ -187,16 +187,42 @@ const INCUMBENT_START = new Date('2022-09-13T00:00:00+03:00');
 const ASPIRANT_START = new Date('2027-08-10T00:00:00+03:00');
 
 /** This person's existing main campaign for one cycle (0 if none) — the run their
- * pillars attach to. Campaigns are never auto-created here: the explicit
- * 'campaigns' phase (src/lib/data/campaigns.json, scripts/lib/seed-campaigns.ts)
- * is the sole source of `campaigns` rows, so a person's pillars only attach once
- * that phase has run for them. */
+ * pillars attach to. Held officeholders never get one auto-created here: the
+ * explicit 'campaigns' phase (src/lib/data/campaigns.json,
+ * scripts/lib/seed-campaigns.ts) is the sole source of a HELD term's campaign,
+ * so an incumbent's pillars only attach once that phase has run for them. */
 async function findMainCampaign(db: AnyDb, opts: { subjectUserId: number; cycleYear: number }): Promise<number> {
 	const [existing] = await db
 		.select({ id: campaigns.id })
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, opts.subjectUserId), eq(campaigns.cycleYear, opts.cycleYear), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	return existing?.id ?? 0;
+}
+
+/** Find-or-create a PURE ASPIRANT's main campaign for one cycle. An aspirant has
+ * no `leaders` row at all — the campaign IS their candidacy, not an optional
+ * add-on — so unlike a held officeholder's (see findMainCampaign), this one
+ * still creates it when missing. `verifiedAt` makes the run public/ballot-eligible. */
+async function ensureAspirantCampaign(
+	db: AnyDb,
+	opts: { subjectUserId: number; positionId: number; cycleYear: number; name: string }
+): Promise<number> {
+	const existing = await findMainCampaign(db, opts);
+	if (existing) return existing;
+	const [created] = await db
+		.insert(campaigns)
+		.values({
+			creatorId: opts.subjectUserId,
+			subjectUserId: opts.subjectUserId,
+			leaderId: null,
+			positionId: opts.positionId,
+			cycleYear: opts.cycleYear,
+			verifiedAt: new Date(),
+			title: `${opts.name}'s Campaign`,
+			description: `${opts.name}'s campaign for office.`
+		})
+		.returning({ id: campaigns.id });
+	return created.id;
 }
 
 export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
@@ -317,14 +343,14 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 			}
 
 			if (row.status === 'aspirant') {
-				// A run for office, not a held term: no leaders row, and no campaign either
-				// (campaigns are only ever created by the explicit 'campaigns' phase from
-				// campaigns.json) — party membership attaches to the person directly.
+				// A run for office, not a held term: no leaders row. The campaign IS the
+				// candidacy, so (unlike a held officeholder) it's created here if missing —
+				// party membership attaches to the person directly.
 				if (partyId) {
 					await tx.insert(partyMemberships).values({ partyId, subjectUserId: domainUserId, role: 'Member', startAt: ASPIRANT_START });
 				}
 				const cycleYear = (toDate(row.startAt) ?? ASPIRANT_START).getFullYear();
-				const campId = await findMainCampaign(tx, { subjectUserId: domainUserId, cycleYear });
+				const campId = await ensureAspirantCampaign(tx, { subjectUserId: domainUserId, positionId: position.id, cycleYear, name: row.name });
 				await applyProfile(tx, domainUserId, campId, position.id, row);
 				return;
 			}
