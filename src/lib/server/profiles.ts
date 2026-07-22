@@ -399,6 +399,7 @@ export async function getProfileExtras(subjectUserId: number) {
 		db
 			.select({
 				id: profileClaims.id,
+				claimantId: claimant.id,
 				claimantFirst: claimant.firstName,
 				claimantOther: claimant.otherNames,
 				// The claimant's self-declared role, staged in the claim's sign-off.
@@ -450,13 +451,40 @@ export async function getProfileExtras(subjectUserId: number) {
 			: Promise.resolve([])
 	]);
 
+	// The claimant's own contacts (their citizen account, not the profile being
+	// claimed) — falling back to their login email when they never added one.
+	const claimantIds = claimRows.map((h) => h.claimantId);
+	const [claimantContactRows, claimantAuthRows] = claimantIds.length
+		? await Promise.all([
+				db
+					.select({ userId: contacts.userId, channel: contacts.channel, value: contacts.value })
+					.from(contacts)
+					.where(and(inArray(contacts.userId, claimantIds), isNull(contacts.deletedAt))),
+				db
+					.select({ userId: users.id, email: authUsers.email })
+					.from(users)
+					.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+					.where(inArray(users.id, claimantIds))
+			])
+		: [[], []];
+	const claimantEmailById = new Map<number, string>();
+	for (const row of claimantAuthRows) claimantEmailById.set(row.userId, row.email);
+	const claimantPhoneById = new Map<number, string>();
+	for (const row of claimantContactRows) {
+		if (row.channel === 'email' && !claimantEmailById.has(row.userId)) claimantEmailById.set(row.userId, row.value);
+		if (row.channel === 'sms' && !claimantPhoneById.has(row.userId)) claimantPhoneById.set(row.userId, row.value);
+	}
+
 	return {
 		applicantName: applicant ? fullName({ firstName: applicant.first, otherNames: applicant.other }) : null,
 		claimHistory: claimRows.map((h) => {
 			const ev = (h.evidence as { signoff?: { myRole?: string; nationalId?: string }; nationalId?: string } | null) ?? {};
+			const phone = claimantPhoneById.get(h.claimantId);
 			return {
 			id: h.id,
 			claimantName: fullName({ firstName: h.claimantFirst, otherNames: h.claimantOther }),
+			email: claimantEmailById.get(h.claimantId) ?? null,
+			phone: phone ? formatKenyanPhoneDisplay(phone) : null,
 			role: ev.signoff?.myRole ?? null,
 			nationalId: ev.signoff?.nationalId ?? ev.nationalId ?? null,
 			requestedAt: h.requestedAt.toISOString(),

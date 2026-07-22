@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import { enhance } from '$app/forms';
 	import AuthCard from '$lib/components/auth/AuthCard.svelte';
 	import Field from '$lib/components/auth/Field.svelte';
@@ -7,6 +8,12 @@
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+
+	// Dev convenience only — never prefilled in a production build.
+	let firstName = $state(dev ? 'X' : '');
+	let otherNames = $state(dev ? 'Test' : '');
+	let email = $state(data.lockedEmail ?? (dev ? 'x@leaders.ke' : ''));
+	let password = $state(dev ? '2027-08-10' : '');
 </script>
 
 <AuthCard title="Create your account" subtitle="Join leaders.ke and start engaging citizens">
@@ -39,13 +46,14 @@
 		<input type="hidden" name="next" value={data.next} />
 		{#if data.lockedEmail}<input type="hidden" name="lockedEmail" value={data.lockedEmail} />{/if}
 		<div class="grid grid-cols-2 gap-3">
-			<Field label="First name" name="firstName" autocomplete="given-name" required placeholder="Jane" />
+			<Field label="First name" name="firstName" autocomplete="given-name" required placeholder="Jane" bind:value={firstName} />
 			<Field
 				label="Other names"
 				name="otherNames"
 				autocomplete="family-name"
 				required
 				placeholder="Mumbi Mwangi"
+				bind:value={otherNames}
 			/>
 		</div>
 		<Field
@@ -55,7 +63,7 @@
 			autocomplete="email"
 			required
 			readonly={!!data.lockedEmail}
-			value={data.lockedEmail ?? ''}
+			bind:value={email}
 		/>
 		<Field
 			label="Password"
@@ -63,6 +71,7 @@
 			type="password"
 			autocomplete="new-password"
 			required
+			bind:value={password}
 		/>
 		{#if form?.message}
 			<p class="text-sm text-red-500">{form.message}</p>

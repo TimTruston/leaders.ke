@@ -12,7 +12,7 @@
 	// doesn't pay for all their histories up front.
 	type Extras = {
 		applicantName: string | null;
-		claimHistory: { id: number; claimantName: string; role: string | null; nationalId: string | null; requestedAt: string; outcome: string | null; deleted: boolean; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
+		claimHistory: { id: number; claimantName: string; email: string | null; phone: string | null; role: string | null; nationalId: string | null; requestedAt: string; outcome: string | null; deleted: boolean; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
 		applications: { id: number; candidateName: string; role: string | null; nationalId: string | null; requestedAt: string; outcome: string | null; reviewedAt: string | null; reviewerName: string | null; notes: string | null }[];
 	};
 	let expandedId = $state<number | null>(null);
@@ -180,11 +180,14 @@
 												<h3 class="text-sm font-semibold text-heading">Claims on {p.profileName}</h3>
 												{#if extras.claimHistory.length > 0}
 													<div class="mt-2 overflow-x-auto rounded-xl border border-border">
-														<table class="w-full min-w-120 border-collapse text-left">
+														<table class="w-full min-w-248 border-collapse text-left">
 															<thead>
 																<tr class="bg-surface">
-																	<th class="px-3 py-2 text-xs font-semibold text-heading">Claimant</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Claim ID</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Role</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Claimant</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Email</th>
+																	<th class="px-3 py-2 text-xs font-semibold text-heading">Phone</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">National ID</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Requested</th>
 																	<th class="px-3 py-2 text-xs font-semibold text-heading">Reviewed</th>
@@ -196,13 +199,11 @@
 															<tbody>
 																{#each extras.claimHistory as h (h.id)}
 																	<tr class="border-t border-border">
-																		<td class="px-3 py-2 text-xs text-heading">
-																			<div class="flex justify-between">
-																				<span>{h.claimantName}</span>
-																				<span>{h.id}</span>
-																			</div>
-																		</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.id}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.role ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs text-heading">{h.claimantName}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.email ?? '—'}</td>
+																		<td class="px-3 py-2 text-xs text-muted">{h.phone ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.nationalId ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.reviewedAt ? dateFmt.format(new Date(h.reviewedAt)) : '—'}</td>
