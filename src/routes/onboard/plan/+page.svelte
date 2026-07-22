@@ -18,7 +18,9 @@
 		{ tier: 'mobilizer', name: 'Mobilizer', tagline: 'Command the race', highlights: ['Unlimited everything', 'Competitor & sentiment analytics', 'Daily AI audio broadcast', '5 GB storage'] }
 	];
 
-	let band = $state('regional'); // most common candidate office
+	// Prefilled from the seat chosen on Profile (its band); falls back to the most
+	// common candidate office when no position was picked.
+	let band = $state(data.defaultBand ?? 'regional');
 	let annual = $state(false);
 	const cycle = $derived(annual ? 'annual' : 'monthly');
 

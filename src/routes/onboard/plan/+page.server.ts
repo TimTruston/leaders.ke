@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
+import { positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { listCurrentPricing } from '$lib/server/packages';
 import { fullName } from '$lib/server/leader';
@@ -40,5 +40,14 @@ export const load: PageServerLoad = async (event) => {
 		rates[r.band][r.tier][r.billingCycle] = r.amount;
 	}
 
-	return { subjectName, rates };
+	// Prefill the office toggle from the seat chosen on Profile — the position
+	// already carries the band (ward/regional/national) that drives pricing.
+	const positionId = Number(sp.get('positionId') ?? 0) || null;
+	let defaultBand: string | null = null;
+	if (positionId) {
+		const [position] = await db.select({ band: positions.band }).from(positions).where(eq(positions.id, positionId));
+		defaultBand = position?.band ?? null;
+	}
+
+	return { subjectName, rates, defaultBand };
 };
