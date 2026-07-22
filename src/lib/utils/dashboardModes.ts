@@ -11,6 +11,11 @@ export type DashboardModesInput = {
 	isAdmin?: boolean;
 	claimName?: string | null;
 	leaderContext?: { basePath: string } | null;
+	// Set only when a platform admin is viewing a profile they don't personally
+	// manage (the admin control bar's bypass) — without this, no entry's key
+	// matches currentKey, so the switcher falls back to modes[0] ("Citizen"),
+	// which is wrong: the admin IS on that profile's dashboard, just not as its manager.
+	adminViewingProfileName?: string | null;
 };
 
 /** Which dashboard "mode" a URL belongs to — outside /dashboard this degrades to
@@ -44,6 +49,9 @@ export function computeDashboardModes(
 	}));
 	if (mode === 'apply' && !(data.myCampaigns ?? []).some((c) => c.basePath === base)) {
 		campaignEntries.push({ key: `campaign:${base}`, href: `${base}/profile`, label: 'New application', available: true });
+	}
+	if (mode === 'campaign' && data.adminViewingProfileName && !(data.myCampaigns ?? []).some((c) => c.basePath === base)) {
+		campaignEntries.push({ key: `campaign:${base}`, href: `${base}/profile`, label: `Admin: ${data.adminViewingProfileName}`, available: true });
 	}
 
 	const claimEntries = (data.pendingClaims ?? []).map((c) => ({

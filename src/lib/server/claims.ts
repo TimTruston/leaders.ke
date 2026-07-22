@@ -2,16 +2,17 @@
 // leader row's ownership (see the comment on profileClaims in schema.ts) — it
 // makes the claimant an admin manager of the existing profile instead.
 import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { and, asc, count, desc, eq, ilike, inArray, isNotNull, isNull, or, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, ilike, inArray, isNotNull, isNull, or, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, parties, partyMemberships, positions, posts, profileClaims, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ACTIVE_CYCLE, findNationalIdConflict, fullName, resolveCurrentTerm } from '$lib/server/leader';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { notifyUser } from '$lib/server/notifications';
 import { loadPublicProfileData, type PublicProfileData } from '$lib/server/publicProfile';
 import { signoffComplete } from '$lib/utils/campaignRoles';
+import { restoreFromSeed } from '$lib/server/seedRestore';
 
 /** What a claimant stages tab by tab under /dashboard/claim/[slug]/* — held in
  * profileClaims.evidence until an admin approves; the public profile is never
@@ -497,6 +498,74 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 			outcome === 'approved'
 				? `Your claim on ${profileName}'s profile was approved. You now manage this profile from your dashboard.`
 				: `Your claim on ${profileName}'s profile was rejected.${notes ? ` Reason: ${notes}` : ''}`,
+		href: '/dashboard'
+	});
+
+	return { ok: true as const };
+}
+
+/**
+ * Admin post-review for an ONBOARDING-originated claim (see onboard.ts:
+ * linkOnboardProfile) — access was already granted at payment time, so unlike
+ * reviewClaim there's no staged evidence to apply on approval (it's a no-op
+ * status update). Rejecting deactivates the manager row AND restores the profile
+ * from its seed record (see seedRestore.ts) — the claimant may have already
+ * edited the live profile by the time this fires, and there's no "before"
+ * snapshot to undo to.
+ */
+export async function reviewOnboardClaim(claimId: number, adminUserId: number, outcome: 'approved' | 'rejected', notes: string) {
+	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
+	if (!claim) return { ok: false as const, error: 'Claim not found.' };
+	const subjectUserId = claim.subjectUserId;
+
+	if (outcome === 'rejected') {
+		// The whole team goes, not just the rejected claimant — a seeded profile
+		// never has a manager until someone claims it, so "rejected" means back to
+		// that same empty-team state, not merely removing the one bad actor (who
+		// may have invited others while they had access).
+		await db
+			.update(managers)
+			.set({ isActive: false, deletedAt: new Date() })
+			.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+
+		// Contacts aren't seed data, so there's nothing to restore them TO — drop
+		// anything added at/after the claim was requested (the team's own additions)
+		// and keep whatever predates it. NOT keyed on contacts.source: that field is
+		// only set when the SPECIFIC scraper that inserted a row happened to record
+		// provenance, so a genuinely pre-existing contact (e.g. an official
+		// parliament.go.ke address) can still have a null source — timing is the
+		// reliable signal, not that flag.
+		await db
+			.update(contacts)
+			.set({ deletedAt: new Date() })
+			.where(and(eq(contacts.userId, subjectUserId), gte(contacts.createdAt, claim.requestedAt), isNull(contacts.deletedAt)));
+
+		// Posts are exclusively a live-app feature (no seed source at all) — every
+		// one with a creatorId was written by a team member; a null creatorId is a
+		// system-aggregated post (e.g. a tagged news mention) and stays.
+		await db
+			.update(posts)
+			.set({ deletedAt: new Date() })
+			.where(and(eq(posts.subjectUserId, subjectUserId), isNotNull(posts.creatorId), isNull(posts.deletedAt)));
+
+		const restored = await restoreFromSeed(subjectUserId);
+		if (!restored.ok) console.error(`restoreFromSeed failed for claim ${claimId}: ${restored.error}`);
+	}
+
+	await db
+		.update(profileClaims)
+		.set({ outcome, notes: notes || null, reviewedBy: adminUserId, reviewedAt: new Date() })
+		.where(eq(profileClaims.id, claimId));
+
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, subjectUserId));
+	const profileName = subject ? fullName(subject) : 'the profile';
+	await notifyUser(claim.claimedBy, {
+		kind: 'claim',
+		title: outcome === 'approved' ? 'Your profile claim was approved' : 'Your profile claim was rejected',
+		body:
+			outcome === 'approved'
+				? `Your claim on ${profileName}'s profile was approved.`
+				: `Your claim on ${profileName}'s profile was rejected and your access has been revoked.${notes ? ` Reason: ${notes}` : ''}`,
 		href: '/dashboard'
 	});
 

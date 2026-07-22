@@ -11,7 +11,7 @@
 //    published without an admin in the loop.
 import { and, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
 import { createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
@@ -270,6 +270,14 @@ export async function linkOnboardProfile(domainUserId: number, input: OnboardInp
 		verifiedAt: new Date()
 	});
 
+	// Access is granted immediately (above), but this row is what gives admin
+	// something to actually review afterwards: it shows up pending in the profile's
+	// admin control bar (getProfileAdminMeta) until approved/rejected. Rejecting
+	// (reviewOnboardClaim) deactivates the manager row just granted and restores the
+	// profile from its seed record — there's no staged evidence here to apply on
+	// approval like the old claim flow, access already happened at payment time.
+	await db.insert(profileClaims).values({ subjectUserId, claimedBy: domainUserId, evidence: input });
+
 	// Platform admins should know a seeded/public profile just changed hands —
 	// access is granted immediately (no staged review yet), so this is their only
 	// signal something worth double-checking happened.
@@ -282,7 +290,7 @@ export async function linkOnboardProfile(domainUserId: number, input: OnboardInp
 			notifyUser(admin.id, {
 				kind: 'claim',
 				title: 'A profile was claimed',
-				body: `${claimantName} claimed ${profileName}'s profile (/${subject.slug}).`,
+				body: `${claimantName} claimed ${profileName}'s profile <a href="http//leaders.ke/${subject.slug}">/${subject.slug}</a>.`,
 				href: `/dashboard/${subject.slug}/profile`
 			})
 		)

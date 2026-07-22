@@ -219,17 +219,17 @@
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	{#if joinedMessage}
-		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{joinedMessage}</div>
+		<div class="mb-4 rounded-xl bg-primary p-4 text-sm font-medium text-on-primary">{joinedMessage}</div>
 	{:else if notice}
-		<div class="mb-4 whitespace-pre-line rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{notice}</div>
+		<div class="mb-4 whitespace-pre-line rounded-xl bg-primary p-4 text-sm font-medium text-on-primary">{notice}</div>
 	{/if}
 
 	<!-- Durable decision notifications (verification/claim outcomes) — bannered until dismissed -->
 	{#each data.notifications as item (item.id)}
-		<div class="mb-4 flex items-start justify-between gap-3 rounded-xl bg-primary-soft p-4 text-on-primary">
+		<div class="mb-4 flex items-start justify-between gap-3 rounded-xl bg-primary p-4 text-on-primary">
 			<div class="min-w-0 text-sm">
 				<p class="font-semibold">{item.title}</p>
-				<p class="mt-0.5 whitespace-pre-line">{item.body}</p>
+				<p class="mt-0.5 whitespace-pre-line">{@html item.body}</p>
 			</div>
 			<!-- Plain POST (no enhance): the endpoint is a +server.ts returning a 303
 			back to this page, not a form action returning an ActionResult. -->
@@ -464,6 +464,17 @@
 				title="Review-workflow state: seeded → —; claimed → latest claim outcome; applied → run verified/latest request; soft-deleted → deleted."
 				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.verified === 'approved' ? 'bg-primary-soft text-on-primary' : ac.verified === 'pending' ? 'border border-primary text-primary' : 'border border-border text-muted'}"
 			>{ac.verified ?? '—'}</span>
+			<!-- An approved claim granted access immediately at payment time (see onboard.ts),
+			so unlike the pending decision form below, this stays reviewable indefinitely —
+			rejecting later deactivates the manager row and restores the profile from its
+			seed record (there's no "before" snapshot to undo to otherwise). -->
+			{#if ac.approvedClaimId}
+				<button
+					type="button"
+					onclick={() => (adminAction = { action: 'rejectApprovedClaim', title: 'Reject this claim?', body: `Revokes ${ac.profileName}'s claimant's access and restores the profile's bio and party from its seed record. This cannot be undone.`, confirmLabel: 'Reject' })}
+					class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
+				>Reject</button>
+			{/if}
 
 			<div class="ml-auto flex flex-wrap items-center gap-2">
 				{#if ac.deactivated}
@@ -505,6 +516,7 @@
 			onto the hidden input before requestSubmit so no reactive flush is needed. -->
 			<form method="post" action="/dashboard/admin/profile-action" bind:this={adminFormEl} class="hidden">
 				<input type="hidden" name="profileId" value={ac.profileId} />
+				<input type="hidden" name="claimId" value={ac.approvedClaimId ?? ''} />
 				<input type="hidden" name="next" value={page.url.pathname} />
 				<input type="hidden" name="action" bind:this={adminActionEl} />
 			</form>

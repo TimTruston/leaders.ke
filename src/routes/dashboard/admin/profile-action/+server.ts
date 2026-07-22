@@ -6,7 +6,7 @@ import { requireAdmin } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { getProfileAdminMeta } from '$lib/server/profiles';
 import { graduateCampaign } from '$lib/server/candidates';
-import { reviewClaim } from '$lib/server/claims';
+import { reviewOnboardClaim } from '$lib/server/claims';
 import { reviewVerification } from '$lib/server/verifications';
 import type { RequestHandler } from './$types';
 
@@ -23,7 +23,14 @@ export const POST: RequestHandler = async (event) => {
 
 	// Decision forms carry their own target id, not a profileId.
 	if (action === 'reviewClaim') {
-		await reviewClaim(Number(form.get('claimId')), domainUser.id, form.get('outcome') === 'approved' ? 'approved' : 'rejected', String(form.get('notes') ?? '').trim());
+		await reviewOnboardClaim(Number(form.get('claimId')), domainUser.id, form.get('outcome') === 'approved' ? 'approved' : 'rejected', String(form.get('notes') ?? '').trim());
+		redirect(303, next);
+	}
+	// An already-approved claim (access granted at payment time) stays reviewable
+	// indefinitely, not just while pending — this is the "Reject" button next to
+	// the profile's "approved" badge, not the pending-claim decision form above.
+	if (action === 'rejectApprovedClaim') {
+		await reviewOnboardClaim(Number(form.get('claimId')), domainUser.id, 'rejected', '');
 		redirect(303, next);
 	}
 	if (action === 'reviewVerification') {

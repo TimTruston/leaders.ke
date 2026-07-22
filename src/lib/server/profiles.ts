@@ -259,6 +259,11 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	// Team/Campaign tabs): a live claim to approve/reject, and a run verification.
 	claim: { id: number; claimantId: number; claimantName: string; email: string | null; phone: string | null } | null;
 	verification: { id: number; suggestedSlug: string } | null;
+	// An already-approved claim, once granted, has no "before" snapshot to diff
+	// against — access was immediate at payment time — so unlike claim above, this
+	// stays reviewable indefinitely, not just while pending. Lets the control bar
+	// offer a Reject next to the "approved" badge at any point, not only up front.
+	approvedClaimId: number | null;
 }> {
 	const [person] = await db
 		.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, deletedAt: users.deletedAt })
@@ -359,7 +364,8 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		// A submitted verification request is decidable; approving mints the slug.
 		verification: latestVerification
 			? { id: latestVerification.id, suggestedSlug: person?.slug ?? (person ? await generateLeaderSlug(fullName(person)) : '') }
-			: null
+			: null,
+		approvedClaimId: claim && claim.outcome === 'approved' && !claim.deletedAt ? claim.id : null
 	};
 }
 

@@ -270,6 +270,10 @@ export const load: LayoutServerLoad = async (event) => {
 		claimRejection,
 		pendingClaims,
 		myCampaigns,
+		// The switcher needs this to show the RIGHT current entry when an admin is
+		// viewing a profile they don't personally manage (dashboardModes.ts dedupes
+		// against myCampaigns itself if the admin also happens to manage it).
+		adminViewingProfileName: adminControls?.profileName ?? null,
 		ambassadorFor: ambassadorAssignments.map((a) => ({ subjectId: a.subjectId, name: a.leaderName })),
 		isAdmin: !!domainUser.adminAt,
 		isAmbassador: ambassadorAssignments.length > 0,
