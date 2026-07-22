@@ -16,7 +16,7 @@ import { restoreFromSeed } from '$lib/server/seedRestore';
  * already edited the live profile by the time this fires, and there's no
  * "before" snapshot to undo to.
  */
-export async function reviewOnboardClaim(claimId: number, adminUserId: number, outcome: 'approved' | 'rejected', notes: string) {
+export async function reviewClaim(claimId: number, adminUserId: number, outcome: 'approved' | 'rejected', notes: string) {
 	const [claim] = await db.select().from(profileClaims).where(eq(profileClaims.id, claimId));
 	if (!claim) return { ok: false as const, error: 'Claim not found.' };
 	const subjectUserId = claim.subjectUserId;

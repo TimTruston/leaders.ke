@@ -4,7 +4,7 @@
 // committed record instead: scripts/out/dossiers.json, keyed by userId. Covers
 // everything a claimant could rewrite that the seed pipeline actually sourced:
 // name, slug, photo, bio, party, and experience (education/professional). Team,
-// contacts, and posts aren't seed data at all — reviewOnboardClaim (claims.ts)
+// contacts, and posts aren't seed data at all — reviewClaim (claims.ts)
 // handles those separately (clear rather than restore).
 // Known limitation: the bio is the RAW scraped text, not whatever AI-rewritten
 // version the agentic pipeline may have later written — restoring to

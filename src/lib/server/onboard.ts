@@ -275,7 +275,7 @@ export async function linkProfile(domainUserId: number, input: OnboardInput, sub
 	// Access is granted immediately (above), but this row is what gives admin
 	// something to actually review afterwards: it shows up pending in the profile's
 	// admin control bar (getProfileAdminMeta) until approved/rejected. Rejecting
-	// (reviewOnboardClaim) deactivates the manager row just granted and restores the
+	// (reviewClaim) deactivates the manager row just granted and restores the
 	// profile from its seed record — there's no staged evidence here to apply on
 	// approval like the old claim flow, access already happened at payment time.
 	await db.insert(profileClaims).values({ subjectUserId, claimedBy: domainUserId, evidence: input });
