@@ -268,17 +268,22 @@ export const load: LayoutServerLoad = async (event) => {
 	for (const t of managedTerms) termVerifiedBy.set(t.userId, (termVerifiedBy.get(t.userId) ?? false) || !!t.verifiedAt);
 	const runVerifiedBy = new Map<number, boolean>();
 	for (const r of managedRuns) runVerifiedBy.set(r.userId, (runVerifiedBy.get(r.userId) ?? false) || !!r.verifiedAt);
-	const myCampaigns = managedPeople
-		.filter((r) => termVerifiedBy.has(r.users.id) || runVerifiedBy.has(r.users.id))
-		.map((r) => {
-			const verified = (termVerifiedBy.get(r.users.id) ?? false) || (runVerifiedBy.get(r.users.id) ?? false);
-			return {
-				leaderId: r.users.id,
-				name: fullName(r.users),
-				verified,
-				basePath: verified && r.users.slug ? `/dashboard/${r.users.slug}` : `/dashboard/apply/${r.users.authUserId}`
-			};
-		});
+	// Every managed PROFILE, not just ones with a leaders/campaigns row — an onboarded
+	// profile (created or claimed, slug minted at payment) has neither until its owner
+	// later declares a term or launches a campaign, but it's real and paid-for from the
+	// moment it's created, so it belongs in the switcher regardless.
+	const myCampaigns = managedPeople.map((r) => {
+		const verified = (termVerifiedBy.get(r.users.id) ?? false) || (runVerifiedBy.get(r.users.id) ?? false);
+		return {
+			leaderId: r.users.id,
+			name: fullName(r.users),
+			verified,
+			// A slug means the profile is real (onboarding mints it at payment) —
+			// route there regardless of the leaders/campaigns verified state, which
+			// only matters for showing the public page's own verified badge.
+			basePath: r.users.slug ? `/dashboard/${r.users.slug}` : `/dashboard/apply/${r.users.authUserId}`
+		};
+	});
 
 	// Every claim the viewer has in flight — the switcher lists them so a claim
 	// stays reachable after navigating away. A rejected one stays listed too,

@@ -39,7 +39,7 @@ export function computeDashboardModes(
 	const campaignEntries = (data.myCampaigns ?? []).map((c) => ({
 		key: `campaign:${c.basePath}`,
 		href: `${c.basePath}/profile`,
-		label: `${c.verified ? 'Manage' : 'Applying'}: ${c.name}`,
+		label: `Manage: ${c.name}`,
 		available: true
 	}));
 	if (mode === 'apply' && !(data.myCampaigns ?? []).some((c) => c.basePath === base)) {
@@ -49,11 +49,11 @@ export function computeDashboardModes(
 	const claimEntries = (data.pendingClaims ?? []).map((c) => ({
 		key: `claim:${c.slug}`,
 		href: `/dashboard/claim/${c.slug}/profile`,
-		label: `Claiming: ${c.name}`,
+		label: `Manage: ${c.name}`,
 		available: true
 	}));
 	if (mode === 'claim' && !(data.pendingClaims ?? []).some((c) => c.slug === params.slug)) {
-		claimEntries.push({ key: `claim:${params.slug}`, href: `${base}/profile`, label: `Claiming: ${data.claimName}`, available: true });
+		claimEntries.push({ key: `claim:${params.slug}`, href: `${base}/profile`, label: `Manage: ${data.claimName}`, available: true });
 	}
 
 	return [
