@@ -195,8 +195,8 @@ export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: O
 
 /** Whether a seeded profile is still linkable — has a slug and no active manager.
  * Checked once for fast feedback on step 3 submit, and again (authoritatively,
- * inside a would-be race) by linkOnboardProfile itself at payment time — nothing
- * is granted access until then, so this can go stale between the two checks. */
+ * inside a would-be race) by linkProfile itself at payment time — nothing is
+ * granted access until then, so this can go stale between the two checks. */
 export async function assertClaimable(subjectUserId: number): Promise<{ ok: true } | { ok: false; error: string }> {
 	const [subject] = await db.select({ id: users.id, slug: users.slug }).from(users).where(and(eq(users.id, subjectUserId), isNull(users.deletedAt)));
 	if (!subject?.slug) return { ok: false, error: 'That profile is not available to link.' };
@@ -221,7 +221,7 @@ async function bioHint(status: OnboardStatus, positionId: number | null): Promis
 
 /** No matching profile — mint a brand-new one the citizen owns (source=applied). Returns
  * the new profile's slug so the wizard can carry it into plans/checkout. */
-export async function createOnboardProfile(domainUserId: number, input: OnboardInput): Promise<{ slug: string; subjectUserId: number }> {
+export async function createProfile(domainUserId: number, input: OnboardInput): Promise<{ slug: string; subjectUserId: number }> {
 	const phantom = await createPhantomUser(input.firstName, input.otherNames);
 	const slug = await generateLeaderSlug(fullName({ firstName: input.firstName, otherNames: input.otherNames }));
 	await db.update(users).set({ slug, bio: await bioHint(input.status, input.positionId) }).where(eq(users.id, phantom.id));
@@ -246,8 +246,10 @@ export async function createOnboardProfile(domainUserId: number, input: OnboardI
 }
 
 /** A matching profile was selected — link the citizen's account to it (a claim,
- * source=claimed) by granting them admin manager access. Returns the profile's slug. */
-export async function linkOnboardProfile(domainUserId: number, input: OnboardInput, subjectUserId: number): Promise<{ slug: string; subjectUserId: number }> {
+ * source=claimed) by granting them admin manager access. Returns the profile's slug.
+ * Admin notification happens in checkout (see notifyAdminsOfNewProfile) — pricing
+ * details belong in that email, and only checkout has them. */
+export async function linkProfile(domainUserId: number, input: OnboardInput, subjectUserId: number): Promise<{ slug: string; subjectUserId: number }> {
 	const [subject] = await db
 		.select({ id: users.id, slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
 		.from(users)
@@ -278,23 +280,42 @@ export async function linkOnboardProfile(domainUserId: number, input: OnboardInp
 	// approval like the old claim flow, access already happened at payment time.
 	await db.insert(profileClaims).values({ subjectUserId, claimedBy: domainUserId, evidence: input });
 
-	// Platform admins should know a seeded/public profile just changed hands —
-	// access is granted immediately (no staged review yet), so this is their only
-	// signal something worth double-checking happened.
-	const [claimant] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, domainUserId));
+	return { slug: subject.slug, subjectUserId };
+}
+
+/** Platform admins should know whenever a profile changes hands or gets created —
+ * access (or the profile itself) already exists by the time this fires, so this is
+ * purely their signal to go double-check it. Called from checkout's Pay action,
+ * which is the only place that has the plan/price alongside the create/link result. */
+export async function notifyAdminsOfNewProfile(opts: {
+	kind: 'created' | 'claimed';
+	actorUserId: number;
+	subjectUserId: number;
+	slug: string;
+	tier: string;
+	cycle: string;
+	amount: number;
+	subscriptionEndsAt: Date;
+}) {
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
+	const [actor] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.actorUserId));
 	const admins = await db.select({ id: users.id }).from(users).where(and(isNotNull(users.adminAt), isNull(users.deletedAt)));
-	const profileName = fullName(subject);
-	const claimantName = claimant ? fullName(claimant) : 'A citizen';
+
+	const profileName = subject ? fullName(subject) : 'A profile';
+	const actorName = actor ? fullName(actor) : 'A citizen';
+	const tierLabel = opts.tier.charAt(0).toUpperCase() + opts.tier.slice(1);
+	const cycleLabel = opts.cycle.charAt(0).toUpperCase() + opts.cycle.slice(1);
+	const amountLabel = new Intl.NumberFormat('en-KE').format(opts.amount);
+	const endsAtLabel = opts.subscriptionEndsAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
+
 	await Promise.all(
 		admins.map((admin) =>
 			notifyUser(admin.id, {
 				kind: 'claim',
-				title: 'A profile was claimed',
-				body: `${claimantName} claimed ${profileName}'s profile <a href="http//leaders.ke/${subject.slug}">/${subject.slug}</a>.`,
-				href: `/dashboard/${subject.slug}/profile`
+				title: opts.kind === 'claimed' ? 'A profile was claimed' : 'A new profile was created',
+				body: `${actorName} ${opts.kind === 'claimed' ? 'claimed' : 'created'} ${profileName}'s profile — ${tierLabel} plan (${cycleLabel}), KES ${amountLabel} paid, runs until ${endsAtLabel}.\nPreview: /${opts.slug}\nDashboard: /dashboard/${opts.slug}/profile`,
+				href: `/dashboard/${opts.slug}/profile`
 			})
 		)
 	);
-
-	return { slug: subject.slug, subjectUserId };
 }

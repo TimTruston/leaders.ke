@@ -506,7 +506,7 @@ export async function reviewClaim(claimId: number, adminUserId: number, outcome:
 
 /**
  * Admin post-review for an ONBOARDING-originated claim (see onboard.ts:
- * linkOnboardProfile) — access was already granted at payment time, so unlike
+ * linkProfile) — access was already granted at payment time, so unlike
  * reviewClaim there's no staged evidence to apply on approval (it's a no-op
  * status update). Rejecting deactivates the manager row AND restores the profile
  * from its seed record (see seedRestore.ts) — the claimant may have already

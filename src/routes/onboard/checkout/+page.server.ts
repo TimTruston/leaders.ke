@@ -6,7 +6,7 @@ import { managers, payments, pricing, subscriptions, users } from '$lib/server/d
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { BILLING_CYCLES, PRICE_BANDS, SUBSCRIPTION_TIERS } from '$lib/server/packages';
-import { assertClaimable, createOnboardProfile, linkOnboardProfile, validateOnboardInput } from '$lib/server/onboard';
+import { assertClaimable, createProfile, linkProfile, notifyAdminsOfNewProfile, validateOnboardInput } from '$lib/server/onboard';
 import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -41,8 +41,8 @@ async function resolveSelection(sp: URLSearchParams) {
 	let subjectName: string;
 	if (linkSubjectId) {
 		// Re-check the link target is still claimable — it may have been taken by
-		// someone else since step 3 (the authoritative check is linkOnboardProfile's
-		// own race guard at Pay time; this one is just for a clean error here).
+		// someone else since step 3 (the authoritative check is linkProfile's own
+		// race guard at Pay time; this one is just for a clean error here).
 		const claimable = await assertClaimable(linkSubjectId);
 		if (!claimable.ok) error(400, claimable.error);
 		const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, linkSubjectId));
@@ -93,7 +93,7 @@ export const actions: Actions = {
 
 		let result: { slug: string; subjectUserId: number };
 		try {
-			result = sel.linkSubjectId ? await linkOnboardProfile(domainUser.id, sel.input, sel.linkSubjectId) : await createOnboardProfile(domainUser.id, sel.input);
+			result = sel.linkSubjectId ? await linkProfile(domainUser.id, sel.input, sel.linkSubjectId) : await createProfile(domainUser.id, sel.input);
 		} catch (err) {
 			return fail(400, { error: err instanceof Error ? err.message : 'Could not create the profile.' });
 		}
@@ -132,6 +132,20 @@ export const actions: Actions = {
 			providerReference: reference,
 			metadata: { mock: true },
 			paidAt: now
+		});
+
+		// Admins get the same notification whether this was a brand-new profile or a
+		// claim on a seeded one — checkout is the only place that has the plan/price
+		// alongside the create/link result, so it fires here rather than in onboard.ts.
+		await notifyAdminsOfNewProfile({
+			kind: sel.linkSubjectId ? 'claimed' : 'created',
+			actorUserId: domainUser.id,
+			subjectUserId: result.subjectUserId,
+			slug: result.slug,
+			tier: sel.tier,
+			cycle: sel.cycle,
+			amount: sel.amount,
+			subscriptionEndsAt: endsAt
 		});
 
 		// Straight to the leader's own dashboard once paid — no /dashboard/account detour.
