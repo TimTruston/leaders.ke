@@ -5,9 +5,8 @@
 	import PhoneInput from '$lib/components/contact/PhoneInput.svelte';
 	import EmailInput from '$lib/components/contact/EmailInput.svelte';
 
-	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
-	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
-	// shapes `data` and hosts the actions this form posts to (relative ?/action URLs).
+	// The campaign family's (/dashboard/[slug]/contacts) +page.server.ts shapes
+	// `data` and hosts the actions this form posts to (relative ?/action URLs).
 	let { data, form, action = '?/save', embedded = false }: { data: any; form: any; action?: string; embedded?: boolean } = $props();
 
 	let address = $state(data.address);

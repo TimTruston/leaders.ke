@@ -18,10 +18,8 @@ import { positionSlug } from '$lib/utils/seat';
  * creator's own login identity. Backed by a placeholder auth-user row (never
  * used for login, same convention as seeded candidates' `{slug}@seed.leaders.ke`).
  */
-export async function createPhantomUser(firstName: string, otherNames: string, applyId?: string) {
-	// /dashboard/apply/[id]/* pre-mints the application's UUID; using it as the
-	// phantom's auth id keeps that URL stable for the whole application.
-	const authId = applyId ?? randomUUID();
+export async function createPhantomUser(firstName: string, otherNames: string) {
+	const authId = randomUUID();
 	const placeholderEmail = `leader-${authId}@phantom.leaders.ke`;
 	await db.insert(authUsers).values({ id: authId, name: `${firstName} ${otherNames}`.trim(), email: placeholderEmail, emailVerified: false });
 
@@ -177,11 +175,6 @@ export async function getLeaderContext(domainUserId: number): Promise<LeaderCont
 	return null;
 }
 
-/** Whether a string looks like the UUID minted for a /dashboard/apply/[id] URL. */
-export function isApplyId(id: string): boolean {
-	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-}
-
 /** A viewer's active manager row on ANY term of a person: managers attach to the
  * PERSON, not one term, so management authority spans a leader's whole Track Record.
  * A manager added to one campaign keeps access when a new term becomes the live seat,
@@ -231,31 +224,6 @@ export async function activeTermForPerson(subjectUserId: number) {
 		.orderBy(desc(leaders.startAt))
 		.limit(1);
 	return row ?? null;
-}
-
-/**
- * The leader context for a /dashboard/apply/[id]/* URL. The id is the
- * application's pre-minted UUID, which becomes the phantom user's auth id on
- * first profile save — so before that save this resolves to null (a blank
- * application), and afterwards to the in-progress profile. 'denied' when the
- * application exists but the viewer isn't on its team.
- */
-export async function getLeaderContextByApplyId(
-	applyId: string,
-	domainUserId: number
-): Promise<LeaderContext | 'denied' | null> {
-	if (!isApplyId(applyId)) return 'denied';
-	// The apply UUID is the person's auth id. A pure aspirant has only a run (no leaders
-	// row), so resolve the PERSON, then build their context from term-or-run.
-	const [profileUser] = await db.select().from(users).where(and(eq(users.authUserId, applyId), isNull(users.deletedAt)));
-	if (!profileUser) return null;
-
-	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
-	// A platform admin may open any leader's dashboard (Profiles tab "Admin" button);
-	// everyone else needs to be the leader or an active manager.
-	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id)) && !(await isPlatformAdmin(domainUserId))) return 'denied';
-
-	return await buildContext(profileUser, role, true);
 }
 
 /**

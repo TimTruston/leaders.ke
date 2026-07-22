@@ -4,7 +4,6 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { parseScope, resolveVerifySubject, type DashboardUser } from '$lib/server/dashboard';
-import { stageClaimVerifiedContact } from '$lib/server/claims';
 import { formatKenyanPhoneDisplay, normalizeKenyanPhone } from '$lib/utils/phone';
 import { hasPendingOtp, otpCooldownRemaining, sendOtp, verifyOtpWithDestination } from '$lib/server/otp';
 import { getPlatformSettings } from '$lib/server/settings';
@@ -51,17 +50,13 @@ export const load: PageServerLoad = async (event) => {
 	const number = raw ? normalizeKenyanPhone(raw) : null;
 	if (!number) redirectWithFlash(event.cookies, next, 'Enter a WhatsApp number to verify.');
 
-	// Claim scope only proves the claimant controls the number (staged in the
-	// claim evidence), so existing holds on it are no obstacle.
-	if (scope !== 'claim') {
-		const [existing] = await db
-			.select({ verifiedAt: contacts.verifiedAt })
-			.from(contacts)
-			.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'whatsapp'), eq(contacts.value, number), isNull(contacts.deletedAt)));
-		if (existing?.verifiedAt) redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(number)} is already verified.`);
-		if (await verifiedByOther([subject.id, domainUser.id], number)) {
-			redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(number)} is already verified on another account.`);
-		}
+	const [existing] = await db
+		.select({ verifiedAt: contacts.verifiedAt })
+		.from(contacts)
+		.where(and(eq(contacts.userId, subject.id), eq(contacts.channel, 'whatsapp'), eq(contacts.value, number), isNull(contacts.deletedAt)));
+	if (existing?.verifiedAt) redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(number)} is already verified.`);
+	if (await verifiedByOther([subject.id, domainUser.id], number)) {
+		redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(number)} is already verified on another account.`);
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
@@ -87,7 +82,7 @@ export const actions: Actions = {
 		const { domainUser, subject } = await resolveVerifySubject(event, scope, String(form.get('slug') ?? '') || null);
 		const normalized = normalizeKenyanPhone(String(form.get('phone') ?? ''));
 		if (!normalized) return fail(400, { phoneError: 'Enter a valid Kenyan phone number.' });
-		if (scope !== 'claim' && (await verifiedByOther([subject.id, domainUser.id], normalized))) {
+		if (await verifiedByOther([subject.id, domainUser.id], normalized)) {
 			return fail(400, { phoneError: `${formatKenyanPhoneDisplay(normalized)} is already verified on another account.` });
 		}
 		try {
@@ -104,7 +99,7 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const scope = parseScope(String(form.get('scope') ?? ''));
 		const slug = String(form.get('slug') ?? '') || null;
-		const { domainUser, subject } = await resolveVerifySubject(event, scope, slug);
+		const { subject } = await resolveVerifySubject(event, scope, slug);
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });
@@ -112,13 +107,7 @@ export const actions: Actions = {
 		const result = await verifyOtpWithDestination(subject.id, 'whatsapp', code);
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
-		// Claim scope: record the proof inside the claim's staged evidence — never
-		// on the citizen's own contacts or the real profile.
-		if (scope === 'claim' && slug) {
-			await stageClaimVerifiedContact(slug, domainUser.id, 'whatsapp', result.destination);
-		} else {
-			await applyNumberVerified(subject, result.destination);
-		}
+		await applyNumberVerified(subject, result.destination);
 		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

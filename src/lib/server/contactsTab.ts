@@ -1,14 +1,10 @@
 // The Contacts section embedded on the Profile tab (contacts belong to the person,
-// so they save alongside the profile). Two variants share ContactsTab.svelte:
-// - loadContactsTab/saveContactsTab: apply + campaign families — writes the person's
-//   real contacts (the phantom users row) directly.
-// - loadClaimContactsTab/saveClaimContactsTab: claim family — stages into the pending
-//   claim's evidence; the real profile is untouched until an admin approves.
+// so they save alongside the profile) — writes the person's real contacts (the
+// phantom users row) directly.
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
-import { resolveClaimRequest, stageClaimEvidence, type ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, ownVerifiedContacts, requireDashboardUser } from '$lib/server/dashboard';
 import { PLATFORMS } from '$lib/components/contact/socials';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
@@ -136,93 +132,5 @@ export async function saveContactsTab(event: RequestEvent) {
 	const emailConflict = await replaceContact('email', email, 'email address');
 	if (emailConflict) return fail(400, { error: emailConflict });
 
-	return { saved: true };
-}
-
-export async function loadClaimContactsTab(event: RequestEvent) {
-	const { domainUser, resolved, claim } = await resolveClaimRequest(event);
-	const staged = (claim?.evidence as ClaimEvidence | null)?.contacts;
-
-	// Prefill from the profile's public contacts when nothing is staged yet.
-	const contactRows = await db
-		.select({ channel: contacts.channel, value: contacts.value })
-		.from(contacts)
-		.where(and(eq(contacts.userId, resolved.row.users.id), isNull(contacts.deletedAt)));
-	const socials = (resolved.row.users.socials ?? {}) as Record<string, string>;
-	const { website, ...otherSocials } = socials;
-
-	const own = await ownVerifiedContacts(domainUser.id);
-	const sms = staged?.sms ?? contactRows.find((c) => c.channel === 'sms')?.value ?? '';
-	const whatsapp = staged?.whatsapp ?? contactRows.find((c) => c.channel === 'whatsapp')?.value ?? '';
-	const email = staged?.email ?? contactRows.find((c) => c.channel === 'email')?.value ?? '';
-
-	return {
-		// Verify links OTP the typed destination and stage the proof inside the
-		// claim's evidence (scope=claim) — the real profile's contacts stay untouched.
-		verifyScope: 'claim',
-		address: staged?.address ?? resolved.row.users.address ?? '',
-		sms,
-		whatsapp,
-		email,
-		smsVerified: (staged?.smsVerified ?? false) || own.check('sms', sms),
-		whatsappVerified: (staged?.whatsappVerified ?? false) || own.check('whatsapp', whatsapp),
-		emailVerified: (staged?.emailVerified ?? false) || own.check('email', email),
-		// The claimant's own already-verified contacts: typing one of these shows
-		// "✓ Verified" immediately (no second OTP round-trip for a proven contact).
-		ownVerified: own.lists,
-		website: staged?.website ?? website ?? '',
-		socials: staged?.socials ?? otherSocials
-	};
-}
-
-export async function saveClaimContactsTab(event: RequestEvent) {
-	const { domainUser, resolved, claim } = await resolveClaimRequest(event);
-	const staged = (claim?.evidence as ClaimEvidence | null)?.contacts;
-
-	const form = await event.request.formData();
-	const address = String(form.get('address') ?? '').trim();
-	const websiteRaw = String(form.get('website') ?? '').trim();
-	const website = websiteRaw && !/^https?:\/\//i.test(websiteRaw) ? `https://${websiteRaw}` : websiteRaw;
-	const email = String(form.get('email') ?? '').trim().toLowerCase();
-	if (email && !email.includes('@')) return fail(400, { error: 'Enter a valid email address.' });
-
-	// PhoneInput submits the local part (712345678); stage the canonical 254… form.
-	const phones: Record<'sms' | 'whatsapp', string> = { sms: '', whatsapp: '' };
-	for (const channel of ['sms', 'whatsapp'] as const) {
-		const raw = String(form.get(channel) ?? '').trim();
-		const value = raw ? (normalizeKenyanPhone(raw) ?? '') : '';
-		if (raw && !value) return fail(400, { error: `Enter a valid Kenyan ${channel === 'sms' ? 'SMS' : 'WhatsApp'} number.` });
-		phones[channel] = value;
-	}
-
-	let socialEntries: { kind: string; value: string }[] = [];
-	try {
-		socialEntries = JSON.parse(String(form.get('socialEntries') ?? '[]'));
-	} catch {
-		return fail(400, { error: 'Could not read the social links.' });
-	}
-	const socials: Record<string, string> = {};
-	for (const s of socialEntries) {
-		const value = s.value?.trim();
-		if (!value) continue;
-		const platform = PLATFORMS.find((p) => p.kind === s.kind);
-		socials[s.kind] = platform ? `https://${platform.prefix}${value}` : value;
-	}
-
-	await stageClaimEvidence(resolved.row.users.id, domainUser.id, {
-		contacts: {
-			address,
-			sms: phones.sms,
-			whatsapp: phones.whatsapp,
-			email,
-			website,
-			socials,
-			// An OTP proof only holds for the exact destination it was sent to —
-			// editing a value drops its verified flag.
-			smsVerified: phones.sms === staged?.sms ? (staged?.smsVerified ?? false) : false,
-			whatsappVerified: phones.whatsapp === staged?.whatsapp ? (staged?.whatsappVerified ?? false) : false,
-			emailVerified: email === staged?.email ? (staged?.emailVerified ?? false) : false
-		}
-	});
 	return { saved: true };
 }

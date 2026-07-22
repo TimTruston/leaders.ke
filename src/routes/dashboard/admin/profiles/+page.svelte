@@ -177,7 +177,7 @@
 											claimed, so this shows only for seeded/claimed ones. -->
 											{#if p.source !== 'applied'}
 											<div>
-												<h3 class="text-sm font-semibold text-heading">Claim history</h3>
+												<h3 class="text-sm font-semibold text-heading">Claims on {p.profileName}</h3>
 												{#if extras.claimHistory.length > 0}
 													<div class="mt-2 overflow-x-auto rounded-xl border border-border">
 														<table class="w-full min-w-120 border-collapse text-left">
@@ -202,7 +202,6 @@
 																				<span>{h.id}</span>
 																			</div>
 																		</td>
-																		<td class="px-3 py-2 text-xs text-heading">{h.claimantName}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.role ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.nationalId ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{dateFmt.format(new Date(h.requestedAt))}</td>

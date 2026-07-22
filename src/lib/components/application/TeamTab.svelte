@@ -2,10 +2,9 @@
 	import { enhance } from '$app/forms';
 	import SignoffTab from '$lib/components/application/SignoffTab.svelte';
 
-	// Shared across the campaign (/dashboard/[slug]) and apply (/dashboard/apply/[id])
-	// route families - each family's +page.server.ts shapes `data` and hosts the
-	// actions this form posts to (relative ?/action URLs). Only linked once a
-	// profile exists; a blank application's load bounces back to its Profile tab.
+	// The campaign family's (/dashboard/[slug]/team) +page.server.ts shapes `data`
+	// and hosts the actions this form posts to (relative ?/action URLs). Only
+	// linked once a profile exists; a blank one bounces back to its Profile tab.
 	let { data, form }: { data: any; form: any } = $props();
 
 	// The applicant's sign-off (role, national ID, ID images) is embedded under

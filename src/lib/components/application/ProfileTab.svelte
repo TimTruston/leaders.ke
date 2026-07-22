@@ -7,15 +7,14 @@
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
 	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
-	// Shared across the campaign (/dashboard/[slug]), apply (/dashboard/apply/[id]) and
-	// claim (/dashboard/claim/[slug]) route families - each family's +page.server.ts
-	// shapes `data` to this contract and hosts the actions this form posts to
-	// (relative ?/action URLs). The photo is staged locally (cropped, previewed) and
+	// The campaign family's (/dashboard/[slug]/profile) +page.server.ts shapes
+	// `data` to this contract and hosts the actions this form posts to (relative
+	// ?/action URLs). The photo is staged locally (cropped, previewed) and
 	// uploads WITH ?/save — nothing touches the server before "Save profile".
 	type TabData = {
 		positions: { id: number; title: string; region: string }[];
-		// Absent on the claim family (party changes belong to the verified profile's
-		// own admins) — the Party select only renders when provided.
+		// Absent when the Party select shouldn't render (party changes belong to
+		// the verified profile's own admins).
 		parties?: { id: number; name: string }[];
 		photoUrl?: string | null;
 		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];

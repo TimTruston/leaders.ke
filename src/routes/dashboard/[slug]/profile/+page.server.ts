@@ -1,7 +1,5 @@
-// Shared by the campaign (/dashboard/[slug]/profile) and apply
-// (/dashboard/apply/[id]/profile) families — apply re-exports this module, and
-// getRouteLeaderContext resolves whichever param the URL carries. Claims stage
-// into their own family (/dashboard/claim/[slug]/profile) instead.
+// The Profile tab for a leader's own dashboard (/dashboard/[slug]/profile) —
+// covers both an unverified profile still being assembled and a verified one.
 import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
@@ -218,22 +216,12 @@ export const actions: Actions = {
 		} else {
 			// New leader: a fresh users row for the leader identity itself, never the
 			// creating citizen's own — so editing this profile never touches their login
-			// account. The apply route's pre-minted UUID becomes the phantom's auth id,
-			// keeping /dashboard/apply/<id>/* stable across the whole application.
-			const applyId = (event.params as { id?: string }).id;
-			if (applyId) {
-				// A pasted/guessed UUID could collide with an existing auth user — refuse
-				// rather than 500 on the primary-key insert.
-				const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.authUserId, applyId));
-				if (taken) return fail(400, { error: 'This application link is unavailable. Start a new application from your dashboard.' });
-			}
-			const phantom = await createPhantomUser(firstName, otherNames, applyId);
+			// account. Reachable only if a profile is somehow missing its slug/manager
+			// by the time someone edits it here — onboarding (createProfile/linkProfile)
+			// already sets both up before anyone reaches this route.
+			const phantom = await createPhantomUser(firstName, otherNames);
 			subjectId = phantom.id;
 			await db.update(users).set({ bio }).where(eq(users.id, subjectId));
-			// No public slug yet: an application stays slugless (previewed at
-			// /previews/[userId]) until an admin approves verification and sets its
-			// permanent URL — see reviewVerification. No campaign yet either: the run
-			// (seat + cycle + manifesto title) is declared on the Campaign tab.
 
 			// onboarding.md: the creator is the campaign's first manager, with admin
 			// permissions (invite/remove team, fundraising, delete campaign) — "leader"

@@ -127,7 +127,6 @@
 		{ value: '8,900+', label: 'Leader profiles' },
 		{ value: '47', label: 'Counties covered' }
 	];
-	const launchHref = `/dashboard/apply/${crypto.randomUUID()}/profile`;
 
 </script>
 
@@ -343,7 +342,7 @@
 		</p>
 		<div class="mt-2 flex flex-wrap justify-center gap-3">
 			<a
-				href={launchHref}
+				href="/onboard/profile"
 				class="rounded-full bg-surface px-6 py-3 font-semibold text-heading transition hover:bg-surface-2"
 			>
 				Launch Your Campaign

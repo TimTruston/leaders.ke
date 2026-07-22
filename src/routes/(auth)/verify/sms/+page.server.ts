@@ -4,7 +4,6 @@ import { and, eq, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { parseScope, resolveVerifySubject, type DashboardUser } from '$lib/server/dashboard';
-import { stageClaimVerifiedContact } from '$lib/server/claims';
 import { formatKenyanPhoneDisplay, normalizeKenyanPhone } from '$lib/utils/phone';
 import { hasPendingOtp, otpCooldownRemaining, sendOtp, verifyOtpWithDestination } from '$lib/server/otp';
 import { getPlatformSettings } from '$lib/server/settings';
@@ -63,15 +62,11 @@ export const load: PageServerLoad = async (event) => {
 	const phone = (raw ? normalizeKenyanPhone(raw) : null) ?? existing?.value ?? null;
 	if (!phone) redirectWithFlash(event.cookies, next, 'Add an SMS phone number to your account first.');
 
-	// Claim scope only proves the claimant controls the number (staged in the
-	// claim evidence), so another account's hold on it is no obstacle.
-	if (scope !== 'claim') {
-		if (phone === existing?.value && existing?.verifiedAt) {
-			redirectWithFlash(event.cookies, next, 'Your SMS number is already verified.');
-		}
-		if (await verifiedByOther([subject.id, domainUser.id], phone)) {
-			redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(phone)} is already verified on another account.`);
-		}
+	if (phone === existing?.value && existing?.verifiedAt) {
+		redirectWithFlash(event.cookies, next, 'Your SMS number is already verified.');
+	}
+	if (await verifiedByOther([subject.id, domainUser.id], phone)) {
+		redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(phone)} is already verified on another account.`);
 	}
 
 	// Auto-send a code on arrival only if none is already outstanding for this
@@ -97,7 +92,7 @@ export const actions: Actions = {
 		const { domainUser, subject } = await resolveVerifySubject(event, scope, String(form.get('slug') ?? '') || null);
 		const normalized = normalizeKenyanPhone(String(form.get('phone') ?? ''));
 		if (!normalized) return fail(400, { phoneError: 'Enter a valid Kenyan phone number.' });
-		if (scope !== 'claim' && (await verifiedByOther([subject.id, domainUser.id], normalized))) {
+		if (await verifiedByOther([subject.id, domainUser.id], normalized)) {
 			return fail(400, { phoneError: `${formatKenyanPhoneDisplay(normalized)} is already verified on another account.` });
 		}
 		try {
@@ -112,7 +107,7 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const scope = parseScope(String(form.get('scope') ?? ''));
 		const slug = String(form.get('slug') ?? '') || null;
-		const { domainUser, subject } = await resolveVerifySubject(event, scope, slug);
+		const { subject } = await resolveVerifySubject(event, scope, slug);
 		const code = String(form.get('code') ?? '').trim();
 		const next = safeNext(String(form.get('next') ?? '/dashboard/account'));
 		if (!code) return fail(400, { codeError: 'Enter the code you received.' });
@@ -120,13 +115,7 @@ export const actions: Actions = {
 		const result = await verifyOtpWithDestination(subject.id, 'sms', code);
 		if (!result.ok || !result.destination) return fail(400, { codeError: 'That code is invalid or expired.' });
 
-		// Claim scope: record the proof inside the claim's staged evidence — never
-		// on the citizen's own contacts or the real profile.
-		if (scope === 'claim' && slug) {
-			await stageClaimVerifiedContact(slug, domainUser.id, 'sms', result.destination);
-		} else {
-			await applyPhoneVerified(subject, result.destination);
-		}
+		await applyPhoneVerified(subject, result.destination);
 		redirectWithFlash(event.cookies, next, `You have successfully verified ${result.destination}`);
 	}
 };

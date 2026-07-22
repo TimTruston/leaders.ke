@@ -3,8 +3,8 @@
 	import PositionSelector from '$lib/components/PositionSelector.svelte';
 	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 
-	// Shared across the campaign (/dashboard/[slug]) and apply (/dashboard/apply/[id])
-	// families — each family's +page.server.ts shapes `data` and hosts ?/save.
+	// The campaign family's (/dashboard/[slug]/campaign) +page.server.ts shapes
+	// `data` and hosts ?/save.
 	type TabData = {
 		positions: { id: number; title: string; region: string }[];
 		cycles: number[];

@@ -1,17 +1,16 @@
-// The account-switcher's list of managed profiles + in-flight claims — shared by
-// the dashboard layout (computed eagerly, already mid-request there) and the
-// /api/switcher endpoint (lazy-fetched from anywhere else on the site, since
-// running this on every page's SSR load would tax every public page view for
-// every signed-in visitor, not just the rare dashboard visit).
-import { and, desc, eq, inArray, isNull, or } from 'drizzle-orm';
+// The account-switcher's list of managed profiles — shared by the dashboard
+// layout (computed eagerly, already mid-request there) and the /api/switcher
+// endpoint (lazy-fetched from anywhere else on the site, since running this on
+// every page's SSR load would tax every public page view for every signed-in
+// visitor, not just the rare dashboard visit).
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, leaders, managers, profileClaims, users } from '$lib/server/db/schema';
+import { campaigns, leaders, managers, users } from '$lib/server/db/schema';
 import { fullName } from '$lib/server/leader';
 
 export type SwitcherCampaign = { leaderId: number; name: string; verified: boolean; basePath: string };
-export type SwitcherClaim = { slug: string; name: string; outcome: 'approved' | 'rejected' | null };
 
-export async function getSwitcherProfiles(domainUserId: number): Promise<{ myCampaigns: SwitcherCampaign[]; pendingClaims: SwitcherClaim[] }> {
+export async function getSwitcherProfiles(domainUserId: number): Promise<{ myCampaigns: SwitcherCampaign[] }> {
 	// Every managed PROFILE, not just ones with a leaders/campaigns row — an onboarded
 	// profile (created or claimed, slug minted at payment) has neither until its owner
 	// later declares a term or launches a campaign, but it's real and paid-for from the
@@ -44,39 +43,11 @@ export async function getSwitcherProfiles(domainUserId: number): Promise<{ myCam
 			leaderId: r.users.id,
 			name: fullName(r.users),
 			verified,
-			// A slug means the profile is real (onboarding mints it at payment) —
-			// route there regardless of the leaders/campaigns verified state, which
-			// only matters for showing the public page's own verified badge.
-			basePath: r.users.slug ? `/dashboard/${r.users.slug}` : `/dashboard/apply/${r.users.authUserId}`
+			// A slug always exists — onboarding mints it at payment time, before
+			// anyone ever manages the profile.
+			basePath: `/dashboard/${r.users.slug}`
 		};
 	});
 
-	// Every claim the viewer has in flight — the switcher lists them so a claim
-	// stays reachable after navigating away. A rejected one stays listed too,
-	// since it's still open for editing/resubmission. Resubmitting mints a new
-	// row per attempt, so a subject can have several live rows here — collapse to
-	// ONE entry per profile (newest first, preferring a still-pending row over a
-	// rejected one) so the switcher's keyed-by-slug list has no duplicate keys.
-	const pendingClaimRows = await db
-		.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames, outcome: profileClaims.outcome })
-		.from(profileClaims)
-		.innerJoin(users, eq(profileClaims.subjectUserId, users.id))
-		.where(
-			and(
-				eq(profileClaims.claimedBy, domainUserId),
-				or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
-				isNull(profileClaims.deletedAt)
-			)
-		)
-		.orderBy(desc(profileClaims.requestedAt));
-	const pendingBySlug = new Map<string, SwitcherClaim>();
-	for (const r of pendingClaimRows) {
-		if (!r.slug) continue;
-		const existing = pendingBySlug.get(r.slug);
-		if (!existing || (existing.outcome === 'rejected' && r.outcome === null)) {
-			pendingBySlug.set(r.slug, { slug: r.slug, name: fullName(r), outcome: r.outcome });
-		}
-	}
-
-	return { myCampaigns, pendingClaims: [...pendingBySlug.values()] };
+	return { myCampaigns };
 }

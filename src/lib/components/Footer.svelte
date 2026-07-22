@@ -1,15 +1,11 @@
 <script lang="ts">
 	// Site-wide footer: link directory grouped by audience, with the brand blurb
 	// and the compliance line the old two-line footer carried.
-	// "Create a Profile" mints a fresh application id per render — same pattern as
-	// the dashboard's "Launch a Campaign" button (/dashboard/apply/<uuid>/*).
-	const launchHref = `/dashboard/apply/${crypto.randomUUID()}/profile`;
-
 	const groups = [
 		{
 			title: 'For leaders',
 			links: [
-				{ href: launchHref, label: 'Launch Your Campaign' },
+				{ href: '/onboard/profile', label: 'Launch Your Campaign' },
 				{ href: '/presidents', label: 'Claim Your Page' },
 				{ href: '/features', label: 'Features' },
 				{ href: '/parties', label: 'Parties' },

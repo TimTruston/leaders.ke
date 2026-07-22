@@ -374,12 +374,9 @@ export async function acceptInvite(token: string, userId: number, signedInEmail:
 		.from(users)
 		.where(eq(users.id, invite.subjectUserId));
 
-	// The team's dashboard home: verified profiles live under their slug,
-	// in-progress applications under their pre-minted UUID (the phantom's auth id).
-	// "Verified" is a held term OR a verified run — a pure aspirant has no term.
-	const run = await getRunCampaign(invite.subjectUserId);
-	const verified = !!activeTerm?.leaders.verifiedAt || !!run?.verifiedAt;
-	const dashboardBase = verified && person.slug ? `/dashboard/${person.slug}` : `/dashboard/apply/${person.authUserId}`;
+	// The team's dashboard home — a slug always exists (onboarding mints it at
+	// payment time, before anyone can be invited onto the team).
+	const dashboardBase = `/dashboard/${person.slug}`;
 
 	return { ok: true as const, role: invite.role, leaderName: fullName(person), dashboardBase, subjectId: invite.subjectUserId };
 }

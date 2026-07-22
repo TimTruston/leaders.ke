@@ -21,7 +21,7 @@
 	let fetchedSwitcherData = $state<DashboardModesInput | null>(null);
 	let fetchingSwitcher = false;
 	const hasEagerSwitcherData = $derived(page.data.myCampaigns !== undefined);
-	const modes = $derived(computeDashboardModes(page.url.pathname, page.params, hasEagerSwitcherData ? page.data : (fetchedSwitcherData ?? page.data)));
+	const modes = $derived(computeDashboardModes(page.url.pathname, hasEagerSwitcherData ? page.data : (fetchedSwitcherData ?? page.data)));
 
 	async function ensureSwitcherData() {
 		if (hasEagerSwitcherData || fetchedSwitcherData || fetchingSwitcher || !user) return;

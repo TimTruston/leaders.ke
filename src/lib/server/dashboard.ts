@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { getDomainUser, getLeaderContext, getLeaderContextByApplyId, getLeaderContextBySlug, isPlatformAdmin, type LeaderContext } from '$lib/server/leader';
+import { getDomainUser, getLeaderContext, getLeaderContextBySlug, isPlatformAdmin, type LeaderContext } from '$lib/server/leader';
 import { contacts as contactsTable, managers, type users } from '$lib/server/db/schema';
 
 export type DashboardUser = {
@@ -22,22 +22,20 @@ export async function requireDashboardUser(event: RequestEvent): Promise<Dashboa
 }
 
 /** Whose contacts a /verify/* flow writes to: the signed-in citizen's own login
- * identity ('account', e.g. /dashboard/account), the leader profile they edit
- * ('profile' — a distinct phantom user, see createPhantomUser), or a pending
- * claim's staged evidence ('claim' — proves the claimant controls the contact
- * without touching the real profile). */
-export type VerifyScope = 'account' | 'profile' | 'claim';
+ * identity ('account', e.g. /dashboard/account), or the leader profile they edit
+ * ('profile' — a distinct phantom user, see createPhantomUser). */
+export type VerifyScope = 'account' | 'profile';
 
 export function parseScope(raw: string | null): VerifyScope {
-	return raw === 'profile' || raw === 'claim' ? raw : 'account';
+	return raw === 'profile' ? raw : 'account';
 }
 
 /** Resolves the subject a verification applies to. For 'profile' scope that's the
  * leader profile's (phantom) user — picked by the slug the originating
  * /dashboard/<slug>/* form passed along (a multi-campaign manager has several
  * profiles; guessing would target the wrong one), falling back to the
- * own/first-managed guess for slugless (apply-flow) forms, and to the citizen
- * when there's no leader context yet. `subject === domainUser` exactly when the
+ * own/first-managed guess when no slug is given, and to the citizen when
+ * there's no leader context yet. `subject === domainUser` exactly when the
  * scope is the citizen's own account — the only case where better-auth's login
  * email is synced. */
 export async function resolveVerifySubject(
@@ -46,10 +44,6 @@ export async function resolveVerifySubject(
 	slug?: string | null
 ): Promise<DashboardUser & { subject: typeof users.$inferSelect }> {
 	const base = await requireDashboardUser(event);
-	// Claim scope: the OTP belongs to the claimant (rate limits, code matching);
-	// what the verified result is applied to is the claim's staged evidence, which
-	// the verify routes handle separately (stageClaimVerifiedContact).
-	if (scope === 'claim') return { ...base, subject: base.domainUser };
 	if (scope === 'profile') {
 		if (slug) {
 			// An explicit slug must resolve with access — silently falling back to
@@ -68,9 +62,6 @@ export async function resolveVerifySubject(
 /**
  * The leader context the current dashboard route is about — the URL, not
  * guesswork, picks which campaign is active:
- * - /dashboard/apply/[id]/*: the application's pre-minted UUID. Null before the
- *   first profile save (a blank application); kicked to /dashboard when the
- *   application exists but the viewer isn't on its team.
  * - /dashboard/[slug]/*: the verified campaign; kicked to /dashboard when the
  *   slug doesn't resolve or the viewer lacks access.
  * - Anything else (citizen pages): the viewer's own/first-managed context, which
@@ -80,12 +71,7 @@ export async function getRouteLeaderContext(
 	event: RequestEvent,
 	domainUserId: number
 ): Promise<LeaderContext | null> {
-	const params = event.params as { slug?: string; id?: string };
-	if (params.id) {
-		const ctx = await getLeaderContextByApplyId(params.id, domainUserId);
-		if (ctx === 'denied') redirect(302, '/dashboard');
-		return ctx;
-	}
+	const params = event.params as { slug?: string };
 	if (params.slug) {
 		const ctx = await getLeaderContextBySlug(params.slug, domainUserId);
 		if (!ctx) redirect(302, '/dashboard');
@@ -111,17 +97,13 @@ export async function ownVerifiedContacts(claimantId: number) {
 	};
 }
 
-/** For pages that need a leader profile; a blank application goes to its own
- * Profile step first, anything else back to the citizen home. */
+/** For pages that need a leader profile; back to the citizen home if there isn't one. */
 export async function requireLeader(
 	event: RequestEvent
 ): Promise<DashboardUser & { ctx: LeaderContext }> {
 	const base = await requireDashboardUser(event);
 	const ctx = await getRouteLeaderContext(event, base.domainUser.id);
-	if (!ctx) {
-		const applyId = (event.params as { id?: string }).id;
-		redirect(302, applyId ? `/dashboard/apply/${applyId}/profile` : '/dashboard');
-	}
+	if (!ctx) redirect(302, '/dashboard');
 	return { ...base, ctx };
 }
 

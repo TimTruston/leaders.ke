@@ -192,9 +192,9 @@ export async function listProfiles(
 			regionPath: seat ? seatPath(seat.title, seat.region) : null,
 			managerName: manager ? fullName(manager) : claim ? fullName({ firstName: claim.claimantFirst, otherNames: claim.claimantOther }) : null,
 			managerId: manager?.userId ?? claim?.claimedBy ?? null,
-			// The leader's own dashboard: a verified profile lives under its slug, an
-			// in-progress one under its apply UUID (the phantom's auth id).
-			adminPath: slug ? `/dashboard/${slug}/profile` : `/dashboard/apply/${person?.authUserId}/profile`,
+			// The leader's own dashboard — a slug always exists (onboarding mints it
+			// at payment time, before anyone can manage a profile at all).
+			adminPath: `/dashboard/${slug}/profile`,
 			profilePath: slug ? leaderPath({ slug }) : `/previews/${id}`,
 			campaignYear: run ? ACTIVE_CYCLE : null,
 			lastActivityAt: new Date(lastActivityBySubject.get(id) ?? 0).toISOString()

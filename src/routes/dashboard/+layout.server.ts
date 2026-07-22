@@ -1,11 +1,9 @@
 import { redirect } from '@sveltejs/kit';
-import { and, desc, eq, isNull, or } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { contacts, managers, profileClaims, users } from '$lib/server/db/schema';
+import { contacts, managers, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import type { ClaimEvidence } from '$lib/server/claims';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
-import { redirectWithFlash } from '$lib/server/flash';
 import { leaderPath, fullName, getRunCampaign, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
 import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
@@ -36,20 +34,12 @@ const toTab = (rows: (boolean | string)[][]): TabChecklist => {
 };
 
 // Guards every /dashboard page and shares the leader context + role switcher data.
-// Three leader route families hang off /dashboard: apply/[id]/* (application in
-// progress), claim/[slug]/* (claiming an existing profile), and [slug]/* (a
-// verified campaign). The second path segment says which one this request is.
+// Two leader route families hang off /dashboard: [slug]/* (a leader's own
+// dashboard, slug minted at onboarding payment time) and the reserved non-leader
+// segments (admin/mobilize/account/invites). The second path segment says which.
 export const load: LayoutServerLoad = async (event) => {
 	const segments = event.url.pathname.split('/'); // ['', 'dashboard', <family|slug>, ...]
 	const family = segments[2];
-
-	// A guest clicking "Claim this profile" lands on /dashboard/claim/<slug>/… —
-	// this must run before requireDashboardUser, whose plain /login redirect would
-	// otherwise win and drop both the notice and the way back to the claim form.
-	if (!event.locals.user && family === 'claim') {
-		const next = `${event.url.pathname}${event.url.search}`;
-		redirectWithFlash(event.cookies, `/login?next=${encodeURIComponent(next)}`, 'You need to be logged in to claim a profile');
-	}
 
 	const { domainUser } = await requireDashboardUser(event);
 
@@ -58,37 +48,8 @@ export const load: LayoutServerLoad = async (event) => {
 		redirect(302, `/verify/email?next=${encodeURIComponent(event.url.pathname)}`);
 	}
 
-	// Claim family: the viewer has no access to the claimed profile yet, so there
-	// is no leader context — just the claimed leader's name for the header.
-	let ctx: Awaited<ReturnType<typeof getRouteLeaderContext>> = null;
-	let claimName: string | null = null;
-	let claimSubjectUserId: number | null = null;
-	let claimSubjectSlug: string | null = null;
-	let claimSubjectPhotoUrl: string | null = null;
-	if (family === 'claim') {
-		const resolved = segments[3] ? await resolveCurrentTerm(segments[3]) : null;
-		if (!resolved || (!resolved.currentTerm?.leaders.verifiedAt && !resolved.activeRun)) redirect(302, '/dashboard');
-		claimName = fullName(resolved.row.users);
-		claimSubjectUserId = resolved.row.users.id;
-		claimSubjectSlug = resolved.row.users.slug;
-		claimSubjectPhotoUrl = resolved.row.users.photoUrl;
-	} else {
-		// apply/[id] and [slug] resolve by their URL param (access-checked);
-		// citizen pages fall back to the viewer's own/first-managed context.
-		ctx = await getRouteLeaderContext(event, domainUser.id);
-	}
-
-	// Keep each application/campaign under its canonical family: approved ones
-	// live at /dashboard/<slug>/*, in-progress ones at /dashboard/apply/<id>/*.
-	if (ctx) {
-		if (family === 'apply' && ctx.verified && ctx.profileUser.slug) {
-			redirect(302, `/dashboard/${ctx.profileUser.slug}/${segments.slice(4).join('/')}${event.url.search}`);
-		}
-		const isCampaignFamily = !['apply', 'claim', 'admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
-		if (isCampaignFamily && !ctx.verified) {
-			redirect(302, `/dashboard/apply/${ctx.profileUser.authUserId}/${segments.slice(3).join('/')}${event.url.search}`);
-		}
-	}
+	// citizen pages fall back to the viewer's own/first-managed context.
+	const ctx = await getRouteLeaderContext(event, domainUser.id);
 
 	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
 
@@ -101,65 +62,7 @@ export const load: LayoutServerLoad = async (event) => {
 	let pendingVerification = false;
 	let rejection: Awaited<ReturnType<typeof getLatestRejection>> = null;
 	let application: ApplicationChecklist | null = null;
-	let claimSubmitted = false;
-	let claimId: number | null = null;
-	let claimRejection: { notes: string | null; reviewedAt: string | null } | null = null;
-	if (family === 'claim' && claimSubjectUserId) {
-		// The claim's checklist reads off what's been STAGED in the pending claim,
-		// not the profile's real data — same shape as the apply checklist so the
-		// tab `*`s and the submit widget work identically. Team is a claim
-		// non-requirement (it unlocks after approval). A rejected claim stays here
-		// too (not just a pending one) — resubmitting edits it in place.
-		const [claimRow] = await db
-			.select({ id: profileClaims.id, evidence: profileClaims.evidence, outcome: profileClaims.outcome, notes: profileClaims.notes, reviewedAt: profileClaims.reviewedAt })
-			.from(profileClaims)
-			.where(
-				and(
-					eq(profileClaims.subjectUserId, claimSubjectUserId),
-					eq(profileClaims.claimedBy, domainUser.id),
-					or(isNull(profileClaims.outcome), eq(profileClaims.outcome, 'rejected')),
-					isNull(profileClaims.deletedAt)
-				)
-			)
-			.orderBy(desc(profileClaims.requestedAt))
-			.limit(1);
-		claimId = claimRow?.id ?? null;
-		if (claimRow?.outcome === 'rejected') {
-			claimRejection = { notes: claimRow.notes, reviewedAt: claimRow.reviewedAt ? claimRow.reviewedAt.toISOString() : null };
-		}
-		const ev = (claimRow?.evidence ?? {}) as ClaimEvidence;
-		application = {
-			profile: toTab([[!ev.profile, 'Profile details']]),
-			contacts: toTab([
-				[!ev.contacts?.address, 'Office / address'],
-				[!ev.contacts?.sms, 'Phone number'],
-				[!ev.contacts?.email, 'Email address']
-			]),
-			// A claim confirms identity only — no campaign or team requirement.
-			campaign: { complete: true, missing: [] },
-			team: { complete: true, missing: [] },
-			// A claim's own staged photo counts, but so does the real profile's existing
-			// photo — the claim form preloads and shows that one until overridden, so it
-			// shouldn't read as "missing" when nothing's been staged yet.
-			documentation: toTab([
-				[!ev.documentation?.photoUrl && !claimSubjectPhotoUrl, 'Photo']
-			]),
-			signoff: toTab([
-				[!ev.signoff?.myRole, 'Your role'],
-				[!ev.signoff?.nationalId, 'Your National ID'],
-				[!ev.signoff?.idFrontUrl, 'ID front'],
-				[!ev.signoff?.idBackUrl, 'ID back']
-			])
-		};
-		applicationComplete =
-			application.profile.complete &&
-			application.contacts.complete &&
-			application.documentation.complete &&
-			application.signoff.complete;
-		// Not "submitted" while a rejection is still open — the resubmit widget
-		// should show again until they've re-confirmed and posted it.
-		claimSubmitted = !!ev.submittedAt && claimRow?.outcome !== 'rejected';
-	} else if (ctx && !ctx.verified) {
+	if (ctx && !ctx.verified) {
 		const settings = await getPlatformSettings();
 		const requiredManagers = settings.requiredTeamManagers;
 		const requiredSignoffs = settings.requiredSignoffs;
@@ -241,10 +144,10 @@ export const load: LayoutServerLoad = async (event) => {
 		if (!pendingVerification) rejection = await getLatestRejection(runCampaign?.id ?? 0);
 	}
 
-	// Every profile the viewer manages + every claim in flight — the switcher lists
-	// them ALL, not just the first-resolved context. Shared with /api/switcher (the
-	// lazy client-side fetch used outside /dashboard) so the two never drift.
-	const { myCampaigns, pendingClaims } = await getSwitcherProfiles(domainUser.id);
+	// Every profile the viewer manages — the switcher lists them ALL, not just the
+	// first-resolved context. Shared with /api/switcher (the lazy client-side fetch
+	// used outside /dashboard) so the two never drift.
+	const { myCampaigns } = await getSwitcherProfiles(domainUser.id);
 
 	// A platform admin viewing a SPECIFIC leader's dashboard gets the header control
 	// block (source/verified badges, lifecycle actions, decision forms). Gated on the
@@ -252,7 +155,7 @@ export const load: LayoutServerLoad = async (event) => {
 	// than event.params — a layout load doesn't reliably carry the deeper [id]/[slug].
 	// Otherwise the citizen pages' fallback ctx (the admin's own/first-managed profile)
 	// would leak the bar onto /dashboard.
-	const isLeaderFamily = family === 'apply' || !['apply', 'claim', 'admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
+	const isLeaderFamily = !['admin', 'mobilize', 'account', 'invites', undefined, ''].includes(family);
 	const adminControls =
 		domainUser.adminAt && ctx && isLeaderFamily
 			? { ...(await getProfileAdminMeta(ctx.profileUser.id)), profileId: ctx.profileUser.id, profileName: fullName(ctx.profileUser) }
@@ -263,12 +166,6 @@ export const load: LayoutServerLoad = async (event) => {
 		// Unread decision notifications (verification/claim outcomes), bannered until dismissed.
 		notifications: await listUnreadNotifications(domainUser.id),
 		adminControls,
-		claimName,
-		claimSubjectSlug,
-		claimId,
-		claimSubmitted,
-		claimRejection,
-		pendingClaims,
 		myCampaigns,
 		// The switcher needs this to show the RIGHT current entry when an admin is
 		// viewing a profile they don't personally manage (dashboardModes.ts dedupes
@@ -295,12 +192,9 @@ export const load: LayoutServerLoad = async (event) => {
 					// else the slugless /previews/[userId] route for an in-progress application.
 					previewPath:
 						ctx.verified && ctx.profileUser.slug ? leaderPath(ctx.profileUser) : `/previews/${ctx.profileUser.id}`,
-					// Verified campaigns live under their slug; in-progress applications
-					// under their pre-minted UUID (the phantom's auth id).
-					basePath:
-						ctx.verified && ctx.profileUser.slug
-							? `/dashboard/${ctx.profileUser.slug}`
-							: `/dashboard/apply/${ctx.profileUser.authUserId}`
+					// A slug always exists (onboarding mints it at payment time, before
+					// anyone ever reaches this dashboard).
+					basePath: `/dashboard/${ctx.profileUser.slug}`
 				}
 			: null
 	};
