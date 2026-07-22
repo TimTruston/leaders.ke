@@ -13,26 +13,19 @@
 	let whatsappPhone = $state(data.whatsappPhone);
 	let verified = $state(data.verified);
 
-	const notifyChannels = [
-		{
-			name: 'notifyEmail',
-			label: 'Email',
-			checked: data.notificationPrefs.email,
-			icon: 'M2.25 6.75c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V6.75Zm1.72-.19 8.03 5.5 8.03-5.5'
-		},
-		{
-			name: 'notifySms',
-			label: 'SMS',
-			checked: data.notificationPrefs.sms,
-			icon: 'M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v9a2.25 2.25 0 0 1-2.25 2.25H9l-4.5 4.5v-4.5H5.25A2.25 2.25 0 0 1 3 14.25v-9Z'
-		},
-		{
-			name: 'notifyWhatsapp',
-			label: 'WhatsApp',
-			checked: data.notificationPrefs.whatsapp,
-			icon: 'M12 3a9 9 0 0 0-7.76 13.56L3 21l4.6-1.21A9 9 0 1 0 12 3Zm4.64 12.3c-.2.55-1.13 1.04-1.6 1.1-.4.06-.9.09-1.46-.09-.33-.11-.77-.25-1.32-.5-2.32-1-3.84-3.35-3.95-3.5-.12-.16-.94-1.25-.94-2.38s.6-1.7.8-1.93c.2-.23.44-.29.6-.29h.42c.14 0 .3 0 .46.35.2.42.66 1.45.72 1.55.06.11.1.24.02.4-.08.16-.12.25-.24.38-.12.14-.25.3-.36.4-.12.12-.24.24-.1.48.14.24.6 1 1.3 1.62.9.8 1.65 1.05 1.9 1.17.24.12.38.1.52-.06.16-.16.6-.7.76-.94.16-.24.32-.2.53-.12.22.08 1.4.66 1.63.78.24.12.4.18.46.28.06.1.06.55-.14 1.1Z'
-		}
-	];
+	// A channel can only be selected to notify on if it's actually verified — an
+	// unverified address/number isn't reachable, so forcing it off (and disabling
+	// the control) here keeps the UI honest instead of silently ignoring the field
+	// server-side.
+	let notifyEmail = $state(data.notificationPrefs.email && verified.email);
+	let notifySms = $state(data.notificationPrefs.sms && verified.sms);
+	let notifyWhatsapp = $state(data.notificationPrefs.whatsapp && verified.whatsapp);
+
+	const NOTIFY_ICONS = {
+		email: 'M2.25 6.75c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V6.75Zm1.72-.19 8.03 5.5 8.03-5.5',
+		sms: 'M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v9a2.25 2.25 0 0 1-2.25 2.25H9l-4.5 4.5v-4.5H5.25A2.25 2.25 0 0 1 3 14.25v-9Z',
+		whatsapp: 'M12 3a9 9 0 0 0-7.76 13.56L3 21l4.6-1.21A9 9 0 1 0 12 3Zm4.64 12.3c-.2.55-1.13 1.04-1.6 1.1-.4.06-.9.09-1.46-.09-.33-.11-.77-.25-1.32-.5-2.32-1-3.84-3.35-3.95-3.5-.12-.16-.94-1.25-.94-2.38s.6-1.7.8-1.93c.2-.23.44-.29.6-.29h.42c.14 0 .3 0 .46.35.2.42.66 1.45.72 1.55.06.11.1.24.02.4-.08.16-.12.25-.24.38-.12.14-.25.3-.36.4-.12.12-.24.24-.1.48.14.24.6 1 1.3 1.62.9.8 1.65 1.05 1.9 1.17.24.12.38.1.52-.06.16-.16.6-.7.76-.94.16-.24.32-.2.53-.12.22.08 1.4.66 1.63.78.24.12.4.18.46.28.06.1.06.55-.14 1.1Z'
+	};
 </script>
 
 <svelte:head><title>Account — leaders.ke</title></svelte:head>
@@ -82,50 +75,62 @@
 			</label>
 		</div>
 
-		<EmailInput bind:value={email} verified={verified.email} verifiedValues={data.ownVerified.email} />
+		<div class="flex gap-3 items-end">
+			<div class="flex-1">
+				<EmailInput bind:value={email} verified={verified.email} verifiedValues={data.ownVerified.email} />
+			</div>
+			<label
+					title={verified.email ? '' : 'Verify this email to enable notifications on it.'}
+					class="flex items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-muted transition select-none has-checked:border-primary has-checked:text-primary hover:bg-surface-2 {verified.email ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}"
+				>
+				<input type="checkbox" name="notifyEmail" bind:checked={notifyEmail} disabled={!verified.email} class="sr-only" />
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 shrink-0">
+					<path stroke-linecap="round" stroke-linejoin="round" d={NOTIFY_ICONS.email} />
+				</svg>
+				Notify
+			</label>
+		</div>
 
-		<div class="grid gap-3 sm:grid-cols-2">
-			<div>
+		<div class="flex gap-3 items-end">
+			<div class="flex-1">
 				<PhoneInput bind:value={smsPhone} label="Phone number" field="sms" verified={verified.sms} verifiedValues={data.ownVerified.sms}/>
 				<input type="hidden" name="smsPhone" value={smsPhone} />
 			</div>
-			<div>
+			<label
+					title={verified.sms ? '' : 'Verify this number to enable SMS notifications.'}
+					class="flex items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-muted transition select-none has-checked:border-primary has-checked:text-primary hover:bg-surface-2 {verified.sms ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}"
+				>
+				<input type="checkbox" name="notifySms" bind:checked={notifySms} disabled={!verified.sms} class="sr-only" />
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 shrink-0">
+					<path stroke-linecap="round" stroke-linejoin="round" d={NOTIFY_ICONS.sms} />
+				</svg>
+				Notify
+			</label>
+		</div>
+
+		<div class="flex gap-3 items-end">
+			<div class="flex-1">
 				<PhoneInput bind:value={whatsappPhone} label="WhatsApp number" field="whatsapp" verified={verified.whatsapp} verifiedValues={data.ownVerified.whatsapp}/>
 				<input type="hidden" name="whatsappPhone" value={whatsappPhone} />
 			</div>
+			<label
+					title={verified.whatsapp ? '' : 'Verify this number to enable WhatsApp notifications.'}
+					class="flex items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-muted transition select-none has-checked:border-primary has-checked:text-primary hover:bg-surface-2 {verified.whatsapp ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}"
+				>
+				<input type="checkbox" name="notifyWhatsapp" bind:checked={notifyWhatsapp} disabled={!verified.whatsapp} class="sr-only" />
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 shrink-0">
+					<path stroke-linecap="round" stroke-linejoin="round" d={NOTIFY_ICONS.whatsapp} />
+				</svg>
+				Notify
+			</label>
 		</div>
 
-		<fieldset>
-			<legend class="text-xs font-medium text-muted">Notify me by</legend>
-			<div class="mt-2 flex flex-wrap gap-2">
-				{#each notifyChannels as channel (channel.name)}
-					<label
-						class="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-muted transition select-none has-checked:border-primary has-checked:bg-primary has-checked:text-on-primary hover:bg-surface-2"
-					>
-						<input type="checkbox" name={channel.name} checked={channel.checked} class="sr-only" />
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 shrink-0">
-							<path stroke-linecap="round" stroke-linejoin="round" d={channel.icon} />
-						</svg>
-						{channel.label}
-					</label>
-				{/each}
-			</div>
-		</fieldset>
-
-		<div class="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
+		<div class="mt-8 grid grid-cols-2 gap-2">
 			<a
 				href="/change-password"
 				class="rounded-xl border border-border bg-surface px-4 py-2 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"
 			>
 				Change password
-			</a>
-			<a
-				href="/logout"
-				data-sveltekit-preload-data="off"
-				data-sveltekit-reload
-				class="w-full rounded-xl border border-border bg-surface px-4 py-2 text-center text-sm font-medium text-heading transition hover:border-primary hover:bg-surface-2"
-			>
-				Log out
 			</a>
 			<button
 				type="submit"

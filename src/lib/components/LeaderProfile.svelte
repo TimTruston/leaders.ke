@@ -271,7 +271,7 @@
 						Get access to modify how it looks.
 					</p>
 					<a
-						href="/dashboard/claim/{leader.slug}/profile"
+						href="/onboard/profile?profile={leader.slug}"
 						class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
 					>
 						Claim this profile

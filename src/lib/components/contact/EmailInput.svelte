@@ -44,9 +44,12 @@
 	const invalid = $derived(value.length > 0 && !/^\S+@\S+\.\S+$/.test(value));
 
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
-	// creation or a claim) instead of the default /dashboard/account.
+	// creation or a claim) instead of the default /dashboard/account — but if THIS
+	// page was itself reached via its own ?next= (e.g. the onboarding gate sent us
+	// to /dashboard/account?next=/onboard/profile...), chase that further destination
+	// instead of looping back to this page.
 	const verifyHref = $derived(
-		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
+		`/verify/email?email=${encodeURIComponent(value)}&next=${encodeURIComponent(page.url.searchParams.get('next') ?? page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
 	);
 </script>
 

@@ -33,6 +33,11 @@
 	{/if}
 
 	<form method="post" action="?/email" use:enhance class="space-y-4">
+		<!-- action="?/email" replaces the page's whole query string on submit (same
+		class of bug as checkout's Pay action), so ?next (and ?email for invites)
+		would otherwise vanish before the server ever sees them. -->
+		<input type="hidden" name="next" value={data.next} />
+		{#if data.lockedEmail}<input type="hidden" name="lockedEmail" value={data.lockedEmail} />{/if}
 		<div class="grid grid-cols-2 gap-3">
 			<Field label="First name" name="firstName" autocomplete="given-name" required placeholder="Jane" />
 			<Field

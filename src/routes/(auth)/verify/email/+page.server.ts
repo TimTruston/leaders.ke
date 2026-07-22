@@ -118,7 +118,7 @@ export const actions: Actions = {
 		const typed = String(form.get('email') ?? '').trim().toLowerCase();
 		const email = typed.includes('@') ? typed : authUser.email;
 		if (scope !== 'claim' && (await verifiedByOther([subject.id, domainUser.id], email))) {
-			return fail(400, { emailError: 'That email is already verified on another account.' });
+			return fail(400, { emailError: `${email} is already verified on another account.` });
 		}
 		const linkPath = scope === 'account' ? '/verify/email' : `/verify/email?scope=${scope}${slug ? `&slug=${slug}` : ''}`;
 		try {

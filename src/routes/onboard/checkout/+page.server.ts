@@ -31,7 +31,7 @@ async function resolveSelection(params: { subject: string | null; tier: string |
 		.where(and(eq(managers.userId, domainUserId), eq(managers.subjectUserId, subjectId), eq(managers.isActive, true), isNull(managers.deletedAt)));
 	if (!managed) error(403, 'You do not manage this profile.');
 
-	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, subjectId));
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, subjectId));
 	if (!subject) error(404, 'Profile not found.');
 
 	const [rate] = await db
@@ -40,7 +40,7 @@ async function resolveSelection(params: { subject: string | null; tier: string |
 		.where(and(eq(pricing.band, band as 'ward'), eq(pricing.tier, tier as 'aspirant'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
 	if (!rate) error(400, 'No price is set for that plan yet.');
 
-	return { subjectId, tier, band, cycle, amount: rate.amount, subjectName: fullName(subject) };
+	return { subjectId, tier, band, cycle, amount: rate.amount, subjectName: fullName(subject), slug: subject.slug };
 }
 
 export const load: PageServerLoad = async (event) => {
@@ -57,6 +57,9 @@ export const actions: Actions = {
 		const { domainUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
 		const sel = await resolveSelection({ subject: form.get('subject') as string | null, tier: form.get('tier') as string | null, band: form.get('band') as string | null, cycle: form.get('cycle') as string | null }, domainUser.id);
+		// Straight to the leader's own dashboard once paid — no /dashboard/account
+		// detour. Falls back only if the profile is somehow still slugless.
+		const managePath = sel.slug ? `/dashboard/${sel.slug}/profile` : '/dashboard/account';
 
 		// One live subscription per person (DB-enforced) — if they already have one,
 		// treat checkout as already done rather than 500 on the unique index.
@@ -64,7 +67,7 @@ export const actions: Actions = {
 			.select({ id: subscriptions.id })
 			.from(subscriptions)
 			.where(and(eq(subscriptions.subjectUserId, sel.subjectId), inArray(subscriptions.status, ['active', 'pending'])));
-		if (live) redirectWithFlash(event.cookies, '/dashboard/account', 'This profile already has an active subscription.');
+		if (live) redirectWithFlash(event.cookies, managePath, 'This profile already has an active subscription.');
 
 		const now = new Date();
 		const endsAt = new Date(now);
@@ -102,6 +105,6 @@ export const actions: Actions = {
 			paidAt: now
 		});
 
-		redirectWithFlash(event.cookies, '/dashboard/account', 'Your payment was successful! Confirm your contacts below to help us reach you easily.');
+		redirectWithFlash(event.cookies, managePath, 'Your payment was successful! Welcome to your leader\'s dashboard.');
 	}
 };

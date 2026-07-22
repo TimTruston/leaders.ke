@@ -7,8 +7,10 @@
 	let { data, form }: PageProps = $props();
 
 	// Form state (kept in $state so the live matcher and the confirm gate can react).
-	let firstName = $state(form?.values?.firstName ?? '');
-	let otherNames = $state(form?.values?.otherNames ?? '');
+	// Prefilled from data.defaults: the claim target's name when arriving via "Claim
+	// this profile" (?profile=<slug>), else the citizen's own.
+	let firstName = $state(form?.values?.firstName ?? data.defaults.firstName ?? '');
+	let otherNames = $state(form?.values?.otherNames ?? data.defaults.otherNames ?? '');
 	let status = $state(form?.values?.status ?? '');
 	let myRole = $state(form?.values?.myRole ?? '');
 	// "none" (not "") is the Independent option's value — a `required` select treats an
@@ -55,6 +57,11 @@
 					matches = (await res.json()).matches;
 					// Drop a stale selection if the matched set no longer contains it.
 					if (selectedSubjectId && !matches.some((m) => m.subjectUserId === selectedSubjectId)) selectedSubjectId = null;
+					// Arrived via "Claim this profile" — auto-select that card once it
+					// surfaces in the matcher, so the claimant just confirms + submits.
+					if (data.preselectSubjectId && !selectedSubjectId && matches.some((m) => m.subjectUserId === data.preselectSubjectId)) {
+						selectedSubjectId = data.preselectSubjectId;
+					}
 				}
 			} finally {
 				matching = false;
@@ -82,7 +89,7 @@
 		<p class="mt-4 rounded-xl border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">{form.error}</p>
 	{/if}
 
-	<form method="post" use:enhance={() => { submitting = true; return async ({ update }) => { await update({ reset: false }); submitting = false; }; }} class="mt-6 grid gap-8 lg:grid-cols-2">
+	<form method="post" use:enhance={() => { submitting = true; return async ({ update }) => { await update({ reset: false }); submitting = false; }; }} class="mt-6 grid gap-4 lg:gap-8 lg:grid-cols-2">
 		<!-- LHS: describe the leader -->
 		<div class="space-y-4">
 			<h2 class="text-sm font-semibold text-heading">Describe the leader below…</h2>
@@ -99,7 +106,7 @@
 			</div>
 
 			<fieldset>
-				<legend class="text-sm font-medium text-heading">Has the leader been elected before?</legend>
+				<legend class="text-sm font-medium text-heading">Has the leader ever been elected before?</legend>
 				<div class="mt-2 space-y-2">
 					{#each data.statusOptions as opt (opt.value)}
 						<label class="flex items-center gap-2 text-sm text-heading">
@@ -161,21 +168,21 @@
 						</label>
 					{/each}
 				</div>
-
-				{#if selectedSubjectId}
-					<label class="flex items-start gap-2 rounded-xl border border-border bg-surface-2 px-3 py-2 text-xs text-heading">
-						<input type="checkbox" bind:checked={legalConfirmed} class="mt-0.5 text-primary focus:ring-ring" />
-						I confirm I am this leader or an authorised representative, and understand that falsely claiming a profile may have legal consequences.
-					</label>
-				{/if}
 			{/if}
 		</div>
 
 		<!-- Hidden link target: set only when a matching card is confirmed. -->
 		<input type="hidden" name="leaderId" value={selectedSubjectId ?? ''} />
 
+		{#if selectedSubjectId}
+		<label class="flex items-start gap-2 rounded-xl border border-border bg-surface-2 px-3 py-2 text-xs text-heading">
+			<input type="checkbox" bind:checked={legalConfirmed} class="mt-0.5 text-primary focus:ring-ring" />
+			I confirm that I am this leader or an authorised representative and I understand that falsely claiming a profile may have legal consequences.
+		</label>
+		{/if}
+
 		<div class="lg:col-span-2">
-			<button type="submit" disabled={!canSubmit || submitting} class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-50">
+			<button type="submit" disabled={!canSubmit || submitting} class="mt-3 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-50">
 				{submitting ? 'Saving…' : selectedSubjectId ? 'Link & continue' : 'Create & continue'}
 			</button>
 		</div>

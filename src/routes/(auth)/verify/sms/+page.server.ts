@@ -5,7 +5,7 @@ import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { parseScope, resolveVerifySubject, type DashboardUser } from '$lib/server/dashboard';
 import { stageClaimVerifiedContact } from '$lib/server/claims';
-import { normalizeKenyanPhone } from '$lib/utils/phone';
+import { formatKenyanPhoneDisplay, normalizeKenyanPhone } from '$lib/utils/phone';
 import { hasPendingOtp, otpCooldownRemaining, sendOtp, verifyOtpWithDestination } from '$lib/server/otp';
 import { getPlatformSettings } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async (event) => {
 			redirectWithFlash(event.cookies, next, 'Your SMS number is already verified.');
 		}
 		if (await verifiedByOther([subject.id, domainUser.id], phone)) {
-			redirectWithFlash(event.cookies, next, 'That number is already verified on another account.');
+			redirectWithFlash(event.cookies, next, `${formatKenyanPhoneDisplay(phone)} is already verified on another account.`);
 		}
 	}
 
@@ -98,7 +98,7 @@ export const actions: Actions = {
 		const normalized = normalizeKenyanPhone(String(form.get('phone') ?? ''));
 		if (!normalized) return fail(400, { phoneError: 'Enter a valid Kenyan phone number.' });
 		if (scope !== 'claim' && (await verifiedByOther([subject.id, domainUser.id], normalized))) {
-			return fail(400, { phoneError: 'This number is already verified on another account.' });
+			return fail(400, { phoneError: `${formatKenyanPhoneDisplay(normalized)} is already verified on another account.` });
 		}
 		try {
 			await sendOtp(subject.id, 'sms', normalized);

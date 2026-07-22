@@ -1,8 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { parties, positions } from '$lib/server/db/schema';
+import { parties, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
+import { fullName } from '$lib/server/leader';
 import { createOnboardProfile, linkOnboardProfile, ONBOARD_STATUS_LABELS, type OnboardStatus } from '$lib/server/onboard';
 import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
@@ -11,6 +12,14 @@ import type { Actions, PageServerLoad } from './$types';
 // then create or link one. Submit lands on /onboard/plan (step 4).
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
+
+	// "Claim this profile" on a public page arrives here as ?profile=<slug> — prefill
+	// the name from THAT profile (not the citizen's own) and hand the client its id so
+	// the Matching Profiles panel can auto-select it once the (debounced) match lands.
+	const claimSlug = event.url.searchParams.get('profile');
+	const [claimTarget] = claimSlug
+		? await db.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames }).from(users).where(and(eq(users.slug, claimSlug), isNull(users.deletedAt)))
+		: [];
 
 	const [positionRows, partyRows] = await Promise.all([
 		db.select({ id: positions.id, title: positions.title, region: positions.region }).from(positions).where(isNull(positions.deletedAt)).orderBy(asc(positions.title), asc(positions.region)),
@@ -22,8 +31,13 @@ export const load: PageServerLoad = async (event) => {
 		parties: partyRows.map((p) => ({ id: p.id, name: p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name })),
 		roles: CAMPAIGN_ROLES,
 		statusOptions: (Object.keys(ONBOARD_STATUS_LABELS) as OnboardStatus[]).map((value) => ({ value, label: ONBOARD_STATUS_LABELS[value] })),
-		// Prefill with the citizen's own name — the common case is a leader onboarding themselves.
-		defaults: { firstName: domainUser.firstName, otherNames: domainUser.otherNames }
+		// Prefill with the claim target's name if arriving via "Claim this profile",
+		// else the citizen's own — the common case is a leader onboarding themselves.
+		defaults: claimTarget
+			? { firstName: claimTarget.firstName, otherNames: claimTarget.otherNames }
+			: { firstName: domainUser.firstName, otherNames: domainUser.otherNames },
+		preselectSubjectId: claimTarget?.id ?? null,
+		preselectName: claimTarget ? fullName(claimTarget) : null
 	};
 };
 

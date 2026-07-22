@@ -72,11 +72,13 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const email = form.get('email')?.toString() ?? '';
 		const password = form.get('password')?.toString() ?? '';
-		const next = safeNext(event.url.searchParams.get('next'));
+		// action="?/email" replaces the whole query string per URL-resolution rules, so
+		// next/lockedEmail ride along as posted hidden fields instead of event.url.
+		const next = safeNext(form.get('next')?.toString() ?? null);
 
 		// Defense in depth: the email field is only readonly client-side (devtools
 		// can bypass it), so re-check server-side against the locked invite email.
-		const lockedEmail = event.url.searchParams.get('email');
+		const lockedEmail = form.get('lockedEmail')?.toString() || null;
 		if (lockedEmail && email.trim().toLowerCase() !== lockedEmail.trim().toLowerCase()) {
 			return fail(400, { message: `This invite was sent to ${lockedEmail}. Sign in with that email to accept it.` });
 		}

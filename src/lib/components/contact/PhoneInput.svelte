@@ -46,9 +46,12 @@
 	);
 	// The verify routes read different param names: /verify/sms?phone= vs /verify/whatsapp?number=.
 	// next = the page we're on, so verifying returns here (e.g. mid leader-profile
-	// creation on /dashboard/contacts) instead of the default /dashboard/account.
+	// creation on /dashboard/contacts) instead of the default /dashboard/account — but
+	// if THIS page was itself reached via its own ?next= (e.g. the onboarding gate sent
+	// us to /dashboard/account?next=/onboard/profile...), chase that further destination
+	// instead of looping back to this page.
 	const verifyHref = $derived(
-		`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}&next=${encodeURIComponent(page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
+		`/verify/${field}?${field === 'whatsapp' ? 'number' : 'phone'}=${value}&next=${encodeURIComponent(page.url.searchParams.get('next') ?? page.url.pathname)}&scope=${scope}${page.params.slug ? `&slug=${page.params.slug}` : ''}`
 	);
 </script>
 

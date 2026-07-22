@@ -221,7 +221,7 @@
 	{#if joinedMessage}
 		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{joinedMessage}</div>
 	{:else if notice}
-		<div class="mb-4 rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{notice}</div>
+		<div class="mb-4 whitespace-pre-line rounded-xl bg-primary-soft p-4 text-sm font-medium text-on-primary">{notice}</div>
 	{/if}
 
 	<!-- Durable decision notifications (verification/claim outcomes) — bannered until dismissed -->
