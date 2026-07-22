@@ -233,13 +233,19 @@ export async function activeTermForPerson(subjectUserId: number) {
  * (not the leader's own profile and not an active manager of it).
  */
 export async function getLeaderContextBySlug(slug: string, domainUserId: number): Promise<LeaderContext | null> {
-	const [profileUser] = await db.select().from(users).where(and(eq(users.slug, slug), isNull(users.deletedAt)));
+	const [profileUser] = await db.select().from(users).where(eq(users.slug, slug));
 	if (!profileUser) return null;
+
+	const admin = await isPlatformAdmin(domainUserId);
+	// A deactivated profile (users.deletedAt) is off-limits to its own team — only a
+	// platform admin can still open it, since Activate (the only way back out of
+	// Deactivate) lives on this same dashboard route.
+	if (profileUser.deletedAt && !admin) return null;
 
 	const role: 'leader' | 'manager' = profileUser.id === domainUserId ? 'leader' : 'manager';
 	// A platform admin may open any leader's dashboard; everyone else needs to be the
 	// leader or an active manager of them.
-	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id)) && !(await isPlatformAdmin(domainUserId))) return null;
+	if (role === 'manager' && !(await findPersonManager(domainUserId, profileUser.id)) && !admin) return null;
 
 	return await buildContext(profileUser, role, true);
 }
