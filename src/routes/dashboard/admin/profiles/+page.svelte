@@ -196,6 +196,12 @@
 															<tbody>
 																{#each extras.claimHistory as h (h.id)}
 																	<tr class="border-t border-border">
+																		<td class="px-3 py-2 text-xs text-heading">
+																			<div class="flex justify-between">
+																				<span>{h.claimantName}</span>
+																				<span>{h.id}</span>
+																			</div>
+																		</td>
 																		<td class="px-3 py-2 text-xs text-heading">{h.claimantName}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.role ?? '—'}</td>
 																		<td class="px-3 py-2 text-xs text-muted">{h.nationalId ?? '—'}</td>

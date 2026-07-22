@@ -4,11 +4,6 @@
 	let { data }: PageProps = $props();
 
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
-
-	// Each application lives at /dashboard/apply/<uuid>/* — minting the id here
-	// makes the URL stable from the very first (unsaved) visit, and lets one
-	// person hold several applications side by side.
-	const launchHref = `/dashboard/apply/${crypto.randomUUID()}/profile`;
 </script>
 
 <svelte:head><title>Overview — leaders.ke</title></svelte:head>
@@ -90,11 +85,10 @@
 		Launch your public page and manage your PR and campaigns here.
 	</p>
 	<a
-		href={launchHref}
-		data-sveltekit-preload-data="off"
+		href="/onboard/profile"
 		class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
 	>
-		Create a Leader's Profile
+		Create Your Profile
 	</a>
 </div>
 </div>

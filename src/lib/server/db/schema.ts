@@ -53,6 +53,10 @@ export const users = pgTable('users', {
   // manager's own ID sign-off lives on their own row too. ID scans are never public.
   // Local-disk URLs for now (see $lib/server/storage.ts).
   photoUrl: text('photo_url'),
+  // The person's national ID number, captured up front at onboarding (the sign-off
+  // step). Person-scoped like the ID scans below: an identity follows someone across
+  // every candidacy and term. Never public.
+  nationalId: varchar('national_id', { length: 20 }),
   idFrontUrl: text('id_front_url'),
   idBackUrl: text('id_back_url'),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)

@@ -74,20 +74,25 @@ export async function isSlugAvailable(slug: string, excludeUserId?: number): Pro
  * (against reserved routes and every other user's slug). Call once, at creation
  * time; every later `leaders` row for the same person just points at this user. */
 export async function generateLeaderSlug(name: string): Promise<string> {
-	// A numeric-only base can never pass the blocked-slug check (nor can any of its
-	// "-2", "-3"... variants), so prefix it rather than loop forever.
+	// A numeric-only base, or one that contains "admin" as a whole word (e.g. someone
+	// literally named "Admin"), can never pass the blocked-slug check — suffixing with
+	// "-2", "-3"... doesn't help since admin-tim-2 still starts with "admin-" and is
+	// STILL blocked. Both are permanent, not just-this-exact-string blocks, so fall back
+	// to an anonymized base instead of suffix-looping forever.
 	let base = slugify(name);
-	if (!base || /^[0-9-]+$/.test(base)) base = `leader-${base}`.replace(/-$/, '');
+	if (!base || /^[0-9-]+$/.test(base) || /(^|-)admin($|-)/.test(base)) base = `leader-${randomUUID().slice(0, 8)}`;
 	let candidate = base;
 	let n = 1;
-	// eslint-disable-next-line no-constant-condition
-	while (true) {
+	// Hard cap: this loop should resolve in 1-2 iterations in practice — bounding it
+	// turns any unforeseen isSlugAvailable bug into a clear error instead of a hang.
+	for (let tries = 0; tries < 100; tries++) {
 		if (await isSlugAvailable(candidate)) {
 			return candidate;
 		}
 		n++;
 		candidate = `${base}-${n}`;
 	}
+	throw new Error(`Could not find a free slug for "${name}" after 100 attempts.`);
 }
 
 export type LeaderContext = {
