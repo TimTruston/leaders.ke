@@ -26,6 +26,14 @@
 	let adminAction = $state<{ action: string; title: string; body: string; confirmLabel: string } | null>(null);
 	let adminFormEl = $state<HTMLFormElement | null>(null);
 	let adminActionEl = $state<HTMLInputElement | null>(null);
+	// Which claim the pending action's shared hidden form should target (either an
+	// already-approved claim being rejected, or a pending one) + its rejection notes,
+	// staged at click time alongside adminAction.
+	let confirmClaimId = $state<number | null>(null);
+	let confirmNotes = $state('');
+	// Typed into the pending-claim decision form's notes field BEFORE the Reject
+	// button opens the confirm modal — carried into confirmNotes at click time.
+	let claimRejectNotes = $state('');
 
 	// Set by /invite/[token] right after accepting — a one-time "you're in" banner.
 	const joinedRole = $derived(page.url.searchParams.get('joined'));
@@ -346,7 +354,11 @@
 			{#if ac.approvedClaimId}
 				<button
 					type="button"
-					onclick={() => (adminAction = { action: 'rejectApprovedClaim', title: 'Reject this claim?', body: `Revokes ${ac.profileName}'s claimant's access and restores the profile's bio and party from its seed record. This cannot be undone.`, confirmLabel: 'Reject' })}
+					onclick={() => {
+						confirmClaimId = ac.approvedClaimId;
+						confirmNotes = '';
+						adminAction = { action: 'rejectApprovedClaim', title: 'Reject this claim?', body: `Revokes ${ac.profileName}'s claimant's access and restores the profile's bio and party from its seed record. This cannot be undone.`, confirmLabel: 'Reject' };
+					}}
 					class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
 				>Reject</button>
 			{/if}
@@ -381,8 +393,27 @@
 				{/if}
 			</div>
 
-			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager access. -->
-			{#if ac.claim}{@render decisionForm('reviewClaim', 'claimId', ac.claim.id)}{/if}
+			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager
+			access directly; reject goes through the shared confirm modal like the other
+			destructive actions, carrying this claim's id + typed notes onto the hidden form. -->
+			{#if ac.claim}
+				<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
+					<input type="hidden" name="action" value="reviewClaim" />
+					<input type="hidden" name="claimId" value={ac.claim.id} />
+					<input type="hidden" name="next" value={page.url.pathname} />
+					<input type="text" name="notes" bind:value={claimRejectNotes} placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
+					<button
+						type="button"
+						onclick={() => {
+							confirmClaimId = ac.claim!.id;
+							confirmNotes = claimRejectNotes;
+							adminAction = { action: 'reviewClaim', title: 'Reject this claim?', body: `Declines ${ac.claim!.claimantName}'s claim on ${ac.profileName}'s profile. They lose access and all data will be restored to the original state.`, confirmLabel: 'Reject' };
+						}}
+						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
+					>Reject</button>
+					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
+				</form>
+			{/if}
 			<!-- Verification decision (was the Campaign-tab banner): approve takes the run live.
 			The slug is set on the Profile tab, not here. -->
 			{#if ac.verification}{@render decisionForm('reviewVerification', 'verificationId', ac.verification.id)}{/if}
@@ -391,7 +422,8 @@
 			onto the hidden input before requestSubmit so no reactive flush is needed. -->
 			<form method="post" action="/dashboard/admin/profile-action" bind:this={adminFormEl} class="hidden">
 				<input type="hidden" name="profileId" value={ac.profileId} />
-				<input type="hidden" name="claimId" value={ac.approvedClaimId ?? ''} />
+				<input type="hidden" name="claimId" value={confirmClaimId ?? ''} />
+				<input type="hidden" name="notes" value={confirmNotes} />
 				<input type="hidden" name="next" value={page.url.pathname} />
 				<input type="hidden" name="action" bind:this={adminActionEl} />
 			</form>
