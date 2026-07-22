@@ -7,7 +7,7 @@ import { db } from '$lib/server/db';
 import { campaigns, experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { ACTIVE_CYCLE, createPhantomUser, fullName, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, resolveOtherParty, slugify } from '$lib/server/leader';
 import { getPendingVerification, requestVerification } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
@@ -121,7 +121,8 @@ export const actions: Actions = {
 		const firstName = String(form.get('firstName') ?? '').trim();
 		const otherNames = String(form.get('otherNames') ?? '').trim();
 		const bio = String(form.get('bio') ?? '').trim();
-		const partyId = Number(form.get('partyId') ?? 0) || null; // null = independent
+		const partyRaw = String(form.get('partyId') ?? '').trim();
+		const partyOtherRaw = String(form.get('partyOther') ?? '').trim();
 		const slugInput = slugify(String(form.get('slug') ?? '').trim());
 
 		// Staged photo rides this same submit. Validate it up front so a bad file
@@ -156,12 +157,16 @@ export const actions: Actions = {
 		// The seat contested is no longer part of this form — the run (seat + cycle)
 		// is declared on the Campaign tab.
 
+		if (partyRaw === 'other' && !partyOtherRaw) return fail(400, { error: 'Enter the party name.' });
+		let partyId = partyRaw && partyRaw !== 'other' ? Number(partyRaw) || null : null; // null = independent
 		if (partyId) {
 			const [party] = await db
 				.select({ id: parties.id })
 				.from(parties)
 				.where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
 			if (!party) return fail(400, { error: 'That party does not exist.' });
+		} else if (partyRaw === 'other') {
+			partyId = await resolveOtherParty(partyOtherRaw);
 		}
 
 		for (const e of pendingExperience) {

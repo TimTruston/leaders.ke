@@ -12,7 +12,7 @@
 import { and, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
-import { createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
+import { createPhantomUser, fullName, generateLeaderSlug, leaderPath, resolveOtherParty } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
 import { notifyUser } from '$lib/server/notifications';
@@ -153,6 +153,10 @@ export type OnboardInput = {
 	otherNames: string;
 	status: OnboardStatus;
 	partyId: number | null;
+	// The typed name for an unregistered party ("Other" option) — resolved to a
+	// real parties.id (via resolveOtherParty) only at create/link time, not here,
+	// since that needs the database. partyId and partyOther are never both set.
+	partyOther: string | null;
 	positionId: number | null;
 	myRole: string;
 	nationalId: string;
@@ -166,7 +170,8 @@ export type OnboardRawInput = {
 	firstName: string;
 	otherNames: string;
 	status: string;
-	partyId: string; // "" = missing, "none" = Independent, else a parties.id
+	partyId: string; // "" = missing, "none" = Independent, "other" = partyOther, else a parties.id
+	partyOther: string;
 	positionId: string;
 	myRole: string;
 	nationalId: string;
@@ -177,6 +182,7 @@ export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: O
 	const otherNames = raw.otherNames.trim();
 	const status = raw.status;
 	const partyRaw = raw.partyId.trim();
+	const partyOtherRaw = raw.partyOther.trim();
 	const positionId = Number(raw.positionId) || null;
 	const myRole = raw.myRole.trim();
 	const nationalId = raw.nationalId.trim();
@@ -185,12 +191,14 @@ export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: O
 	if (!otherNames) return { ok: false, error: 'Other names are required.' };
 	if (!(status in ONBOARD_STATUS_LABELS)) return { ok: false, error: 'Choose whether the leader is a new aspirant, current, or former.' };
 	if (!partyRaw) return { ok: false, error: 'Choose a party, or Independent / none.' };
+	if (partyRaw === 'other' && !partyOtherRaw) return { ok: false, error: 'Enter the party name.' };
 	if (!positionId) return { ok: false, error: 'Choose the elective position.' };
 	if (!myRole || !(CAMPAIGN_ROLES as readonly string[]).includes(myRole)) return { ok: false, error: 'Choose your role.' };
 	if (!isValidNationalId(nationalId)) return { ok: false, error: 'Enter a valid national ID number (7–8 digits).' };
 
-	const partyId = partyRaw !== 'none' ? Number(partyRaw) || null : null;
-	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, partyId, positionId, myRole, nationalId } };
+	const partyId = partyRaw !== 'none' && partyRaw !== 'other' ? Number(partyRaw) || null : null;
+	const partyOther = partyRaw === 'other' ? partyOtherRaw : null;
+	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, partyId, partyOther, positionId, myRole, nationalId } };
 }
 
 /** Whether a seeded profile is still linkable — has a slug and no active manager.
@@ -229,8 +237,9 @@ export async function createProfile(domainUserId: number, input: OnboardInput): 
 	// The account holder's own national ID (their sign-off attestation) lives on their user row.
 	if (input.nationalId) await db.update(users).set({ nationalId: input.nationalId }).where(eq(users.id, domainUserId));
 
-	if (input.partyId) {
-		await db.insert(partyMemberships).values({ partyId: input.partyId, subjectUserId: phantom.id, role: 'Member', startAt: new Date() });
+	const partyId = input.partyId ?? (input.partyOther ? await resolveOtherParty(input.partyOther) : null);
+	if (partyId) {
+		await db.insert(partyMemberships).values({ partyId, subjectUserId: phantom.id, role: 'Member', startAt: new Date() });
 	}
 
 	// The creator becomes the profile's first admin manager, carrying their sign-off

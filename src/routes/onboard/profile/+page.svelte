@@ -19,6 +19,7 @@
 	// empty-string value as unset regardless of whether the option was explicitly chosen,
 	// so Independent needs its own non-empty sentinel to satisfy the required check.
 	let partyId = $state<string>(form?.values?.partyId ? String(form.values.partyId) : data.defaults.partyId);
+	let partyOther = $state(form?.values?.partyOther ?? data.defaults.partyOther);
 	let positionId = $state<number | ''>((form?.values?.positionId ? Number(form.values.positionId) : 0) || data.defaults.positionId);
 	let nationalId = $state(form?.values?.nationalId ?? data.defaults.nationalId);
 
@@ -127,7 +128,17 @@
 					<option value="" disabled>Select a party…</option>
 					<option value="none">Independent / none</option>
 					{#each data.parties as p (p.id)}<option value={String(p.id)}>{p.name}</option>{/each}
+					<option value="other">Other (not listed)…</option>
 				</select>
+				{#if partyId === 'other'}
+					<input
+						name="partyOther"
+						bind:value={partyOther}
+						required
+						placeholder="Party name"
+						class="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none"
+					/>
+				{/if}
 			</label>
 
 			<PositionSelector positions={data.positions} verified={false} initialPositionId={positionId || null} bind:value={positionId} />

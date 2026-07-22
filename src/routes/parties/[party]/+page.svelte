@@ -24,7 +24,9 @@
 		</h1>
 		{#if data.party.slogan}<p class="mt-2 text-lg italic text-muted">{data.party.slogan}</p>{/if}
 		{#if data.party.description}<p class="mt-3 text-base leading-relaxed">{data.party.description}</p>{/if}
-		<p class="mt-3 text-xs font-semibold tracking-wide text-muted uppercase">{data.party.status} registration</p>
+		<p class="mt-3 text-xs font-semibold tracking-wide text-muted uppercase">
+			{data.party.status === 'unregistered' ? 'Not ORPP-registered' : `${data.party.status} registration`}
+		</p>
 	</div>
 
 	<div class="mt-8">

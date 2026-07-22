@@ -33,6 +33,7 @@ export const load: PageServerLoad = async (event) => {
 				otherNames: sp.get('otherNames') ?? '',
 				status: sp.get('status') ?? '',
 				partyId: sp.get('partyId') ?? '',
+				partyOther: sp.get('partyOther') ?? '',
 				positionId: Number(sp.get('positionId') ?? 0) || ('' as const),
 				myRole: sp.get('myRole') ?? '',
 				nationalId: sp.get('nationalId') ?? '',
@@ -59,6 +60,7 @@ export const load: PageServerLoad = async (event) => {
 			otherNames: claimTarget?.otherNames ?? domainUser.otherNames,
 			status: '' as const,
 			partyId: '',
+			partyOther: '',
 			positionId: '' as const,
 			myRole: '',
 			nationalId: '',
@@ -84,6 +86,7 @@ export const actions: Actions = {
 			otherNames: String(form.get('otherNames') ?? ''),
 			status: String(form.get('status') ?? ''),
 			partyId: String(form.get('partyId') ?? ''),
+			partyOther: String(form.get('partyOther') ?? ''),
 			positionId: String(form.get('positionId') ?? ''),
 			myRole: String(form.get('myRole') ?? ''),
 			nationalId: String(form.get('nationalId') ?? '')
@@ -109,6 +112,7 @@ export const actions: Actions = {
 			otherNames: validated.input.otherNames,
 			status: validated.input.status,
 			partyId: raw.partyId.trim(),
+			partyOther: raw.partyOther.trim(),
 			positionId: String(validated.input.positionId),
 			myRole: validated.input.myRole,
 			nationalId: validated.input.nationalId

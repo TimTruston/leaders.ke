@@ -4,9 +4,9 @@
 // pages stay position-first: /<position>/<region> (or just /<position> for
 // single-region national seats like President).
 import { randomUUID } from 'node:crypto';
-import { and, desc, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, desc, eq, ilike, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, leaders, managers, positions, users } from '$lib/server/db/schema';
+import { campaigns, contacts, leaders, managers, parties, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getPlatformSettings } from '$lib/server/settings';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
@@ -403,6 +403,22 @@ export async function getOrCreateRunCampaign(subjectUserId: number, positionId: 
 }
 
 /** Read-only: the person's active-cycle run (2027 main campaign), or null if none yet. */
+/** Resolves the "Other" party option to a real parties.id — reuses an existing row
+ * (case-insensitive exact match) so retyping the same unregistered party's name
+ * doesn't fork into duplicate rows, else creates one. status='unregistered' marks
+ * it as never having gone through the ORPP register (distinct from 'provisional',
+ * which IS an ORPP registration stage). */
+export async function resolveOtherParty(name: string): Promise<number> {
+	const trimmed = name.trim();
+	const [existing] = await db
+		.select({ id: parties.id })
+		.from(parties)
+		.where(and(ilike(parties.name, trimmed), isNull(parties.deletedAt)));
+	if (existing) return existing.id;
+	const [created] = await db.insert(parties).values({ name: trimmed, status: 'unregistered' }).returning({ id: parties.id });
+	return created.id;
+}
+
 export async function getRunCampaign(subjectUserId: number) {
 	const [c] = await db
 		.select()

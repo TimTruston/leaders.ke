@@ -39,6 +39,9 @@
 	let attested = $state(false);
 	// Local editing state for the rich-text bio (the form posts it via name="bio").
 	let bio = $state(data.form.bio);
+	// "other" reveals the free-text partyOther input (see resolveOtherParty server-side).
+	let partyId = $state(data.form.partyId ? String(data.form.partyId) : '');
+	let partyOther = $state('');
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	// Errored fields aren't outlined - the red * next to the label (starClass) and
 	// the message under the save button do the flagging.
@@ -309,14 +312,25 @@
 						<span class="text-sm font-medium text-heading">Party</span>
 						<select
 							name="partyId"
-							value={data.form.partyId ?? ''}
+							bind:value={partyId}
 							class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						>
 							<option value="">Independent (no party)</option>
 							{#each data.parties as party (party.id)}
-								<option value={party.id}>{party.name}</option>
+								<option value={String(party.id)}>{party.name}</option>
 							{/each}
+							<option value="other">Other (not listed)…</option>
 						</select>
+						{#if partyId === 'other'}
+							<input
+								type="text"
+								name="partyOther"
+								bind:value={partyOther}
+								required
+								placeholder="Party name"
+								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+							/>
+						{/if}
 					</label>
 				{/if}
 				{#if missing.has('firstName') ||  missing.has('otherNames')}
