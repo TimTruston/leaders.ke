@@ -59,7 +59,7 @@ export async function listProfiles(
 	pageSize: number,
 	opts: { q?: string; sort?: ProfileSort; dir?: 'asc' | 'desc' } = {}
 ): Promise<ProfilePage> {
-	const [termRows, runRows] = await Promise.all([
+	const [termRows, runRows, managerSubjectRows, claimSubjectRows] = await Promise.all([
 		db
 			.select({
 				userId: leaders.userId,
@@ -82,11 +82,24 @@ export async function listProfiles(
 			})
 			.from(campaigns)
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
-			.where(and(eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)))
+			.where(and(eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt))),
+		// A freshly created/claimed profile has neither a leaders nor a campaigns row
+		// yet — campaign creation is intentional now, not automatic on signup/claim —
+		// so an active manager or a claim is what makes it a "profile" here too.
+		db.select({ userId: managers.subjectUserId }).from(managers).where(and(eq(managers.isActive, true), isNull(managers.deletedAt))),
+		db.select({ userId: profileClaims.subjectUserId }).from(profileClaims)
 	]);
 
-	// The full person set: anyone with a held term or a 2027 run.
-	const personIds = [...new Set([...termRows.map((r) => r.userId), ...runRows.map((r) => r.userId)])];
+	// The full person set: anyone with a held term, a 2027 run, an active manager
+	// (created/claimed, even before a seat/campaign is declared), or a claim on record.
+	const personIds = [
+		...new Set([
+			...termRows.map((r) => r.userId),
+			...runRows.map((r) => r.userId),
+			...managerSubjectRows.map((r) => r.userId),
+			...claimSubjectRows.map((r) => r.userId)
+		])
+	];
 	if (personIds.length === 0) return { profiles: [], total: 0 };
 
 	const [personRows, managerRows, claimRows, verificationRows] = await Promise.all([
