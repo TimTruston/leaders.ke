@@ -96,32 +96,21 @@
 				];
 			// A campaign profile always exists (onboarding mints the slug at payment
 			// time), so mode 'campaign' covers both an unverified profile still being
-			// assembled ahead of a verification request, and a verified one. The photo
-			// + IEBC certificate live on the Profile tab (there's no separate
-			// Documentation tab); the sign-off attestation is embedded on the Team tab
-			// under each manager's own entry.
+			// assembled ahead of a verification request, and a verified one — every
+			// tab is reachable either way (none of their loaders gate on verified);
+			// the checklist banner + red asterisks above are what actually flag what's
+			// still missing, not tab visibility. The photo + IEBC certificate live on
+			// the Profile tab (there's no separate Documentation tab); the sign-off
+			// attestation is embedded on the Team tab under each manager's own entry.
 			case 'campaign':
-				if (!data.leaderContext?.verified) {
-					// Contacts/Campaign/Team unlock once a profile exists.
-					return [
-						{ href: `${base}/profile`, label: 'Leader' },
-						...(data.leaderContext
-							? [
-									{ href: `${base}/contacts`, label: 'Contacts' },
-									{ href: `${base}/campaign`, label: 'Campaign' },
-									{ href: `${base}/team`, label: 'Team' }
-								]
-							: [])
-					];
-				}
 				return [
 					{ href: `${base}/profile`, label: 'Leader' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
+					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/manifesto`, label: 'Manifesto' },
 					{ href: `${base}/posts`, label: 'Posts' },
 					{ href: `${base}/reviews`, label: 'Reviews' },
-					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/followers`, label: 'Followers' },
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
 					{ href: `${base}/fundraising`, label: 'Fundraising' },
@@ -372,7 +361,7 @@
 				{:else}
 					<button
 						type="button"
-						onclick={() => (adminAction = { action: 'deactivate', title: 'Deactivate this profile?', body: `${ac.profileName}'s profile is inaccessible to the public and its managers until you reactivate it.`, confirmLabel: 'Deactivate' })}
+						onclick={() => (adminAction = { action: 'deactivate', title: 'Deactivate this profile?', body: `${ac.profileName}'s profile becomes inaccessible to the public and its managers until you reactivate it.`, confirmLabel: 'Deactivate' })}
 						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
 					>Deactivate</button>
 				{/if}

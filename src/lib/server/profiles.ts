@@ -533,7 +533,7 @@ export async function notifyManagersOfStatusChange(subjectUserId: number, active
 				title: active ? 'Your profile has been reactivated' : 'Your profile has been deactivated',
 				body: active
 					? `${profileName}'s profile is public again.`
-					: `${profileName}'s profile has been deactivated by a platform admin, is hidden from the public and inaccessible to its managers until reactivated.`,
+					: `${profileName}'s profile has been deactivated by a platform admin. \nIt is hidden from the public and inaccessible to its managers until reactivated.`,
 				// A deactivated profile's own dashboard route is off-limits to its team
 				// (see getLeaderContextBySlug) — the link only makes sense once reactivated.
 				href: active && subject?.slug ? `/dashboard/${subject.slug}/profile` : '/dashboard'
