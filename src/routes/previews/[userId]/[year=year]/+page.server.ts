@@ -34,7 +34,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			status: row.status,
 			verified: row.verified,
 			followers: workspace.followers,
-			bio: row.users.bio ?? '',
+			// The run's own pitch (Campaign tab), not the person's general profile bio —
+			// this workspace is about the 2027 campaign specifically.
+			campaignTitle: workspace.title,
+			campaignDescription: workspace.description,
 			pillars: workspace.pillars
 		},
 		posts: workspace.posts,

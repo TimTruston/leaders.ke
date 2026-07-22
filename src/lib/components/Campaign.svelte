@@ -67,7 +67,7 @@
 					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-28" textClass="text-4xl" />
 					<div class="min-w-0">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
-							{leader.name}
+							{leader.campaignTitle || leader.name}
 							{#if leader.verified}
 								<span
 									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
@@ -88,7 +88,7 @@
 							{/if}
 						</h1>
 						<p class="mt-1 text-sm text-muted">
-							Vying for {leader.positionTitle}, {leader.regionLabel}
+							{#if leader.campaignTitle}{leader.name} · {/if}Vying for {leader.positionTitle}, {leader.regionLabel}
 							{#if leader.party}· {leader.party}{/if}
 						</p>
 						<p class="mt-2 text-sm font-medium text-heading">
@@ -97,10 +97,10 @@
 					</div>
 				</div>
 
-				{#if leader.bio}
-					<!-- Bio is stored as markdown-lite (RichTextEditor); renderRichText
-					escapes it before formatting, so {@html} is safe here. -->
-					<div class="mt-6 space-y-3 leading-relaxed">{@html renderRichText(leader.bio)}</div>
+				{#if leader.campaignDescription}
+					<!-- Stored as markdown-lite (RichTextEditor); renderRichText escapes it
+					before formatting, so {@html} is safe here. -->
+					<div class="mt-6 space-y-3 leading-relaxed">{@html renderRichText(leader.campaignDescription)}</div>
 				{/if}
 			</div>
 

@@ -9,10 +9,12 @@ import { campaigns, donations, followers, managers, parties, partyMemberships, p
 import { ACTIVE_CYCLE, resolveCurrentTerm, resolveCurrentTermByUserId } from '$lib/server/leader';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
-/** Resolves the seat + run a /[leader]/[year] workspace leads with (a live term,
- * else the active run). Verified is required UNLESS the viewer is an admin, the
- * profile's own person, or one of its active managers — the same "can this
- * account see the draft" rule used elsewhere for admin/claim previews. */
+/** Resolves the seat + run a /[leader]/[year] workspace leads with (the run itself
+ * whenever one exists — even for an incumbent running for a different seat than
+ * they hold — else the held term, for a pure officeholder with no declared run).
+ * Verified is required UNLESS the viewer is an admin, the profile's own person, or
+ * one of its active managers — the same "can this account see the draft" rule
+ * used elsewhere for admin/claim previews. */
 export async function resolveCampaignRun(
 	// A public slug, or a person's user id for a slugless preview (see
 	// /previews/[userId]/[year] — an unverified application has no slug yet).
@@ -24,7 +26,12 @@ export async function resolveCampaignRun(
 	if (!resolved) return null;
 	const { row, currentTerm } = resolved;
 	let { activeRun } = resolved;
-	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	// This page is specifically about the 2027 RUN, not the person's general "lead
+	// identity" (that distinction belongs to the /[leader] profile page instead) —
+	// so an existing run always wins here, even for an incumbent running for a
+	// different/higher seat than the one they currently hold (e.g. a sitting
+	// Senator running for President shows President here, not Senator).
+	const leadsWithRun = !!activeRun;
 	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
 
 	if (!verified) {
@@ -56,7 +63,7 @@ export async function resolveCampaignRun(
 		}
 	}
 
-	const stillLeadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
+	const stillLeadsWithRun = !!activeRun;
 	let campaignId = 0;
 	let position;
 	let status: string;
@@ -91,7 +98,7 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 
 	const [mainCampaign] = campaignId
 		? await db
-				.select({ id: campaigns.id, fundraisingGoal: campaigns.fundraisingGoal })
+				.select({ id: campaigns.id, title: campaigns.title, description: campaigns.description, fundraisingGoal: campaigns.fundraisingGoal })
 				.from(campaigns)
 				.where(and(eq(campaigns.id, campaignId), isNull(campaigns.deletedAt)))
 		: [];
@@ -136,6 +143,8 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 	const myReview = viewerId ? await getMyReview(row.users.id, viewerId) : null;
 
 	return {
+		title: mainCampaign?.title ?? '',
+		description: mainCampaign?.description ?? '',
 		party: partyRow?.name ?? null,
 		pillars: pillarRows,
 		posts: postRows.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() })),
