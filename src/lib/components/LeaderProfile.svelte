@@ -27,6 +27,7 @@
 	} = $props();
 
 	const leader = $derived(data.leader);
+	const firstName = leader.name.split(' ')[0]
 
 	const fmt = new Intl.NumberFormat('en-KE');
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
@@ -232,6 +233,15 @@
 						{preview ? 'Admin/owner preview — not public yet.' : 'Manifesto, updates and follow live there.'}
 					</p>
 				</div>
+			{:else if data.isVying}
+				<!-- Vying (current or aspirant), but no campaigns row yet — no dead
+				link into an empty workspace. -->
+				<div class="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
+					<p class="text-sm font-semibold text-heading">No campaign listed</p>
+					<p class="mt-2 text-sm text-muted">
+						{firstName} hasn't set up a manifesto or campaign updates yet.
+					</p>
+				</div>
 			{/if}
 
 			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
@@ -245,6 +255,28 @@
 							{leader.address}
 						</p>
 					{/if}
+				</div>
+			{/if}
+
+			{#if !preview && data.canClaim}
+				<div class="rounded-3xl bg-primary p-6 text-on-primary">
+					<h2 class="text-lg font-bold text-on-primary">Managing {firstName}?</h2>
+					<p class="mt-2 text-sm text-on-primary/80">
+						Get access to modify this page.
+					</p>
+					<a
+						href="/onboard/profile?profile={leader.slug}"
+						class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
+					>
+						Claim this profile
+					</a>
+				</div>
+			{:else if !preview && data.isManaged}
+				<div class="rounded-3xl border border-border bg-surface-2 p-6">
+					<h2 class="text-lg font-bold text-heading">Claimed &amp; Managed</h2>
+					<p class="mt-2 text-sm text-muted">
+						<a href="/contact-us" class="font-medium text-primary hover:underline">Contact us</a> if this is a mistake.
+					</p>
 				</div>
 			{/if}
 
@@ -264,20 +296,6 @@
 				</ul>
 			</div>
 
-			{#if !preview && data.canClaim}
-				<div class="rounded-3xl bg-primary p-6 text-on-primary">
-					<h2 class="text-lg font-bold text-on-primary">Is this you?</h2>
-					<p class="mt-2 text-sm text-on-primary/80">
-						Get access to modify how it looks.
-					</p>
-					<a
-						href="/onboard/profile?profile={leader.slug}"
-						class="mt-4 inline-block rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-surface-2"
-					>
-						Claim this profile
-					</a>
-				</div>
-			{/if}
 		</div>
 	</div>
 </section>

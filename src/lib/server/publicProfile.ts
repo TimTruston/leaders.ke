@@ -74,10 +74,13 @@ export async function loadPublicProfileData(
 	if (leadsWithRun) {
 		leadCampaignId = activeRun!.campaigns.id;
 	} else if (currentTerm) {
+		// Campaigns are person+cycle scoped (subjectUserId), same key as an
+		// aspirant's activeRun — leaderId on `campaigns` is only ever a nullable
+		// secondary link (seed-campaigns.ts never sets it), never the lookup key.
 		const [c] = await db
 			.select({ id: campaigns.id })
 			.from(campaigns)
-			.where(and(eq(campaigns.leaderId, currentTerm.leaders.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+			.where(and(eq(campaigns.subjectUserId, row.users.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 		leadCampaignId = c?.id ?? 0;
 	}
 
@@ -200,22 +203,32 @@ export async function loadPublicProfileData(
 					}))
 			].sort((a, b) => (b.from ?? -Infinity) - (a.from ?? -Infinity))
 		},
-		campaign: isVying
-			? {
-					year: ACTIVE_CYCLE,
-					// A slugless preview (loaded by user id) links its campaign workspace to
-					// the matching /previews/[userId]/[year] route, not the public URL.
-					path: typeof idOrSlug === 'number' ? `/previews/${idOrSlug}/${ACTIVE_CYCLE}` : campaignPath(row.users),
-					pillarCount: pillarRow.n,
-					latestPost: latestPost[0] ? { title: latestPost[0].title, createdAt: latestPost[0].createdAt.toISOString() } : null
-				}
-			: null,
+		// isVying alone doesn't mean a campaign exists — seeding no longer
+		// auto-creates one (see scripts/lib/people.ts), so a vying person with no
+		// `campaigns` row yet gets `campaign: null` and the "No campaign listed"
+		// placeholder, not a link into an empty workspace.
+		isVying,
+		campaign:
+			isVying && leadCampaignId
+				? {
+						year: ACTIVE_CYCLE,
+						// A slugless preview (loaded by user id) links its campaign workspace to
+						// the matching /previews/[userId]/[year] route, not the public URL.
+						path: typeof idOrSlug === 'number' ? `/previews/${idOrSlug}/${ACTIVE_CYCLE}` : campaignPath(row.users),
+						pillarCount: pillarRow.n,
+						latestPost: latestPost[0] ? { title: latestPost[0].title, createdAt: latestPost[0].createdAt.toISOString() } : null
+					}
+				: null,
 		delivery: { total: pillarStatusRows.length, delivered: deliveredCount, inProgress: inProgressCount },
 		reviews: reviewRows,
 		reviewPillarOptions,
 		flaggedReviewCounts,
 		myReview,
 		canClaim: !viewerIsManager && !hasActiveManager,
+		// Someone else already manages this profile — a visitor sees "Claimed &
+		// Managed" instead of the claim button (the manager viewing their own
+		// public page doesn't need telling).
+		isManaged: !viewerIsManager && hasActiveManager,
 		signedIn: !!opts.viewerId,
 		news: mentionRows.map((m) => ({ id: m.id, title: m.title, summary: m.summary ?? m.body.slice(0, 160), createdAt: m.createdAt.toISOString() })),
 		breadcrumb: {
