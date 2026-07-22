@@ -9,13 +9,15 @@ import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { notifications, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { sendEmail } from '$lib/server/email';
+import { sendEmail, stripLinks, toAbsoluteLinks } from '$lib/server/email';
 
 export type NotificationInput = {
 	kind: 'verification' | 'claim';
 	title: string;
-	body: string; // includes the admin's reason on rejections
-	href?: string; // where the notification's "view" link lands
+	body: string; // includes the admin's reason on rejections; may embed its own
+	// <a href="/relative-path">label</a> links (relative — same-origin in-app)
+	href?: string; // the primary action link (relative path)
+	linkLabel?: string; // anchor text for the auto-appended href link
 };
 
 /** The recipient's login email (better-auth user bridged via users.authUserId). */
@@ -29,19 +31,25 @@ async function emailFor(userId: number): Promise<string | null> {
 }
 
 /**
- * Writes the in-app notification and emails the recipient the same content. Email
- * failure is logged, never thrown — the decision itself already committed, and the
- * notification still surfaces on the dashboard regardless.
+ * Writes the in-app notification and emails the recipient the same content. The
+ * href (if any) becomes a "Click here…" link appended to the body itself — stored
+ * with a relative path (the dashboard's own @html render is same-origin), rewritten
+ * to an absolute URL for the emailed copy (HTML, with a plain-text fallback for
+ * clients that don't render it). Email failure is logged, never thrown — the
+ * decision itself already committed, and the notification still surfaces on the
+ * dashboard regardless.
  */
 export async function notifyUser(userId: number, input: NotificationInput) {
-	await db
-		.insert(notifications)
-		.values({ userId, kind: input.kind, title: input.title, body: input.body, href: input.href ?? null });
+	const label = input.linkLabel ?? 'Click here to access your dashboard';
+	const body = input.href ? `${input.body}\n<a href="${input.href}">${label}</a>` : input.body;
+
+	await db.insert(notifications).values({ userId, kind: input.kind, title: input.title, body, href: input.href ?? null });
 
 	const to = await emailFor(userId);
 	if (!to) return;
+	const html = toAbsoluteLinks(body).replace(/\n/g, '<br>');
 	try {
-		await sendEmail({ to, subject: input.title, text: `${input.body}${input.href ? `\n\nView: ${input.href}` : ''}` });
+		await sendEmail({ to, subject: input.title, text: stripLinks(toAbsoluteLinks(body)), html });
 	} catch (error) {
 		console.error(`notification email to user ${userId} failed`, error);
 	}

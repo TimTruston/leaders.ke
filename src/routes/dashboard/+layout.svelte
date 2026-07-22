@@ -207,7 +207,7 @@
 		<div class="mb-4 flex items-start justify-between gap-3 rounded-xl bg-primary p-4 text-on-primary">
 			<div class="min-w-0 text-sm">
 				<p class="font-semibold">{item.title}</p>
-				<p class="mt-0.5 whitespace-pre-line">{@html item.body}</p>
+				<p class="mt-0.5 whitespace-pre-line [&_a]:font-semibold [&_a]:underline">{@html item.body}</p>
 			</div>
 			<!-- Plain POST (no enhance): the endpoint is a +server.ts returning a 303
 			back to this page, not a form action returning an ActionResult. -->

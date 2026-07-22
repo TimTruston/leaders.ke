@@ -6,7 +6,7 @@ import { managers, payments, pricing, subscriptions, users } from '$lib/server/d
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { BILLING_CYCLES, PRICE_BANDS, SUBSCRIPTION_TIERS } from '$lib/server/packages';
-import { assertClaimable, createProfile, linkProfile, notifyAdminsOfNewProfile, validateOnboardInput } from '$lib/server/onboard';
+import { assertClaimable, createProfile, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment, validateOnboardInput } from '$lib/server/onboard';
 import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -140,6 +140,15 @@ export const actions: Actions = {
 		await notifyAdminsOfNewProfile({
 			kind: sel.linkSubjectId ? 'claimed' : 'created',
 			actorUserId: domainUser.id,
+			subjectUserId: result.subjectUserId,
+			slug: result.slug,
+			tier: sel.tier,
+			cycle: sel.cycle,
+			amount: sel.amount,
+			subscriptionEndsAt: endsAt
+		});
+		await notifyPayerOfPayment({
+			payerUserId: domainUser.id,
 			subjectUserId: result.subjectUserId,
 			slug: result.slug,
 			tier: sel.tier,

@@ -313,9 +313,43 @@ export async function notifyAdminsOfNewProfile(opts: {
 			notifyUser(admin.id, {
 				kind: 'claim',
 				title: opts.kind === 'claimed' ? 'A profile was claimed' : 'A new profile was created',
-				body: `${actorName} ${opts.kind === 'claimed' ? 'claimed' : 'created'} ${profileName}'s profile — ${tierLabel} plan (${cycleLabel}), KES ${amountLabel} paid, runs until ${endsAtLabel}.\nPreview: /${opts.slug}\nDashboard: /dashboard/${opts.slug}/profile`,
-				href: `/dashboard/${opts.slug}/profile`
+				// href covers the Dashboard link (notifyUser appends it); Preview isn't
+				// otherwise linked here, so it gets its own inline link (relative — notifyUser
+				// rewrites it to an absolute URL for the emailed copy).
+				body: `${actorName} ${opts.kind === 'claimed' ? 'claimed' : 'created'} ${profileName}'s profile — ${tierLabel} plan (${cycleLabel}), KES ${amountLabel} paid, runs until ${endsAtLabel}.\n<a href="/${opts.slug}">Click here to view the profile</a>`,
+				href: `/dashboard/${opts.slug}/profile`,
+				linkLabel: 'Click here to access the dashboard'
 			})
 		)
 	);
+}
+
+/** Thanks the payer for their payment — same for a fresh create or a claim, since
+ * either way they just paid for this plan on this profile. Called from checkout's
+ * Pay action right alongside notifyAdminsOfNewProfile (only place with both the
+ * plan/price and the create/link result). */
+export async function notifyPayerOfPayment(opts: {
+	payerUserId: number;
+	subjectUserId: number;
+	slug: string;
+	tier: string;
+	cycle: string;
+	amount: number;
+	subscriptionEndsAt: Date;
+}) {
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
+	const profileName = subject ? fullName(subject) : 'your profile';
+	const tierLabel = opts.tier.charAt(0).toUpperCase() + opts.tier.slice(1);
+	const cycleLabel = opts.cycle.charAt(0).toUpperCase() + opts.cycle.slice(1);
+	const amountLabel = new Intl.NumberFormat('en-KE').format(opts.amount);
+	const endsAtLabel = opts.subscriptionEndsAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
+
+	await notifyUser(opts.payerUserId, {
+		kind: 'claim',
+		title: 'Thanks for your payment',
+		// href covers the dashboard link (notifyUser appends it as a "Click here…" link).
+		body: `Thanks for your payment of KES ${amountLabel} for ${profileName}'s ${tierLabel} plan (${cycleLabel}). Your subscription runs until ${endsAtLabel}.`,
+		href: `/dashboard/${opts.slug}/profile`,
+		linkLabel: 'Click here to access your dashboard'
+	});
 }
