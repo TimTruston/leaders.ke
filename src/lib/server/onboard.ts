@@ -14,6 +14,7 @@ import { db } from '$lib/server/db';
 import { leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
+import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
 
 export type OnboardStatus = 'aspirant' | 'current' | 'former';
 export const ONBOARD_STATUS_LABELS: Record<OnboardStatus, string> = {
@@ -146,7 +147,7 @@ export async function findMatchingProfiles(firstName: string, otherNames: string
 		.map(({ score: _score, ...rest }) => rest);
 }
 
-type OnboardInput = {
+export type OnboardInput = {
 	firstName: string;
 	otherNames: string;
 	status: OnboardStatus;
@@ -155,6 +156,56 @@ type OnboardInput = {
 	myRole: string;
 	nationalId: string;
 };
+
+// Raw strings as they travel through form fields / query params — validated once
+// on step 3 submit (fast feedback) and again at checkout's Pay action (the values
+// ride in a client-visible URL the whole way there, so re-validating before writing
+// anything to the database is defense-in-depth, not just belt-and-braces).
+export type OnboardRawInput = {
+	firstName: string;
+	otherNames: string;
+	status: string;
+	partyId: string; // "" = missing, "none" = Independent, else a parties.id
+	positionId: string;
+	myRole: string;
+	nationalId: string;
+};
+
+export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: OnboardInput } | { ok: false; error: string } {
+	const firstName = raw.firstName.trim();
+	const otherNames = raw.otherNames.trim();
+	const status = raw.status;
+	const partyRaw = raw.partyId.trim();
+	const positionId = Number(raw.positionId) || null;
+	const myRole = raw.myRole.trim();
+	const nationalId = raw.nationalId.trim();
+
+	if (!firstName || /\s/.test(firstName)) return { ok: false, error: 'First name is required and must be a single word.' };
+	if (!otherNames) return { ok: false, error: 'Other names are required.' };
+	if (!(status in ONBOARD_STATUS_LABELS)) return { ok: false, error: 'Choose whether the leader is a new aspirant, current, or former.' };
+	if (!partyRaw) return { ok: false, error: 'Choose a party, or Independent / none.' };
+	if (!positionId) return { ok: false, error: 'Choose the elective position.' };
+	if (!myRole || !(CAMPAIGN_ROLES as readonly string[]).includes(myRole)) return { ok: false, error: 'Choose your role.' };
+	if (!isValidNationalId(nationalId)) return { ok: false, error: 'Enter a valid national ID number (7–8 digits).' };
+
+	const partyId = partyRaw !== 'none' ? Number(partyRaw) || null : null;
+	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, partyId, positionId, myRole, nationalId } };
+}
+
+/** Whether a seeded profile is still linkable — has a slug and no active manager.
+ * Checked once for fast feedback on step 3 submit, and again (authoritatively,
+ * inside a would-be race) by linkOnboardProfile itself at payment time — nothing
+ * is granted access until then, so this can go stale between the two checks. */
+export async function assertClaimable(subjectUserId: number): Promise<{ ok: true } | { ok: false; error: string }> {
+	const [subject] = await db.select({ id: users.id, slug: users.slug }).from(users).where(and(eq(users.id, subjectUserId), isNull(users.deletedAt)));
+	if (!subject?.slug) return { ok: false, error: 'That profile is not available to link.' };
+	const [owner] = await db
+		.select({ id: managers.id })
+		.from(managers)
+		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+	if (owner) return { ok: false, error: 'That profile has just been claimed by someone else.' };
+	return { ok: true };
+}
 
 /** The status + seat the citizen declared, kept on the new profile's bio as a matcher
  * hint (bio is not public before payment and the owner replaces it on the profile tab). */

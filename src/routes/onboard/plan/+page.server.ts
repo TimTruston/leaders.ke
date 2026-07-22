@@ -1,28 +1,36 @@
-import { error, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { managers, users } from '$lib/server/db/schema';
+import { users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { listCurrentPricing } from '$lib/server/packages';
 import { fullName } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
-// Step 4 of the onboarding wizard: pick one of the three packages for the profile
-// created/linked in step 3. Choosing a plan carries the selection to /onboard/checkout.
+// Step 4 of the onboarding wizard: pick one of the three packages. No profile exists
+// yet at this point (create/link happens at checkout, after payment) — this just
+// needs a name to show and the live rate card. Everything from step 3 rides forward
+// via query params (read by +page.svelte to build the checkout link) rather than
+// round-tripping through the database.
 export const load: PageServerLoad = async (event) => {
-	const { domainUser } = await requireDashboardUser(event);
-	const subjectId = Number(event.url.searchParams.get('subject') ?? 0);
-	if (!subjectId) redirect(302, '/onboard/profile');
+	await requireDashboardUser(event);
+	const sp = event.url.searchParams;
+	const linkSubjectId = Number(sp.get('linkSubjectId') ?? 0) || null;
 
-	// The viewer must manage the profile they're buying for (created it in step 3).
-	const [managed] = await db
-		.select({ id: managers.id })
-		.from(managers)
-		.where(and(eq(managers.userId, domainUser.id), eq(managers.subjectUserId, subjectId), eq(managers.isActive, true), isNull(managers.deletedAt)));
-	if (!managed) error(403, 'You do not manage this profile.');
-
-	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, subjectId));
-	if (!subject) error(404, 'Profile not found.');
+	let subjectName: string;
+	if (linkSubjectId) {
+		const [subject] = await db
+			.select({ firstName: users.firstName, otherNames: users.otherNames })
+			.from(users)
+			.where(and(eq(users.id, linkSubjectId), isNull(users.deletedAt)));
+		if (!subject) redirect(302, '/onboard/profile');
+		subjectName = fullName(subject);
+	} else {
+		const firstName = sp.get('firstName');
+		const otherNames = sp.get('otherNames');
+		if (!firstName || !otherNames) redirect(302, '/onboard/profile');
+		subjectName = `${firstName} ${otherNames}`;
+	}
 
 	// The live rate card, indexed [band][tier][cycle] for the client to price cards.
 	const pricing = await listCurrentPricing();
@@ -32,5 +40,5 @@ export const load: PageServerLoad = async (event) => {
 		rates[r.band][r.tier][r.billingCycle] = r.amount;
 	}
 
-	return { subjectId, subjectName: fullName(subject), rates };
+	return { subjectName, rates };
 };

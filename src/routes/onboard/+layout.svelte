@@ -24,7 +24,10 @@
 						{i < currentIndex ? '✓' : i + 1}
 					</span>
 					{#if i < currentIndex}
-						<a href={step.path} class="text-sm font-medium text-heading hover:text-primary">{step.label}</a>
+						<!-- Carries the CURRENT step's query string back to the earlier step (it's a
+						superset of what that step needs, e.g. Plan/Checkout hold every field Profile
+						collected) so stepping back restores the form instead of a blank one. -->
+						<a href={`${step.path}${page.url.search}`} class="text-sm font-medium text-heading hover:text-primary">{step.label}</a>
 					{:else}
 						<span class="text-sm font-medium {i === currentIndex ? 'text-heading' : 'text-muted'}">{step.label}</span>
 					{/if}

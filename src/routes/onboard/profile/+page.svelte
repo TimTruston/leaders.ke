@@ -7,18 +7,20 @@
 	let { data, form }: PageProps = $props();
 
 	// Form state (kept in $state so the live matcher and the confirm gate can react).
-	// Prefilled from data.defaults: the claim target's name when arriving via "Claim
-	// this profile" (?profile=<slug>), else the citizen's own.
-	let firstName = $state(form?.values?.firstName ?? data.defaults.firstName ?? '');
-	let otherNames = $state(form?.values?.otherNames ?? data.defaults.otherNames ?? '');
-	let status = $state(form?.values?.status ?? '');
-	let myRole = $state(form?.values?.myRole ?? '');
+	// Prefilled from data.defaults, which is itself either: what step-back carried
+	// forward in the URL (see the layout stepper + this page's load), the claim
+	// target's name (?profile=<slug>), or the citizen's own — no client-side
+	// persistence needed, the server already resolved which one applies.
+	let firstName = $state(form?.values?.firstName ?? data.defaults.firstName);
+	let otherNames = $state(form?.values?.otherNames ?? data.defaults.otherNames);
+	let status = $state(form?.values?.status ?? data.defaults.status);
+	let myRole = $state(form?.values?.myRole ?? data.defaults.myRole);
 	// "none" (not "") is the Independent option's value — a `required` select treats an
 	// empty-string value as unset regardless of whether the option was explicitly chosen,
 	// so Independent needs its own non-empty sentinel to satisfy the required check.
-	let partyId = $state<string>(form?.values?.partyId ? String(form.values.partyId) : '');
-	let positionId = $state<number | ''>(form?.values?.positionId ?? '');
-	let nationalId = $state(form?.values?.nationalId ?? '');
+	let partyId = $state<string>(form?.values?.partyId ? String(form.values.partyId) : data.defaults.partyId);
+	let positionId = $state<number | ''>((form?.values?.positionId ? Number(form.values.positionId) : 0) || data.defaults.positionId);
+	let nationalId = $state(form?.values?.nationalId ?? data.defaults.nationalId);
 
 	// Profile Matcher (RHS): fetched live as the name fills in.
 	type Match = {
@@ -35,7 +37,9 @@
 	};
 	let matches = $state<Match[]>([]);
 	let matching = $state(false);
-	let selectedSubjectId = $state<number | null>(form?.values?.linkSubjectId ?? null);
+	// data.preselectSubjectId already covers both cases: a step-back carrying its
+	// linkSubjectId forward, and a fresh "Claim this profile" (?profile=<slug>) visit.
+	let selectedSubjectId = $state<number | null>(form?.values?.linkSubjectId ?? data.preselectSubjectId);
 	let legalConfirmed = $state(false);
 	let submitting = $state(false);
 
@@ -122,7 +126,7 @@
 				<select name="partyId" bind:value={partyId} required class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
 					<option value="" disabled>Select a party…</option>
 					<option value="none">Independent / none</option>
-					{#each data.parties as p (p.id)}<option value={p.id}>{p.name}</option>{/each}
+					{#each data.parties as p (p.id)}<option value={String(p.id)}>{p.name}</option>{/each}
 				</select>
 			</label>
 

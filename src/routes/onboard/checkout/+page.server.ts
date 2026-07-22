@@ -4,35 +4,53 @@ import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { managers, payments, pricing, subscriptions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
-import { fullName } from '$lib/server/leader';
 import { redirectWithFlash } from '$lib/server/flash';
 import { BILLING_CYCLES, PRICE_BANDS, SUBSCRIPTION_TIERS } from '$lib/server/packages';
+import { assertClaimable, createOnboardProfile, linkOnboardProfile, validateOnboardInput } from '$lib/server/onboard';
+import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
 const BAND_LABELS: Record<string, string> = { ward: 'MCA', regional: 'Governor / Senator / MP / Woman Rep', national: 'President & Vice President' };
 
-// Resolves + authorizes the checkout selection, and reads the live rate for it. Shared
-// by the load (reads the URL's query) and the pay action (reads posted hidden fields —
-// action="?/pay" REPLACES the whole query string per URL-resolution rules, so subject/
-// tier/band/cycle would vanish from the POST's URL if read from event.url there instead).
-async function resolveSelection(params: { subject: string | null; tier: string | null; band: string | null; cycle: string | null }, domainUserId: number) {
-	const subjectId = Number(params.subject ?? 0);
-	const tier = String(params.tier ?? '');
-	const band = String(params.band ?? '');
-	const cycle = String(params.cycle ?? '');
-
-	if (!subjectId || !(SUBSCRIPTION_TIERS as readonly string[]).includes(tier) || !(PRICE_BANDS as readonly string[]).includes(band) || !(BILLING_CYCLES as readonly string[]).includes(cycle)) {
+// Resolves + authorizes the checkout selection (plan + the onboard step 3 fields
+// carried in via query params), and reads the live rate for it. Shared by the load
+// (reads the URL's query) and the Pay action (reads the same query string re-posted
+// as a single hidden field — action="?/pay" REPLACES the whole query string per
+// URL-resolution rules, so reading event.url there directly would find nothing).
+async function resolveSelection(sp: URLSearchParams) {
+	const tier = String(sp.get('tier') ?? '');
+	const band = String(sp.get('band') ?? '');
+	const cycle = String(sp.get('cycle') ?? '');
+	if (!(SUBSCRIPTION_TIERS as readonly string[]).includes(tier) || !(PRICE_BANDS as readonly string[]).includes(band) || !(BILLING_CYCLES as readonly string[]).includes(cycle)) {
 		error(400, 'Invalid plan selection.');
 	}
 
-	const [managed] = await db
-		.select({ id: managers.id })
-		.from(managers)
-		.where(and(eq(managers.userId, domainUserId), eq(managers.subjectUserId, subjectId), eq(managers.isActive, true), isNull(managers.deletedAt)));
-	if (!managed) error(403, 'You do not manage this profile.');
+	const linkSubjectId = Number(sp.get('linkSubjectId') ?? 0) || null;
+	const raw = {
+		firstName: sp.get('firstName') ?? '',
+		otherNames: sp.get('otherNames') ?? '',
+		status: sp.get('status') ?? '',
+		partyId: sp.get('partyId') ?? '',
+		positionId: sp.get('positionId') ?? '',
+		myRole: sp.get('myRole') ?? '',
+		nationalId: sp.get('nationalId') ?? ''
+	};
+	const validated = validateOnboardInput(raw);
+	if (!validated.ok) error(400, validated.error);
 
-	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, subjectId));
-	if (!subject) error(404, 'Profile not found.');
+	let subjectName: string;
+	if (linkSubjectId) {
+		// Re-check the link target is still claimable — it may have been taken by
+		// someone else since step 3 (the authoritative check is linkOnboardProfile's
+		// own race guard at Pay time; this one is just for a clean error here).
+		const claimable = await assertClaimable(linkSubjectId);
+		if (!claimable.ok) error(400, claimable.error);
+		const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, linkSubjectId));
+		if (!subject) error(404, 'Profile not found.');
+		subjectName = fullName(subject);
+	} else {
+		subjectName = `${validated.input.firstName} ${validated.input.otherNames}`;
+	}
 
 	const [rate] = await db
 		.select({ amount: pricing.amount })
@@ -40,34 +58,45 @@ async function resolveSelection(params: { subject: string | null; tier: string |
 		.where(and(eq(pricing.band, band as 'ward'), eq(pricing.tier, tier as 'aspirant'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
 	if (!rate) error(400, 'No price is set for that plan yet.');
 
-	return { subjectId, tier, band, cycle, amount: rate.amount, subjectName: fullName(subject), slug: subject.slug };
+	return { tier, band, cycle, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
 }
 
 export const load: PageServerLoad = async (event) => {
-	const { domainUser } = await requireDashboardUser(event);
-	const sp = event.url.searchParams;
-	const sel = await resolveSelection({ subject: sp.get('subject'), tier: sp.get('tier'), band: sp.get('band'), cycle: sp.get('cycle') }, domainUser.id);
-	return { ...sel, bandLabel: BAND_LABELS[sel.band] ?? sel.band };
+	await requireDashboardUser(event);
+	const sel = await resolveSelection(event.url.searchParams);
+	return { tier: sel.tier, band: sel.band, cycle: sel.cycle, amount: sel.amount, bandLabel: BAND_LABELS[sel.band] ?? sel.band, subjectName: sel.subjectName, passthrough: event.url.search.slice(1) };
 };
 
 export const actions: Actions = {
-	// Mock charge: records an active subscription + a successful payment and moves on.
-	// Real Paystack (initialize + webhook verify) replaces the body of this action later.
+	// Mock charge: creates/links the profile (slug minted here, not before — an
+	// abandoned wizard never leaves a phantom profile behind), then records an
+	// active subscription + a successful payment. Real Paystack (initialize +
+	// webhook verify) replaces the charge itself later.
 	pay: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
 		const form = await event.request.formData();
-		const sel = await resolveSelection({ subject: form.get('subject') as string | null, tier: form.get('tier') as string | null, band: form.get('band') as string | null, cycle: form.get('cycle') as string | null }, domainUser.id);
-		// Straight to the leader's own dashboard once paid — no /dashboard/account
-		// detour. Falls back only if the profile is somehow still slugless.
-		const managePath = sel.slug ? `/dashboard/${sel.slug}/profile` : '/dashboard/account';
+		const sp = new URLSearchParams(String(form.get('passthrough') ?? ''));
+		const sel = await resolveSelection(sp);
 
-		// One live subscription per person (DB-enforced) — if they already have one,
-		// treat checkout as already done rather than 500 on the unique index.
-		const [live] = await db
-			.select({ id: subscriptions.id })
-			.from(subscriptions)
-			.where(and(eq(subscriptions.subjectUserId, sel.subjectId), inArray(subscriptions.status, ['active', 'pending'])));
-		if (live) redirectWithFlash(event.cookies, managePath, 'This profile already has an active subscription.');
+		// A claim target's existing subscription blocks a duplicate; a fresh create
+		// can't collide (the profile doesn't exist until the next line).
+		if (sel.linkSubjectId) {
+			const [live] = await db
+				.select({ id: subscriptions.id })
+				.from(subscriptions)
+				.where(and(eq(subscriptions.subjectUserId, sel.linkSubjectId), inArray(subscriptions.status, ['active', 'pending'])));
+			if (live) {
+				const [existing] = await db.select({ userId: managers.userId }).from(managers).where(and(eq(managers.subjectUserId, sel.linkSubjectId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+				redirectWithFlash(event.cookies, existing?.userId === domainUser.id ? `/dashboard/account` : '/onboard/profile', 'This profile already has an active subscription.');
+			}
+		}
+
+		let result: { slug: string; subjectUserId: number };
+		try {
+			result = sel.linkSubjectId ? await linkOnboardProfile(domainUser.id, sel.input, sel.linkSubjectId) : await createOnboardProfile(domainUser.id, sel.input);
+		} catch (err) {
+			return fail(400, { error: err instanceof Error ? err.message : 'Could not create the profile.' });
+		}
 
 		const now = new Date();
 		const endsAt = new Date(now);
@@ -78,7 +107,7 @@ export const actions: Actions = {
 		const [subscription] = await db
 			.insert(subscriptions)
 			.values({
-				subjectUserId: sel.subjectId,
+				subjectUserId: result.subjectUserId,
 				payerId: domainUser.id,
 				tier: sel.tier as 'aspirant',
 				billingCycle: sel.cycle as 'monthly',
@@ -105,6 +134,7 @@ export const actions: Actions = {
 			paidAt: now
 		});
 
-		redirectWithFlash(event.cookies, managePath, 'Your payment was successful! Welcome to your leader\'s dashboard.');
+		// Straight to the leader's own dashboard once paid — no /dashboard/account detour.
+		redirectWithFlash(event.cookies, `/dashboard/${result.slug}/profile`, "Your payment was successful! Welcome to your leader's dashboard.");
 	}
 };

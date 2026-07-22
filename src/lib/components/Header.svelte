@@ -74,14 +74,25 @@
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
 
-			{#if user && modes.length > 1}
-				<!-- Dashboard mode switcher: pick which context you're in (Citizen, a
-				campaign you run/manage, a pending claim, Platform admin). -->
+			{#if user}
+				<!-- Account switcher: always offers Log out, even for a pure citizen with
+				no other context to switch into (modes.length === 1) — only the extra
+				mode entries (campaign you run/manage, a pending claim, Platform admin)
+				are conditional on having more than one. -->
 				<details class="group relative w-fit" bind:open={switcherOpen} bind:this={switcherEl}>
 					<summary
 						class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
 					>
-						{modes.find((m) => m.current)?.label ?? modes[0].label}
+						{#if modes.length > 1}
+							{modes.find((m) => m.current)?.label ?? modes[0].label}
+						{:else}
+							<span
+								class="grid size-6 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-on-primary uppercase"
+							>
+								{user.name.trim().charAt(0)}
+							</span>
+							<span class="hidden max-w-32 truncate sm:inline">{user.name}</span>
+						{/if}
 						<span class="text-muted transition group-open:rotate-180 leading-none h-2">^</span>
 					</summary>
 					<div class="absolute right-0 z-10 mt-2 min-w-52 rounded-2xl border border-border bg-surface p-1.5 shadow-lg">
@@ -106,18 +117,6 @@
 						</a>
 					</div>
 				</details>
-			{:else if user}
-				<a
-					href="/dashboard"
-					class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm font-medium text-heading transition hover:bg-surface-2"
-				>
-					<span
-						class="grid size-8 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-on-primary uppercase"
-					>
-						{user.name.trim().charAt(0)}
-					</span>
-					<span class="hidden max-w-40 truncate sm:block">{user.name}</span>
-				</a>
 			{:else}
 				<a
 					href="/login"

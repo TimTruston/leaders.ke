@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -24,8 +25,11 @@
 	const priceOf = (tier: string) => data.rates[band]?.[tier]?.[cycle] ?? null;
 	const cycleSuffix = $derived(annual ? '/yr' : '/mo');
 
+	// Forwards everything step 3 carried here (firstName/otherNames/status/partyId/
+	// positionId/myRole/nationalId, or linkSubjectId) straight into checkout, plus
+	// this step's own tier/band/cycle choice.
 	function checkoutHref(tier: string) {
-		return `/onboard/checkout?subject=${data.subjectId}&tier=${tier}&band=${band}&cycle=${cycle}`;
+		return `/onboard/checkout${page.url.search}&tier=${tier}&band=${band}&cycle=${cycle}`;
 	}
 
 	let hovered = $state<number | null>(null);
