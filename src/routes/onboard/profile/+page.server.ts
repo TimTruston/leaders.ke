@@ -63,7 +63,10 @@ export const load: PageServerLoad = async (event) => {
 			partyOther: '',
 			positionId: '' as const,
 			myRole: '',
-			nationalId: '',
+			// A prior onboarding submission already saved this account's own national
+			// ID (see onboard.ts) — prefill it so a repeat visit (another profile,
+			// another claim) doesn't ask the citizen to retype their own ID number.
+			nationalId: domainUser.nationalId ?? '',
 			linkSubjectId: null
 		},
 		preselectSubjectId: stepBack?.linkSubjectId ?? claimTarget?.id ?? null,
