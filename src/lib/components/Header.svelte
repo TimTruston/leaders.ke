@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { User } from 'better-auth';
 	import { page } from '$app/state';
-	import { computeDashboardModes } from '$lib/utils/dashboardModes';
+	import { computeDashboardModes, type DashboardModesInput } from '$lib/utils/dashboardModes';
 	import QuickSearch from './QuickSearch.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
@@ -11,12 +11,28 @@
 	// While the quick search is expanded it covers the nav links' space.
 	let searchOpen = $state(false);
 
-	// Non-empty once the dashboard layout's data (myCampaigns/pendingClaims/isAdmin/…)
-	// is in the merged page data — i.e. anywhere under /dashboard with more than one
-	// context available. Empty everywhere else, where the plain name link applies.
-	// Computed from page data/URL (not a client effect) so it's correct on first
-	// paint, SSR included — no post-hydration flash.
-	const modes = $derived(computeDashboardModes(page.url.pathname, page.params, page.data));
+	// Under /dashboard the layout's own load already computed myCampaigns/pendingClaims/
+	// isAdmin (it's mid-request there anyway) — page.data has them for free. Everywhere
+	// else (public pages, /pricing, a leader's profile…) they're absent, since running
+	// that query on every page view for every signed-in visitor would tax the site's
+	// highest-traffic pages just to feed a dropdown most visits never open. Lazy-fetched
+	// once per page-load session instead, cached here so reopening the dropdown (or
+	// navigating client-side, since Header stays mounted) never re-fetches.
+	let fetchedSwitcherData = $state<DashboardModesInput | null>(null);
+	let fetchingSwitcher = false;
+	const hasEagerSwitcherData = $derived(page.data.myCampaigns !== undefined);
+	const modes = $derived(computeDashboardModes(page.url.pathname, page.params, hasEagerSwitcherData ? page.data : (fetchedSwitcherData ?? page.data)));
+
+	async function ensureSwitcherData() {
+		if (hasEagerSwitcherData || fetchedSwitcherData || fetchingSwitcher || !user) return;
+		fetchingSwitcher = true;
+		try {
+			const res = await fetch('/api/switcher');
+			if (res.ok) fetchedSwitcherData = await res.json();
+		} finally {
+			fetchingSwitcher = false;
+		}
+	}
 
 	// The <details> dropdown doesn't auto-close on navigation — close it
 	// explicitly when a mode is picked, and on any click outside it.
@@ -24,6 +40,7 @@
 	let switcherEl: HTMLDetailsElement | undefined = $state();
 	$effect(() => {
 		if (!switcherOpen) return;
+		ensureSwitcherData();
 		const onClick = (e: MouseEvent) => {
 			if (switcherEl && !switcherEl.contains(e.target as Node)) switcherOpen = false;
 		};
