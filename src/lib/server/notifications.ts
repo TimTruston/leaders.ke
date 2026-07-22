@@ -12,7 +12,7 @@ import { user as authUsers } from '$lib/server/db/auth.schema';
 import { sendEmail, stripLinks, toAbsoluteLinks } from '$lib/server/email';
 
 export type NotificationInput = {
-	kind: 'verification' | 'claim';
+	kind: 'verification' | 'claim' | 'moderation';
 	title: string;
 	body: string; // includes the admin's reason on rejections; may embed its own
 	// <a href="/relative-path">label</a> links (relative — same-origin in-app)

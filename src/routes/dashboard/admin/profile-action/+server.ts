@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { campaigns, leaders, profileClaims, users } from '$lib/server/db/schema';
 import { requireAdmin } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
-import { getProfileAdminMeta } from '$lib/server/profiles';
+import { getProfileAdminMeta, notifyManagersOfStatusChange } from '$lib/server/profiles';
 import { graduateCampaign } from '$lib/server/candidates';
 import { reviewClaim } from '$lib/server/claims';
 import { reviewVerification } from '$lib/server/verifications';
@@ -49,8 +49,10 @@ export const POST: RequestHandler = async (event) => {
 	if (action === 'deactivate') {
 		// Reversible suspend: hides the profile from the public + roster until reactivated.
 		await db.update(users).set({ deletedAt: new Date() }).where(eq(users.id, profileId));
+		await notifyManagersOfStatusChange(profileId, false);
 	} else if (action === 'activate') {
 		await db.update(users).set({ deletedAt: null }).where(eq(users.id, profileId));
+		await notifyManagersOfStatusChange(profileId, true);
 	} else if (action === 'delete') {
 		// Full soft-delete: the person plus every term, run and claim, so nothing
 		// resurfaces via a stray term/run. Not the reversible Deactivate toggle.

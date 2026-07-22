@@ -366,13 +366,13 @@
 				{#if ac.deactivated}
 					<button
 						type="button"
-						onclick={() => (adminAction = { action: 'activate', title: 'Reactivate this profile?', body: `${ac.profileName}'s profile becomes publicly visible again.`, confirmLabel: 'Activate' })}
+						onclick={() => (adminAction = { action: 'activate', title: 'Reactivate this profile?', body: `${ac.profileName}'s profile becomes publicly visible and managers get access again.`, confirmLabel: 'Activate' })}
 						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary"
 					>Activate</button>
 				{:else}
 					<button
 						type="button"
-						onclick={() => (adminAction = { action: 'deactivate', title: 'Deactivate this profile?', body: `${ac.profileName}'s profile is hidden from the public and the roster until you reactivate it.`, confirmLabel: 'Deactivate' })}
+						onclick={() => (adminAction = { action: 'deactivate', title: 'Deactivate this profile?', body: `${ac.profileName}'s profile is inaccessible to the public and its managers until you reactivate it.`, confirmLabel: 'Deactivate' })}
 						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
 					>Deactivate</button>
 				{/if}

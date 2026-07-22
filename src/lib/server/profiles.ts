@@ -15,6 +15,7 @@ import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ACTIVE_CYCLE, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { formatKenyanPhoneDisplay } from '$lib/utils/phone';
+import { notifyUser } from '$lib/server/notifications';
 
 export type ProfileSource = 'seeded' | 'applied' | 'claimed';
 export type ProfileVerified = 'pending' | 'approved' | 'rejected' | 'deleted' | null;
@@ -510,4 +511,33 @@ export async function getProfileExtras(subjectUserId: number) {
 			};
 		})
 	};
+}
+
+/** Tells every active manager of a profile (the whole team, not just whoever's
+ * signed in) when an admin flips its Deactivate/Activate state — deactivating
+ * takes it off the public pages, so the team finds out from a notification
+ * instead of a confused "why did my page vanish?" moment. */
+export async function notifyManagersOfStatusChange(subjectUserId: number, active: boolean) {
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, subjectUserId));
+	const profileName = subject ? fullName(subject) : 'Your profile';
+
+	const managerRows = await db
+		.select({ userId: managers.userId })
+		.from(managers)
+		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
+
+	await Promise.all(
+		managerRows.map((m) =>
+			notifyUser(m.userId, {
+				kind: 'moderation',
+				title: active ? 'Your profile has been reactivated' : 'Your profile has been deactivated',
+				body: active
+					? `${profileName}'s profile is public again.`
+					: `${profileName}'s profile has been deactivated by a platform admin, is hidden from the public and inaccessible to its managers until reactivated.`,
+				// A deactivated profile's own dashboard route is off-limits to its team
+				// (see getLeaderContextBySlug) — the link only makes sense once reactivated.
+				href: active && subject?.slug ? `/dashboard/${subject.slug}/profile` : '/dashboard'
+			})
+		)
+	);
 }

@@ -346,7 +346,7 @@ export const profileClaims = pgTable('profile_claims', {
 export const notifications = pgTable('notifications', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(), // the recipient
-  kind: varchar('kind', { length: 30 }).notNull(), // 'verification' | 'claim' — what the notification is about
+  kind: varchar('kind', { length: 30 }).notNull(), // 'verification' | 'claim' | 'moderation' — what the notification is about
   title: varchar('title', { length: 255 }).notNull(),
   body: text('body').notNull(), // includes the admin's reason on rejections
   href: text('href'), // where "view" should land, e.g. the application page
