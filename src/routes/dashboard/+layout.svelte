@@ -238,12 +238,14 @@
 						</span>
 					{/if}
 				</h1>
-				<a
-					href={data.leaderContext.publicPath}
-					class="rounded-full border border-primary px-3 py-2 text-xs font-semibold text-primary transition bg-surface hover:bg-primary hover:text-on-primary"
-				>
-					Preview &#8599;
-				</a>
+				{#if data.leaderContext.positionTitle}
+					<a
+						href={data.leaderContext.publicPath}
+						class="rounded-full border border-primary px-3 py-2 text-xs font-semibold text-primary transition bg-surface hover:bg-primary hover:text-on-primary"
+					>
+						Preview &#8599;
+					</a>
+				{/if}
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}

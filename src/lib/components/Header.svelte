@@ -2,6 +2,7 @@
 	import type { User } from 'better-auth';
 	import { page } from '$app/state';
 	import { computeDashboardModes, type DashboardModesInput } from '$lib/utils/dashboardModes';
+	import NotificationsPanel from './NotificationsPanel.svelte';
 	import QuickSearch from './QuickSearch.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
@@ -90,6 +91,9 @@
 
 		<div class="flex items-center gap-2">
 			<ThemeToggle />
+			{#if user}
+				<NotificationsPanel />
+			{/if}
 
 			{#if user}
 				<!-- Account switcher: always offers Log out, even for a pure citizen with

@@ -5,7 +5,7 @@
 // transactional (it's about the recipient's own request), so it bypasses
 // notificationPrefs, which gates broadcast-style noise, not decisions on things
 // the user asked for.
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { notifications, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -72,6 +72,39 @@ export async function listUnreadNotifications(userId: number): Promise<Notificat
 		.where(and(eq(notifications.userId, userId), isNull(notifications.readAt)))
 		.orderBy(notifications.createdAt);
 	return rows.map((r) => ({ id: r.id, kind: r.kind, title: r.title, body: r.body, href: r.href, createdAt: r.createdAt.toISOString() }));
+}
+
+/** Full notification history, newest first, for the Notifications tab — unlike
+ * listUnreadNotifications this never filters on readAt (the tab is a permanent
+ * record, nothing in it is ever dismissed). */
+export async function listNotifications(
+	userId: number,
+	page: number,
+	pageSize: number
+): Promise<{ items: Notification[]; total: number }> {
+	const [rows, [{ total }]] = await Promise.all([
+		db
+			.select()
+			.from(notifications)
+			.where(eq(notifications.userId, userId))
+			.orderBy(desc(notifications.createdAt))
+			.limit(pageSize)
+			.offset((page - 1) * pageSize),
+		db.select({ total: count() }).from(notifications).where(eq(notifications.userId, userId))
+	]);
+	return {
+		items: rows.map((r) => ({ id: r.id, kind: r.kind, title: r.title, body: r.body, href: r.href, createdAt: r.createdAt.toISOString() })),
+		total
+	};
+}
+
+/** Unread count for the header's notification-button badge. */
+export async function countUnreadNotifications(userId: number): Promise<number> {
+	const [row] = await db
+		.select({ total: count() })
+		.from(notifications)
+		.where(and(eq(notifications.userId, userId), isNull(notifications.readAt)));
+	return row?.total ?? 0;
 }
 
 /** Dismisses notifications — only the caller's own, so one user can't clear another's. */
