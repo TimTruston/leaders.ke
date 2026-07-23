@@ -113,14 +113,14 @@
 			// the checklist banner + red asterisks above are what actually flag what's
 			// still missing, not tab visibility. The photo + IEBC certificate live on
 			// the Profile tab (there's no separate Documentation tab); the sign-off
-			// attestation is embedded on the Team tab under each manager's own entry.
+			// attestation is embedded on the Team tab under each manager's own entry;
+			// the manifesto pillars live on the Campaign tab, below the run's own details.
 			case 'campaign':
 				return [
 					{ href: `${base}/profile`, label: 'Leader' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
 					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/campaign`, label: 'Campaign' },
-					{ href: `${base}/manifesto`, label: 'Manifesto' },
 					{ href: `${base}/posts`, label: 'News' },
 					{ href: `${base}/reviews`, label: 'Reviews' },
 					{ href: `${base}/followers`, label: 'Followers' },

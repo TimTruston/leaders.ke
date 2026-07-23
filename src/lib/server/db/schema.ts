@@ -190,9 +190,10 @@ export const pillars = pgTable('pillars', {
 });
 
 // 4.1 PILLAR TEMPLATES (admin-curated manifesto starting points, one catalog per
-// office level, e.g. "President"). A candidate picks one on /dashboard/manifesto
-// to prefill their own pillar's title/summary, or writes a custom one instead —
-// picking a template never links back to it, it's just a starting draft.
+// office level, e.g. "President"). A candidate picks one on their Campaign tab's
+// manifesto section to prefill their own pillar's title/summary, or writes a
+// custom one instead — picking a template never links back to it, it's just a
+// starting draft.
 export const pillarTemplates = pgTable('pillar_templates', {
   id: serial('id').primaryKey(),
   positionTitle: varchar('position_title', { length: 50 }).notNull(), // matches positions.title, e.g. "Governor"

@@ -1,8 +1,8 @@
 // Admin "Pillars" tab: onboarding.md's admin dashboard, pillar management. This is
 // a catalog of manifesto starting points per office level (President, Governor, ...),
-// not per-candidate — a candidate picks one on /dashboard/manifesto to prefill their
-// own pillar's title/summary, or writes a custom one. Picking a template doesn't link
-// back to it; it's just a draft starting point.
+// not per-candidate — a candidate picks one on their Campaign tab's manifesto
+// section to prefill their own pillar's title/summary, or writes a custom one.
+// Picking a template doesn't link back to it; it's just a draft starting point.
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { pillarTemplates } from '$lib/server/db/schema';
