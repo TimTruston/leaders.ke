@@ -484,6 +484,13 @@
       "when": 1784836237577,
       "tag": "0068_milky_guardsmen",
       "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1784837829069,
+      "tag": "0069_handy_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }

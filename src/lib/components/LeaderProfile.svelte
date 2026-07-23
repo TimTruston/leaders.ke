@@ -252,20 +252,6 @@
 				</div>
 			{/if}
 
-			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
-				<div class="rounded-3xl border border-border bg-surface-2 p-6">
-					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
-					<div class="mt-4">
-						<ContactLinks phone={contactPhone} email={contactEmail} socials={leader.socials} share={!preview} shareTitle={leader.name} />
-					</div>
-					{#if leader.address}
-						<p class="mt-3 space-y-2 text-sm">
-							{leader.address}
-						</p>
-					{/if}
-				</div>
-			{/if}
-
 			{#if !preview && data.canClaim}
 				<div class="rounded-3xl bg-primary p-6 text-on-primary">
 					<h2 class="text-lg font-bold text-on-primary">Managing {firstName}?</h2>
@@ -303,6 +289,44 @@
 					</li>
 				</ul>
 			</div>
+
+			{#if data.deliveryGroups.length > 0}
+				<div class="rounded-3xl border border-border bg-surface-2 p-6">
+					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Delivered</h2>
+					<div class="mt-3 space-y-4">
+						{#each data.deliveryGroups as group (group.label)}
+							<div>
+								<p class="text-xs font-semibold text-heading">{group.label} <span class="font-normal text-muted">({group.from}–{group.to ?? 'present'})</span></p>
+								<ol class="mt-1.5 space-y-2 text-sm">
+									{#each group.items as item, i (i)}
+										<li class="flex gap-2 text-muted">
+											<span class="shrink-0 font-semibold text-heading">{i + 1}.</span>
+											<span>
+												<span class="text-heading">{item.title}</span>
+												{#if item.description}<span class="block text-muted">{item.description}</span>{/if}
+											</span>
+										</li>
+									{/each}
+								</ol>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
+				<div class="rounded-3xl border border-border bg-surface-2 p-6">
+					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
+					<div class="mt-4">
+						<ContactLinks phone={contactPhone} email={contactEmail} socials={leader.socials} share={!preview} shareTitle={leader.name} />
+					</div>
+					{#if leader.address}
+						<p class="mt-3 space-y-2 text-sm">
+							{leader.address}
+						</p>
+					{/if}
+				</div>
+			{/if}
 
 		</div>
 	</div>

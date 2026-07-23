@@ -6,7 +6,7 @@
 // visibility gate — an application goes live as soon as it exists.
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, experience, followers, managers, parties, pillars, positions, posts, tags } from '$lib/server/db/schema';
+import { campaigns, contacts, deliveries, experience, followers, managers, parties, pillars, positions, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
 import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
@@ -98,7 +98,7 @@ export async function loadPublicProfileData(
 			.orderBy(desc(posts.createdAt))
 			.limit(10),
 		db
-			.select({ type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
+			.select({ id: experience.id, type: experience.type, title: experience.title, institution: experience.institution, description: experience.description, from: experience.startAt, to: experience.endAt })
 			.from(experience)
 			.where(and(eq(experience.subjectUserId, row.users.id), isNull(experience.deletedAt)))
 			.orderBy(desc(experience.startAt)),
@@ -122,6 +122,36 @@ export async function loadPublicProfileData(
 	const partyNameById = new Map(partyNameRows.map((p) => [p.id, p.name]));
 
 	const myReview = opts.viewerId ? await getMyReview(row.users.id, opts.viewerId) : null;
+
+	// Delivery tab items (concrete things delivered, tied to a specific term or
+	// non-elective experience — see the dashboard's Delivery tab) — distinct from
+	// `delivery` below, which is the manifesto pillar completion rollup.
+	const leaderIds = terms.map((t) => t.leaders.id);
+	const experienceIds = experienceRows.map((e) => e.id);
+	const [deliveriesByLeader, deliveriesByExperience] = await Promise.all([
+		leaderIds.length
+			? db.select({ id: deliveries.id, leaderId: deliveries.leaderId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.leaderId, leaderIds), isNull(deliveries.deletedAt)))
+			: [],
+		experienceIds.length
+			? db.select({ id: deliveries.id, experienceId: deliveries.experienceId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.experienceId, experienceIds), isNull(deliveries.deletedAt)))
+			: []
+	]);
+	const deliveryGroups = [
+		...terms.map((t) => ({
+			label: `${t.positions.title}, ${t.positions.region}`,
+			from: t.leaders.startAt.getFullYear(),
+			to: t.leaders.endAt?.getFullYear() ?? null,
+			items: deliveriesByLeader.filter((d) => d.leaderId === t.leaders.id).map((d) => ({ title: d.title, description: d.description }))
+		})),
+		...experienceRows
+			.filter((e) => e.type === 'professional')
+			.map((e) => ({
+				label: `${e.title}, ${e.institution}`,
+				from: e.from?.getFullYear() ?? null,
+				to: e.to?.getFullYear() ?? null,
+				items: deliveriesByExperience.filter((d) => d.experienceId === e.id).map((d) => ({ title: d.title, description: d.description }))
+			}))
+	].filter((g) => g.items.length > 0);
 
 	const deliveredCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'delivered').length;
 	const inProgressCount = pillarStatusRows.filter((p) => p.deliveryStatus === 'in_progress').length;
@@ -205,6 +235,7 @@ export async function loadPublicProfileData(
 					}
 				: null,
 		delivery: { total: pillarStatusRows.length, delivered: deliveredCount, inProgress: inProgressCount },
+		deliveryGroups,
 		reviews: reviewRows,
 		reviewPillarOptions,
 		flaggedReviewCounts,

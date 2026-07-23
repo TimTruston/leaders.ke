@@ -162,13 +162,16 @@ export const experience = pgTable('experience', {
   index('experience_subject_idx').on(t.subjectUserId),
 ]);
 
-// One concrete thing a leader delivered under a SPECIFIC term (current or past) —
-// distinct from `pillars` (a campaign RUN's forward-looking promises with a status).
-// Scoped to `leaders.id`, not the person, so it groups correctly when someone has
-// held more than one seat/term.
+// One concrete thing a leader delivered under a SPECIFIC term OR non-elective
+// experience (a professional/education role) — distinct from `pillars` (a
+// campaign RUN's forward-looking promises with a status). Exactly one of
+// leaderId/experienceId is set (enforced in the Delivery tab's own actions, not a
+// DB constraint — same convention as experience.positionId being conditionally
+// null). Never both null, never both set.
 export const deliveries = pgTable('deliveries', {
   id: serial('id').primaryKey(),
-  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }),
+  experienceId: integer('experience_id').references(() => experience.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -176,6 +179,7 @@ export const deliveries = pgTable('deliveries', {
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
   index('deliveries_leader_idx').on(t.leaderId),
+  index('deliveries_experience_idx').on(t.experienceId),
 ]);
 
 // 4. MANIFESTO PILLARS - A leader's policy platform
