@@ -94,7 +94,7 @@
 		title: string;
 		institution: string;
 		description: string;
-		from: string; // ISO date (YYYY-MM-DD)
+		from: string; // year, e.g. "2013"
 		to: string | null;
 	};
 	type PendingLeadership = {
@@ -103,13 +103,9 @@
 		partyId: number | null;
 		partyName: string | null;
 		description: string;
-		from: string; // ISO date (YYYY-MM-DD)
+		from: string; // year, e.g. "2013"
 		to: string | null;
 	};
-
-	function formatDate(iso: string): string {
-		return new Date(iso).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' });
-	}
 
 	let pendingExperience = $state<PendingExperience[]>([]);
 	let pendingLeadership = $state<PendingLeadership[]>([]);
@@ -387,7 +383,7 @@
 								title={item.positionLabel}
 								subtitle={item.partyName}
 								description={item.description}
-								dateLabel="{formatDate(item.from)}–{item.to ? formatDate(item.to) : 'present'}"
+								dateLabel="{item.from}–{item.to ?? 'present'}"
 								unsaved
 								pending
 								onRemove={() => removeLeadership(i)}
@@ -414,7 +410,7 @@
 									title={item.title}
 									subtitle={item.institution}
 									description={item.description}
-									dateLabel="{formatDate(item.from)}{item.to ? `–${formatDate(item.to)}` : ''}"
+									dateLabel="{item.from}{item.to ? `–${item.to}` : ''}"
 									unsaved
 									pending
 									onRemove={() => removeExperience(i)}
@@ -442,7 +438,7 @@
 									title={item.title}
 									subtitle={item.institution}
 									description={item.description}
-									dateLabel="{formatDate(item.from)}{item.to ? `–${formatDate(item.to)}` : ''}"
+									dateLabel="{item.from}{item.to ? `–${item.to}` : ''}"
 									unsaved
 									pending
 									onRemove={() => removeExperience(i)}
