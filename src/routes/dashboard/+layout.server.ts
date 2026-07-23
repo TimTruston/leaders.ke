@@ -1,36 +1,13 @@
 import { redirect } from '@sveltejs/kit';
-import { and, eq, isNull } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { contacts, managers, users } from '$lib/server/db/schema';
-import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
-import { leaderPath, fullName, getRunCampaign, resolveCurrentTerm } from '$lib/server/leader';
+import { leaderPath, fullName, getApplicationChecklist, type ApplicationChecklist } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
-import { getPlatformSettings } from '$lib/server/settings';
-import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { listUnreadNotifications } from '$lib/server/notifications';
 import { getProfileAdminMeta } from '$lib/server/profiles';
 import { getSwitcherProfiles } from '$lib/server/switcher';
 import type { LayoutServerLoad } from './$types';
 
-// One application tab's completion state: whether it's done, and the labels of the
-// fields still missing (shared with the layout nav and each tab page).
-export type TabChecklist = { complete: boolean; missing: string[] };
-export type ApplicationChecklist = {
-	profile: TabChecklist;
-	contacts: TabChecklist;
-	campaign: TabChecklist;
-	team: TabChecklist;
-	documentation: TabChecklist;
-	/** The applicant's attestation: role, national ID, and their ID images. */
-	signoff: TabChecklist;
-};
-
-// Each entry: whether the field is still missing, and the human label shown for it.
-const toTab = (rows: (boolean | string)[][]): TabChecklist => {
-	const missing = rows.filter(([isMissing]) => isMissing).map(([, label]) => label as string);
-	return { complete: missing.length === 0, missing };
-};
+export type { ApplicationChecklist };
 
 // Guards every /dashboard page and shares the leader context + role switcher data.
 // Two leader route families hang off /dashboard: [slug]/* (a leader's own
@@ -58,82 +35,9 @@ export const load: LayoutServerLoad = async (event) => {
 	// each tab's save button) still needs attention.
 	let applicationComplete = false;
 	let application: ApplicationChecklist | null = null;
+	let verificationRequestedAt: Date | null = null;
 	if (ctx && !ctx.verified) {
-		const settings = await getPlatformSettings();
-		const requiredManagers = settings.requiredTeamManagers;
-		const requiredSignoffs = settings.requiredSignoffs;
-
-		const [contactRows, managerRows] = await Promise.all([
-			db
-				.select({ channel: contacts.channel, value: contacts.value })
-				.from(contacts)
-				.where(and(eq(contacts.userId, ctx.profileUser.id), isNull(contacts.deletedAt))),
-			// Active team, each with their own sign-off roles and whether their account
-			// email is verified — the two verification gates count across the whole team.
-			db
-				.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified, idFrontUrl: users.idFrontUrl, idBackUrl: users.idBackUrl })
-				.from(managers)
-				.innerJoin(users, eq(managers.userId, users.id))
-				.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-				.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
-		]);
-
-		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
-		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
-
-		// Verification targets the RUN (campaign): the IEBC cert and the request live on it.
-		const runCampaign = await getRunCampaign(ctx.profileUser.id);
-
-		// Each entry: the human label shown to the user, and whether it's still missing.
-		const profileMissing = [
-			[!ctx.profileUser.firstName, 'First name'],
-			[!ctx.profileUser.otherNames, 'Other names'],
-			[!ctx.profileUser.bio, 'Bio']
-		];
-		// The Campaign tab holds the run: seat, title, platform, IEBC certificate.
-		const campaignMissing = [
-			[!runCampaign?.positionId, 'Seat contested'],
-			[!runCampaign?.title, 'Campaign title'],
-			[!runCampaign?.description, 'Campaign platform'],
-			[!runCampaign?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
-		];
-		const contactsMissing = [
-			[!ctx.profileUser.address, 'Office / address'],
-			[!contactRows.some((c) => c.channel === 'sms'), 'Phone number'],
-			[!contactRows.some((c) => c.channel === 'email'), 'Email address']
-		];
-		// Team gate: enough email-verified managers (admin-set count).
-		const managersShort = requiredManagers - verifiedManagers;
-		const teamMissing =
-			managersShort > 0
-				? [`${managersShort} more verified team member${managersShort === 1 ? '' : 's'} (${requiredManagers} needed)`]
-				: [];
-		const docsMissing = [
-			[!ctx.profileUser.photoUrl, 'Photo']
-		];
-		// Sign-off gate: enough managers who've each completed their own sign-off
-		// (role + national ID + ID images). Each manager attests on the Team tab
-		// under their own entry; the per-field prompts live there.
-		const signoffsShort = requiredSignoffs - completedSignoffs;
-		const signoffMissing =
-			signoffsShort > 0
-				? [`${signoffsShort} more completed sign-off${signoffsShort === 1 ? '' : 's'} (${requiredSignoffs} needed)`]
-				: [];
-		application = {
-			profile: toTab(profileMissing),
-			contacts: toTab(contactsMissing),
-			campaign: toTab(campaignMissing),
-			team: { complete: teamMissing.length === 0, missing: teamMissing },
-			documentation: toTab(docsMissing),
-			signoff: { complete: signoffMissing.length === 0, missing: signoffMissing }
-		};
-		applicationComplete =
-			application.profile.complete &&
-			application.contacts.complete &&
-			application.campaign.complete &&
-			application.team.complete &&
-			application.documentation.complete &&
-			application.signoff.complete;
+		({ application, applicationComplete, verificationRequestedAt } = await getApplicationChecklist(ctx));
 	}
 
 	// Every profile the viewer manages — the switcher lists them ALL, not just the
@@ -168,6 +72,7 @@ export const load: LayoutServerLoad = async (event) => {
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,
 		application,
+		verificationRequestedAt: verificationRequestedAt?.toISOString() ?? null,
 		leaderContext: ctx
 			? {
 					leaderId: ctx.leader?.id ?? null,

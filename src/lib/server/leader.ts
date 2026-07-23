@@ -460,7 +460,9 @@ const toTab = (rows: (boolean | string)[][]): TabChecklist => {
  * Verification modal can list exactly what's outstanding. Shared by the layout load
  * (nav flags) and the requestVerification action (server-side re-check before
  * emailing admins — never trust the client's view of "complete"). */
-export async function getApplicationChecklist(ctx: LeaderContext): Promise<{ application: ApplicationChecklist; applicationComplete: boolean }> {
+export async function getApplicationChecklist(
+	ctx: LeaderContext
+): Promise<{ application: ApplicationChecklist; applicationComplete: boolean; verificationRequestedAt: Date | null }> {
 	const settings = await getPlatformSettings();
 	const requiredManagers = settings.requiredTeamManagers;
 	const requiredSignoffs = settings.requiredSignoffs;
@@ -536,7 +538,7 @@ export async function getApplicationChecklist(ctx: LeaderContext): Promise<{ app
 		application.documentation.complete &&
 		application.signoff.complete;
 
-	return { application, applicationComplete };
+	return { application, applicationComplete, verificationRequestedAt: runCampaign?.verificationRequestedAt ?? null };
 }
 
 /** Finds a DIFFERENT account whose sign-off is already complete (role + national ID +

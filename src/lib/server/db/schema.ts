@@ -222,6 +222,11 @@ export const campaigns = pgTable('campaigns', {
   // leaders row to carry verifiedAt). Set = the run is public and ballot-eligible;
   // null = still under review / dashboard-only. Mirrors leaders.verifiedAt for held office.
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  // When the owner clicked Submit for Verification (checklist complete at that
+  // moment) — lets the dashboard show "pending review" instead of the button, and
+  // stops it from re-emailing admins on every click. Cleared by the admin's
+  // Verify/Unverify toggle, or automatically if the checklist goes incomplete again.
+  verificationRequestedAt: timestamp('verification_requested_at', { withTimezone: true }),
   // The IEBC nomination certificate is issued per election, per seat run.
   // The person's photo and ID scans live on `users`.
   iebcCertificateUrl: text('iebc_certificate_url'),

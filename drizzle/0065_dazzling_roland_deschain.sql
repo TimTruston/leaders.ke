@@ -1,0 +1,1 @@
+ALTER TABLE "campaigns" ADD COLUMN "verification_requested_at" timestamp with time zone;

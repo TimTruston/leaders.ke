@@ -1,20 +1,12 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import { computeDashboardModes } from '$lib/utils/dashboardModes';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
-
-	// Delete (application or claim) goes through a confirmation modal: the button
-	// click is intercepted, and confirming re-submits its form with the button as
-	// the submitter, so the button's formaction still picks the delete action.
-	let deleteBtn = $state<HTMLButtonElement | null>(null);
-	const confirmDelete = (e: MouseEvent) => {
-		e.preventDefault();
-		deleteBtn = e.currentTarget as HTMLButtonElement;
-	};
 
 	// Platform-admin control bar (Deactivate/Activate, Declare Winner, Delete). The
 	// clicked button stages the pending action + its confirm wording; confirming writes
@@ -30,6 +22,22 @@
 	// Typed into the pending-claim decision form's notes field BEFORE the Reject
 	// button opens the confirm modal — carried into confirmNotes at click time.
 	let claimRejectNotes = $state('');
+
+	// Submit for Verification: a modal listing every checklist tab (labels below),
+	// each item ticked off as it's completed. The form only ever posts once every
+	// tab is complete (the button is a no-op otherwise) — the server re-checks
+	// anyway before emailing admins.
+	let showVerificationModal = $state(false);
+	let submittingVerification = $state(false);
+	let verificationError = $state('');
+	const checklistLabels: Record<string, string> = {
+		profile: 'Leader',
+		contacts: 'Contacts',
+		campaign: 'Campaign',
+		team: 'Team',
+		documentation: 'Photo',
+		signoff: 'Sign-off'
+	};
 
 	// Set by /invite/[token] right after accepting — a one-time "you're in" banner.
 	const joinedRole = $derived(page.url.searchParams.get('joined'));
@@ -249,20 +257,23 @@
 					{data.leaderContext.positionTitle}, {data.leaderContext.region}
 					· <span class="capitalize">{data.leaderContext.status}</span>
 				</p>
-				{#if !data.leaderContext.verified}
-					<!-- No submit/review step — an admin verifies (or not) directly on the
-					control bar below. Delete is the "just testing" escape hatch for an
-					unverified profile. -->
-					<form method="post" action="{base}/profile?/deleteApplication" class="flex items-center justify-end">
-						<button
-							type="submit"
-							formnovalidate
-							onclick={confirmDelete}
-							class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
-						>
-							Delete
-						</button>
-					</form>
+				{#if data.leaderContext.verified}
+					<span class="shrink-0 rounded-full bg-primary-soft px-4 py-1.5 text-xs font-semibold text-on-primary">✓ Campaign Verified</span>
+				{:else if data.verificationRequestedAt}
+					<span
+						title="Submitted {new Date(data.verificationRequestedAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' })} — an admin has been notified."
+						class="shrink-0 cursor-help rounded-full border border-border bg-surface-2 px-4 py-1.5 text-xs font-semibold text-muted"
+					>
+						Pending review
+					</span>
+				{:else}
+					<button
+						type="button"
+						onclick={() => (showVerificationModal = true)}
+						class="shrink-0 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
+					>
+						Submit for Verification
+					</button>
 				{/if}
 			{:else if activeAssignment}
 				<p class="text-sm text-muted">Ambassador of {activeAssignment.name}</p>
@@ -341,20 +352,28 @@
 						class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
 					>Delete</button>
 				{/if}
-				<!-- Single toggle: label always reflects current state, and either
-				direction goes through the same confirm modal. -->
-				<button
-					type="button"
-					disabled={!ac.campaignVerified && !ac.campaignDocsComplete}
-					title={!ac.campaignVerified && !ac.campaignDocsComplete ? 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.' : ''}
-					onclick={() =>
-						(adminAction = ac.campaignVerified
-							? { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `Removes the Verified badge on the campaign.`, confirmLabel: 'Remove' }
-							: { action: 'verifyCampaign', title: 'Verify campaign?', body: `Shows the Verified badge on the campaign.`, confirmLabel: 'Verify' })}
-					class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 {ac.campaignVerified
-						? 'bg-primary-soft text-on-primary hover:brightness-95'
-						: 'border border-primary text-primary hover:bg-primary hover:text-on-primary disabled:hover:bg-transparent disabled:hover:text-primary'}"
-				>Campaign {ac.campaignVerified ? 'Verified' : 'Unverified'}</button>
+				<!-- Three states: nothing to review yet (Incomplete, inert), submitted and
+				awaiting a decision (Verify Campaign), or already live (Unverify Campaign).
+				Either actionable state goes through the same confirm modal. -->
+				{#if !ac.campaignVerified && !ac.campaignSubmitted}
+					<span
+						title="The owner hasn't submitted this campaign for verification yet — nothing to review."
+						class="cursor-help rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted"
+					>Unsubmitted</span>
+				{:else}
+					<button
+						type="button"
+						disabled={!ac.campaignVerified && !ac.campaignDocsComplete}
+						title={!ac.campaignVerified && !ac.campaignDocsComplete ? 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.' : ''}
+						onclick={() =>
+							(adminAction = ac.campaignVerified
+								? { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `Removes the Verified badge on the campaign.`, confirmLabel: 'Remove' }
+								: { action: 'verifyCampaign', title: 'Verify campaign?', body: `Shows the Verified badge on the campaign.`, confirmLabel: 'Verify' })}
+						class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 {ac.campaignVerified
+							? 'bg-primary-soft text-on-primary hover:brightness-95'
+							: 'border border-primary text-primary hover:bg-primary hover:text-on-primary disabled:hover:bg-transparent disabled:hover:text-primary'}"
+					>{ac.campaignVerified ? 'Unverify Campaign' : 'Verify Campaign'}</button>
+				{/if}
 			</div>
 
 			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager
@@ -438,18 +457,6 @@
 
 </section>
 
-{#if deleteBtn}
-	<ConfirmDialog
-		title="Delete this application?"
-		body="Everything entered so far is discarded and it drops off your dashboard. This cannot be undone."
-		oncancel={() => (deleteBtn = null)}
-		onconfirm={() => {
-			const btn = deleteBtn;
-			deleteBtn = null;
-			btn?.form?.requestSubmit(btn);
-		}}
-	/>
-{/if}
 
 {#if adminAction}
 	<ConfirmDialog
@@ -464,4 +471,72 @@
 			adminFormEl?.requestSubmit();
 		}}
 	/>
+{/if}
+
+{#if showVerificationModal && data.application}
+	{@const app = data.application}
+	<div class="fixed inset-0 z-50 grid place-items-center p-4">
+		<button
+			type="button"
+			aria-label="Close"
+			onclick={() => (showVerificationModal = false)}
+			class="absolute inset-0 bg-black/70"
+		></button>
+		<div role="dialog" aria-modal="true" aria-label="Submit for Verification" class="relative w-full max-w-md rounded-2xl bg-surface p-6">
+			<p class="font-semibold text-heading">Submit for Verification</p>
+			<p class="mt-2 text-sm text-muted">
+				{data.applicationComplete
+					? 'Every checklist item is complete. Submitting notifies the platform admins so they can review and verify your campaign.'
+					: 'Still needed before you can submit:'}
+			</p>
+			<ul class="mt-4 space-y-2 text-sm">
+				{#each Object.entries(app) as [key, tab] (key)}
+					<li class="flex items-start gap-2">
+						<span class={tab.complete ? 'text-primary' : 'text-muted'}>{tab.complete ? '✓' : '○'}</span>
+						<span class={tab.complete ? 'text-heading' : 'text-muted'}>
+							{checklistLabels[key] ?? key}
+							{#if !tab.complete}<span class="block text-xs">{tab.missing.join(', ')}</span>{/if}
+						</span>
+					</li>
+				{/each}
+			</ul>
+			{#if verificationError}
+				<p class="mt-3 text-sm font-medium text-red-500">{verificationError}</p>
+			{/if}
+			<div class="mt-5 flex justify-end gap-2">
+				<button
+					type="button"
+					onclick={() => (showVerificationModal = false)}
+					class="rounded-full border border-border px-5 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2"
+				>
+					Close
+				</button>
+				<form
+					method="post"
+					action="{base}/profile?/requestVerification"
+					use:enhance={() => {
+						submittingVerification = true;
+						verificationError = '';
+						return async ({ result, update }) => {
+							submittingVerification = false;
+							if (result.type === 'failure') {
+								verificationError = (result.data?.verificationError as string) ?? 'Could not submit.';
+							} else {
+								showVerificationModal = false;
+							}
+							await update();
+						};
+					}}
+				>
+					<button
+						type="submit"
+						disabled={!data.applicationComplete || submittingVerification}
+						class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
+					>
+						{submittingVerification ? 'Submitting…' : 'Submit'}
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
 {/if}

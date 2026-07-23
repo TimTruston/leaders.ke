@@ -7,7 +7,7 @@
 //   status   — aspirant | current | former   (the person's lead seat)
 //   source   — seeded | applied | claimed     (how the profile came to exist)
 //   verified — null | pending | approved | rejected | deleted  (review-workflow state)
-import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
@@ -265,6 +265,10 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	// platform_settings.requireIebcForVerification is on (off by default).
 	campaignVerified: boolean;
 	campaignDocsComplete: boolean;
+	// Whether the owner clicked Submit for Verification (campaigns.verificationRequestedAt)
+	// — the control bar's Verify button only acts once this is set, so a checklist
+	// still in progress reads as "Incomplete" rather than an actionable Verify.
+	campaignSubmitted: boolean;
 	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
 	// The pending decision the admin control bar surfaces inline (moved off the Team
 	// tab): a live claim to approve/reject.
@@ -341,7 +345,7 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	// The person's current-cycle main run, and whether it's verified + un-graduated
 	// (Declare Winner turns a verified un-graduated run into a `current` term).
 	const [run] = await db
-		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId, iebcCertificateUrl: campaigns.iebcCertificateUrl })
+		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId, iebcCertificateUrl: campaigns.iebcCertificateUrl, verificationRequestedAt: campaigns.verificationRequestedAt })
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
@@ -366,6 +370,7 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
 		campaignVerified: !!run?.verifiedAt,
 		campaignDocsComplete: requireIebcForVerification ? !!run?.iebcCertificateUrl : true,
+		campaignSubmitted: !!run?.verificationRequestedAt,
 		application: application
 			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
 			: null,
@@ -545,6 +550,30 @@ export async function notifyManagersOfStatusChange(subjectUserId: number, active
 				// A deactivated profile's own dashboard route is off-limits to its team
 				// (see getLeaderContextBySlug) — the link only makes sense once reactivated.
 				href: active && subject?.slug ? `/dashboard/${subject.slug}/profile` : '/dashboard'
+			})
+		)
+	);
+}
+
+/** Tells every platform admin that a profile's checklist is complete and ready
+ * for their manual Verify-campaign toggle (see getProfileAdminMeta) — the owner's
+ * "Submit for Verification" click has nothing else to do, since there's no
+ * submit/review queue anymore, just this heads-up. */
+export async function notifyAdminsOfVerificationRequest(subjectUserId: number) {
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, subjectUserId));
+	if (!subject) return;
+	const profileName = fullName(subject);
+
+	const admins = await db.select({ id: users.id }).from(users).where(and(isNotNull(users.adminAt), isNull(users.deletedAt)));
+
+	await Promise.all(
+		admins.map((admin) =>
+			notifyUser(admin.id, {
+				kind: 'verification',
+				title: 'A profile requests verification',
+				body: `${profileName}'s campaign checklist is complete and ready for review.\n<a href="/${subject.slug}">Click here to view the profile</a>`,
+				href: `/dashboard/${subject.slug}/profile`,
+				linkLabel: 'Click here to review the profile'
 			})
 		)
 	);

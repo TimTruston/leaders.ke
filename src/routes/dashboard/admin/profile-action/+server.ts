@@ -66,12 +66,13 @@ export const POST: RequestHandler = async (event) => {
 			.where(and(eq(campaigns.subjectUserId, profileId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 		const { requireIebcForVerification } = await getPlatformSettings();
 		if (run && (!requireIebcForVerification || run.iebcCertificateUrl)) {
-			await db.update(campaigns).set({ verifiedAt: new Date() }).where(eq(campaigns.id, run.id));
+			// The request (if any) is resolved either way once an admin acts on it.
+			await db.update(campaigns).set({ verifiedAt: new Date(), verificationRequestedAt: null }).where(eq(campaigns.id, run.id));
 		}
 	} else if (action === 'unverifyCampaign') {
 		await db
 			.update(campaigns)
-			.set({ verifiedAt: null })
+			.set({ verifiedAt: null, verificationRequestedAt: null })
 			.where(and(eq(campaigns.subjectUserId, profileId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	}
 
