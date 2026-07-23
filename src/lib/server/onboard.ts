@@ -339,50 +339,41 @@ async function bioHint(input: OnboardInput): Promise<string> {
  * already-seeded holder of the same seat (current: only one holder at a time,
  * platform-wide; former: two people's stated years overlap) — createProfile
  * doesn't write the row either way (never bump/replace a real leader's record
- * automatically), so this is admins' only signal the claim exists and needs a
- * human to decide which one is right. Includes the claimed party since that part
- * of the claim isn't itself in conflict — only the seat/time is. */
-async function notifyAdminsOfLeaderConflict(opts: {
-	subjectUserId: number;
-	subjectSlug: string;
+ * automatically). Builds ONE line describing the conflict rather than sending its
+ * own email — a profile can hit this on both current and former at once, and
+ * checkout's Pay action already sends one "new profile" email per create/link;
+ * folding every conflict into that same email is one admin notification per
+ * event, not one per conflict. Includes the claimed party since that part of the
+ * claim isn't itself in conflict — only the seat/time is. */
+async function describeLeaderConflict(opts: {
 	positionId: number;
 	incumbentUserId: number;
 	partyId: number | null;
-	claimLabel: string; // e.g. "currently holds" or "held from 2013 to 2017"
-	recordedLabel: string; // e.g. "already recorded under" or "overlaps a record already held by"
-}) {
-	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
+	claimLabel: string; // e.g. "currently held" or "held from 2013 to 2017"
+	recordedLabel: string; // e.g. "is already recorded under" or "overlaps a term already recorded under"
+}): Promise<string> {
 	const [incumbent] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, opts.incumbentUserId));
 	const [position] = await db.select({ title: positions.title, region: positions.region }).from(positions).where(eq(positions.id, opts.positionId));
 	const [party] = opts.partyId ? await db.select({ name: parties.name }).from(parties).where(eq(parties.id, opts.partyId)) : [];
-	const adminIds = await listAdminIds();
 
-	const subjectName = subject ? fullName(subject) : 'A new profile';
 	const incumbentName = incumbent ? fullName(incumbent) : 'the recorded incumbent';
 	const seatLabel = position ? `${position.title}, ${position.region}` : 'a seat';
-	const incumbentLink = incumbent?.slug ? `\n<a href="/${incumbent.slug}">Click here to view the recorded incumbent</a>` : '';
 	const partySuffix = party ? ` (claimed party: ${party.name})` : '';
+	const incumbentLink = incumbent?.slug ? ` — <a href="/${incumbent.slug}">view ${incumbentName}</a>` : '';
 
-	await Promise.all(
-		adminIds.map((adminId) =>
-			notifyUser(adminId, {
-				kind: 'claim',
-				title: 'Conflicting leader claim',
-				body: `${subjectName} claims to have ${opts.claimLabel} ${seatLabel}${partySuffix}, which ${opts.recordedLabel} ${incumbentName}. Review and reassign if the new claim is correct.\n<a href="/${opts.subjectSlug}">Click here to view the new profile</a>${incumbentLink}`,
-				href: `/dashboard/${opts.subjectSlug}/profile`,
-				linkLabel: 'Click here to open the new profile'
-			})
-		)
-	);
+	return `${opts.claimLabel[0].toUpperCase()}${opts.claimLabel.slice(1)} ${seatLabel}${partySuffix}, which ${opts.recordedLabel} ${incumbentName}${incumbentLink}.`;
 }
 
 /** No matching profile — mint a brand-new one the citizen owns (source=applied). Returns
- * the new profile's slug so the wizard can carry it into plans/checkout. */
-export async function createProfile(domainUserId: number, rawInput: OnboardInput): Promise<{ slug: string; subjectUserId: number }> {
+ * the new profile's slug so the wizard can carry it into plans/checkout, plus any
+ * leader-claim conflicts hit along the way (see describeLeaderConflict) — checkout
+ * folds these into its one "new profile" admin email rather than sending separate ones. */
+export async function createProfile(domainUserId: number, rawInput: OnboardInput): Promise<{ slug: string; subjectUserId: number; conflicts: string[] }> {
 	const input = await resolveInputParties(rawInput);
 	const phantom = await createPhantomUser(input.firstName, input.otherNames);
 	const slug = await generateLeaderSlug(fullName({ firstName: input.firstName, otherNames: input.otherNames }));
 	await db.update(users).set({ slug, bio: await bioHint(input) }).where(eq(users.id, phantom.id));
+	const conflicts: string[] = [];
 
 	// Existing leader -> the real ACTIVE term (status 'current'), not just a bio hint.
 	// This has to exist whenever Former is also checked: buildContext resolves the
@@ -412,15 +403,15 @@ export async function createProfile(domainUserId: number, rawInput: OnboardInput
 			// claimed (party especially) rather than silently dropping it — parked here
 			// until an admin resolves the conflict one way or the other.
 			await db.update(users).set({ pendingCurrentPositionId: input.current.positionId, pendingCurrentPartyId: input.current.partyId }).where(eq(users.id, phantom.id));
-			await notifyAdminsOfLeaderConflict({
-				subjectUserId: phantom.id,
-				subjectSlug: slug,
-				positionId: input.current.positionId,
-				incumbentUserId: incumbent.userId,
-				partyId: input.current.partyId,
-				claimLabel: 'currently held',
-				recordedLabel: 'is already recorded under'
-			});
+			conflicts.push(
+				await describeLeaderConflict({
+					positionId: input.current.positionId,
+					incumbentUserId: incumbent.userId,
+					partyId: input.current.partyId,
+					claimLabel: 'currently held',
+					recordedLabel: 'is already recorded under'
+				})
+			);
 		}
 	}
 
@@ -443,15 +434,15 @@ export async function createProfile(domainUserId: number, rawInput: OnboardInput
 				)
 			);
 		if (overlap.length > 0) {
-			await notifyAdminsOfLeaderConflict({
-				subjectUserId: phantom.id,
-				subjectSlug: slug,
-				positionId: input.former.positionId,
-				incumbentUserId: overlap[0].userId,
-				partyId: input.former.partyId,
-				claimLabel: `held from ${input.former.fromYear} to ${input.former.toYear}`,
-				recordedLabel: 'overlaps a term already recorded under'
-			});
+			conflicts.push(
+				await describeLeaderConflict({
+					positionId: input.former.positionId,
+					incumbentUserId: overlap[0].userId,
+					partyId: input.former.partyId,
+					claimLabel: `held from ${input.former.fromYear} to ${input.former.toYear}`,
+					recordedLabel: 'overlaps a term already recorded under'
+				})
+			);
 		} else {
 			await db.insert(leaders).values({
 				userId: phantom.id,
@@ -481,14 +472,15 @@ export async function createProfile(domainUserId: number, rawInput: OnboardInput
 		roles: { admin: true, title: input.myRole || undefined }
 	});
 
-	return { slug, subjectUserId: phantom.id };
+	return { slug, subjectUserId: phantom.id, conflicts };
 }
 
 /** A matching profile was selected — link the citizen's account to it (a claim,
  * source=claimed) by granting them admin manager access. Returns the profile's slug.
  * Admin notification happens in checkout (see notifyAdminsOfNewProfile) — pricing
- * details belong in that email, and only checkout has them. */
-export async function linkProfile(domainUserId: number, rawInput: OnboardInput, subjectUserId: number): Promise<{ slug: string; subjectUserId: number }> {
+ * details belong in that email, and only checkout has them. Never produces conflicts
+ * itself (the seeded profile already has its own real history — see the file header). */
+export async function linkProfile(domainUserId: number, rawInput: OnboardInput, subjectUserId: number): Promise<{ slug: string; subjectUserId: number; conflicts: string[] }> {
 	const input = await resolveInputParties(rawInput);
 	const [subject] = await db
 		.select({ id: users.id, slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
@@ -517,7 +509,7 @@ export async function linkProfile(domainUserId: number, rawInput: OnboardInput, 
 	// approval like the old claim flow, access already happened at payment time.
 	await db.insert(profileClaims).values({ subjectUserId, claimedBy: domainUserId, evidence: input });
 
-	return { slug: subject.slug, subjectUserId };
+	return { slug: subject.slug, subjectUserId, conflicts: [] };
 }
 
 /** Platform admins should know whenever a profile changes hands or gets created —
@@ -533,6 +525,10 @@ export async function notifyAdminsOfNewProfile(opts: {
 	cycle: string;
 	amount: number;
 	subscriptionEndsAt: Date;
+	// Leader-claim conflicts hit while creating (see describeLeaderConflict) — folded
+	// into this same email so a profile with several conflicts still gets exactly
+	// one admin notification, not one per conflict.
+	conflicts?: string[];
 }) {
 	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
 	const [actor] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.actorUserId));
@@ -544,16 +540,18 @@ export async function notifyAdminsOfNewProfile(opts: {
 	const cycleLabel = opts.cycle.charAt(0).toUpperCase() + opts.cycle.slice(1);
 	const amountLabel = new Intl.NumberFormat('en-KE').format(opts.amount);
 	const endsAtLabel = opts.subscriptionEndsAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
+	const hasConflicts = !!opts.conflicts?.length;
+	const conflictLines = hasConflicts ? `\n\nConflicts flagged for review:\n${opts.conflicts!.map((c) => `- ${c}`).join('\n')}` : '';
 
 	await Promise.all(
 		adminIds.map((adminId) =>
 			notifyUser(adminId, {
 				kind: 'claim',
-				title: opts.kind === 'claimed' ? 'A profile was claimed' : 'A new profile was created',
+				title: hasConflicts ? 'A conflicting new profile created' : opts.kind === 'claimed' ? 'A profile was claimed' : 'A new profile was created',
 				// href covers the Dashboard link (notifyUser appends it); Preview isn't
 				// otherwise linked here, so it gets its own inline link (relative — notifyUser
 				// rewrites it to an absolute URL for the emailed copy).
-				body: `${actorName} ${opts.kind === 'claimed' ? 'claimed' : 'created'} ${profileName}'s profile — ${tierLabel} plan (${cycleLabel}), KES ${amountLabel} paid, runs until ${endsAtLabel}.\n<a href="/${opts.slug}">Click here to view the profile</a>`,
+				body: `${actorName} ${opts.kind === 'claimed' ? 'claimed' : 'created'} ${profileName}'s profile — ${tierLabel} plan (${cycleLabel}), KES ${amountLabel} paid, runs until ${endsAtLabel}.\n<a href="/${opts.slug}">Click here to view the profile</a>${conflictLines}`,
 				href: `/dashboard/${opts.slug}/profile`,
 				linkLabel: 'Click here to access the dashboard'
 			})

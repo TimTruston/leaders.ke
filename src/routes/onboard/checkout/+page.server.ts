@@ -112,7 +112,7 @@ export const actions: Actions = {
 			}
 		}
 
-		let result: { slug: string; subjectUserId: number };
+		let result: { slug: string; subjectUserId: number; conflicts: string[] };
 		try {
 			result = sel.linkSubjectId ? await linkProfile(domainUser.id, sel.input, sel.linkSubjectId) : await createProfile(domainUser.id, sel.input);
 		} catch (err) {
@@ -166,7 +166,8 @@ export const actions: Actions = {
 			tier: sel.tier,
 			cycle: sel.cycle,
 			amount: sel.amount,
-			subscriptionEndsAt: endsAt
+			subscriptionEndsAt: endsAt,
+			conflicts: result.conflicts
 		});
 		await notifyPayerOfPayment({
 			payerUserId: domainUser.id,
