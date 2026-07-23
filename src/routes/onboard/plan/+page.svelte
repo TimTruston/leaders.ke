@@ -12,20 +12,18 @@
 		{ tier: 'mobilizer', name: 'Mobilizer', tagline: 'Command the race', highlights: ['Unlimited everything', 'Competitor & sentiment analytics', 'Daily AI audio broadcast', '5 GB storage'] }
 	];
 
-	// The seat named on Profile drives pricing directly — no re-asking via a band
-	// toggle. Falls back to the most common candidate band on the rare path where
-	// no position resolved (e.g. a hand-edited step-back URL missing one).
-	let band = $state(data.defaultBand ?? 'regional');
+	// Pricing is one flat set of 3 plans for every office — no seat is declared at
+	// onboarding to derive a band from, so this defaults to 'ward' (MCA) for now
+	// until flat, band-independent pricing replaces this entirely.
+	const band = 'ward';
 	let annual = $state(false);
 	const cycle = $derived(annual ? 'annual' : 'monthly');
 
 	const priceOf = (tier: string) => data.rates[band]?.[tier]?.[cycle] ?? null;
 	const cycleSuffix = $derived(annual ? '/yr' : '/mo');
 
-	// Forwards everything step 3 carried here (firstName/otherNames/myRole, the
-	// current/former/aspirant checkbox fields, or linkSubjectId) straight into
-	// checkout, plus this step's own tier/cycle choice. band isn't forwarded —
-	// checkout re-derives the office (and its band) from the declared seat itself.
+	// Forwards everything step 3 carried here (firstName/otherNames/myRole, or
+	// linkSubjectId) straight into checkout, plus this step's own tier/cycle choice.
 	function checkoutHref(tier: string) {
 		return `/onboard/checkout${page.url.search}&tier=${tier}&cycle=${cycle}`;
 	}
@@ -39,22 +37,6 @@
 <div class="text-center">
 	<h1 class="text-2xl font-bold text-heading">Pick a plan for {data.subjectName}</h1>
 	<p class="mx-auto mt-2 max-w-xl text-sm text-muted">Choose the package that fits your campaign.</p>
-</div>
-
-<!-- Office: the exact seat named on Profile, not a band category — pricing follows
-it directly. Only falls back to a pickable band toggle when nothing resolved. -->
-<div class="mt-6 flex justify-center">
-	{#if data.seatLabel}
-		<span class="rounded-full border border-border bg-surface-2 px-4 py-1.5 text-sm font-semibold text-heading">{data.seatLabel}</span>
-	{:else}
-		<div class="w-full overflow-x-auto">
-			<div class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1" role="group" aria-label="Office">
-				{#each [{ band: 'ward', label: 'MCA' }, { band: 'regional', label: 'Governor, Senator, MP, Woman Rep' }, { band: 'national', label: 'President & Vice President' }] as b (b.band)}
-					<button type="button" aria-pressed={band === b.band} onclick={() => (band = b.band)} class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {band === b.band ? 'bg-primary text-on-primary' : 'text-muted hover:text-heading'}">{b.label}</button>
-				{/each}
-			</div>
-		</div>
-	{/if}
 </div>
 
 <!-- Package cards -->

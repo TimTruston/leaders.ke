@@ -5,7 +5,6 @@ import { users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { listCurrentPricing } from '$lib/server/packages';
 import { fullName } from '$lib/server/leader';
-import { getSeatInfo, leadPositionId } from '$lib/server/onboard';
 import type { PageServerLoad } from './$types';
 
 // Step 4 of the onboarding wizard: pick one of the three packages. No profile exists
@@ -13,6 +12,10 @@ import type { PageServerLoad } from './$types';
 // needs a name to show and the live rate card. Everything from step 3 rides forward
 // via query params (read by +page.svelte to build the checkout link) rather than
 // round-tripping through the database.
+//
+// Pricing is moving to one flat set of 3 plans for every office — no seat is
+// declared at onboarding anymore to derive a band from, so this defaults to the
+// 'ward' (MCA) band's rates for now until that flat pricing table replaces bands entirely.
 export const load: PageServerLoad = async (event) => {
 	await requireDashboardUser(event);
 	const sp = event.url.searchParams;
@@ -41,14 +44,5 @@ export const load: PageServerLoad = async (event) => {
 		rates[r.band][r.tier][r.billingCycle] = r.amount;
 	}
 
-	// The office pricing is based on: Profile already named the exact seat, so this
-	// page states it plainly rather than asking again via a vague band toggle.
-	const positionId = leadPositionId({
-		aspirantPositionId: Number(sp.get('aspirantPositionId') ?? 0) || null,
-		currentPositionId: Number(sp.get('currentPositionId') ?? 0) || null,
-		formerPositionId: Number(sp.get('formerPositionId') ?? 0) || null
-	});
-	const seat = positionId ? (await getSeatInfo([positionId])).get(positionId) : null;
-
-	return { subjectName, rates, defaultBand: seat?.band ?? null, seatLabel: seat?.label ?? null };
+	return { subjectName, rates };
 };

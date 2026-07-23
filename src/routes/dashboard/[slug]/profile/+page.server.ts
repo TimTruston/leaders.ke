@@ -2,11 +2,11 @@
 // covers both an unverified profile still being assembled and a verified one.
 import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
-import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, experience, leaders, managers, parties, positions, users } from '$lib/server/db/schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { ACTIVE_CYCLE, createPhantomUser, fullName, getApplicationChecklist, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, resolveOtherParty, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, getApplicationChecklist, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import { notifyAdminsOfVerificationRequest } from '$lib/server/profiles';
 import type { Actions, PageServerLoad } from './$types';
@@ -33,17 +33,6 @@ export const load: PageServerLoad = async (event) => {
 	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
 	const subject = ctx?.profileUser ?? domainUser;
 
-	// Party is per-term (leaders.partyId), not a person-level fact — this Party
-	// select only applies to a HELD term being actively edited (ctx.leader). A pure
-	// aspirant declares theirs on the Campaign tab instead (campaigns.partyId).
-	// A "current" claim that collided with an already-seeded incumbent never got a
-	// real leaders row (see onboard.ts's notifyAdminsOfLeaderConflict) — the party
-	// they claimed lives on users.pendingCurrentPartyId instead, purely so this tab
-	// still shows it (and lets them edit it) while an admin resolves the conflict.
-	const hasRealCurrentTerm = ctx?.leader?.status === 'current';
-	const pendingClaim = !hasRealCurrentTerm && subject.pendingCurrentPositionId != null;
-	const partyId = hasRealCurrentTerm ? (ctx!.leader!.partyId ?? null) : pendingClaim ? subject.pendingCurrentPartyId : null;
-
 	const [existingExperience, otherLeadershipRows] = ctx
 		? await Promise.all([
 				db
@@ -65,7 +54,7 @@ export const load: PageServerLoad = async (event) => {
 					.from(leaders)
 					.innerJoin(positions, eq(leaders.positionId, positions.id))
 					.leftJoin(parties, eq(leaders.partyId, parties.id))
-					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader?.id ?? 0), isNull(leaders.deletedAt)))
+					.where(and(eq(leaders.userId, subject.id), isNull(leaders.deletedAt)))
 					.orderBy(leaders.startAt)
 			])
 		: [[], []];
@@ -104,9 +93,6 @@ export const load: PageServerLoad = async (event) => {
 			otherNames: subject.otherNames,
 			bio: subject.bio ?? '',
 			positionId: ctx?.position?.id ?? null,
-			partyId,
-			hasActiveTerm: hasRealCurrentTerm || pendingClaim,
-			pendingClaim,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
 			verified: (ctx?.verified ?? false)
@@ -128,8 +114,6 @@ export const actions: Actions = {
 		const firstName = String(form.get('firstName') ?? '').trim();
 		const otherNames = String(form.get('otherNames') ?? '').trim();
 		const bio = String(form.get('bio') ?? '').trim();
-		const partyRaw = String(form.get('partyId') ?? '').trim();
-		const partyOtherRaw = String(form.get('partyOther') ?? '').trim();
 		const slugInput = slugify(String(form.get('slug') ?? '').trim());
 
 		// Staged photo rides this same submit. Validate it up front so a bad file
@@ -162,33 +146,9 @@ export const actions: Actions = {
 		if (!otherNames) return fail(400, { error: 'Other names are required.', missingFields: ['otherNames'] });
 		if (!bio) return fail(400, { error: 'Add a short bio.', missingFields: ['bio'] });
 		// The seat contested is no longer part of this form — the run (seat + cycle)
-		// is declared on the Campaign tab.
-
-		// Party only applies when editing an active HELD term (ctx.leader) — a pure
-		// aspirant has no leaders row yet to attach it to (see the Campaign tab instead).
-		// A "current" claim that collided with an already-seeded incumbent has no real
-		// leaders row either (see onboard.ts) — its party lives on
-		// users.pendingCurrentPartyId instead, editable here until an admin resolves it.
-		const hasRealCurrentTerm = ctx?.leader?.status === 'current';
-		const pendingClaim = !hasRealCurrentTerm && ctx?.profileUser.pendingCurrentPositionId != null;
-		if (hasRealCurrentTerm || pendingClaim) {
-			if (partyRaw === 'other' && !partyOtherRaw) return fail(400, { error: 'Enter the party name.' });
-			let partyId = partyRaw && partyRaw !== 'other' ? Number(partyRaw) || null : null; // null = independent
-			if (partyId) {
-				const [party] = await db
-					.select({ id: parties.id })
-					.from(parties)
-					.where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
-				if (!party) return fail(400, { error: 'That party does not exist.' });
-			} else if (partyRaw === 'other') {
-				partyId = await resolveOtherParty(partyOtherRaw);
-			}
-			if (hasRealCurrentTerm) {
-				await db.update(leaders).set({ partyId }).where(eq(leaders.id, ctx!.leader!.id));
-			} else {
-				await db.update(users).set({ pendingCurrentPartyId: partyId }).where(eq(users.id, ctx!.profileUser.id));
-			}
-		}
+		// is declared on the Campaign tab. Party isn't edited at the top level either —
+		// every held term (current or former) is a Track Record entry added via
+		// "+ Elected" below, each carrying its own party.
 
 		for (const e of pendingExperience) {
 			if (e.type !== 'education' && e.type !== 'professional') {
@@ -223,7 +183,6 @@ export const actions: Actions = {
 		}
 
 		let subjectId: number;
-		let leaderId = ctx?.leader?.id;
 
 		if (ctx) {
 			// The person the profile is about: the leader's own (phantom) user row —
@@ -294,7 +253,7 @@ export const actions: Actions = {
 			await db
 				.update(leaders)
 				.set({ deletedAt: new Date() })
-				.where(and(inArray(leaders.id, removedLeadershipIds), eq(leaders.userId, subjectId), ne(leaders.id, leaderId!)));
+				.where(and(inArray(leaders.id, removedLeadershipIds), eq(leaders.userId, subjectId)));
 		}
 
 		// The staged photo, validated above: written to disk keyed by the PERSON and

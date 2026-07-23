@@ -470,6 +470,13 @@
       "when": 1784829157534,
       "tag": "0066_fair_toad",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1784831146183,
+      "tag": "0067_green_toad",
+      "breakpoints": true
     }
   ]
 }

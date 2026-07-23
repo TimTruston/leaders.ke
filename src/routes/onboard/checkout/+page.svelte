@@ -23,7 +23,6 @@
 		<dl class="space-y-2 text-sm">
 			<div class="flex justify-between"><dt class="text-muted">Profile</dt><dd class="font-medium text-heading">{data.subjectName}</dd></div>
 			<div class="flex justify-between"><dt class="text-muted">Package</dt><dd class="font-medium text-heading">{tierName}</dd></div>
-			<div class="flex justify-between"><dt class="text-muted">Office</dt><dd class="font-medium text-heading">{data.seatLabel}</dd></div>
 			<div class="flex justify-between"><dt class="text-muted">Billing</dt><dd class="font-medium text-heading capitalize">{data.cycle}</dd></div>
 		</dl>
 		<div class="mt-4 flex items-baseline justify-between border-t border-border pt-4">

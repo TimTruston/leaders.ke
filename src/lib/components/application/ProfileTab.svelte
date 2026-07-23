@@ -19,7 +19,7 @@
 		photoUrl?: string | null;
 		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null; partyId: number | null; partyName: string | null }[];
-		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; hasActiveTerm?: boolean; pendingClaim?: boolean; slug: string | null; hasLeader: boolean; verified: boolean };
+		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { complete: boolean; missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
 	let {
@@ -39,9 +39,6 @@
 	let attested = $state(false);
 	// Local editing state for the rich-text bio (the form posts it via name="bio").
 	let bio = $state(data.form.bio);
-	// "other" reveals the free-text partyOther input (see resolveOtherParty server-side).
-	let partyId = $state(data.form.partyId ? String(data.form.partyId) : '');
-	let partyOther = $state('');
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	// Errored fields aren't outlined - the red * next to the label (starClass) and
 	// the message under the save button do the flagging.
@@ -274,7 +271,7 @@
 					{/if}
 				</div>
 				<label
-					class="group relative mt-1.5 block aspect-square shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 size-40 sm:size-50"
+					class="group relative mt-1.5 block aspect-square shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 size-50 sm:size-60"
 				>
 					{#if stagedPhotoUrl || data.photoUrl}
 						<img src={stagedPhotoUrl ?? data.photoUrl} alt="Leader" class="h-full object-cover" />
@@ -305,56 +302,43 @@
 				{/if}
 			</div>
 			<div class="flex flex-1 flex-col gap-5 sm:gap-1 sm:justify-between">
-				<label class="block">
-					<span class="text-sm font-medium text-heading">First name <span class={starClass('First name')}>*</span></span>
-					<input
-					type="text"
-					name="firstName"
-					required
-					value={data.form.firstName}
-					class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
-					/>
-				</label>
-				<label class="block">
-					<span class="text-sm font-medium text-heading">Other names <span class={starClass('Other names')}>*</span></span>
-					<input
+				<div class="flex flex-col sm:flex-row gap-1 sm:gap-3">
+					<label class="flex-1">
+						<span class="text-sm font-medium text-heading">First name <span class={starClass('First name')}>*</span></span>
+						<input
 						type="text"
-						name="otherNames"
+						name="firstName"
 						required
-						value={data.form.otherNames}
+						value={data.form.firstName}
 						class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
-					/>
-				</label>
-				{#if data.parties && data.form.hasActiveTerm}
-					<label class="">
-						<span class="text-sm font-medium text-heading">Party (current term)</span>
-						{#if data.form.pendingClaim}
-							<p class="mt-0.5 text-xs text-muted">This seat is already recorded under someone else — an admin is reviewing the conflict. Your claimed party is saved either way.</p>
-						{/if}
-						<select
-							name="partyId"
-							bind:value={partyId}
-							class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						>
-							<option value="">Independent (no party)</option>
-							{#each data.parties as party (party.id)}
-								<option value={String(party.id)}>{party.name}</option>
-							{/each}
-							<option value="other">Other (not listed)…</option>
-						</select>
-						{#if partyId === 'other'}
-							<input
-								type="text"
-								name="partyOther"
-								bind:value={partyOther}
-								required
-								placeholder="Party name"
-								class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-							/>
-						{/if}
+						/>
 					</label>
-				{/if}
+					<label class="flex-2">
+						<span class="text-sm font-medium text-heading">Other names <span class={starClass('Other names')}>*</span></span>
+						<input
+							type="text"
+							name="otherNames"
+							required
+							value={data.form.otherNames}
+							class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
+						/>
+					</label>
+				</div>
 				{#if missing.has('firstName') ||  missing.has('otherNames')}
+					<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+				{/if}
+				<div class="block">
+					<span class="text-sm font-medium text-heading">Bio <span class={starClass('Bio')}>*</span></span>
+					<div class="mt-1.5">
+						<RichTextEditor
+							name="bio"
+							bind:value={bio}
+							rows={5}
+							placeholder="Who you are, what you have done, and why you are running."
+						/>
+					</div>
+				</div>
+				{#if missing.has('bio')}
 					<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
 				{/if}
 			</div>
@@ -379,25 +363,12 @@
 			</label>
 		{/if}
 
-
-		<div class="block">
-			<span class="text-sm font-medium text-heading">Bio <span class={starClass('Bio')}>*</span></span>
-			<div class="mt-1.5">
-				<RichTextEditor
-					name="bio"
-					bind:value={bio}
-					rows={5}
-					placeholder="Who you are, what you have done, and why you are running."
-				/>
-			</div>
-		</div>
-		{#if missing.has('bio')}
-			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
-		{/if}
-
 		{#if data.form.hasLeader}
 			<div class="border-t border-border pt-6">
-				<h3 class="text-lg font-semibold text-heading">Experience</h3>
+				<div class="flex items-center justify-between">
+					<h3 class="text-lg font-semibold text-heading">Add Experience</h3>
+					<h4 class="text-sm text-muted italic">List your past and current roles here</h4>
+				</div>
 
 				{#if visibleLeadership.length > 0 || pendingLeadership.length > 0}
 					<h4 class="mt-3 text-xs font-semibold tracking-wide text-muted uppercase">Leadership</h4>

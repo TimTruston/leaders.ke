@@ -6,7 +6,7 @@ import { managers, payments, pricing, subscriptions, users } from '$lib/server/d
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
 import { BILLING_CYCLES, SUBSCRIPTION_TIERS } from '$lib/server/packages';
-import { assertClaimable, createProfile, getSeatInfo, leadPositionId, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment, validateOnboardInput } from '$lib/server/onboard';
+import { assertClaimable, createProfile, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment, validateOnboardInput } from '$lib/server/onboard';
 import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -26,38 +26,15 @@ async function resolveSelection(sp: URLSearchParams) {
 	const raw = {
 		firstName: sp.get('firstName') ?? '',
 		otherNames: sp.get('otherNames') ?? '',
-		myRole: sp.get('myRole') ?? '',
-		currentChecked: sp.get('currentChecked') ?? '',
-		currentPositionId: sp.get('currentPositionId') ?? '',
-		currentPartyId: sp.get('currentPartyId') ?? '',
-		currentPartyOther: sp.get('currentPartyOther') ?? '',
-		formerChecked: sp.get('formerChecked') ?? '',
-		formerPositionId: sp.get('formerPositionId') ?? '',
-		formerFromYear: sp.get('formerFromYear') ?? '',
-		formerToYear: sp.get('formerToYear') ?? '',
-		formerPartyId: sp.get('formerPartyId') ?? '',
-		formerPartyOther: sp.get('formerPartyOther') ?? '',
-		aspirantChecked: sp.get('aspirantChecked') ?? '',
-		aspirantPositionId: sp.get('aspirantPositionId') ?? '',
-		aspirantYear: sp.get('aspirantYear') ?? '',
-		aspirantPartyId: sp.get('aspirantPartyId') ?? '',
-		aspirantPartyOther: sp.get('aspirantPartyOther') ?? ''
+		myRole: sp.get('myRole') ?? ''
 	};
 	const validated = validateOnboardInput(raw);
 	if (!validated.ok) error(400, validated.error);
 
-	// The office (and the band that prices it) is derived from the declared seat
-	// itself, never trusted from a passed `band` param — a stale link (from before
-	// this page auto-derived the band) or a hand-edited one must never silently
-	// price or label the wrong office. Same priority as Plan (leadPositionId).
-	const positionId = leadPositionId({
-		aspirantPositionId: validated.input.aspirant?.positionId,
-		currentPositionId: validated.input.current?.positionId,
-		formerPositionId: validated.input.former?.positionId
-	});
-	const seat = positionId ? (await getSeatInfo([positionId])).get(positionId) : null;
-	if (!seat) error(400, 'That leadership position no longer exists.');
-	const { band, label: seatLabel } = seat;
+	// Pricing is one flat set of 3 plans for every office — no seat is declared at
+	// onboarding anymore, so this defaults to 'ward' (MCA) for now until flat,
+	// band-independent pricing replaces this entirely.
+	const band = 'ward';
 
 	let subjectName: string;
 	if (linkSubjectId) {
@@ -79,13 +56,13 @@ async function resolveSelection(sp: URLSearchParams) {
 		.where(and(eq(pricing.band, band as 'ward'), eq(pricing.tier, tier as 'aspirant'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
 	if (!rate) error(400, 'No price is set for that plan yet.');
 
-	return { tier, band, cycle, seatLabel, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
+	return { tier, band, cycle, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
 }
 
 export const load: PageServerLoad = async (event) => {
 	await requireDashboardUser(event);
 	const sel = await resolveSelection(event.url.searchParams);
-	return { tier: sel.tier, cycle: sel.cycle, amount: sel.amount, seatLabel: sel.seatLabel, subjectName: sel.subjectName, passthrough: event.url.search.slice(1) };
+	return { tier: sel.tier, cycle: sel.cycle, amount: sel.amount, subjectName: sel.subjectName, passthrough: event.url.search.slice(1) };
 };
 
 export const actions: Actions = {
@@ -112,7 +89,7 @@ export const actions: Actions = {
 			}
 		}
 
-		let result: { slug: string; subjectUserId: number; conflicts: string[] };
+		let result: { slug: string; subjectUserId: number };
 		try {
 			result = sel.linkSubjectId ? await linkProfile(domainUser.id, sel.input, sel.linkSubjectId) : await createProfile(domainUser.id, sel.input);
 		} catch (err) {
@@ -166,8 +143,7 @@ export const actions: Actions = {
 			tier: sel.tier,
 			cycle: sel.cycle,
 			amount: sel.amount,
-			subscriptionEndsAt: endsAt,
-			conflicts: result.conflicts
+			subscriptionEndsAt: endsAt
 		});
 		await notifyPayerOfPayment({
 			payerUserId: domainUser.id,

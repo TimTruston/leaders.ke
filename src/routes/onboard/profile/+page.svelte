@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import PositionSelector from '$lib/components/PositionSelector.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
 	import type { PageProps } from './$types';
 
@@ -14,27 +13,6 @@
 	let firstName = $state(form?.values?.firstName ?? data.defaults.firstName);
 	let otherNames = $state(form?.values?.otherNames ?? data.defaults.otherNames);
 	let myRole = $state(form?.values?.myRole ?? data.defaults.myRole);
-
-	// Three independent checkboxes — not mutually exclusive. A former Governor now
-	// running for Senate checks both Former leader and Candidate, each keeping its
-	// own seat (+ years).
-	let currentChecked = $state((form?.values?.currentChecked ?? data.defaults.currentChecked) === 'on');
-	let currentPositionId = $state<number | ''>((form?.values?.currentPositionId ? Number(form.values.currentPositionId) : 0) || data.defaults.currentPositionId);
-	let currentPartyId = $state(form?.values?.currentPartyId ?? data.defaults.currentPartyId);
-	let currentPartyOther = $state(form?.values?.currentPartyOther ?? data.defaults.currentPartyOther);
-
-	let formerChecked = $state((form?.values?.formerChecked ?? data.defaults.formerChecked) === 'on');
-	let formerPositionId = $state<number | ''>((form?.values?.formerPositionId ? Number(form.values.formerPositionId) : 0) || data.defaults.formerPositionId);
-	let formerFromYear = $state(form?.values?.formerFromYear ?? data.defaults.formerFromYear);
-	let formerToYear = $state(form?.values?.formerToYear ?? data.defaults.formerToYear);
-	let formerPartyId = $state(form?.values?.formerPartyId ?? data.defaults.formerPartyId);
-	let formerPartyOther = $state(form?.values?.formerPartyOther ?? data.defaults.formerPartyOther);
-
-	let aspirantChecked = $state((form?.values?.aspirantChecked ?? data.defaults.aspirantChecked) === 'on');
-	let aspirantPositionId = $state<number | ''>((form?.values?.aspirantPositionId ? Number(form.values.aspirantPositionId) : 0) || data.defaults.aspirantPositionId);
-	let aspirantYear = $state(form?.values?.aspirantYear ?? data.defaults.aspirantYear);
-	let aspirantPartyId = $state(form?.values?.aspirantPartyId ?? data.defaults.aspirantPartyId);
-	let aspirantPartyOther = $state(form?.values?.aspirantPartyOther ?? data.defaults.aspirantPartyOther);
 
 	// Profile Matcher (RHS): fetched live as the name fills in.
 	type Match = {
@@ -93,8 +71,8 @@
 		legalConfirmed = false;
 	}
 
-	// Can't submit a claim until the legal box is ticked; a fresh create has no gate.
-	const canSubmit = $derived(!selectedSubjectId || legalConfirmed);
+	// Can't submit — claim or fresh create — until the legal box is ticked.
+	const canSubmit = $derived(legalConfirmed);
 </script>
 
 <svelte:head><title>Create a Profile</title></svelte:head>
@@ -129,129 +107,10 @@
 				</select>
 			</label>
 
-			<fieldset class="space-y-3">
-				<legend class="text-sm font-medium text-heading">Leadership status <span class="text-muted">· check all that apply</span></legend>
-
-				<!-- Existing leader -->
-				<div class="rounded-xl border border-border p-3">
-					<label class="flex items-center gap-2 text-sm font-medium text-heading">
-						<input type="checkbox" name="currentChecked" bind:checked={currentChecked} class="rounded text-primary focus:ring-ring" />
-						Existing leader
-					</label>
-					{#if currentChecked}
-						<div class="mt-3 space-y-3">
-							<PositionSelector
-								positions={data.positions}
-								verified={false}
-								name="currentPositionId"
-								label="What is the current leadership position?"
-								initialPositionId={currentPositionId || null}
-								bind:value={currentPositionId}
-							/>
-							<div class="grid grid-cols-2 gap-3">
-								<label class="block">
-									<span class="text-xs font-medium text-muted">Party</span>
-									<select name="currentPartyId" bind:value={currentPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
-										<option value="">Independent (no party)</option>
-										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
-										<option value="other">Other (not listed)…</option>
-									</select>
-								</label>
-								{#if currentPartyId === 'other'}
-									<label class="block">
-										<span class="text-xs font-medium text-muted">Party name</span>
-										<input name="currentPartyOther" bind:value={currentPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-									</label>
-								{/if}
-							</div>
-						</div>
-					{/if}
-				</div>
-
-				<!-- Former leader -->
-				<div class="rounded-xl border border-border p-3">
-					<label class="flex items-center gap-2 text-sm font-medium text-heading">
-						<input type="checkbox" name="formerChecked" bind:checked={formerChecked} class="rounded text-primary focus:ring-ring" />
-						Former leader
-					</label>
-					{#if formerChecked}
-						<div class="mt-3 space-y-3">
-							<PositionSelector
-								positions={data.positions}
-								verified={false}
-								name="formerPositionId"
-								label="What was the leadership position?"
-								initialPositionId={formerPositionId || null}
-								bind:value={formerPositionId}
-							/>
-							<div class="grid grid-cols-2 gap-3">
-								<label class="block">
-									<span class="text-xs font-medium text-muted">From year</span>
-									<input name="formerFromYear" bind:value={formerFromYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2013" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-								</label>
-								<label class="block">
-									<span class="text-xs font-medium text-muted">To year</span>
-									<input name="formerToYear" bind:value={formerToYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2017" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-								</label>
-								<label class="block">
-									<span class="text-xs font-medium text-muted">Party</span>
-									<select name="formerPartyId" bind:value={formerPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
-										<option value="">Independent (no party)</option>
-										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
-										<option value="other">Other (not listed)…</option>
-									</select>
-								</label>
-								{#if formerPartyId === 'other'}
-									<label class="block">
-										<span class="text-xs font-medium text-muted">Party name</span>
-										<input name="formerPartyOther" bind:value={formerPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-									</label>
-								{/if}
-							</div>
-						</div>
-					{/if}
-				</div>
-
-				<!-- Candidate / campaigning -->
-				<div class="rounded-xl border border-border p-3">
-					<label class="flex items-center gap-2 text-sm font-medium text-heading">
-						<input type="checkbox" name="aspirantChecked" bind:checked={aspirantChecked} class="rounded text-primary focus:ring-ring" />
-						Candidate
-					</label>
-					{#if aspirantChecked}
-						<div class="mt-3 space-y-3">
-							<PositionSelector
-								positions={data.positions}
-								verified={false}
-								name="aspirantPositionId"
-								label="Select the leadership position?"
-								initialPositionId={aspirantPositionId || null}
-								bind:value={aspirantPositionId}
-							/>
-							<div class="grid grid-cols-2 gap-3">
-								<label class="block">
-									<span class="text-xs font-medium text-muted">Year</span>
-									<input name="aspirantYear" bind:value={aspirantYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2027" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-								</label>
-								<label class="block">
-									<span class="text-xs font-medium text-muted">Party</span>
-									<select name="aspirantPartyId" bind:value={aspirantPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
-										<option value="">Independent (no party)</option>
-										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
-										<option value="other">Other (not listed)…</option>
-									</select>
-								</label>
-								{#if aspirantPartyId === 'other'}
-									<label class="block">
-										<span class="text-xs font-medium text-muted">Party name</span>
-										<input name="aspirantPartyOther" bind:value={aspirantPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-									</label>
-								{/if}
-							</div>
-						</div>
-					{/if}
-				</div>
-			</fieldset>
+			<label class="flex items-start gap-2 rounded-xl border border-border bg-surface-2 px-3 py-2 text-xs text-heading lg:col-span-2">
+				<input type="checkbox" bind:checked={legalConfirmed} class="mt-0.5 text-primary focus:ring-ring" />
+				I confirm that I am this leader or an authorised representative acting on their behalf, and I understand that submitting false or fraudulent information may have legal consequences.
+			</label>
 		</div>
 
 		<!-- RHS: Matching Profiles -->
@@ -285,13 +144,6 @@
 
 		<!-- Hidden link target: set only when a matching card is confirmed. -->
 		<input type="hidden" name="leaderId" value={selectedSubjectId ?? ''} />
-
-		{#if selectedSubjectId}
-		<label class="flex items-start gap-2 rounded-xl border border-border bg-surface-2 px-3 py-2 text-xs text-heading">
-			<input type="checkbox" bind:checked={legalConfirmed} class="mt-0.5 text-primary focus:ring-ring" />
-			I confirm that I am this leader or an authorised representative and I understand that falsely claiming a profile may have legal consequences.
-		</label>
-		{/if}
 
 		<div class="lg:col-span-2">
 			<button type="submit" disabled={!canSubmit || submitting} class="mt-3 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-50">
