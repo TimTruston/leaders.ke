@@ -34,7 +34,9 @@ export async function seedParties(db: AnyDb) {
 		}
 		await db.insert(parties).values({
 			...row,
-			certifiedAt: row.certifiedAt ? new Date(row.certifiedAt) : null
+			certifiedAt: row.certifiedAt ? new Date(row.certifiedAt) : null,
+			// Curated ORPP register data, already vetted — verified at seed time.
+			verifiedAt: new Date()
 		});
 		seeded++;
 	}

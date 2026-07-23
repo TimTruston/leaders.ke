@@ -18,9 +18,21 @@
 	</nav>
 
 	<div class="mt-4 max-w-2xl">
-		<h1 class="text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">
+		<h1 class="flex flex-wrap items-center gap-2 text-3xl font-extrabold tracking-tight text-heading sm:text-4xl">
 			{data.party.name}
 			{#if data.party.abbreviation}<span class="text-muted">({data.party.abbreviation})</span>{/if}
+			{#if data.party.verified}
+				<span
+					title="An admin has manually confirmed this party's ORPP listing."
+					class="rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-on-primary"
+				>✓ Verified</span>
+			{:else}
+				<span
+					title="An admin has manually confirmed this party's ORPP listing."
+					class="rounded-full bg-surface-3 px-2.5 py-1 text-xs font-semibold text-on-mute"
+				>✗ Unverified</span>
+			{/if}
+			
 		</h1>
 		{#if data.party.slogan}<p class="mt-2 text-lg italic text-muted">{data.party.slogan}</p>{/if}
 		{#if data.party.description}<p class="mt-3 text-base leading-relaxed">{data.party.description}</p>{/if}

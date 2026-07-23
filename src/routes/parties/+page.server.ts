@@ -16,12 +16,15 @@ export const load: PageServerLoad = async () => {
 
 	return {
 		parties: rows.map((p) => ({
+			id: p.id,
 			slug: slugify(p.name),
 			name: p.name,
 			abbreviation: p.abbreviation,
-			symbol: p.symbol,
-			colors: p.colors,
+			logo: p.logo,
 			status: p.status,
+			createdAt: p.createdAt.toISOString(),
+			certifiedAt: p.certifiedAt ? p.certifiedAt.toISOString() : null,
+			verifiedAt: p.verifiedAt ? p.verifiedAt.toISOString() : null,
 			memberCount: countByPartyId.get(p.id) ?? 0
 		}))
 	};

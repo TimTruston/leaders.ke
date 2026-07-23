@@ -128,6 +128,7 @@
 				return [
 					{ href: '/dashboard/admin/profiles', label: 'Profiles' },
 					{ href: '/dashboard/admin/accounts', label: 'Accounts' },
+					{ href: '/dashboard/admin/parties', label: 'Parties' },
 					{ href: '/dashboard/admin/pillars', label: 'Pillars' },
 					{ href: '/dashboard/admin/moderation', label: 'Moderation' },
 					{ href: '/dashboard/admin/subscriptions', label: 'Subscriptions & revenue' },

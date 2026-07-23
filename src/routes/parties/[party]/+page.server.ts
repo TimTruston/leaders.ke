@@ -17,7 +17,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		description: party.description,
 		symbol: party.symbol,
 		colors: party.colors,
-		status: party.status
+		status: party.status,
+		verified: !!party.verifiedAt
 	};
 
 	// Members are PEOPLE (membership is person-scoped); the seat shown per member is
