@@ -16,7 +16,6 @@ import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { formatKenyanPhoneDisplay } from '$lib/utils/phone';
 import { notifyUser } from '$lib/server/notifications';
-import { getPlatformSettings } from '$lib/server/settings';
 
 export type ProfileSource = 'seeded' | 'applied' | 'claimed';
 export type ProfileVerified = 'pending' | 'approved' | 'rejected' | 'deleted' | null;
@@ -105,7 +104,7 @@ export async function listProfiles(
 
 	const [personRows, managerRows, claimRows] = await Promise.all([
 		db
-			.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId, deletedAt: users.deletedAt })
+			.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId, deletedAt: users.deletedAt, profileVerifiedAt: users.profileVerifiedAt })
 			.from(users)
 			.where(inArray(users.id, personIds)),
 		db
@@ -175,13 +174,14 @@ export async function listProfiles(
 		const source: ProfileSource = claim ? 'claimed' : manager ? 'applied' : 'seeded';
 
 		// Verified = the review-workflow state, keyed off source (seeded never reviewed).
-		// 'applied' is a direct admin toggle now (campaigns.verifiedAt) — no more
-		// submit/pending/rejected states, just verified or not yet.
+		// 'applied' is a direct admin toggle now (users.profileVerifiedAt, decoupled
+		// from any campaign) — no more submit/pending/rejected states, just verified
+		// or not yet.
 		let verified: ProfileVerified;
 		if (person?.deletedAt) verified = 'deleted';
 		else if (source === 'seeded') verified = null;
 		else if (source === 'claimed') verified = claim!.outcome ?? 'pending';
-		else verified = run?.verifiedAt ? 'approved' : null;
+		else verified = person?.profileVerifiedAt ? 'approved' : null;
 
 		const slug = person?.slug ?? null;
 		const name = person ? fullName(person) : 'Unknown';
@@ -259,16 +259,14 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	verified: ProfileVerified;
 	deactivated: boolean;
 	graduatableCampaignId: number | null;
-	// Campaign badge (campaigns.verifiedAt): a direct admin toggle, same pattern as
-	// identity — no submit/review queue. campaignDocsComplete gates whether the
-	// control bar's Verify button can act — only checks the IEBC certificate when
-	// platform_settings.requireIebcForVerification is on (off by default).
-	campaignVerified: boolean;
-	campaignDocsComplete: boolean;
-	// Whether the owner clicked Submit for Verification (campaigns.verificationRequestedAt)
+	// Profile badge (users.profileVerifiedAt): a direct admin toggle, same pattern
+	// as identity — no submit/review queue, decoupled from any campaign (each
+	// campaign is verified individually, on its own Campaign sub-tab).
+	profileVerified: boolean;
+	// Whether the owner clicked Submit for Verification (users.verificationRequestedAt)
 	// — the control bar's Verify button only acts once this is set, so a checklist
 	// still in progress reads as "Incomplete" rather than an actionable Verify.
-	campaignSubmitted: boolean;
+	profileSubmitted: boolean;
 	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
 	// The pending decision the admin control bar surfaces inline (moved off the Team
 	// tab): a live claim to approve/reject.
@@ -285,7 +283,9 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 			firstName: users.firstName,
 			otherNames: users.otherNames,
 			slug: users.slug,
-			deletedAt: users.deletedAt
+			deletedAt: users.deletedAt,
+			profileVerifiedAt: users.profileVerifiedAt,
+			verificationRequestedAt: users.verificationRequestedAt
 		})
 		.from(users)
 		.where(eq(users.id, subjectUserId));
@@ -342,35 +342,32 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		return { email: c?.email ?? c?.authEmail ?? null, phone: c?.phone ? formatKenyanPhoneDisplay(c.phone) : null };
 	};
 
-	// The person's current-cycle main run, and whether it's verified + un-graduated
-	// (Declare Winner turns a verified un-graduated run into a `current` term).
+	// The person's current-cycle main run, only needed here for Declare Winner
+	// eligibility (a verified, un-graduated run) — its own verifiedAt stays a
+	// separate, per-campaign concept from the profile-level badge below.
 	const [run] = await db
-		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId, iebcCertificateUrl: campaigns.iebcCertificateUrl, verificationRequestedAt: campaigns.verificationRequestedAt })
+		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId })
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
-	// Admin-tunable: the IEBC certificate isn't required until settings turn it
-	// on (off by default — certs aren't issued until closer to nominations).
-	const { requireIebcForVerification } = await getPlatformSettings();
-
 	const source: ProfileSource = claim ? 'claimed' : application ? 'applied' : 'seeded';
 
-	// 'applied' is a direct admin toggle now (campaigns.verifiedAt) — no more
-	// submit/pending/rejected states, just verified or not yet.
+	// 'applied' is a direct admin toggle now (users.profileVerifiedAt, decoupled
+	// from any campaign) — no more submit/pending/rejected states, just verified
+	// or not yet.
 	let verified: ProfileVerified;
 	if (person?.deletedAt) verified = 'deleted';
 	else if (source === 'seeded') verified = null;
 	else if (source === 'claimed') verified = claim!.outcome ?? 'pending';
-	else verified = run?.verifiedAt ? 'approved' : null;
+	else verified = person?.profileVerifiedAt ? 'approved' : null;
 
 	return {
 		source,
 		verified,
 		deactivated: !!person?.deletedAt,
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
-		campaignVerified: !!run?.verifiedAt,
-		campaignDocsComplete: requireIebcForVerification ? !!run?.iebcCertificateUrl : true,
-		campaignSubmitted: !!run?.verificationRequestedAt,
+		profileVerified: !!person?.profileVerifiedAt,
+		profileSubmitted: !!person?.verificationRequestedAt,
 		application: application
 			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
 			: null,

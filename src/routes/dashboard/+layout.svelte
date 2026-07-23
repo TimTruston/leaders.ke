@@ -33,7 +33,6 @@
 	const checklistLabels: Record<string, string> = {
 		profile: 'Leader',
 		contacts: 'Contacts',
-		campaign: 'Campaign',
 		team: 'Team',
 		documentation: 'Photo',
 		signoff: 'Sign-off'
@@ -149,7 +148,6 @@
 	const applyTabKeys: Record<string, keyof NonNullable<typeof data.application>> = {
 		profile: 'profile',
 		contacts: 'contacts',
-		campaign: 'campaign',
 		team: 'team'
 	};
 	const tabIncomplete = (href: string) => {
@@ -172,7 +170,6 @@
 			? [
 					...data.application.profile.missing,
 					...data.application.contacts.missing,
-					...data.application.campaign.missing,
 					...data.application.team.missing,
 					...data.application.documentation.missing,
 					...data.application.signoff.missing
@@ -354,24 +351,24 @@
 					>Delete</button>
 				{/if}
 				<!-- Three states: nothing to review yet (Incomplete, inert), submitted and
-				awaiting a decision (Verify Campaign), or already live (Unverify Campaign).
-				Either actionable state goes through the same confirm modal. -->
-				{#if !ac.campaignVerified && !ac.campaignSubmitted}
+				awaiting a decision (Verify Profile), or already live (Unverify Profile).
+				Decoupled from any campaign (see the Campaign tab for per-campaign
+				verification) — this reflects Profile/Contacts/Team/Docs/Sign-off
+				completeness only. Either actionable state goes through the same confirm modal. -->
+				{#if !ac.profileVerified && !ac.profileSubmitted}
 					<span
-						title="The owner hasn't submitted this campaign for verification yet — nothing to review."
+						title="The owner hasn't submitted this profile for verification yet — nothing to review."
 						class="cursor-help rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted"
 					>Unsubmitted</span>
 				{:else}
 					<button
 						type="button"
-						disabled={!ac.campaignVerified && !ac.campaignDocsComplete}
-						title={!ac.campaignVerified && !ac.campaignDocsComplete ? 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.' : ''}
 						onclick={() =>
-							(adminAction = ac.campaignVerified
-								? { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `Removes the Verified badge on the campaign.`, confirmLabel: 'Remove' }
-								: { action: 'verifyCampaign', title: 'Verify campaign?', body: `Shows the Verified badge on the campaign.`, confirmLabel: 'Verify' })}
-						class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 border border-border text-heading hover:bg-surface disabled:hover:bg-transparent disabled:hover:text-primary"
-					>{ac.campaignVerified ? 'Unverify Campaign' : 'Verify Campaign'}</button>
+							(adminAction = ac.profileVerified
+								? { action: 'unverifyProfile', title: 'Remove profile verification?', body: `Removes the Verified badge on the profile.`, confirmLabel: 'Remove' }
+								: { action: 'verifyProfile', title: 'Verify profile?', body: `Shows the Verified badge on the profile.`, confirmLabel: 'Verify' })}
+						class="rounded-full px-3 py-1 text-xs font-semibold transition border border-border text-heading hover:bg-surface"
+					>{ac.profileVerified ? 'Unverify Profile' : 'Verify Profile'}</button>
 				{/if}
 			</div>
 

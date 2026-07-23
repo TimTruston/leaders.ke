@@ -36,7 +36,10 @@ export const load: LayoutServerLoad = async (event) => {
 	let applicationComplete = false;
 	let application: ApplicationChecklist | null = null;
 	let verificationRequestedAt: Date | null = null;
-	if (ctx && !ctx.verified) {
+	// Decoupled from ctx.verified (a held term/campaign being publicly live) —
+	// this checklist is about the PROFILE's own application review, which a
+	// person with no campaign at all can still complete and submit.
+	if (ctx && !ctx.profileUser.profileVerifiedAt) {
 		({ application, applicationComplete, verificationRequestedAt } = await getApplicationChecklist(ctx));
 	}
 

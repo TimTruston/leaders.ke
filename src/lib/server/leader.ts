@@ -441,7 +441,6 @@ export type TabChecklist = { complete: boolean; missing: string[] };
 export type ApplicationChecklist = {
 	profile: TabChecklist;
 	contacts: TabChecklist;
-	campaign: TabChecklist;
 	team: TabChecklist;
 	documentation: TabChecklist;
 	/** The applicant's attestation: role, national ID, and their ID images. */
@@ -455,11 +454,13 @@ const toTab = (rows: (boolean | string)[][]): TabChecklist => {
 };
 
 /** Pure form-completeness validation for an unverified profile: names the exact
- * missing field per tab (Profile/Contacts/Campaign/Team/Documentation/Sign-off) so
- * the dashboard nav can flag which tab (a `*` on its title) and the Submit for
+ * missing field per tab (Profile/Contacts/Team/Documentation/Sign-off) so the
+ * dashboard nav can flag which tab (a `*` on its title) and the Submit for
  * Verification modal can list exactly what's outstanding. Shared by the layout load
  * (nav flags) and the requestVerification action (server-side re-check before
- * emailing admins — never trust the client's view of "complete"). */
+ * emailing admins — never trust the client's view of "complete"). Campaigns are
+ * a separate, optional, individually-verified concern — not part of this
+ * checklist (see the Campaign tab's own per-campaign verify control). */
 export async function getApplicationChecklist(
 	ctx: LeaderContext
 ): Promise<{ application: ApplicationChecklist; applicationComplete: boolean; verificationRequestedAt: Date | null }> {
@@ -485,22 +486,11 @@ export async function getApplicationChecklist(
 	const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
 	const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
 
-	// Verification targets the RUN (campaign): the IEBC cert and the request live on it.
-	const runCampaign = await getRunCampaign(ctx.profileUser.id);
-
 	// Each entry: the human label shown to the user, and whether it's still missing.
 	const profileMissing = [
 		[!ctx.profileUser.firstName, 'First name'],
 		[!ctx.profileUser.otherNames, 'Other names'],
 		[!ctx.profileUser.bio, 'Bio']
-	];
-	// The Campaign tab holds the run: seat, title, platform, IEBC certificate
-	// (only required for completeness when the admin setting turns that gate on).
-	const campaignMissing = [
-		[!runCampaign?.positionId, 'Seat contested'],
-		[!runCampaign?.title, 'Campaign title'],
-		[!runCampaign?.description, 'Campaign platform'],
-		[settings.requireIebcForVerification && !runCampaign?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
 	];
 	const contactsMissing = [
 		[!ctx.profileUser.address, 'Office / address'],
@@ -525,7 +515,6 @@ export async function getApplicationChecklist(
 	const application: ApplicationChecklist = {
 		profile: toTab(profileMissing),
 		contacts: toTab(contactsMissing),
-		campaign: toTab(campaignMissing),
 		team: { complete: teamMissing.length === 0, missing: teamMissing },
 		documentation: toTab(docsMissing),
 		signoff: { complete: signoffMissing.length === 0, missing: signoffMissing }
@@ -533,12 +522,11 @@ export async function getApplicationChecklist(
 	const applicationComplete =
 		application.profile.complete &&
 		application.contacts.complete &&
-		application.campaign.complete &&
 		application.team.complete &&
 		application.documentation.complete &&
 		application.signoff.complete;
 
-	return { application, applicationComplete, verificationRequestedAt: runCampaign?.verificationRequestedAt ?? null };
+	return { application, applicationComplete, verificationRequestedAt: ctx.profileUser.verificationRequestedAt };
 }
 
 /** Finds a DIFFERENT account whose sign-off is already complete (role + national ID +

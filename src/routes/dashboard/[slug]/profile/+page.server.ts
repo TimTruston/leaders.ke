@@ -6,7 +6,7 @@ import { and, asc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, experience, leaders, managers, parties, positions, users } from '$lib/server/db/schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
-import { ACTIVE_CYCLE, createPhantomUser, fullName, getApplicationChecklist, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, slugify } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, getApplicationChecklist, isSlugAvailable, slugify } from '$lib/server/leader';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
 import { notifyAdminsOfVerificationRequest } from '$lib/server/profiles';
 import type { Actions, PageServerLoad } from './$types';
@@ -304,23 +304,21 @@ export const actions: Actions = {
 	// "Submit for Verification": re-checks the checklist server-side (never trust
 	// the client's view of "complete") and, only if every tab is done, emails the
 	// admins — there's no submit/pending state to flip, just a heads-up that this
-	// one's ready for their manual Verify-campaign toggle. verificationRequestedAt
+	// one's ready for the admin's Verify Profile toggle. users.verificationRequestedAt
 	// records the click so the dashboard can show "pending review" and this can't
-	// re-email admins on every subsequent click.
+	// re-email admins on every subsequent click. Decoupled from any campaign —
+	// campaigns are optional and verified individually on the Campaign tab.
 	requestVerification: async (event) => {
 		const { domainUser } = await requireDashboardUser(event);
 		const ctx = await getRouteLeaderContext(event, domainUser.id);
 		if (!ctx) return fail(400, { verificationError: 'Nothing to submit yet.' });
-		if (ctx.verified) return fail(400, { verificationError: 'This profile is already verified.' });
+		if (ctx.profileUser.profileVerifiedAt) return fail(400, { verificationError: 'This profile is already verified.' });
 
 		const { applicationComplete, verificationRequestedAt } = await getApplicationChecklist(ctx);
 		if (verificationRequestedAt) return fail(400, { verificationError: 'Already submitted — it\'s pending admin review.' });
 		if (!applicationComplete) return fail(400, { verificationError: 'Some required fields are still missing.' });
 
-		const runCampaign = await getRunCampaign(ctx.profileUser.id);
-		if (runCampaign) {
-			await db.update(campaigns).set({ verificationRequestedAt: new Date() }).where(eq(campaigns.id, runCampaign.id));
-		}
+		await db.update(users).set({ verificationRequestedAt: new Date() }).where(eq(users.id, ctx.profileUser.id));
 		await notifyAdminsOfVerificationRequest(ctx.profileUser.id);
 		return { requested: true };
 	}

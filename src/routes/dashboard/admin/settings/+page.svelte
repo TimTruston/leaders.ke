@@ -99,9 +99,9 @@ Applies everywhere a code/link is sent
 		<div class="rounded-2xl border border-border bg-surface p-5">
 			<h2 class="font-semibold text-heading">Campaign verification gate</h2>
 			<p class="mt-1 text-xs text-muted">
-				Whether the "Verify campaign" action on a profile's admin control bar requires the IEBC
-				Certificate of Clearance to already be uploaded. Leave off until closer to nominations —
-				certificates aren't issued yet.
+				Whether the "Verify Campaign" action on each of a profile's campaigns (Campaign tab)
+				requires the IEBC Certificate of Clearance to already be uploaded. Leave off until closer
+				to nominations — certificates aren't issued yet.
 			</p>
 			<label class="mt-2 flex items-center gap-2">
 				<input
