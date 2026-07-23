@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Countdown from './Countdown.svelte';
+
 	// Site-wide footer: link directory grouped by audience, with the brand blurb
 	// and the compliance line the old two-line footer carried.
 	const groups = [
@@ -51,6 +53,10 @@
 					The digital town hall of Kenya: a neutral civic information directory connecting
 					citizens and the leaders who serve them.
 				</p>
+				<!-- Election countdown, same block as the vote.ke footer; capped to the blurb's width -->
+				<div class="mt-4 max-w-xs text-center">
+					<Countdown />
+				</div>
 			</div>
 
 			{#each groups as group (group.title)}

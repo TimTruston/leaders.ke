@@ -12,9 +12,9 @@
 	const remaining = $derived(Math.max(0, target - now));
 	const units = $derived([
 		{ label: 'Days', value: Math.floor(remaining / 86_400_000) },
-		{ label: 'Hours', value: Math.floor((remaining / 3_600_000) % 24) },
-		{ label: 'Minutes', value: Math.floor((remaining / 60_000) % 60) },
-		{ label: 'Seconds', value: Math.floor((remaining / 1000) % 60) }
+		{ label: 'Hour', value: Math.floor((remaining / 3_600_000) % 24) },
+		{ label: 'Mins', value: Math.floor((remaining / 60_000) % 60) },
+		{ label: 'Secs', value: Math.floor((remaining / 1000) % 60) }
 	]);
 </script>
 
@@ -22,11 +22,11 @@
 	{#each units as unit (unit.label)}
 		<div class="flex flex-col items-center">
 			<span
-				class="grid min-w-14 place-items-center rounded-xl bg-surface-2 px-2 py-3 text-2xl font-bold tabular-nums text-heading sm:min-w-16 sm:text-3xl"
+				class="grid min-w-14 place-items-center rounded-xl bg-surface-2 px-2 pt-3 text-2xl font-bold tabular-nums text-heading sm:min-w-16 sm:text-3xl"
 			>
 				{String(unit.value).padStart(2, '0')}
 			</span>
-			<span class="mt-1 text-xs font-medium tracking-wide text-on-primary uppercase">{unit.label}</span>
+			<span class="mt-1 text-xs font-medium tracking-wide text-heading uppercase">{unit.label}</span>
 		</div>
 	{/each}
 </div>
