@@ -4,15 +4,12 @@
 	import Reviews from '$lib/components/Reviews.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
 
-	// The /[leader]/[year] campaign page body, shared with the admin/applicant
-	// preview of a not-yet-verified run (reached via LeaderProfile's "Open campaign"
-	// link) — same look citizens will eventually see. Preview derives straight off
-	// leader.verified: this page only ever renders unverified for a bypassed viewer
-	// (admin, the profile's own person, or an active manager — see
-	// resolveCampaignRun), so there's no separate flag to thread through.
+	// The /[leader]/[year] campaign page body, also used slugless at
+	// /previews/[userId]/[year] before an admin approval mints a slug. Every run is
+	// public and interactive regardless — leader.verified is a "Verified" badge
+	// only (see docs/URLDiscovery.md), never a gate on follow/donate/ask.
 	let { data, form }: { data: any; form?: any } = $props();
 	const leader = $derived(data.leader);
-	const isPreview = $derived(!leader.verified);
 
 	const fmt = new Intl.NumberFormat('en-KE');
 	const dateFmt = new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' });
@@ -34,12 +31,6 @@
 </script>
 
 <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-	{#if isPreview}
-		<div class="mb-6 rounded-2xl border border-border bg-surface-2 px-4 py-3 text-sm font-medium text-heading">
-			Preview: this campaign isn't verified/public yet. Follow, donate and ask are disabled here.
-		</div>
-	{/if}
-
 	<!-- Breadcrumb: leader / year -->
 	<nav class="text-sm text-muted" aria-label="Breadcrumb">
 		<a href={data.recordPath} class="hover:text-heading hover:underline">{leader.name}</a>
@@ -52,7 +43,7 @@
 		<span
 			class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-on-primary"
 		>
-			🚀 {isPreview ? 'Preview' : 'Active'} {data.year} campaign
+			🚀 Active {data.year} campaign
 		</span>
 		<a href={data.recordPath} class="text-sm font-semibold text-primary hover:underline">
 			View full profile →
@@ -70,6 +61,7 @@
 							{leader.campaignTitle || leader.name}
 							{#if leader.verified}
 								<span
+									title="An admin has manually confirmed this candidacy's IEBC certificate (see docs/URLDiscovery.md)."
 									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
 								>
 									<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
@@ -82,7 +74,10 @@
 									Verified
 								</span>
 							{:else}
-								<span class="inline-flex items-center rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted">
+								<span
+									title="No IEBC certificate on file yet — the campaign is still public and fully interactive."
+									class="inline-flex items-center rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted"
+								>
 									Unverified
 								</span>
 							{/if}
@@ -193,9 +188,7 @@
 					Get updates from {leader.name.split(' ')[0]}'s campaign. No account needed.
 				</p>
 
-				{#if isPreview}
-					<p class="mt-4 text-sm text-muted">Not available until this campaign is verified.</p>
-				{:else if form?.followed}
+				{#if form?.followed}
 					<div class="mt-4 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
 						Karibu {form.name}! You now follow this campaign and will get its broadcasts.
 					</div>
@@ -258,46 +251,42 @@
 				<p class="mt-1 text-sm text-muted">
 					Answers come from the manifesto and public updates, instantly.
 				</p>
-				{#if isPreview}
-					<p class="mt-3 text-sm text-muted">Not available until this campaign is verified.</p>
-				{:else}
-					{#if form?.asked}
-						<div class="mt-3 rounded-2xl bg-surface-2 p-4">
-							<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
-							<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
-							<p class="mt-2 text-xs text-muted">
-								{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}
-							</p>
-						</div>
-					{/if}
-					<form
-						method="post"
-						action="?/ask"
-						class="mt-3 space-y-2"
-						use:enhance={() => {
-							asking = true;
-							return async ({ update }) => {
-								asking = false;
-								await update();
-							};
-						}}
-					>
-						<textarea
-							name="question"
-							rows="2"
-							required
-							placeholder="e.g. What is the plan for water in my ward?"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						></textarea>
-						<button
-							type="submit"
-							disabled={asking}
-							class="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
-						>
-							{asking ? 'Thinking…' : 'Ask'}
-						</button>
-					</form>
+				{#if form?.asked}
+					<div class="mt-3 rounded-2xl bg-surface-2 p-4">
+						<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
+						<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
+						<p class="mt-2 text-xs text-muted">
+							{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}
+						</p>
+					</div>
 				{/if}
+				<form
+					method="post"
+					action="?/ask"
+					class="mt-3 space-y-2"
+					use:enhance={() => {
+						asking = true;
+						return async ({ update }) => {
+							asking = false;
+							await update();
+						};
+					}}
+				>
+					<textarea
+						name="question"
+						rows="2"
+						required
+						placeholder="e.g. What is the plan for water in my ward?"
+						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+					></textarea>
+					<button
+						type="submit"
+						disabled={asking}
+						class="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+					>
+						{asking ? 'Thinking…' : 'Ask'}
+					</button>
+				</form>
 			</div>
 
 			<!-- Fundraising -->
@@ -317,9 +306,7 @@
 					</p>
 				{/if}
 
-				{#if isPreview}
-					<p class="mt-3 text-sm text-muted">Not available until this campaign is verified.</p>
-				{:else if form?.donated}
+				{#if form?.donated}
 					<div class="mt-3 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
 						Asante! Send KES {fmt.format(form.amount)} via M-Pesa to the campaign's till and the team
 						will confirm it.

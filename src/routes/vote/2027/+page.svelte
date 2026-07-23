@@ -85,14 +85,14 @@
 	<title>2027 Ballot Simulator — leaders.ke</title>
 	<meta
 		name="description"
-		content="See every verified candidate you'd vote for in 2027 across all six elective levels, cast a simulated ballot, and share your result."
+		content="See every candidate you'd vote for in 2027 across all six elective levels, cast a simulated ballot, and share your result."
 	/>
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	<h1 class="text-2xl font-bold text-heading sm:text-3xl">2027 Ballot Simulator</h1>
 	<p class="mt-2 text-sm">
-		Pick your county, constituency and ward to see every verified candidate you'd vote for.
+		Pick your county, constituency and ward to see every candidate you'd vote for.
 	</p>
 
 	<div
@@ -135,7 +135,7 @@
 
 				{#if candidates.length === 0}
 					<p class="mt-4 rounded-lg border border-border bg-surface-2 px-4 py-3 text-sm text-muted">
-						No verified candidates yet for this seat. Check back closer to the election.
+						No candidates yet for this seat. Check back closer to the election.
 					</p>
 				{:else}
 					<div class="mt-4 grid gap-3 sm:grid-cols-2">
@@ -154,7 +154,8 @@
 									<span class="flex items-center gap-1 font-semibold text-heading">
 										{candidate.name}
 										{#if candidate.verified}
-											<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
+											<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary" aria-label="Verified">
+												<title>An admin has manually confirmed this candidacy's IEBC certificate.</title>
 												<path
 													fill-rule="evenodd"
 													d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
