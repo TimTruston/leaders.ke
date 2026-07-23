@@ -32,7 +32,7 @@ export const GET: RequestHandler = async (event) => {
 	// Public exception: this file is the person's profile photo AND the profile is
 	// verified (a public term or a verified run) — exactly what /[leader] renders.
 	const requestedPath = `/uploads/leaders/${subjectUserId}/${filename}`;
-	const [subject] = await db.select({ photoUrl: users.photoUrl }).from(users).where(eq(users.id, subjectUserId));
+	const [subject] = await db.select({ photoUrl: users.photoUrl }).from(users).where(and(eq(users.id, subjectUserId), isNull(users.deletedAt)));
 	let isPublicPhoto = false;
 	if (subject?.photoUrl === requestedPath) {
 		const [verifiedTerms, verifiedRuns] = await Promise.all([

@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 			.select({ userId: users.id, users, status: leaders.status, verified: leaders.verifiedAt })
 			.from(leaders)
 			.innerJoin(users, eq(leaders.userId, users.id))
-			.where(and(eq(leaders.positionId, seatId), ne(leaders.userId, ctx.profileUser.id), isNull(leaders.deletedAt))),
+			.where(and(eq(leaders.positionId, seatId), ne(leaders.userId, ctx.profileUser.id), isNull(leaders.deletedAt), isNull(users.deletedAt))),
 		db
 			.select({ userId: users.id, users, verified: campaigns.verifiedAt })
 			.from(campaigns)
@@ -29,6 +29,7 @@ export const load: PageServerLoad = async (event) => {
 					isNull(campaigns.parentCampaignId),
 					isNotNull(campaigns.verifiedAt),
 					isNull(campaigns.deletedAt),
+					isNull(users.deletedAt),
 					ne(campaigns.subjectUserId, ctx.profileUser.id)
 				)
 			)

@@ -11,7 +11,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		.from(posts)
 		.innerJoin(users, eq(posts.subjectUserId, users.id))
 		.where(
-			and(eq(posts.slug, params.slug), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.archivedAt), isNull(posts.deletedAt))
+			and(
+				eq(posts.slug, params.slug),
+				eq(posts.medium, 'web'),
+				eq(posts.public, true),
+				isNull(posts.archivedAt),
+				isNull(posts.deletedAt),
+				isNull(users.deletedAt)
+			)
 		);
 	if (!row) error(404, 'Article not found');
 

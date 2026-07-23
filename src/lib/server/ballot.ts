@@ -65,7 +65,8 @@ async function verifiedCampaignsFor(title: string, region: string): Promise<Cand
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
 				isNotNull(campaigns.verifiedAt),
-				isNull(campaigns.deletedAt)
+				isNull(campaigns.deletedAt),
+				isNull(users.deletedAt)
 			)
 		);
 	return rows.map(toCandidate);

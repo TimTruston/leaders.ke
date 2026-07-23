@@ -95,7 +95,8 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 						isNull(campaigns.parentCampaignId),
 						isNotNull(campaigns.verifiedAt),
 						isNull(campaigns.leaderId), // dropped once graduated into a term (that IS the current holder)
-						isNull(campaigns.deletedAt)
+						isNull(campaigns.deletedAt),
+						isNull(users.deletedAt)
 					)
 				)
 		: [];

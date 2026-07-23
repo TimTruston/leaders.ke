@@ -349,7 +349,7 @@ export async function listLeadersForSeat(position: string, region: string) {
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(eq(leaders.positionId, positionRow.id), isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt)));
+		.where(and(eq(leaders.positionId, positionRow.id), isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt)));
 }
 
 /**

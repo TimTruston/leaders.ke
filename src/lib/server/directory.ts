@@ -79,7 +79,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
 
 	// Verified 2027 runs (campaigns) at this position — the aspirants (no leaders row).
 	const runRows = await db
@@ -100,7 +100,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 				eq(positions.title, positionTitle),
 				isNull(campaigns.parentCampaignId),
 				isNotNull(campaigns.verifiedAt),
-				isNull(campaigns.deletedAt)
+				isNull(campaigns.deletedAt),
+				isNull(users.deletedAt)
 			)
 		);
 	const rows: Row[] = [

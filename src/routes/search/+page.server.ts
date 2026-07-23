@@ -19,6 +19,7 @@ export const load: PageServerLoad = async ({ url }) => {
 			and(
 				isNull(leaders.deletedAt),
 				isNotNull(leaders.verifiedAt),
+				isNull(users.deletedAt),
 				or(
 					ilike(users.firstName, like),
 					ilike(users.otherNames, like),
@@ -104,6 +105,7 @@ export const load: PageServerLoad = async ({ url }) => {
 				isNull(campaigns.parentCampaignId),
 				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
+				isNull(users.deletedAt),
 				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
 			)
 		)
@@ -140,6 +142,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(experience.deletedAt),
+				isNull(users.deletedAt),
 				or(ilike(experience.title, like), ilike(experience.institution, like)),
 				// Only surface people who are publicly visible: a verified held term or a verified run.
 				or(

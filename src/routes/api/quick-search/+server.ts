@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			.from(leaders)
 			.innerJoin(users, eq(leaders.userId, users.id))
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
-			.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), nameMatch))
+			.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), nameMatch))
 			.limit(5),
 		// Verified 2027 runs (campaigns) — aspirants with no leaders row.
 		db
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			.from(campaigns)
 			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
-			.where(and(isNull(campaigns.parentCampaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), nameMatch))
+			.where(and(isNull(campaigns.parentCampaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), isNull(users.deletedAt), nameMatch))
 			.limit(5),
 		db
 			.select({ name: parties.name, abbreviation: parties.abbreviation })

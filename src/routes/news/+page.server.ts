@@ -35,7 +35,8 @@ export const load: PageServerLoad = async ({ url }) => {
 		eq(posts.medium, 'web'),
 		eq(posts.public, true),
 		isNull(posts.archivedAt),
-		isNull(posts.deletedAt)
+		isNull(posts.deletedAt),
+		isNull(users.deletedAt)
 	);
 
 	const [rows, [{ n: total }]] = await Promise.all([

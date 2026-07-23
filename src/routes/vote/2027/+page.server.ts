@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { randomBytes } from 'node:crypto';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { ballotSimulations, campaigns, pledges } from '$lib/server/db/schema';
+import { ballotSimulations, campaigns, pledges, users } from '$lib/server/db/schema';
 import { counties, findCountyBySlug, findConstituencyBySlug, findWardBySlug } from '$lib/data/geo';
 import { BALLOT_LEVELS, resolveCandidates, type BallotLevel } from '$lib/server/ballot';
 import { getDomainUser } from '$lib/server/leader';
@@ -147,7 +147,8 @@ export const actions: Actions = {
 			const [campaign] = await db
 				.select({ id: campaigns.id })
 				.from(campaigns)
-				.where(and(eq(campaigns.id, campaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt)));
+				.innerJoin(users, eq(campaigns.subjectUserId, users.id))
+				.where(and(eq(campaigns.id, campaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), isNull(users.deletedAt)));
 			if (!campaign) continue;
 
 			// The partial unique indexes keep one live pledge per (campaign, user/anon device);
