@@ -6,7 +6,6 @@
 	import Reviews from '$lib/components/Reviews.svelte';
 	import ContactLinks from '$lib/components/contact/ContactLinks.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
-	import { seatPath } from '$lib/utils/seat';
 	import PencilIcon from './svgs/PencilIcon.svelte';
 
 	// The public /[leader] page body, shared with two admin preview contexts
@@ -89,13 +88,9 @@
 						<p class="mt-1 text-sm text-muted">
 							<span class="capitalize">{leader.status}</span>
 							·
-							{#if seatPath(leader.positionTitle, leader.regionLabel)}
-								<a href={seatPath(leader.positionTitle, leader.regionLabel)} class="hover:text-primary">
-									{leader.positionTitle}, {leader.regionLabel}
-								</a>
-							{:else}
+							<a href={data.breadcrumb.seatPath} class="hover:text-primary">
 								{leader.positionTitle}, {leader.regionLabel}
-							{/if}
+							</a>
 							{#if leader.party}· {leader.party}{/if}
 						</p>
 
@@ -275,20 +270,29 @@
 			{/if}
 
 			<div class="rounded-3xl border border-border bg-surface-2 p-6">
-				<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">This seat</h2>
+				<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">{data.breadcrumb.positionTitle}{#if data.breadcrumb.regionLabel}, {data.breadcrumb.regionLabel}{/if}</h2>
 				<ul class="mt-3 space-y-2 text-sm">
 					<li>
-						<a href={data.breadcrumb.seatPath} class="font-medium text-heading hover:text-primary">
-							{data.breadcrumb.positionTitle}{#if data.breadcrumb.regionLabel}, {data.breadcrumb.regionLabel}{/if} hub →
-						</a>
-					</li>
-					<li>
 						<a href="{data.breadcrumb.seatCyclePath}/2027" class="font-medium text-heading hover:text-primary">
-							🗳️ 2027 contestants →
+							🗳️ {data.numContestants} contestants for 2027 →
 						</a>
 					</li>
 				</ul>
 			</div>
+
+			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
+				<div class="rounded-3xl border border-border bg-surface-2 p-6">
+					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
+					<div class="mt-4">
+						<ContactLinks phone={contactPhone} email={contactEmail} socials={leader.socials} share={!preview} shareTitle={leader.name} />
+					</div>
+					{#if leader.address}
+						<p class="mt-3 space-y-2 text-sm">
+							{leader.address}
+						</p>
+					{/if}
+				</div>
+			{/if}
 
 			{#if data.deliveryGroups.length > 0}
 				<div class="rounded-3xl border border-border bg-surface-2 p-6">
@@ -311,20 +315,6 @@
 							</div>
 						{/each}
 					</div>
-				</div>
-			{/if}
-
-			{#if data.contacts.length > 0 || leader.address || Object.keys(leader.socials).length > 0}
-				<div class="rounded-3xl border border-border bg-surface-2 p-6">
-					<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Contact</h2>
-					<div class="mt-4">
-						<ContactLinks phone={contactPhone} email={contactEmail} socials={leader.socials} share={!preview} shareTitle={leader.name} />
-					</div>
-					{#if leader.address}
-						<p class="mt-3 space-y-2 text-sm">
-							{leader.address}
-						</p>
-					{/if}
 				</div>
 			{/if}
 

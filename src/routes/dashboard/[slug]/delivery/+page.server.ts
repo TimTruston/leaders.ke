@@ -3,13 +3,20 @@
 // non-elective experience (a professional/education role). Distinct from a
 // campaign RUN's forward-looking manifesto pillars (see the Campaign tab): this is
 // retrospective, tied to `leaders.id` or `experience.id`, not `campaigns.id`. Each
-// add/remove saves immediately — no deferred/batched save.
+// add/remove/pin saves immediately — no deferred/batched save.
 import { fail } from '@sveltejs/kit';
-import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { deliveries, experience, leaders, positions } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import type { Actions, PageServerLoad } from './$types';
+
+// Only PINNED deliveries show on the public profile — a leader curates their best
+// out of however many they've logged, so the public page never has to guess which
+// ones matter. Enforced here, not a DB constraint (same convention as elsewhere).
+// Not exported — SvelteKit route files only allow specific named exports
+// (load/actions/etc.), anything else 500s at build time.
+const MAX_PINNED = 5;
 
 // Encodes which table a delivery attaches to in one form value: "leader:123" or
 // "experience:45" — parsed back out in the `add` action.
@@ -18,6 +25,17 @@ function parseTarget(raw: string): { kind: 'leader' | 'experience'; id: number }
 	const id = Number(idRaw) || 0;
 	if ((kind !== 'leader' && kind !== 'experience') || !id) return null;
 	return { kind, id };
+}
+
+/** This person's own leaders/experience ids — every action below scopes a
+ * delivery to one of these before touching it, so nobody can act on someone
+ * else's row by id-guessing. */
+async function ownIds(subjectUserId: number) {
+	const [ownLeaders, ownExperience] = await Promise.all([
+		db.select({ id: leaders.id }).from(leaders).where(and(eq(leaders.userId, subjectUserId), isNull(leaders.deletedAt))),
+		db.select({ id: experience.id }).from(experience).where(and(eq(experience.subjectUserId, subjectUserId), isNull(experience.deletedAt)))
+	]);
+	return { leaderIds: ownLeaders.map((l) => l.id), experienceIds: ownExperience.map((e) => e.id) };
 }
 
 export const load: PageServerLoad = async (event) => {
@@ -45,19 +63,23 @@ export const load: PageServerLoad = async (event) => {
 	const [leaderIds, experienceIds] = [termRows.map((t) => t.id), experienceRows.map((e) => e.id)];
 	const [deliveriesByLeader, deliveriesByExperience] = await Promise.all([
 		leaderIds.length
-			? db.select({ id: deliveries.id, leaderId: deliveries.leaderId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.leaderId, leaderIds), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.createdAt))
+			? db.select({ id: deliveries.id, leaderId: deliveries.leaderId, title: deliveries.title, description: deliveries.description, pinnedAt: deliveries.pinnedAt }).from(deliveries).where(and(inArray(deliveries.leaderId, leaderIds), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.createdAt))
 			: [],
 		experienceIds.length
-			? db.select({ id: deliveries.id, experienceId: deliveries.experienceId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.experienceId, experienceIds), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.createdAt))
+			? db.select({ id: deliveries.id, experienceId: deliveries.experienceId, title: deliveries.title, description: deliveries.description, pinnedAt: deliveries.pinnedAt }).from(deliveries).where(and(inArray(deliveries.experienceId, experienceIds), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.createdAt))
 			: []
 	]);
 
+	const allDeliveries = [
+		...deliveriesByLeader.map((d) => ({ id: d.id, target: `leader:${d.leaderId}`, title: d.title, description: d.description, pinned: !!d.pinnedAt })),
+		...deliveriesByExperience.map((d) => ({ id: d.id, target: `experience:${d.experienceId}`, title: d.title, description: d.description, pinned: !!d.pinnedAt }))
+	];
+
 	return {
 		targets,
-		deliveries: [
-			...deliveriesByLeader.map((d) => ({ id: d.id, target: `leader:${d.leaderId}`, title: d.title, description: d.description })),
-			...deliveriesByExperience.map((d) => ({ id: d.id, target: `experience:${d.experienceId}`, title: d.title, description: d.description }))
-		]
+		deliveries: allDeliveries,
+		pinnedCount: allDeliveries.filter((d) => d.pinned).length,
+		maxPinned: MAX_PINNED
 	};
 };
 
@@ -95,21 +117,47 @@ export const actions: Actions = {
 		const id = Number(form.get('id') ?? 0);
 		if (!id) return fail(400, { error: 'Nothing to remove.' });
 
-		// Scoped to this person's own terms/experience so nobody can remove someone
-		// else's rows by id-guessing.
-		const [ownLeaderIds, ownExperienceIds] = await Promise.all([
-			db.select({ id: leaders.id }).from(leaders).where(and(eq(leaders.userId, ctx.profileUser.id), isNull(leaders.deletedAt))),
-			db.select({ id: experience.id }).from(experience).where(and(eq(experience.subjectUserId, ctx.profileUser.id), isNull(experience.deletedAt)))
-		]);
-
+		const { leaderIds, experienceIds } = await ownIds(ctx.profileUser.id);
 		const [target] = await db.select({ id: deliveries.id, leaderId: deliveries.leaderId, experienceId: deliveries.experienceId }).from(deliveries).where(eq(deliveries.id, id));
-		const owned =
-			target &&
-			((target.leaderId && ownLeaderIds.some((t) => t.id === target.leaderId)) || (target.experienceId && ownExperienceIds.some((e) => e.id === target.experienceId)));
+		const owned = target && ((target.leaderId && leaderIds.includes(target.leaderId)) || (target.experienceId && experienceIds.includes(target.experienceId)));
 		if (!owned) return fail(400, { error: 'That delivery is not yours to remove.' });
 
 		await db.update(deliveries).set({ deletedAt: new Date() }).where(eq(deliveries.id, id));
 
+		return { saved: true };
+	},
+
+	togglePin: async (event) => {
+		const { ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const id = Number(form.get('id') ?? 0);
+		if (!id) return fail(400, { error: 'Nothing to pin.' });
+
+		const { leaderIds, experienceIds } = await ownIds(ctx.profileUser.id);
+		const [target] = await db.select({ id: deliveries.id, leaderId: deliveries.leaderId, experienceId: deliveries.experienceId, pinnedAt: deliveries.pinnedAt }).from(deliveries).where(and(eq(deliveries.id, id), isNull(deliveries.deletedAt)));
+		const owned = target && ((target.leaderId && leaderIds.includes(target.leaderId)) || (target.experienceId && experienceIds.includes(target.experienceId)));
+		if (!owned) return fail(400, { error: 'That delivery is not yours to pin.' });
+
+		if (target.pinnedAt) {
+			await db.update(deliveries).set({ pinnedAt: null }).where(eq(deliveries.id, id));
+			return { saved: true };
+		}
+
+		// Cap enforced here, not a DB constraint — count this person's OTHER
+		// currently-pinned deliveries across every term/experience.
+		const pinnedElsewhere = await db
+			.select({ id: deliveries.id })
+			.from(deliveries)
+			.where(and(isNotNull(deliveries.pinnedAt), isNull(deliveries.deletedAt), inArray(deliveries.leaderId, leaderIds.length ? leaderIds : [-1])));
+		const pinnedElsewhereExp = await db
+			.select({ id: deliveries.id })
+			.from(deliveries)
+			.where(and(isNotNull(deliveries.pinnedAt), isNull(deliveries.deletedAt), inArray(deliveries.experienceId, experienceIds.length ? experienceIds : [-1])));
+		if (pinnedElsewhere.length + pinnedElsewhereExp.length >= MAX_PINNED) {
+			return fail(400, { error: `You can only pin up to ${MAX_PINNED} deliveries — unpin one first.` });
+		}
+
+		await db.update(deliveries).set({ pinnedAt: new Date() }).where(eq(deliveries.id, id));
 		return { saved: true };
 	}
 };

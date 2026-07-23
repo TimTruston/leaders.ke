@@ -259,7 +259,7 @@
 					· <span class="capitalize">{data.leaderContext.status}</span>
 				</p>
 				{#if data.leaderContext.verified}
-					<span class="shrink-0 rounded-full bg-primary-soft px-4 py-1.5 text-xs font-semibold text-on-primary">✓ Campaign Verified</span>
+					<span class="shrink-0 rounded-full bg-primary-soft px-4 py-1.5 text-xs font-semibold text-on-primary">✓ Profile Verified</span>
 				{:else if data.verificationRequestedAt}
 					<span
 						title="Submitted {new Date(data.verificationRequestedAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' })} — an admin has been notified."

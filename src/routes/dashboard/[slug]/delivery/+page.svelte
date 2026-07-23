@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 
 	let adding = $state(false);
 	let removingId = $state<number | null>(null);
-	// One form ref per delivery row, keyed by id, so onRemove (no args, per
-	// ExperienceBlock's contract) can trigger that row's own hidden form.
-	let removeFormEls: Record<number, HTMLFormElement | null> = $state({});
+	let pinningId = $state<number | null>(null);
 
 	// Add-form fields, scoped to whichever target (a term or a non-elective
 	// experience — see data.targets) is selected. Reset after each successful add.
@@ -20,13 +17,17 @@
 	// Grouped by target, in the order data.targets arrives (terms first, most
 	// recent first, then experience entries).
 	const groups = $derived(data.targets.map((t) => ({ target: t, items: data.deliveries.filter((d) => d.target === t.target) })));
+	const atPinCap = $derived(data.pinnedCount >= data.maxPinned);
 </script>
 
 <svelte:head><title>Delivery — leaders.ke</title></svelte:head>
 
 <div>
 	<h2 class="text-xl font-bold text-heading">Delivery</h2>
-	<p class="text-sm text-muted">List what you delivered under each of your terms or roles — citizens see this on your public profile.</p>
+	<p class="text-sm text-muted">List what you delivered under each of your terms or roles.</p>
+	<p class="mt-1 text-sm font-medium text-heading">
+		Pinned {data.pinnedCount}/{data.maxPinned} — only pinned deliveries show on your public profile.
+	</p>
 
 	{#if form?.error}
 		<div class="mt-4 rounded-xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">{form.error}</div>
@@ -49,26 +50,56 @@
 					{:else}
 						<ul class="mt-3 space-y-2">
 							{#each group.items as item (item.id)}
-								<form
-									method="post"
-									action="?/remove"
-									bind:this={removeFormEls[item.id]}
-									use:enhance={() => {
-										removingId = item.id;
-										return async ({ update }) => {
-											removingId = null;
-											await update();
-										};
-									}}
-								>
-									<input type="hidden" name="id" value={item.id} />
-									<ExperienceBlock
-										title={item.title}
-										description={item.description}
-										dateLabel={removingId === item.id ? 'Removing…' : ''}
-										onRemove={() => removeFormEls[item.id]?.requestSubmit()}
-									/>
-								</form>
+								<li class="rounded-xl border px-4 py-3 text-sm {item.pinned ? 'border-primary/40 bg-primary-soft/20' : 'border-transparent bg-surface-2'}">
+									<div class="flex items-start justify-between gap-3">
+										<div class="min-w-0">
+											<p class="font-medium text-heading">
+												{item.title}
+												{#if item.pinned}<span class="ml-1.5 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">Pinned</span>{/if}
+											</p>
+											{#if item.description}<p class="mt-1 text-muted">{item.description}</p>{/if}
+										</div>
+									</div>
+									<div class="mt-2 flex gap-4 text-xs">
+										<form
+											method="post"
+											action="?/togglePin"
+											use:enhance={() => {
+												pinningId = item.id;
+												return async ({ update }) => {
+													pinningId = null;
+													await update();
+												};
+											}}
+										>
+											<input type="hidden" name="id" value={item.id} />
+											<button
+												type="submit"
+												disabled={(!item.pinned && atPinCap) || pinningId === item.id}
+												title={!item.pinned && atPinCap ? `You've pinned ${data.maxPinned} already — unpin one first.` : ''}
+												class="font-semibold text-primary hover:underline disabled:cursor-not-allowed disabled:text-muted disabled:no-underline"
+											>
+												{pinningId === item.id ? 'Saving…' : item.pinned ? 'Unpin' : 'Pin'}
+											</button>
+										</form>
+										<form
+											method="post"
+											action="?/remove"
+											use:enhance={() => {
+												removingId = item.id;
+												return async ({ update }) => {
+													removingId = null;
+													await update();
+												};
+											}}
+										>
+											<input type="hidden" name="id" value={item.id} />
+											<button type="submit" disabled={removingId === item.id} class="font-semibold text-muted hover:text-heading">
+												{removingId === item.id ? 'Removing…' : 'Remove'}
+											</button>
+										</form>
+									</div>
+								</li>
 							{/each}
 						</ul>
 					{/if}

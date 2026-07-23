@@ -174,6 +174,11 @@ export const deliveries = pgTable('deliveries', {
   experienceId: integer('experience_id').references(() => experience.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
+  // Only PINNED deliveries show on the public profile (capped at 5 per person,
+  // enforced in the Delivery tab's togglePin action, not a DB constraint) — the
+  // leader curates their best 5 out of however many they've logged. Order shown
+  // publicly follows pin order (when they pinned it), not creation order.
+  pinnedAt: timestamp('pinned_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),

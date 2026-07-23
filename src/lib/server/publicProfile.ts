@@ -4,7 +4,7 @@
 // a bespoke admin-only layout. Every non-deactivated profile is public;
 // verifiedAt is a "Verified" badge only (see docs/URLDiscovery.md), not a
 // visibility gate — an application goes live as soon as it exists.
-import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, deliveries, experience, followers, managers, parties, pillars, positions, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
@@ -69,6 +69,7 @@ export async function loadPublicProfileData(
 	const [
 		[pillarRow],
 		[followerRow],
+		[contestantRow],
 		latestPost,
 		pillarStatusRows,
 		mentionRows,
@@ -83,6 +84,22 @@ export async function loadPublicProfileData(
 			.select({ n: count() })
 			.from(followers)
 			.where(and(eq(followers.digest, 'leader'), eq(followers.digestId, row.users.id), isNull(followers.deletedAt))),
+		// Verified 2027 runs at this exact seat — same definition seatHub uses for
+		// its own contestants list (aspirants only; a graduated run's leaderId is
+		// set, so it's the current holder now, not a contestant).
+		db
+			.select({ n: count() })
+			.from(campaigns)
+			.where(
+				and(
+					eq(campaigns.positionId, leadPosition.id),
+					eq(campaigns.cycleYear, ACTIVE_CYCLE),
+					isNull(campaigns.parentCampaignId),
+					isNotNull(campaigns.verifiedAt),
+					isNull(campaigns.leaderId),
+					isNull(campaigns.deletedAt)
+				)
+			),
 		db
 			.select({ title: posts.title, createdAt: posts.createdAt })
 			.from(posts)
@@ -125,15 +142,17 @@ export async function loadPublicProfileData(
 
 	// Delivery tab items (concrete things delivered, tied to a specific term or
 	// non-elective experience — see the dashboard's Delivery tab) — distinct from
-	// `delivery` below, which is the manifesto pillar completion rollup.
+	// `delivery` below, which is the manifesto pillar completion rollup. Only
+	// PINNED deliveries are public (capped at 5, enforced when pinning), ordered
+	// by when the leader pinned them.
 	const leaderIds = terms.map((t) => t.leaders.id);
 	const experienceIds = experienceRows.map((e) => e.id);
 	const [deliveriesByLeader, deliveriesByExperience] = await Promise.all([
 		leaderIds.length
-			? db.select({ id: deliveries.id, leaderId: deliveries.leaderId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.leaderId, leaderIds), isNull(deliveries.deletedAt)))
+			? db.select({ id: deliveries.id, leaderId: deliveries.leaderId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.leaderId, leaderIds), isNotNull(deliveries.pinnedAt), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.pinnedAt))
 			: [],
 		experienceIds.length
-			? db.select({ id: deliveries.id, experienceId: deliveries.experienceId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.experienceId, experienceIds), isNull(deliveries.deletedAt)))
+			? db.select({ id: deliveries.id, experienceId: deliveries.experienceId, title: deliveries.title, description: deliveries.description }).from(deliveries).where(and(inArray(deliveries.experienceId, experienceIds), isNotNull(deliveries.pinnedAt), isNull(deliveries.deletedAt))).orderBy(asc(deliveries.pinnedAt))
 			: []
 	]);
 	const deliveryGroups = [
@@ -236,6 +255,7 @@ export async function loadPublicProfileData(
 				: null,
 		delivery: { total: pillarStatusRows.length, delivered: deliveredCount, inProgress: inProgressCount },
 		deliveryGroups,
+		numContestants: contestantRow.n,
 		reviews: reviewRows,
 		reviewPillarOptions,
 		flaggedReviewCounts,
