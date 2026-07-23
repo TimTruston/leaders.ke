@@ -4,6 +4,7 @@
 	import { page as pageStore } from '$app/state';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
+	import MentionPicker from '$lib/components/MentionPicker.svelte';
 	import { plainText } from '$lib/utils/richtext';
 	import type { PageProps } from './$types';
 
@@ -16,7 +17,57 @@
 	let navSection = $state<'social' | 'tags' | 'gallery' | null>(null);
 
 	let composerOpen = $state(false);
+	let composerTitle = $state('');
 	let composerBody = $state('');
+	let composerTags = $state('');
+	// Set while editing an existing post; drives the form's action (?/update vs
+	// ?/create) and carries the postId along. Null means a fresh post.
+	let editingId = $state<number | null>(null);
+
+	// Standalone "Mentions" chip field (MentionPicker) — separate from the inline
+	// @links the RichTextEditor inserts into the body; picking here never touches
+	// composerBody. Leader chips feed the `tags` rows server-side (see
+	// mergeMentionSlugs); party chips have no user row to tag and aren't persisted.
+	let mentioned = $state<{ slug: string; name: string }[]>([]);
+	let partyMentions = $state<{ name: string; path: string }[]>([]);
+
+	function startEdit(item: { id: number; title: string; body: string; tags?: string[]; mentions?: { slug: string; name: string }[] }) {
+		editingId = item.id;
+		composerTitle = item.title;
+		composerBody = item.body;
+		composerTags = (item.tags ?? []).join(', ');
+		mentioned = item.mentions ?? [];
+		partyMentions = [];
+		composerOpen = true;
+	}
+	function closeComposer() {
+		composerOpen = false;
+		editingId = null;
+		composerTitle = '';
+		composerBody = '';
+		composerTags = '';
+		mentioned = [];
+		partyMentions = [];
+	}
+	// Editing has something to lose; a fresh, still-empty composer doesn't.
+	function attemptCancel() {
+		if (editingId && !confirm('Discard your changes?')) return;
+		closeComposer();
+	}
+
+	// Deep link from the public article's "Edit" button (?edit=<postId>): open the
+	// composer on that post once, then drop the param so it doesn't reopen on
+	// every later navigation within this page.
+	let editDeepLinkHandled = false;
+	$effect(() => {
+		if (data.editTarget && !editDeepLinkHandled) {
+			editDeepLinkHandled = true;
+			startEdit(data.editTarget);
+			const url = new URL(pageStore.url);
+			url.searchParams.delete('edit');
+			goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+		}
+	});
 
 	const setParam = (key: string, value: string) => {
 		const url = new URL(pageStore.url);
@@ -175,7 +226,7 @@
 				</select>
 				<button
 					type="button"
-					onclick={() => (composerOpen = !composerOpen)}
+					onclick={() => (composerOpen ? attemptCancel() : (composerOpen = true))}
 					class="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95"
 				>
 					{composerOpen ? 'Close' : 'New Post'}
@@ -183,52 +234,79 @@
 			</div>
 		</div>
 
-		<!-- Composer: slides down above the feed, slides out on submit. -->
+		<!-- Composer: slides down above the feed, slides out on submit. Doubles as
+		the edit form for an existing post (?/update vs ?/create, keyed on editingId). -->
 		<div class="grid transition-all duration-300 ease-out {composerOpen ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}">
 			<div class="overflow-hidden">
 				<form
 					method="post"
-					action="?/create"
+					action={editingId ? '?/update' : '?/create'}
 					class="space-y-3 rounded-2xl border border-border bg-surface p-5"
 					use:enhance={() => {
 						return async ({ update }) => {
 							await update();
-							composerOpen = false;
-							composerBody = '';
+							closeComposer();
 						};
 					}}
 				>
+					{#if editingId}
+						<input type="hidden" name="postId" value={editingId} />
+					{/if}
 					<input
 						type="text"
 						name="title"
+						bind:value={composerTitle}
 						required
 						placeholder="Post title"
 						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
-					<RichTextEditor bind:value={composerBody} name="body" rows={6} placeholder="Your update: news, a promise, an event announcement…" required />
+					<RichTextEditor
+						bind:value={composerBody}
+						name="body"
+						rows={6}
+						placeholder="Your update: news, a promise, an event announcement… type @ to mention another leader or party"
+						required
+						enableMentions
+					/>
 					<input
 						type="text"
 						name="tags"
+						bind:value={composerTags}
 						placeholder="Tags, comma separated (e.g. healthcare, roads)"
 						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					/>
+					<input type="hidden" name="mentions" value={mentioned.map((m) => m.slug).join(',')} />
+					<MentionPicker bind:mentioned bind:parties={partyMentions} />
 					<div class="flex justify-end gap-2">
-						<button
-							type="submit"
-							name="publish"
-							value=""
-							class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2"
-						>
-							Save draft
-						</button>
-						<button
-							type="submit"
-							name="publish"
-							value="on"
-							class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
-						>
-							Publish
-						</button>
+						{#if editingId}
+							<button
+								type="button"
+								onclick={attemptCancel}
+								class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2"
+							>
+								Cancel
+							</button>
+							<button type="submit" class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95">
+								Save
+							</button>
+						{:else}
+							<button
+								type="submit"
+								name="publish"
+								value=""
+								class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-heading transition hover:bg-surface-2"
+							>
+								Save draft
+							</button>
+							<button
+								type="submit"
+								name="publish"
+								value="on"
+								class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
+							>
+								Publish
+							</button>
+						{/if}
 					</div>
 				</form>
 			</div>
@@ -281,6 +359,13 @@
 						<div class="mt-3 flex flex-wrap items-center justify-between gap-2">
 							<p class="text-xs text-muted">{item.views ?? 0} views · {item.votes ?? 0} likes</p>
 							<div class="flex gap-2">
+								<button
+									type="button"
+									onclick={() => startEdit(item)}
+									class="rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2"
+								>
+									Edit
+								</button>
 								<form method="post" action="?/toggle" use:enhance>
 									<input type="hidden" name="postId" value={item.id} />
 									<button type="submit" class="rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-heading transition hover:bg-surface-2">

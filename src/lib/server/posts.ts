@@ -21,3 +21,10 @@ export async function generatePostSlug(title: string): Promise<string> {
 		candidate = `${base}-${n}`;
 	}
 }
+
+/** Pulls the leader slugs out of a post body's inline @mention links
+ * ([Name](/some-slug), written by RichTextEditor's mention autocomplete — a bare
+ * single-segment path, unlike a party mention's /parties/some-slug). */
+export function extractMentionSlugs(body: string): string[] {
+	return [...new Set([...body.matchAll(/\[[^\]]+\]\(\/([a-z0-9-]+)\)/g)].map((m) => m[1]))];
+}

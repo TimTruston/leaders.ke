@@ -1,10 +1,10 @@
 import { fail } from '@sveltejs/kit';
-import { and, count, desc, eq, gte, isNull, isNotNull } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNull, isNotNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { posts, tags, events } from '$lib/server/db/schema';
+import { posts, tags, events, users } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
-import { generatePostSlug } from '$lib/server/posts';
+import { extractMentionSlugs, generatePostSlug } from '$lib/server/posts';
 import { answerConstituentQuestion } from '$lib/server/ai';
 import { getPageSize } from '$lib/server/settings';
 import type { Actions, PageServerLoad } from './$types';
@@ -51,6 +51,50 @@ export const load: PageServerLoad = async (event) => {
 			: Promise.resolve([])
 	]);
 
+	// Team-tagged mentions on each own post (creatorId set — not the system-generated
+	// external coverage rows), for the composer's "Mentions" field to pre-fill on edit.
+	const ownPostIds = ownPosts.map((p) => p.id);
+	const ownMentionRows = ownPostIds.length
+		? await db
+				.select({ postId: tags.postId, slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
+				.from(tags)
+				.innerJoin(users, eq(tags.subjectUserId, users.id))
+				.where(and(inArray(tags.postId, ownPostIds), isNotNull(tags.creatorId), isNull(tags.deletedAt)))
+		: [];
+	const ownMentionsByPostId = new Map<number, { slug: string; name: string }[]>();
+	for (const r of ownMentionRows) {
+		if (!r.slug) continue;
+		const list = ownMentionsByPostId.get(r.postId) ?? [];
+		list.push({ slug: r.slug, name: fullName(r) });
+		ownMentionsByPostId.set(r.postId, list);
+	}
+
+	// A deep link from the public article's "Edit" button (?edit=<postId>) — fetched
+	// independently of the section/filter/pagination above, since the target post
+	// might be archived or off the current page.
+	const editId = Number(event.url.searchParams.get('edit') ?? 0);
+	let editTarget: { id: number; title: string; body: string; tags: string[]; mentions: { slug: string; name: string }[] } | null = null;
+	if (editId) {
+		const [p] = await db
+			.select()
+			.from(posts)
+			.where(and(eq(posts.id, editId), eq(posts.subjectUserId, ctx.profileUser.id), isNull(posts.deletedAt)));
+		if (p) {
+			const rows = await db
+				.select({ slug: users.slug, firstName: users.firstName, otherNames: users.otherNames })
+				.from(tags)
+				.innerJoin(users, eq(tags.subjectUserId, users.id))
+				.where(and(eq(tags.postId, p.id), isNotNull(tags.creatorId), isNull(tags.deletedAt)));
+			editTarget = {
+				id: p.id,
+				title: p.title,
+				body: p.body,
+				tags: p.tags ?? [],
+				mentions: rows.filter((r) => r.slug).map((r) => ({ slug: r.slug as string, name: fullName(r) }))
+			};
+		}
+	}
+
 	type FeedItem = {
 		kind: 'post' | 'event' | 'mention';
 		id: number;
@@ -61,6 +105,7 @@ export const load: PageServerLoad = async (event) => {
 		isDraft?: boolean;
 		slug?: string | null;
 		tags?: string[];
+		mentions?: { slug: string; name: string }[];
 		votes?: number;
 		views?: number;
 		venue?: string;
@@ -78,6 +123,7 @@ export const load: PageServerLoad = async (event) => {
 			isDraft: !p.public,
 			slug: p.slug,
 			tags: p.tags ?? [],
+			mentions: ownMentionsByPostId.get(p.id) ?? [],
 			votes: p.votes,
 			views: p.views,
 			createdAt: p.createdAt.toISOString()
@@ -131,9 +177,32 @@ export const load: PageServerLoad = async (event) => {
 		tags: allTags,
 		mentions24h: dayRow,
 		crisis: dayRow >= CRISIS_THRESHOLD_24H,
-		drafts: ownPosts.filter((p) => !p.public).map((d) => ({ id: d.id, title: d.title }))
+		drafts: ownPosts.filter((p) => !p.public).map((d) => ({ id: d.id, title: d.title })),
+		editTarget
 	};
 };
+
+// Mentions come from two places: inline @links written in the body, and the
+// composer's standalone "Mentions" chip field (its own slug picker) — combine both.
+function mergeMentionSlugs(body: string, form: FormData): string[] {
+	const chipSlugs = String(form.get('mentions') ?? '')
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	return [...new Set([...extractMentionSlugs(body), ...chipSlugs])];
+}
+
+// Replaces a post's team-authored mention tags (creatorId set) with fresh ones
+// parsed from its current body — leaves system-generated mention rows (external
+// coverage, creatorId null) untouched.
+async function syncMentions(postId: number, creatorId: number, mentionSlugs: string[]) {
+	await db.delete(tags).where(and(eq(tags.postId, postId), isNotNull(tags.creatorId)));
+	if (!mentionSlugs.length) return;
+	const mentionedUsers = await db.select({ id: users.id }).from(users).where(and(inArray(users.slug, mentionSlugs), isNull(users.deletedAt)));
+	if (mentionedUsers.length) {
+		await db.insert(tags).values(mentionedUsers.map((u) => ({ creatorId, postId, subjectUserId: u.id })));
+	}
+}
 
 export const actions: Actions = {
 	create: async (event) => {
@@ -146,22 +215,59 @@ export const actions: Actions = {
 			.split(',')
 			.map((t) => t.trim())
 			.filter(Boolean);
+		const mentionSlugs = mergeMentionSlugs(body, form);
 		if (!title || !body) return fail(400, { error: 'A post needs a title and a body.' });
 
 		const slug = await generatePostSlug(title);
 
 		// Team posts publish directly for now; an approval flow can gate `approved` later.
-		await db.insert(posts).values({
-			creatorId: domainUser.id,
-			subjectUserId: ctx.profileUser.id,
-			title,
-			slug,
-			body,
-			tags: postTags,
-			medium: 'web',
-			approved: true,
-			public: publish
-		});
+		const [post] = await db
+			.insert(posts)
+			.values({
+				creatorId: domainUser.id,
+				subjectUserId: ctx.profileUser.id,
+				title,
+				slug,
+				body,
+				tags: postTags,
+				medium: 'web',
+				approved: true,
+				public: publish
+			})
+			.returning({ id: posts.id });
+
+		if (mentionSlugs.length) await syncMentions(post.id, domainUser.id, mentionSlugs);
+		return { saved: true };
+	},
+
+	// Edits an existing post's title/body/tags/mentions in place — the slug and
+	// creation date stay put, only ?/toggle changes public/draft state.
+	update: async (event) => {
+		const { domainUser, ctx } = await requireLeader(event);
+		const form = await event.request.formData();
+		const postId = Number(form.get('postId') ?? 0);
+		const title = String(form.get('title') ?? '').trim();
+		const body = String(form.get('body') ?? '').trim();
+		const postTags = String(form.get('tags') ?? '')
+			.split(',')
+			.map((t) => t.trim())
+			.filter(Boolean);
+		if (!title || !body) return fail(400, { error: 'A post needs a title and a body.' });
+
+		const [row] = await db
+			.select({ id: posts.id })
+			.from(posts)
+			.where(and(eq(posts.id, postId), eq(posts.subjectUserId, ctx.profileUser.id), isNull(posts.deletedAt)));
+		if (!row) return fail(404, { error: 'Post not found.' });
+
+		// Content only — publish/unpublish stays the card's own toggle so editing
+		// never accidentally flips a post's public state.
+		await db
+			.update(posts)
+			.set({ title, body, tags: postTags, updatedAt: new Date() })
+			.where(eq(posts.id, row.id));
+
+		await syncMentions(row.id, domainUser.id, mergeMentionSlugs(body, form));
 		return { saved: true };
 	},
 

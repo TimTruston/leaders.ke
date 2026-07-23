@@ -13,7 +13,12 @@
 </svelte:head>
 
 <article class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-	<a href="/news" class="text-sm font-semibold text-primary hover:underline">← All news</a>
+	<div class="flex items-center justify-between">
+		<a href="/news" class="text-sm font-semibold text-primary hover:underline">← All news</a>
+		{#if data.editHref}
+			<a href={data.editHref} class="text-sm font-semibold text-primary hover:underline">Edit</a>
+		{/if}
+	</div>
 
 	<h1 class="mt-4 text-4xl font-bold tracking-tight text-heading">{data.title}</h1>
 

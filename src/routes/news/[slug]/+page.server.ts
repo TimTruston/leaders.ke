@@ -1,11 +1,11 @@
 import { error } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { posts, users, leaders, campaigns } from '$lib/server/db/schema';
-import { fullName, leaderPath } from '$lib/server/leader';
+import { posts, users, leaders, campaigns, managers } from '$lib/server/db/schema';
+import { fullName, getDomainUser, leaderPath } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const [row] = await db
 		.select({ post: posts, author: users })
 		.from(posts)
@@ -36,6 +36,19 @@ export const load: PageServerLoad = async ({ params }) => {
 	]);
 	if (!heldTerm && !aspirantRun) error(404, 'Article not found');
 
+	// Same "who may manage this profile" check as the public profile page's canEdit:
+	// a platform admin, or an active manager on the author's team (the author
+	// themselves included — they're their own first manager).
+	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
+	let canEdit = !!viewer && (!!viewer.adminAt || viewer.id === row.author.id);
+	if (viewer && !canEdit) {
+		const [managerRow] = await db
+			.select({ id: managers.id })
+			.from(managers)
+			.where(and(eq(managers.userId, viewer.id), eq(managers.subjectUserId, row.author.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
+		canEdit = !!managerRow;
+	}
+
 	const authorName = fullName(row.author);
 	const initials = authorName
 		.split(/\s+/)
@@ -54,6 +67,8 @@ export const load: PageServerLoad = async ({ params }) => {
 			initials,
 			photoUrl: row.author.photoUrl,
 			path: leaderPath(row.author)
-		}
+		},
+		canEdit,
+		editHref: canEdit && row.author.slug ? `/dashboard/${row.author.slug}/posts?edit=${row.post.id}` : null
 	};
 };

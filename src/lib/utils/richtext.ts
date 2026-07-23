@@ -1,15 +1,24 @@
 // Markdown-lite for leader bios: the RichTextEditor toolbar writes these markers
 // (**bold**, *italic*, "- " bullets, "1. " numbered lists, [text](https://url)),
 // and this renders them to HTML. Input is HTML-escaped FIRST, so stored text can
-// never inject markup ({@html} stays safe); links are restricted to http(s).
+// never inject markup ({@html} stays safe); links are restricted to http(s) or a
+// same-site absolute path (e.g. an inline @mention linking to /some-leader).
 const escapeHtml = (s: string) =>
 	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// @mention links are written as [@Name](path) so the composer's raw markdown
+// reads unambiguously as a mention, but the rendered/plain text drops the "@" —
+// the link itself is the indicator, same convention as a normal hyperlink.
+const stripMentionAt = (label: string) => (label.startsWith('@') ? label.slice(1) : label);
 
 const inline = (s: string) =>
 	s
 		.replace(
-			/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-			'<a href="$2" target="_blank" rel="noopener nofollow" class="text-primary hover:underline">$1</a>'
+			/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g,
+			(_match, label, href) =>
+				href.startsWith('/')
+					? `<a href="${href}" class="text-primary hover:underline">${stripMentionAt(label)}</a>`
+					: `<a href="${href}" target="_blank" rel="noopener nofollow" class="text-primary hover:underline">${stripMentionAt(label)}</a>`
 		)
 		.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
 		.replace(/\*([^*]+)\*/g, '<em>$1</em>');
@@ -37,7 +46,7 @@ export function renderRichText(input: string): string {
 export function plainText(input: string): string {
 	if (!input) return '';
 	return input
-		.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1')
+		.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g, (_match, label) => stripMentionAt(label))
 		.replace(/\*\*([^*]+)\*\*/g, '$1')
 		.replace(/\*([^*]+)\*/g, '$1')
 		.replace(/^- /gm, '')
