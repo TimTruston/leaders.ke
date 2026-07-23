@@ -21,6 +21,7 @@ export const load: PageServerLoad = async (event) => {
 	const filter = event.url.searchParams.get('filter') ?? 'all'; // all | posts | events | mentions | drafts
 	const sort = event.url.searchParams.get('sort') ?? 'recent'; // recent | oldest | views | likes
 	const section = event.url.searchParams.get('section') ?? 'feed'; // feed | archive
+	const activeTag = event.url.searchParams.get('tag') ?? '';
 
 	const ownPostFilter = section === 'archive'
 		? and(eq(posts.subjectUserId, ctx.profileUser.id), eq(posts.medium, 'web'), isNull(posts.deletedAt), isNotNull(posts.archivedAt))
@@ -152,6 +153,8 @@ export const load: PageServerLoad = async (event) => {
 	else if (filter === 'mentions') items = items.filter((i) => i.kind === 'mention');
 	else if (filter === 'drafts') items = items.filter((i) => i.kind === 'post' && i.isDraft);
 
+	if (activeTag) items = items.filter((i) => i.kind === 'post' && (i.tags ?? []).includes(activeTag));
+
 	items.sort((a, b) => {
 		if (sort === 'oldest') return a.createdAt.localeCompare(b.createdAt);
 		if (sort === 'views') return (b.views ?? 0) - (a.views ?? 0);
@@ -173,6 +176,7 @@ export const load: PageServerLoad = async (event) => {
 		filter,
 		sort,
 		section,
+		activeTag,
 		authorName: fullName(ctx.profileUser),
 		tags: allTags,
 		mentions24h: dayRow,

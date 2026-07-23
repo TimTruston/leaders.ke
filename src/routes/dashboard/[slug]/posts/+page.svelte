@@ -71,10 +71,13 @@
 
 	const setParam = (key: string, value: string) => {
 		const url = new URL(pageStore.url);
-		url.searchParams.set(key, value);
+		if (value) url.searchParams.set(key, value);
+		else url.searchParams.delete(key);
 		url.searchParams.delete('page');
 		goto(url, { keepFocus: true, noScroll: true });
 	};
+	// Selecting the already-active tag clears the filter instead of re-applying it.
+	const toggleTag = (tag: string) => setParam('tag', data.activeTag === tag ? '' : tag);
 
 	const filters: { value: string; label: string }[] = [
 		{ value: 'all', label: 'All' },
@@ -185,7 +188,15 @@
 				<p class="text-xs font-semibold tracking-wide text-muted uppercase">Post tags</p>
 				<div class="mt-2 flex flex-wrap gap-1.5">
 					{#each data.tags as tag (tag)}
-						<span class="rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-heading">{tag}</span>
+						<button
+							type="button"
+							onclick={() => { navSection = null; toggleTag(tag); }}
+							class="cursor-pointer rounded-full border px-2.5 py-1 text-xs font-medium transition {data.activeTag === tag
+								? 'border-primary bg-primary-soft text-on-primary'
+								: 'border-border bg-surface text-heading hover:border-primary hover:text-primary'}"
+						>
+							{tag}
+						</button>
 					{:else}
 						<p class="text-sm text-muted">No tags yet. Add some when writing a post.</p>
 					{/each}
@@ -200,6 +211,13 @@
 
 	<!-- rhs feed -->
 	<div class="lg:col-span-3">
+		{#if data.activeTag}
+			<div class="mb-3 flex items-center gap-2 text-sm text-muted">
+				<span>Filtering by tag</span>
+				<span class="rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-on-primary">{data.activeTag}</span>
+				<button type="button" onclick={() => toggleTag(data.activeTag)} class="cursor-pointer font-semibold text-primary hover:underline">Clear</button>
+			</div>
+		{/if}
 		<div class="flex flex-wrap items-center justify-between gap-3">
 			<div class="flex flex-wrap gap-1.5">
 				{#each filters as f (f.value)}
@@ -352,7 +370,15 @@
 						{#if item.tags?.length}
 							<div class="mt-2 flex flex-wrap gap-1.5">
 								{#each item.tags as tag (tag)}
-									<span class="rounded-full border border-border bg-surface-2 px-2 py-0.5 text-xs text-muted">{tag}</span>
+									<button
+										type="button"
+										onclick={() => toggleTag(tag)}
+										class="cursor-pointer rounded-full border px-2 py-0.5 text-xs transition {data.activeTag === tag
+											? 'border-primary bg-primary-soft text-on-primary'
+											: 'border-border bg-surface-2 text-muted hover:border-primary hover:text-primary'}"
+									>
+										{tag}
+									</button>
 								{/each}
 							</div>
 						{/if}
