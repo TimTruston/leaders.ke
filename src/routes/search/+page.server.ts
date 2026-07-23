@@ -9,6 +9,29 @@ export const load: PageServerLoad = async ({ url }) => {
 	if (!q) return { q, leaders: [], experience: [], parties: [], alliances: [] };
 
 	const like = `%${q}%`;
+	const nameConcat = sql`${users.firstName} || ' ' || ${users.otherNames}`;
+	// Ranks a row so a name match always beats a mere bio/position substring hit —
+	// without this, a common word in many bios (e.g. "test") buries the person
+	// actually named that above everyone else, in whatever order postgres feels
+	// like returning unordered rows.
+	const nameRank = sql<number>`case
+		when lower(${nameConcat}) = lower(${q}) then 0
+		when ${nameConcat} ilike ${`${q}%`} then 1
+		when ${users.firstName} ilike ${like} or ${users.otherNames} ilike ${like} or ${nameConcat} ilike ${like} then 2
+		else 3
+	end`;
+	// Mirrors nameRank in JS — held-leader and aspirant-run results come from two
+	// separate queries that get merged below, so ranking has to happen post-merge,
+	// not just per-query, or an aspirant matching by name still loses to every held
+	// leader that only matched by a common word in their bio.
+	const rankOf = (firstName: string, otherNames: string): number => {
+		const full = `${firstName} ${otherNames}`.toLowerCase();
+		const needle = q.toLowerCase();
+		if (full === needle) return 0;
+		if (full.startsWith(needle)) return 1;
+		if (firstName.toLowerCase().includes(needle) || otherNames.toLowerCase().includes(needle) || full.includes(needle)) return 2;
+		return 3;
+	};
 
 	const leaderRows = await db
 		.select()
@@ -23,6 +46,7 @@ export const load: PageServerLoad = async ({ url }) => {
 				or(
 					ilike(users.firstName, like),
 					ilike(users.otherNames, like),
+					ilike(nameConcat, like),
 					ilike(users.bio, like),
 					ilike(leaders.description, like),
 					ilike(positions.title, like),
@@ -30,6 +54,7 @@ export const load: PageServerLoad = async ({ url }) => {
 				)
 			)
 		)
+		.orderBy(nameRank)
 		.limit(15);
 
 	// A person can have several `leaders` rows (Track Record); collapse to one
@@ -70,12 +95,15 @@ export const load: PageServerLoad = async ({ url }) => {
 			region: r.positions.region,
 			party,
 			partyPath: party ? `/parties/${slugify(party)}` : null,
-			bio: r.users.bio
+			bio: r.users.bio,
+			rank: rankOf(r.users.firstName, r.users.otherNames)
 		};
 	});
 
 	// 2027 runs (campaigns) matching by name/bio — aspirants with no leaders row.
-	// Appended after held-office results, skipping anyone already matched above.
+	// Merged with the held-office results by rank below, not just appended after —
+	// a name match here should still outrank a held leader that only matched by a
+	// common word in their bio.
 	const heldSlugs = new Set(matchedLeaders.map((r) => r.users.slug));
 	const runMatches = await db
 		.select({
@@ -97,12 +125,19 @@ export const load: PageServerLoad = async ({ url }) => {
 				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt),
-				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
+				or(
+					ilike(users.firstName, like),
+					ilike(users.otherNames, like),
+					ilike(nameConcat, like),
+					ilike(users.bio, like),
+					ilike(positions.title, like),
+					ilike(positions.region, like)
+				)
 			)
 		)
+		.orderBy(nameRank)
 		.limit(15);
 	for (const r of runMatches) {
-		if (leaderResults.length >= 15) break;
 		if (!r.slug || heldSlugs.has(r.slug)) continue;
 		heldSlugs.add(r.slug);
 		const name = fullName(r);
@@ -116,9 +151,14 @@ export const load: PageServerLoad = async ({ url }) => {
 			region: r.region,
 			party: null,
 			partyPath: null,
-			bio: r.bio
+			bio: r.bio,
+			rank: rankOf(r.firstName, r.otherNames)
 		});
 	}
+	// Stable sort: same-rank rows keep their SQL order (each query was already
+	// ordered by rank, held-leaders first for ties — matches the old convention).
+	leaderResults.sort((a, b) => a.rank - b.rank);
+	leaderResults.length = Math.min(leaderResults.length, 15);
 
 	const experienceRows = await db
 		.select({
@@ -177,7 +217,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	return {
 		q,
-		leaders: leaderResults,
+		leaders: leaderResults.map(({ rank, ...rest }) => rest),
 		experience: experienceResults,
 		parties: partyResults,
 		alliances: allianceResults
