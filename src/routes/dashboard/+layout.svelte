@@ -120,13 +120,14 @@
 					{ href: `${base}/profile`, label: 'Leader' },
 					{ href: `${base}/contacts`, label: 'Contacts' },
 					{ href: `${base}/team`, label: 'Team' },
-					{ href: `${base}/campaign`, label: 'Campaign' },
-					{ href: `${base}/posts`, label: 'News' },
-					{ href: `${base}/reviews`, label: 'Reviews' },
 					{ href: `${base}/followers`, label: 'Followers' },
+					{ href: `${base}/delivery`, label: 'Delivery' },
+					{ href: `${base}/campaign`, label: 'Campaign + Manifesto' },
+					{ href: `${base}/posts`, label: 'News' },
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
+					{ href: `${base}/reviews`, label: 'Reviews' },
 					{ href: `${base}/fundraising`, label: 'Fundraising' },
-					{ href: `${base}/competitors`, label: 'Competitors' }
+					{ href: `${base}/competitors`, label: 'Competition' }
 				];
 			case 'admin':
 				return [
@@ -369,9 +370,7 @@
 							(adminAction = ac.campaignVerified
 								? { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `Removes the Verified badge on the campaign.`, confirmLabel: 'Remove' }
 								: { action: 'verifyCampaign', title: 'Verify campaign?', body: `Shows the Verified badge on the campaign.`, confirmLabel: 'Verify' })}
-						class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 {ac.campaignVerified
-							? 'bg-primary-soft text-on-primary hover:brightness-95'
-							: 'border border-primary text-primary hover:bg-primary hover:text-on-primary disabled:hover:bg-transparent disabled:hover:text-primary'}"
+						class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 border border-border text-heading hover:bg-surface disabled:hover:bg-transparent disabled:hover:text-primary"
 					>{ac.campaignVerified ? 'Unverify Campaign' : 'Verify Campaign'}</button>
 				{/if}
 			</div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Avatar from '$lib/components/Avatar.svelte';
 	import DeliveryScore from '$lib/components/DeliveryScore.svelte';
 	import ExperienceBlock from '$lib/components/ExperienceBlock.svelte';
@@ -11,11 +12,9 @@
 	// The public /[leader] page body, shared with two admin preview contexts
 	// (a pending application, a pending claim) via `preview` — same look citizens
 	// will eventually see, so what an admin approves is what actually ships.
-	// In preview mode: Reviews and "Is this you?" are hidden (not relevant pre-approval),
-	// and three review-only sections render — Request history + Team & sign-offs in the
-	// main column (below Experience), IEBC certificate in the sidebar. "Open campaign"
-	// stays live even in preview (relabeled "Preview campaign") — the Campaign
-	// component it links to derives its own preview state from the run's verified flag.
+	// In preview mode: "Manage", "In the news", Reviews, Ask, and the claim/managed
+	// cards are all hidden (nothing meant only for a live, public profile); the
+	// campaign link and everything else render the same either way.
 
 	let {
 		data,
@@ -38,23 +37,10 @@
 	const contactPhone = $derived(data.contacts.find((c: { channel: string }) => c.channel === 'sms' || c.channel === 'whatsapp')?.value ?? null);
 	const contactEmail = $derived(data.contacts.find((c: { channel: string }) => c.channel === 'email')?.value ?? null);
 
-	const isImage = (url: string) => /\.(png|jpe?g|webp|gif|avif)$/i.test(url.split('?')[0]);
+	// Ask the leader (AI): same feature as the campaign workspace's Ask block,
+	// grounded in the same manifesto/posts via this page's own ?/ask action.
+	let asking = $state(false);
 </script>
-
-{#snippet upload(label: string, url: string | null)}
-	<div>
-		<p class="text-xs font-semibold tracking-wide text-muted uppercase">{label}</p>
-		{#if url && isImage(url)}
-			<a href={url} target="_blank" rel="noopener" class="mt-1.5 block w-fit">
-				<img src={url} alt={label} class="max-h-40 rounded-xl border border-border" />
-			</a>
-		{:else if url}
-			<a href={url} target="_blank" rel="noopener" class="mt-0.5 block text-sm text-primary hover:underline">View uploaded file</a>
-		{:else}
-			<p class="mt-0.5 text-sm font-medium text-red-500">Missing</p>
-		{/if}
-	</div>
-{/snippet}
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	<!-- Breadcrumb: current campaign's seat if vying, else last held seat -->
@@ -88,7 +74,7 @@
 			<div class="rounded-3xl border border-border bg-surface p-6 sm:p-8">
 				<div class="flex flex-col gap-5 sm:flex-row sm:items-center">
 					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-30" textClass="text-4xl" />
-					<div class="min-w-0">
+					<div class="w-full">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.name}
 							<!-- A badge only: every profile is public regardless (see docs/URLDiscovery.md). -->
@@ -112,9 +98,21 @@
 							{/if}
 							{#if leader.party}· {leader.party}{/if}
 						</p>
-						<p class="mt-2 text-sm font-medium text-heading">
-							{fmt.format(leader.followers)} followers
-						</p>
+
+						<div class="mt-2 flex flex-col sm:flex-row text-center justify-between text-sm">
+							<p class="font-medium text-heading">
+								{fmt.format(leader.followers)} followers · {fmt.format(data.pledgeCount)} vote pledges
+							</p>
+							{#if data.campaign}
+							<a href={data.campaign.path} class="font-semibold text-primary hover:underline">
+								🚀 {data.campaign.year} Campaign
+							</a>
+							{:else if data.isVying}
+							<p class="font-medium text-heading">
+								No Campaign Listed
+							</p>
+							{/if}
+						</div>
 					</div>
 				</div>
 
@@ -205,37 +203,52 @@
 			{/if}
 		</div>
 
-		<!-- Sidebar: active campaign + seat links -->
+		<!-- Sidebar: Ask, contact, claim status, seat links -->
 		<div class="space-y-6">
-			{#if data.campaign}
+
+			{#if !preview}
+				<!-- Ask the leader (AI) -->
 				<div class="rounded-3xl border border-primary bg-surface p-6">
-					<p class="text-xs font-semibold tracking-wide text-primary uppercase">
-						🚀 Active {data.campaign.year} campaign
+					<h2 class="text-lg font-bold text-heading">Ask {firstName}</h2>
+					<p class="mt-1 text-sm text-muted">
+						Answers come from the manifesto and public updates, instantly.
 					</p>
-					<p class="mt-2 text-sm leading-relaxed">
-						{data.campaign.pillarCount} manifesto pillar{data.campaign.pillarCount === 1 ? '' : 's'}
-						{#if data.campaign.latestPost}
-							· latest update: "{data.campaign.latestPost.title}" ({dateFmt.format(new Date(data.campaign.latestPost.createdAt))})
-						{/if}
-					</p>
-					<a
-						href={data.campaign.path}
-						class="mt-4 inline-block w-full rounded-full bg-primary px-5 py-2.5 text-center font-semibold text-on-primary transition hover:brightness-95"
+					{#if form?.asked}
+						<div class="mt-3 rounded-2xl bg-surface-2 p-4">
+							<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
+							<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
+							<p class="mt-2 text-xs text-muted">
+								{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}
+							</p>
+						</div>
+					{/if}
+					<form
+						method="post"
+						action="?/ask"
+						class="mt-3 space-y-2"
+						use:enhance={() => {
+							asking = true;
+							return async ({ update }) => {
+								asking = false;
+								await update();
+							};
+						}}
 					>
-						{preview ? 'Preview campaign' : 'Open campaign'}
-					</a>
-					<p class="mt-2 text-center text-xs text-muted">
-						{preview ? 'Admin/owner preview — not public yet.' : 'Manifesto, updates and follow live there.'}
-					</p>
-				</div>
-			{:else if data.isVying}
-				<!-- Vying (current or aspirant), but no campaigns row yet — no dead
-				link into an empty workspace. -->
-				<div class="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
-					<p class="text-sm font-semibold text-heading">No campaign listed</p>
-					<p class="mt-2 text-sm text-muted">
-						{firstName} hasn't set up a manifesto or campaign updates yet.
-					</p>
+						<textarea
+							name="question"
+							rows="2"
+							required
+							placeholder="e.g. What is the plan for water in my ward?"
+							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+						></textarea>
+						<button
+							type="submit"
+							disabled={asking}
+							class="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+						>
+							{asking ? 'Thinking…' : 'Ask'}
+						</button>
+					</form>
 				</div>
 			{/if}
 

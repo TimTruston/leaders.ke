@@ -3,6 +3,7 @@
 	import { enhance } from '$app/forms';
 	import Reviews from '$lib/components/Reviews.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
+	import PencilIcon from './svgs/PencilIcon.svelte';
 
 	// The /[leader]/[year] campaign page body, also used slugless at
 	// /previews/[userId]/[year] before an admin approval mints a slug. Every run is
@@ -30,33 +31,31 @@
 	};
 </script>
 
-<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 	<!-- Breadcrumb: leader / year -->
-	<nav class="text-sm text-muted" aria-label="Breadcrumb">
-		<a href={data.recordPath} class="hover:text-heading hover:underline">{leader.name}</a>
-		<span class="mx-1">/</span>
-		<span>{data.year}</span>
-	</nav>
-
-	<!-- Campaign banner -->
-	<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-		<span
-			class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-on-primary"
-		>
-			🚀 Active {data.year} campaign
-		</span>
-		<a href={data.recordPath} class="text-sm font-semibold text-primary hover:underline">
-			View full profile →
-		</a>
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<nav class="text-sm text-muted" aria-label="Breadcrumb">
+			<a href={data.recordPath} class="hover:text-heading hover:underline">{leader.name}</a>
+			<span class="mx-1">/</span>
+			<span>{data.year}</span>
+		</nav>
+		{#if data.canEdit}
+			<a
+				href="/dashboard/{data.leaderSlug}/campaign"
+				class="flex items-center gap-2 rounded-full border border-primary px-3 py-2 text-xs text-primary font-semibold transition hover:bg-primary hover:text-heading"
+			>
+				<PencilIcon /> <span>Manage</span>
+			</a>
+		{/if}
 	</div>
 
-	<div class="mt-4 grid gap-6 lg:grid-cols-3">
+	<div class="mt-6 grid gap-6 lg:grid-cols-3">
 		<div class="lg:col-span-2">
 			<!-- Candidate card -->
 			<div class="rounded-3xl border border-border bg-surface p-6 sm:p-8">
 				<div class="flex flex-col gap-5 sm:flex-row sm:items-center">
-					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-28" textClass="text-4xl" />
-					<div class="min-w-0">
+					<Avatar name={leader.name} initials={leader.initials} photoUrl={leader.photoUrl} sizeClass="size-30" textClass="text-4xl" />
+					<div class="w-full">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.campaignTitle || leader.name}
 							{#if leader.verified}
@@ -86,16 +85,21 @@
 							{#if leader.campaignTitle}{leader.name} · {/if}Vying for {leader.positionTitle}, {leader.regionLabel}
 							{#if leader.party}· {leader.party}{/if}
 						</p>
-						<p class="mt-2 text-sm font-medium text-heading">
-							{fmt.format(leader.followers)} followers · {fmt.format(data.pledgeCount)} vote pledges
-						</p>
+						<div class="mt-2 flex flex-col sm:flex-row text-center justify-between text-sm">
+							<p class="font-medium text-heading">
+								{fmt.format(leader.followers)} followers · {fmt.format(data.pledgeCount)} vote pledges
+							</p>
+							<a href={data.recordPath} class="font-semibold text-primary hover:underline">
+								Full profile →
+							</a>
+						</div>
 					</div>
 				</div>
 
 				{#if leader.campaignDescription}
 					<!-- Stored as markdown-lite (RichTextEditor); renderRichText escapes it
 					before formatting, so {@html} is safe here. -->
-					<div class="mt-6 space-y-3 leading-relaxed">{@html renderRichText(leader.campaignDescription)}</div>
+					<div class="mt-6 space-y-2 leading-relaxed text-lg">{@html renderRichText(leader.campaignDescription)}</div>
 				{/if}
 			</div>
 
@@ -116,7 +120,7 @@
 									>
 										{i + 1}
 									</span>
-									<div class="min-w-0">
+									<div class="w-full">
 										<h3 class="flex flex-wrap items-center gap-2 font-semibold text-heading">
 											{pillar.title}
 											<span
@@ -181,6 +185,51 @@
 
 		<!-- Sidebar -->
 		<div class="space-y-6">
+
+			<!-- Ask the campaign (AI) -->
+			<div class="rounded-3xl border border-primary bg-surface p-6">
+				<h2 class="text-lg font-bold text-heading">Ask {leader.name.split(' ')[0]}</h2>
+				<p class="mt-1 text-sm text-muted">
+					Answers come from the manifesto and public updates, instantly.
+				</p>
+				{#if form?.asked}
+					<div class="mt-3 rounded-2xl bg-surface-2 p-4">
+						<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
+						<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
+						<p class="mt-2 text-xs text-muted">
+							{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}
+						</p>
+					</div>
+				{/if}
+				<form
+					method="post"
+					action="?/ask"
+					class="mt-3 space-y-2"
+					use:enhance={() => {
+						asking = true;
+						return async ({ update }) => {
+							asking = false;
+							await update();
+						};
+					}}
+				>
+					<textarea
+						name="question"
+						rows="2"
+						required
+						placeholder="e.g. What is the plan for water in my ward?"
+						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+					></textarea>
+					<button
+						type="submit"
+						disabled={asking}
+						class="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+					>
+						{asking ? 'Thinking…' : 'Ask'}
+					</button>
+				</form>
+			</div>
+
 			<!-- Follow -->
 			<div class="rounded-3xl border border-border bg-surface p-6">
 				<h2 class="text-lg font-bold text-heading">Follow this campaign</h2>
@@ -243,50 +292,6 @@
 						</p>
 					</form>
 				{/if}
-			</div>
-
-			<!-- Ask the campaign (AI) -->
-			<div class="rounded-3xl border border-primary bg-surface p-6">
-				<h2 class="text-lg font-bold text-heading">Ask {leader.name.split(' ')[0]}</h2>
-				<p class="mt-1 text-sm text-muted">
-					Answers come from the manifesto and public updates, instantly.
-				</p>
-				{#if form?.asked}
-					<div class="mt-3 rounded-2xl bg-surface-2 p-4">
-						<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
-						<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
-						<p class="mt-2 text-xs text-muted">
-							{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}
-						</p>
-					</div>
-				{/if}
-				<form
-					method="post"
-					action="?/ask"
-					class="mt-3 space-y-2"
-					use:enhance={() => {
-						asking = true;
-						return async ({ update }) => {
-							asking = false;
-							await update();
-						};
-					}}
-				>
-					<textarea
-						name="question"
-						rows="2"
-						required
-						placeholder="e.g. What is the plan for water in my ward?"
-						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-					></textarea>
-					<button
-						type="submit"
-						disabled={asking}
-						class="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
-					>
-						{asking ? 'Thinking…' : 'Ask'}
-					</button>
-				</form>
 			</div>
 
 			<!-- Fundraising -->

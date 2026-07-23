@@ -130,7 +130,15 @@
 			highlighted = Math.max(highlighted - 1, 0);
 		} else if (e.key === 'Enter') {
 			e.preventDefault();
-			pick(flat[highlighted] ?? flat[0]);
+			const item = flat[highlighted] ?? flat[0];
+			// No suggestion matched (or none was highlighted) — fall back to the full
+			// /search page instead of doing nothing.
+			if (item) pick(item);
+			else if (query.trim() && !onPick) {
+				const q = query.trim();
+				close();
+				goto(`/search?q=${encodeURIComponent(q)}`);
+			}
 		}
 	}
 
@@ -177,7 +185,7 @@
 		class="w-full rounded-full border border-border bg-surface py-2 pr-3 pl-9 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:outline-none"
 	/>
 
-	{#if open && groups.length > 0}
+	{#if open && (groups.length > 0 || (query.trim() && !onPick))}
 		<div
 			class="absolute top-full left-0 z-50 mt-2 max-h-[70vh] w-full overflow-y-auto rounded-2xl border border-border bg-surface p-2 shadow-lg"
 		>
@@ -211,7 +219,7 @@
 					}}
 					class="mt-1 w-full rounded-lg border-t border-border px-3 py-2 text-left text-xs text-muted hover:bg-surface-2"
 				>
-					Search everything for "{query.trim()}"
+					Search all "{query.trim()}"
 				</button>
 			{/if}
 		</div>

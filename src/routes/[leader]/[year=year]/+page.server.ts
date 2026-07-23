@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, desc, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { donations, followers, pillars, posts } from '$lib/server/db/schema';
+import { donations, followers, managers, pillars, posts } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderPath } from '$lib/server/leader';
 import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
@@ -24,9 +24,25 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const workspace = await loadCampaignWorkspaceData(row, viewer?.id);
 	const name = fullName(row.users);
 
+	// Same "who may manage this profile" check as the public profile page's
+	// canEdit: a platform admin, or an active manager on the run's team (the
+	// person themselves included — they're their own first manager).
+	const viewerIsManager = viewer
+		? viewer.id === row.users.id ||
+			!!(
+				await db
+					.select({ id: managers.id })
+					.from(managers)
+					.where(and(eq(managers.userId, viewer.id), eq(managers.subjectUserId, row.users.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
+			)[0]
+		: false;
+	const canEdit = !!viewer?.adminAt || viewerIsManager;
+
 	return {
 		year: Number(params.year),
 		recordPath,
+		canEdit,
+		leaderSlug: params.leader,
 		leader: {
 			name,
 			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
