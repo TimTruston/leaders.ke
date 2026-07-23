@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { parties, positions, users } from '$lib/server/db/schema';
+import { positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
 import { assertClaimable, ONBOARD_STATUS_LABELS, validateOnboardInput, type OnboardStatus } from '$lib/server/onboard';
@@ -9,7 +9,9 @@ import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
 // Step 3 of the onboarding wizard: describe the leader, match against seeded profiles,
-// then create or link one. Submit lands on /onboard/plan (step 4).
+// then create or link one. Submit lands on /onboard/plan (step 4). Party isn't asked
+// here — a fresh application has no leaders/campaigns row yet to attach it to; it's
+// set on the "+ Elected" term editor or the Campaign tab once one exists.
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 	const sp = event.url.searchParams;
@@ -32,8 +34,6 @@ export const load: PageServerLoad = async (event) => {
 				firstName: sp.get('firstName') ?? '',
 				otherNames: sp.get('otherNames') ?? '',
 				status: sp.get('status') ?? '',
-				partyId: sp.get('partyId') ?? '',
-				partyOther: sp.get('partyOther') ?? '',
 				positionId: Number(sp.get('positionId') ?? 0) || ('' as const),
 				myRole: sp.get('myRole') ?? '',
 				nationalId: sp.get('nationalId') ?? '',
@@ -41,14 +41,14 @@ export const load: PageServerLoad = async (event) => {
 			}
 		: null;
 
-	const [positionRows, partyRows] = await Promise.all([
-		db.select({ id: positions.id, title: positions.title, region: positions.region }).from(positions).where(isNull(positions.deletedAt)).orderBy(asc(positions.title), asc(positions.region)),
-		db.select({ id: parties.id, name: parties.name, abbreviation: parties.abbreviation }).from(parties).where(isNull(parties.deletedAt)).orderBy(asc(parties.name))
-	]);
+	const positionRows = await db
+		.select({ id: positions.id, title: positions.title, region: positions.region })
+		.from(positions)
+		.where(isNull(positions.deletedAt))
+		.orderBy(asc(positions.title), asc(positions.region));
 
 	return {
 		positions: positionRows,
-		parties: partyRows.map((p) => ({ id: p.id, name: p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name })),
 		roles: CAMPAIGN_ROLES,
 		statusOptions: (Object.keys(ONBOARD_STATUS_LABELS) as OnboardStatus[]).map((value) => ({ value, label: ONBOARD_STATUS_LABELS[value] })),
 		// Stepping back wins; else the claim target's name; else the citizen's own —
@@ -59,8 +59,6 @@ export const load: PageServerLoad = async (event) => {
 			firstName: claimTarget?.firstName ?? domainUser.firstName,
 			otherNames: claimTarget?.otherNames ?? domainUser.otherNames,
 			status: '' as const,
-			partyId: '',
-			partyOther: '',
 			positionId: '' as const,
 			myRole: '',
 			// A prior onboarding submission already saved this account's own national
@@ -88,8 +86,6 @@ export const actions: Actions = {
 			firstName: String(form.get('firstName') ?? ''),
 			otherNames: String(form.get('otherNames') ?? ''),
 			status: String(form.get('status') ?? ''),
-			partyId: String(form.get('partyId') ?? ''),
-			partyOther: String(form.get('partyOther') ?? ''),
 			positionId: String(form.get('positionId') ?? ''),
 			myRole: String(form.get('myRole') ?? ''),
 			nationalId: String(form.get('nationalId') ?? '')
@@ -103,9 +99,6 @@ export const actions: Actions = {
 		if (linkSubjectId) {
 			const claimable = await assertClaimable(linkSubjectId);
 			if (!claimable.ok) return fail(400, { error: claimable.error, values });
-		} else if (validated.input.partyId) {
-			const [party] = await db.select({ id: parties.id }).from(parties).where(and(eq(parties.id, validated.input.partyId), isNull(parties.deletedAt)));
-			if (!party) return fail(400, { error: 'That party does not exist.', values });
 		}
 
 		// Carry everything into Plan (step 4) as query params — Checkout's Pay action
@@ -114,8 +107,6 @@ export const actions: Actions = {
 			firstName: validated.input.firstName,
 			otherNames: validated.input.otherNames,
 			status: validated.input.status,
-			partyId: raw.partyId.trim(),
-			partyOther: raw.partyOther.trim(),
 			positionId: String(validated.input.positionId),
 			myRole: validated.input.myRole,
 			nationalId: validated.input.nationalId

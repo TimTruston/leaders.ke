@@ -182,6 +182,9 @@
 						<a href={term.path} class="mt-1 inline-block font-semibold text-heading hover:text-primary">
 							{term.name}
 						</a>
+						{#if term.party}
+							<span class="text-sm text-muted"> · {term.party}</span>
+						{/if}
 						{#if term.status === 'current'}
 							<span class="ml-2 rounded-full bg-primary-soft px-2 py-0.5 text-xs font-semibold text-on-primary">
 								Current

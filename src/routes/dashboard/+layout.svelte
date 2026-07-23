@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
@@ -7,9 +6,6 @@
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
-
-	let submittingApplication = $state(false);
-	let applicationError = $state('');
 
 	// Delete (application or claim) goes through a confirmation modal: the button
 	// click is intercepted, and confirming re-submits its form with the button as
@@ -255,45 +251,13 @@
 					{data.leaderContext.positionTitle}, {data.leaderContext.region}
 					· <span class="capitalize">{data.leaderContext.status}</span>
 				</p>
-				{#if data.pendingVerification}
-					<span
-						class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3 py-1 text-sm font-semibold text-muted"
-					>
-						Pending verification
-					</span>
-				{:else if !data.leaderContext.verified}
-					<!-- Submit for Verification: gated on every tab (Profile/Contacts minus
-					website+socials/Team 2+/Documentation) being filled in. Delete is the
-					"just testing" escape hatch for an unverified profile. -->
-					<form
-						method="post"
-						action="{base}/profile?/requestVerification"
-						class="w-full sm:w-auto flex items-center justify-between gap-2"
-						use:enhance={() => {
-							submittingApplication = true;
-							applicationError = '';
-							return async ({ result, update }) => {
-								submittingApplication = false;
-								if (result.type === 'failure') {
-									applicationError = (result.data?.verificationError as string) ?? 'Could not submit.';
-								}
-								await update();
-							};
-						}}
-					>
+				{#if !data.leaderContext.verified}
+					<!-- No submit/review step — an admin verifies (or not) directly on the
+					control bar below. Delete is the "just testing" escape hatch for an
+					unverified profile. -->
+					<form method="post" action="{base}/profile?/deleteApplication" class="flex items-center justify-end">
 						<button
 							type="submit"
-							disabled={!data.applicationComplete || submittingApplication}
-							title={data.applicationComplete
-								? ''
-								: `Still needed before you can submit:\n• ${missingFields.join('\n• ')}`}
-							class="shrink-0 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
-						>
-							{submittingApplication ? 'Submitting…' : 'Submit for Verification'}
-						</button>
-						<button
-							type="submit"
-							formaction="{base}/profile?/deleteApplication"
 							formnovalidate
 							onclick={confirmDelete}
 							class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-2 hover:text-heading"
@@ -311,18 +275,6 @@
 		</div>
 	</div>
 
-	<!-- Inline approve/reject decision form (claim or verification) — identical but for
-	its action + target-id field; posts to the shared admin endpoint. -->
-	{#snippet decisionForm(action: string, idName: string, idValue: number)}
-		<form method="post" action="/dashboard/admin/profile-action" class="mt-1 flex w-full flex-wrap items-center gap-2 border-t border-border pt-2">
-			<input type="hidden" name="action" value={action} />
-			<input type="hidden" name={idName} value={idValue} />
-			<input type="hidden" name="next" value={page.url.pathname} />
-			<input type="text" name="notes" placeholder="Reason for rejection" class="min-w-48 flex-1 rounded-full border border-border bg-surface px-3 py-1 text-xs text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none" />
-			<button type="submit" name="outcome" value="rejected" class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface">Reject</button>
-			<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
-		</form>
-	{/snippet}
 
 	<!-- Platform-admin control bar: shown on ANY profile a platform admin opens via the
 	Profiles tab "Admin" button. Source + verified badges, then the destructive lifecycle
@@ -410,6 +362,21 @@
 						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-primary"
 					>Verify identity</button>
 				{/if}
+				{#if ac.campaignVerified}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `${ac.profileName}'s campaign loses its Verified badge until an admin re-confirms it.`, confirmLabel: 'Remove' })}
+						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
+					>Unverify campaign</button>
+				{:else}
+					<button
+						type="button"
+						disabled={!ac.campaignDocsComplete}
+						title={ac.campaignDocsComplete ? '' : 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.'}
+						onclick={() => (adminAction = { action: 'verifyCampaign', title: 'Verify campaign?', body: `Confirms ${ac.profileName}'s 2027 run and shows the Verified badge publicly.`, confirmLabel: 'Verify' })}
+						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-primary"
+					>Verify campaign</button>
+				{/if}
 			</div>
 
 			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager
@@ -433,9 +400,6 @@
 					<button type="submit" name="outcome" value="approved" class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95">Approve</button>
 				</form>
 			{/if}
-			<!-- Verification decision (was the Campaign-tab banner): approve takes the run live.
-			The slug is set on the Profile tab, not here. -->
-			{#if ac.verification}{@render decisionForm('reviewVerification', 'verificationId', ac.verification.id)}{/if}
 
 			<!-- One form the confirm modal submits; the chosen action is written straight
 			onto the hidden input before requestSubmit so no reactive flush is needed. -->
@@ -449,18 +413,6 @@
 		</div>
 	{/if}
 
-	<!-- Rejection feedback: the admin's reason from the last review, shown until the
-	applicant re-submits (getLatestRejection stops returning it once a new request is pending). -->
-	{#if mode === 'campaign' && data.rejection}
-		<div class="mt-3 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
-			<p class="text-sm font-semibold text-red-500">Your verification request was not approved.</p>
-			{#if data.rejection.notes}
-				<p class="mt-1 text-sm text-heading">{data.rejection.notes}</p>
-			{:else}
-				<p class="mt-1 text-sm text-muted">No reason was given. Review your details and re-submit.</p>
-			{/if}
-		</div>
-	{/if}
 	<!-- Consolidated checklist: collapsed to just its title, click to expand the
 	full list of what's still outstanding across every tab. -->
 	<!-- The layout load computes `application` off the viewer's own context even on
@@ -474,9 +426,6 @@
 					<span>{field}{i < missingFields.length - 1 ? ',' : ''}</span>
 					{/each}
 				</div>
-			{/if}
-			{#if applicationError}
-				<p class="text-right text-xs text-red-500">{applicationError}</p>
 			{/if}
 		</div>
 	{/if}

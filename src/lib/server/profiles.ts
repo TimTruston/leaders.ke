@@ -12,7 +12,7 @@ import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, positions, profileClaims, users, verifications } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
-import { ACTIVE_CYCLE, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
+import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { formatKenyanPhoneDisplay } from '$lib/utils/phone';
 import { notifyUser } from '$lib/server/notifications';
@@ -102,7 +102,7 @@ export async function listProfiles(
 	];
 	if (personIds.length === 0) return { profiles: [], total: 0 };
 
-	const [personRows, managerRows, claimRows, verificationRows] = await Promise.all([
+	const [personRows, managerRows, claimRows] = await Promise.all([
 		db
 			.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, authUserId: users.authUserId, deletedAt: users.deletedAt })
 			.from(users)
@@ -117,11 +117,7 @@ export async function listProfiles(
 			.from(profileClaims)
 			.innerJoin(users, eq(profileClaims.claimedBy, users.id))
 			.where(inArray(profileClaims.subjectUserId, personIds))
-			.orderBy(desc(profileClaims.requestedAt)),
-		db
-			.select({ campaignId: verifications.campaignId, outcome: verifications.outcome, requestedAt: verifications.requestedAt })
-			.from(verifications)
-			.orderBy(desc(verifications.requestedAt))
+			.orderBy(desc(profileClaims.requestedAt))
 	]);
 
 	const personById = new Map(personRows.map((p) => [p.id, p]));
@@ -154,10 +150,6 @@ export async function listProfiles(
 	const claimBySubject = new Map<number, (typeof claimRows)[number]>();
 	for (const c of claimRows) if (!claimBySubject.has(c.subjectUserId)) claimBySubject.set(c.subjectUserId, c);
 
-	// Latest verification per campaign → the applied profile's review state.
-	const verificationByCampaign = new Map<number, (typeof verificationRows)[number]>();
-	for (const v of verificationRows) if (!verificationByCampaign.has(v.campaignId)) verificationByCampaign.set(v.campaignId, v);
-
 	// Last lifecycle activity per person — max over their run/term createdAt, claim
 	// requestedAt and manager updatedAt — for the default "recent first" sort.
 	const lastActivityBySubject = new Map<number, number>();
@@ -182,15 +174,13 @@ export async function listProfiles(
 		const source: ProfileSource = claim ? 'claimed' : manager ? 'applied' : 'seeded';
 
 		// Verified = the review-workflow state, keyed off source (seeded never reviewed).
+		// 'applied' is a direct admin toggle now (campaigns.verifiedAt) — no more
+		// submit/pending/rejected states, just verified or not yet.
 		let verified: ProfileVerified;
 		if (person?.deletedAt) verified = 'deleted';
 		else if (source === 'seeded') verified = null;
 		else if (source === 'claimed') verified = claim!.outcome ?? 'pending';
-		else {
-			// applied: the run's verification. verifiedAt = approved; else latest request outcome.
-			const v = run ? verificationByCampaign.get(run.campaignId) : undefined;
-			verified = run?.verifiedAt ? 'approved' : v ? (v.outcome ?? 'pending') : null;
-		}
+		else verified = run?.verifiedAt ? 'approved' : null;
 
 		const slug = person?.slug ?? null;
 		const name = person ? fullName(person) : 'Unknown';
@@ -273,11 +263,15 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	// identityDocsComplete gates whether the control bar's Verify button can act.
 	identityVerified: boolean;
 	identityDocsComplete: boolean;
+	// Campaign badge (campaigns.verifiedAt): a direct admin toggle, same pattern as
+	// identity — no submit/review queue. campaignDocsComplete (the IEBC certificate
+	// uploaded) gates whether the control bar's Verify button can act.
+	campaignVerified: boolean;
+	campaignDocsComplete: boolean;
 	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
-	// The pending decisions the admin control bar surfaces inline (moved off the
-	// Team/Campaign tabs): a live claim to approve/reject, and a run verification.
+	// The pending decision the admin control bar surfaces inline (moved off the Team
+	// tab): a live claim to approve/reject.
 	claim: { id: number; claimantId: number; claimantName: string; email: string | null; phone: string | null } | null;
-	verification: { id: number; suggestedSlug: string } | null;
 	// An already-approved claim, once granted, has no "before" snapshot to diff
 	// against — access was immediate at payment time — so unlike claim above, this
 	// stays reviewable indefinitely, not just while pending. Lets the control bar
@@ -355,28 +349,19 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	// The person's current-cycle main run, and whether it's verified + un-graduated
 	// (Declare Winner turns a verified un-graduated run into a `current` term).
 	const [run] = await db
-		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId })
+		.select({ id: campaigns.id, verifiedAt: campaigns.verifiedAt, leaderId: campaigns.leaderId, iebcCertificateUrl: campaigns.iebcCertificateUrl })
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
 	const source: ProfileSource = claim ? 'claimed' : application ? 'applied' : 'seeded';
 
-	// The run's latest verification request (for the verified state + the decision form).
-	const [latestVerification] = run
-		? await db
-				.select({ id: verifications.id, outcome: verifications.outcome })
-				.from(verifications)
-				.where(eq(verifications.campaignId, run.id))
-				.orderBy(desc(verifications.requestedAt))
-				.limit(1)
-		: [];
-
+	// 'applied' is a direct admin toggle now (campaigns.verifiedAt) — no more
+	// submit/pending/rejected states, just verified or not yet.
 	let verified: ProfileVerified;
 	if (person?.deletedAt) verified = 'deleted';
 	else if (source === 'seeded') verified = null;
 	else if (source === 'claimed') verified = claim!.outcome ?? 'pending';
-	else if (run?.verifiedAt) verified = 'approved';
-	else verified = latestVerification ? (latestVerification.outcome ?? 'pending') : null;
+	else verified = run?.verifiedAt ? 'approved' : null;
 
 	return {
 		source,
@@ -385,6 +370,8 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
 		identityVerified: !!person?.verifiedAt,
 		identityDocsComplete: !!(person?.nationalId && person.idFrontUrl && person.idBackUrl && person.photoUrl),
+		campaignVerified: !!run?.verifiedAt,
+		campaignDocsComplete: !!run?.iebcCertificateUrl,
 		application: application
 			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
 			: null,
@@ -393,10 +380,6 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 			claim && claim.outcome === null && !claim.deletedAt
 				? { id: claim.id, claimantId: claim.claimantId, claimantName: fullName({ firstName: claim.first, otherNames: claim.other }), ...contactsFor(claim.claimantId) }
 				: null,
-		// A submitted verification request is decidable; approving mints the slug.
-		verification: latestVerification
-			? { id: latestVerification.id, suggestedSlug: person?.slug ?? (person ? await generateLeaderSlug(fullName(person)) : '') }
-			: null,
 		approvedClaimId: claim && claim.outcome === 'approved' && !claim.deletedAt ? claim.id : null
 	};
 }

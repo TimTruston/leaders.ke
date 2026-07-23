@@ -20,7 +20,7 @@ import { randomUUID } from 'node:crypto';
 import { and, eq, isNull, like, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { leaders, parties, partyMemberships, positions, users } from '../src/lib/server/db/schema';
+import { leaders, parties, positions, users } from '../src/lib/server/db/schema';
 import { user as authUsers } from '../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName } from './lib/names';
 
@@ -307,44 +307,30 @@ for (const parliament of PARLIAMENTS) {
 			}
 		}
 
+		// ---- party at the time, attached to this term's own row (a person can switch
+		// parties between parliaments, so this is per-term, not a person-level fact) ----
+		let partyId: number | null = null;
+		if (entry.party) {
+			partyId = partyIdByKey.get(partyKey(entry.party)) ?? null;
+			if (!partyId) partiesMissing.set(entry.party, (partiesMissing.get(entry.party) ?? 0) + 1);
+			else membershipsAdded++;
+		}
+
 		// ---- the former term itself (one row per parliament — older terms are kept) ----
 		if (termOverlaps(userId, position.id, parliament.startAt, parliament.endAt)) continue;
 		recordTerm(userId, position.id, parliament.startAt, parliament.endAt);
 		termsAdded++;
-		let leaderId: number | null = null;
 		if (flags.apply) {
-			const [term] = await db
-				.insert(leaders)
-				.values({
-					userId,
-					positionId: position.id,
-					status: 'former',
-					description: `${parliament.key} Parliament`,
-					startAt: parliament.startAt,
-					endAt: parliament.endAt,
-					verifiedAt: new Date()
-				})
-				.returning({ id: leaders.id });
-			leaderId = term.id;
-		}
-
-		// ---- party at the time, attached to this term's row ----
-		if (entry.party) {
-			const partyId = partyIdByKey.get(partyKey(entry.party));
-			if (!partyId) {
-				partiesMissing.set(entry.party, (partiesMissing.get(entry.party) ?? 0) + 1);
-			} else {
-				membershipsAdded++;
-				if (flags.apply) {
-					await db.insert(partyMemberships).values({
-						partyId,
-						subjectUserId: userId,
-						role: 'Member',
-						startAt: parliament.startAt,
-						endAt: parliament.endAt
-					});
-				}
-			}
+			await db.insert(leaders).values({
+				userId,
+				positionId: position.id,
+				partyId,
+				status: 'former',
+				description: `${parliament.key} Parliament`,
+				startAt: parliament.startAt,
+				endAt: parliament.endAt,
+				verifiedAt: new Date()
+			});
 		}
 	}
 }

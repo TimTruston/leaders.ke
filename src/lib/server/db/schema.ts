@@ -121,6 +121,11 @@ export const leaders = pgTable('leaders', {
   contacts: jsonb('contacts').default({}),
   status: varchar('status', { length: 30 }).default('current').notNull(), // 'current' | 'former' (a run for office is a campaign, not a leaders row)
   description: varchar('description', { length: 255 }), // short seat-name qualifier, e.g. "Former Eldoret North" when a seat was renamed/redrawn
+  // The party this SPECIFIC term was served under — a person can switch parties
+  // between terms, so this is denormalized per term rather than inferred from
+  // partyMemberships' current (live) row, which only tracks their party today.
+  // Null = not recorded / independent for this term.
+  partyId: integer('party_id').references(() => parties.id, { onDelete: 'set null' }),
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   startAt: timestamp('start_at', { withTimezone: true }).notNull(), // aspirant candidates have a future start date
   endAt: timestamp('end_at', { withTimezone: true }),
@@ -207,6 +212,10 @@ export const campaigns = pgTable('campaigns', {
   // (not via its leaders row): the seat contested and the election year.
   positionId: integer('position_id').references(() => positions.id).notNull(),
   cycleYear: integer('cycle_year').notNull(), // e.g. 2027 — the election year of this run
+  // The party this RUN is contested under — a person can switch parties between
+  // cycles, so this is denormalized per campaign (same pattern as leaders.partyId),
+  // not a person-level fact. Null = independent/not recorded.
+  partyId: integer('party_id').references(() => parties.id, { onDelete: 'set null' }),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(), // Rich text payload
   // A run is admin-verified independently of any held term (the aspirant has no
@@ -561,26 +570,6 @@ export const parties = pgTable('parties', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
-
-// 13. PARTY_MEMBERSHIPS (Many-to-Many Relationship between Leaders and Parties)
-// Links a leader to a party for a given stretch of time.
-export const partyMemberships = pgTable('party_memberships', {
-  id: serial('id').primaryKey(),
-  partyId: integer('party_id').references(() => parties.id, { onDelete: 'cascade' }).notNull(),
-  // The PERSON who belongs to the party. Membership is a person-level TIMELINE
-  // (startAt/endAt rows), not a per-term fact: people switch parties across cycles,
-  // an aspirant with no leaders row still has one, and the dated history itself is
-  // civic data. Current party = the live row (endAt null).
-  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  role: varchar('role', { length: 100 }).notNull(), // e.g., 'Member', 'Chairperson'
-  startAt: timestamp('start_at', { withTimezone: true }).notNull(),
-  endAt: timestamp('end_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-}, (t) => [
-  index('party_memberships_subject_idx').on(t.subjectUserId),
-]);
 
 // 12. ALLIANCES (Unregistered Political Alliances)
 // An informal coalition of parties/leaders, outside formal party registration.

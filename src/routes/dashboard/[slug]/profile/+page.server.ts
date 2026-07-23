@@ -4,14 +4,10 @@ import { fail } from '@sveltejs/kit';
 import { redirectWithFlash } from '$lib/server/flash';
 import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, experience, leaders, managers, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
-import { user as authUsers } from '$lib/server/db/auth.schema';
+import { campaigns, experience, leaders, managers, parties, positions, users } from '$lib/server/db/schema';
 import { getRouteLeaderContext, requireDashboardUser, requireLeader } from '$lib/server/dashboard';
 import { ACTIVE_CYCLE, createPhantomUser, fullName, getOrCreateRunCampaign, getRunCampaign, isSlugAvailable, resolveOtherParty, slugify } from '$lib/server/leader';
-import { getPendingVerification, requestVerification } from '$lib/server/verifications';
-import { getPlatformSettings } from '$lib/server/settings';
 import { saveLeaderDocument, type UploadKind } from '$lib/server/storage';
-import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
 // The photo rides the ?/save submit itself (multipart) and lands on the PERSON
@@ -33,16 +29,10 @@ export const load: PageServerLoad = async (event) => {
 		.where(isNull(parties.deletedAt))
 		.orderBy(asc(parties.name));
 
-	// The leader's live party membership (endAt null) feeds the Party select;
-	// null = independent/none.
-	let partyId: number | null = null;
-	if (ctx) {
-		const [membership] = await db
-			.select({ partyId: partyMemberships.partyId })
-			.from(partyMemberships)
-			.where(and(eq(partyMemberships.subjectUserId, ctx.profileUser.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-		partyId = membership?.partyId ?? null;
-	}
+	// Party is per-term (leaders.partyId), not a person-level fact — this Party
+	// select only applies to a HELD term being actively edited (ctx.leader). A pure
+	// aspirant declares theirs on the Campaign tab instead (campaigns.partyId).
+	const partyId = ctx?.leader?.partyId ?? null;
 
 	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
 	const subject = ctx?.profileUser ?? domainUser;
@@ -55,16 +45,23 @@ export const load: PageServerLoad = async (event) => {
 					.where(and(eq(experience.subjectUserId, subject.id), isNull(experience.deletedAt)))
 					.orderBy(experience.startAt),
 				db
-					.select({ id: leaders.id, positionTitle: positions.title, region: positions.region, description: leaders.description, from: leaders.startAt, to: leaders.endAt })
+					.select({
+						id: leaders.id,
+						positionTitle: positions.title,
+						region: positions.region,
+						description: leaders.description,
+						from: leaders.startAt,
+						to: leaders.endAt,
+						partyId: leaders.partyId,
+						partyName: parties.name
+					})
 					.from(leaders)
 					.innerJoin(positions, eq(leaders.positionId, positions.id))
+					.leftJoin(parties, eq(leaders.partyId, parties.id))
 					.where(and(eq(leaders.userId, subject.id), ne(leaders.id, ctx.leader?.id ?? 0), isNull(leaders.deletedAt)))
 					.orderBy(leaders.startAt)
 			])
 		: [[], []];
-
-	// Verification + IEBC cert live on the person's run (campaign), not a held term.
-	const runCampaign = ctx ? await getRunCampaign(ctx.profileUser.id) : null;
 
 	return {
 		positions: positionRows.map((p) => ({
@@ -91,7 +88,9 @@ export const load: PageServerLoad = async (event) => {
 			region: r.region,
 			description: r.description,
 			from: r.from.getFullYear(),
-			to: r.to?.getFullYear() ?? null
+			to: r.to?.getFullYear() ?? null,
+			partyId: r.partyId,
+			partyName: r.partyName
 		})),
 		form: {
 			firstName: subject.firstName,
@@ -99,18 +98,18 @@ export const load: PageServerLoad = async (event) => {
 			bio: subject.bio ?? '',
 			positionId: ctx?.position?.id ?? null,
 			partyId,
+			hasActiveTerm: !!ctx?.leader,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
 			verified: (ctx?.verified ?? false)
 		},
 		// The photo is edited on this tab (staged client-side, uploaded with ?/save).
-		photoUrl: ctx?.profileUser.photoUrl ?? null,
-		pendingVerification: runCampaign ? !!(await getPendingVerification(runCampaign.id)) : false
+		photoUrl: ctx?.profileUser.photoUrl ?? null
 	};
 };
 
 type PendingExperience = { type: 'education' | 'professional'; title: string; institution: string; description?: string; from: string; to: string | null };
-type PendingLeadership = { positionId: number; description: string; from: string; to: string | null };
+type PendingLeadership = { positionId: number; partyId: number | null; description: string; from: string; to: string | null };
 
 export const actions: Actions = {
 	save: async (event) => {
@@ -157,16 +156,21 @@ export const actions: Actions = {
 		// The seat contested is no longer part of this form — the run (seat + cycle)
 		// is declared on the Campaign tab.
 
-		if (partyRaw === 'other' && !partyOtherRaw) return fail(400, { error: 'Enter the party name.' });
-		let partyId = partyRaw && partyRaw !== 'other' ? Number(partyRaw) || null : null; // null = independent
-		if (partyId) {
-			const [party] = await db
-				.select({ id: parties.id })
-				.from(parties)
-				.where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
-			if (!party) return fail(400, { error: 'That party does not exist.' });
-		} else if (partyRaw === 'other') {
-			partyId = await resolveOtherParty(partyOtherRaw);
+		// Party only applies when editing an active HELD term (ctx.leader) — a pure
+		// aspirant has no leaders row yet to attach it to (see the Campaign tab instead).
+		if (ctx?.leader) {
+			if (partyRaw === 'other' && !partyOtherRaw) return fail(400, { error: 'Enter the party name.' });
+			let partyId = partyRaw && partyRaw !== 'other' ? Number(partyRaw) || null : null; // null = independent
+			if (partyId) {
+				const [party] = await db
+					.select({ id: parties.id })
+					.from(parties)
+					.where(and(eq(parties.id, partyId), isNull(parties.deletedAt)));
+				if (!party) return fail(400, { error: 'That party does not exist.' });
+			} else if (partyRaw === 'other') {
+				partyId = await resolveOtherParty(partyOtherRaw);
+			}
+			await db.update(leaders).set({ partyId }).where(eq(leaders.id, ctx.leader.id));
 		}
 
 		for (const e of pendingExperience) {
@@ -238,25 +242,6 @@ export const actions: Actions = {
 			});
 		}
 
-		// Party membership is a person-level timeline: one live row (endAt null) per
-		// person. A change ends the current row and starts a new one — the dated
-		// history of switches is kept. Aspirants (no leaders row) set party too.
-		const [currentMembership] = await db
-			.select({ id: partyMemberships.id, partyId: partyMemberships.partyId })
-			.from(partyMemberships)
-			.where(and(eq(partyMemberships.subjectUserId, subjectId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-		if ((currentMembership?.partyId ?? null) !== partyId) {
-			if (currentMembership) {
-				await db
-					.update(partyMemberships)
-					.set({ endAt: new Date(), updatedAt: new Date() })
-					.where(eq(partyMemberships.id, currentMembership.id));
-			}
-			if (partyId) {
-				await db.insert(partyMemberships).values({ partyId, subjectUserId: subjectId, role: 'Member', startAt: new Date() });
-			}
-		}
-
 		for (const e of pendingExperience) {
 			await db.insert(experience).values({
 				subjectUserId: subjectId,
@@ -273,6 +258,7 @@ export const actions: Actions = {
 			await db.insert(leaders).values({
 				userId: subjectId,
 				positionId: l.positionId,
+				partyId: l.partyId,
 				status: 'former',
 				description: l.description?.trim() || null,
 				startAt: new Date(`${l.from}T00:00:00+03:00`),
@@ -337,50 +323,5 @@ export const actions: Actions = {
 			await db.update(users).set({ deletedAt: new Date() }).where(eq(users.id, ctx.profileUser.id));
 		}
 		redirectWithFlash(event.cookies, '/dashboard', 'Application deleted.');
-	},
-
-	requestVerification: async (event) => {
-		const { domainUser } = await requireDashboardUser(event);
-		const ctx = await getRouteLeaderContext(event, domainUser.id);
-		if (!ctx) return fail(400, { verificationError: 'Save your profile before requesting verification.' });
-		// Verification is for the run (campaign), declared on the Campaign tab first.
-		const run = await getRunCampaign(ctx.profileUser.id);
-		if (!run) return fail(400, { verificationError: 'Set up your campaign (seat + cycle) on the Campaign tab first.' });
-		if (run.verifiedAt) return fail(400, { verificationError: 'Already verified.' });
-
-		// The two verification gates are admin-tunable (Platform settings): a credible
-		// campaign needs enough email-verified managers, enough of whom have each
-		// completed their own sign-off (role + national ID + ID images) on the Team tab.
-		const settings = await getPlatformSettings();
-		const managerRows = await db
-			.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified, idFrontUrl: users.idFrontUrl, idBackUrl: users.idBackUrl })
-			.from(managers)
-			.innerJoin(users, eq(managers.userId, users.id))
-			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
-			.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)));
-
-		const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
-		if (verifiedManagers < settings.requiredTeamManagers) {
-			return fail(400, {
-				verificationError: `Add at least ${settings.requiredTeamManagers} verified team members on the Team tab before submitting.`
-			});
-		}
-
-		const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
-		if (completedSignoffs < settings.requiredSignoffs) {
-			return fail(400, {
-				verificationError: `${settings.requiredSignoffs} completed team sign-off${settings.requiredSignoffs === 1 ? '' : 's'} required — finish your sign-off on the Team tab before submitting.`
-			});
-		}
-
-		// The submitter's own role + national ID travel with the request as evidence.
-		const myRoles = (managerRows.find((m) => m.userId === domainUser.id)?.roles ?? {}) as ManagerRoles;
-
-		const form = await event.request.formData();
-		const notes = String(form.get('notes') ?? '').trim();
-		const result = await requestVerification(run.id, domainUser.id, { nationalId: myRoles.nationalId ?? '', myRole: myRoles.title ?? '', notes });
-		if (!result.ok) return fail(400, { verificationError: result.error });
-
-		return { requestedVerification: true };
 	}
 };

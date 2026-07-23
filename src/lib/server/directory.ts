@@ -4,7 +4,7 @@
 // server-side, and only the requested page's cards ship.
 import { and, count, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { campaigns, followers, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
 import { counties } from '$lib/data/geo';
 
@@ -61,6 +61,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		startAt: Date;
 		endAt: Date | null;
 		verifiedAt: Date | null;
+		partyId: number | null;
 	};
 
 	// Held terms (current/former) at this position.
@@ -76,7 +77,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			region: positions.region,
 			startAt: leaders.startAt,
 			endAt: leaders.endAt,
-			verifiedAt: leaders.verifiedAt
+			verifiedAt: leaders.verifiedAt,
+			partyId: leaders.partyId
 		})
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
@@ -93,7 +95,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			photoUrl: users.photoUrl,
 			region: positions.region,
 			cycleYear: campaigns.cycleYear,
-			verifiedAt: campaigns.verifiedAt
+			verifiedAt: campaigns.verifiedAt,
+			partyId: campaigns.partyId
 		})
 		.from(campaigns)
 		.innerJoin(positions, eq(campaigns.positionId, positions.id))
@@ -119,7 +122,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			region: r.region,
 			startAt: new Date(r.cycleYear, 7, 10), // election day of the cycle, for ordering only
 			endAt: null,
-			verifiedAt: r.verifiedAt
+			verifiedAt: r.verifiedAt,
+			partyId: r.partyId
 		}))
 	];
 
@@ -161,28 +165,29 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	}
 	const personIds = people.map((p) => p.userId);
 
-	// Follower counts + live party, both per PERSON (follows and party are person-scoped).
+	// Follower counts per PERSON (follows are person-scoped); party is per-row
+	// (partyId lives on the leaders/campaigns row itself, not the person).
 	const [followerRows, partyRows] = await Promise.all([
 		db
 			.select({ userId: followers.digestId, n: count() })
 			.from(followers)
 			.where(and(eq(followers.digest, 'leader'), inArray(followers.digestId, personIds), isNull(followers.deletedAt)))
 			.groupBy(followers.digestId),
-		db
-			.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
-			.from(partyMemberships)
-			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(inArray(partyMemberships.subjectUserId, personIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
+		(async () => {
+			const partyIds = [...new Set(people.map((p) => p.partyId).filter((id): id is number => id !== null))];
+			return partyIds.length ? db.select({ id: parties.id, name: parties.name }).from(parties).where(inArray(parties.id, partyIds)) : [];
+		})()
 	]);
 	const followersBy = new Map(followerRows.map((r) => [r.userId, r.n]));
-	const partyBy = new Map(partyRows.map((r) => [r.userId, r.partyName]));
+	const partyNameById = new Map(partyRows.map((r) => [r.id, r.name]));
+	const partyBy = new Map(people.map((p) => [p.userId, p.partyId ? (partyNameById.get(p.partyId) ?? null) : null]));
 
 	// Filter options come from the FULL position set (before filtering). Raw region
 	// labels — for MCA these are ward seat names; SearchFilter derives the
 	// constituency dropdown from them itself.
 	const isMca = positionTitle === 'MCA';
 	const regionOptions = [...new Set(people.map((p) => p.region))].sort();
-	const partyOptions = [...new Set(partyRows.map((r) => r.partyName))].sort();
+	const partyOptions = [...new Set(partyRows.map((r) => r.name))].sort();
 
 	const q = f.query.trim().toLowerCase();
 	const filtered = people.filter((p) => {

@@ -1,6 +1,6 @@
 import { and, eq, exists, inArray, ilike, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { alliances, campaigns, experience, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
+import { alliances, campaigns, experience, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
@@ -43,27 +43,17 @@ export const load: PageServerLoad = async ({ url }) => {
 	}
 
 	const matchedLeaders = [...bySlug.values()];
-	const matchedPersonIds = matchedLeaders.map((r) => r.users.id);
 
-	// Live party per matched PERSON (membership is person-scoped).
-	const partyRowsForLeaders = matchedPersonIds.length
-		? await db
-				.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
-				.from(partyMemberships)
-				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(
-					and(
-						inArray(partyMemberships.subjectUserId, matchedPersonIds),
-						isNull(partyMemberships.deletedAt),
-						isNull(partyMemberships.endAt)
-					)
-				)
+	// Party is per-term (leaders.partyId), not a person-level fact.
+	const leaderPartyIds = [...new Set(matchedLeaders.map((r) => r.leaders.partyId).filter((id): id is number => id !== null))];
+	const partyRowsForLeaders = leaderPartyIds.length
+		? await db.select({ id: parties.id, name: parties.name }).from(parties).where(inArray(parties.id, leaderPartyIds))
 		: [];
-	const partyByPerson = new Map(partyRowsForLeaders.map((p) => [p.userId, p.partyName]));
+	const partyNameById = new Map(partyRowsForLeaders.map((p) => [p.id, p.name]));
 
 	const leaderResults = matchedLeaders.map((r) => {
 		const name = fullName(r.users);
-		const party = partyByPerson.get(r.users.id) ?? null;
+		const party = r.leaders.partyId ? (partyNameById.get(r.leaders.partyId) ?? null) : null;
 		return {
 			name,
 			initials: name

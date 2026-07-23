@@ -11,9 +11,10 @@
 // source-verified content, not necessarily byte-identical to what was live before.
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { and, eq, isNull, or } from 'drizzle-orm';
+import { and, desc, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { experience, parties, partyMemberships, users } from '$lib/server/db/schema';
+import { campaigns, experience, leaders, parties, users } from '$lib/server/db/schema';
+import { ACTIVE_CYCLE } from '$lib/server/leader';
 
 type DossierBio = { text: string };
 type DossierTerm = { party?: string | null };
@@ -82,18 +83,26 @@ export async function restoreFromSeed(subjectUserId: number): Promise<{ ok: true
 	}
 
 	// Party: the first term that actually names one (not necessarily terms[0] —
-	// e.g. a later 2027 aspirant entry can have a null party).
+	// e.g. a later 2027 aspirant entry can have a null party). Restores onto
+	// whichever row a claimant could have edited: their live held term, else
+	// their active-cycle run (party is per-term/per-run, not person-level).
 	const seedPartyName = entry.terms.find((t) => t.party)?.party;
 	if (seedPartyName) {
 		const [party] = await db.select({ id: parties.id }).from(parties).where(or(eq(parties.name, seedPartyName), eq(parties.abbreviation, seedPartyName)));
 		if (party) {
-			const [live] = await db
-				.select({ id: partyMemberships.id, partyId: partyMemberships.partyId })
-				.from(partyMemberships)
-				.where(and(eq(partyMemberships.subjectUserId, subjectUserId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-			if ((live?.partyId ?? null) !== party.id) {
-				if (live) await db.update(partyMemberships).set({ endAt: new Date(), updatedAt: new Date() }).where(eq(partyMemberships.id, live.id));
-				await db.insert(partyMemberships).values({ partyId: party.id, subjectUserId, role: 'Member', startAt: new Date() });
+			const [currentTerm] = await db
+				.select({ id: leaders.id })
+				.from(leaders)
+				.where(and(eq(leaders.userId, subjectUserId), eq(leaders.status, 'current'), isNull(leaders.deletedAt)));
+			if (currentTerm) {
+				await db.update(leaders).set({ partyId: party.id }).where(eq(leaders.id, currentTerm.id));
+			} else {
+				const [run] = await db
+					.select({ id: campaigns.id })
+					.from(campaigns)
+					.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)))
+					.orderBy(desc(campaigns.createdAt));
+				if (run) await db.update(campaigns).set({ partyId: party.id }).where(eq(campaigns.id, run.id));
 			}
 		}
 	}

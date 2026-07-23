@@ -1,13 +1,14 @@
 // Shared person-seeding logic for the 'leaders' and 'mcas' phases (same account
 // chain, just different source files and volume). Each candidate needs a full
-// chain: better-auth `user` -> domain `users` -> `leaders`, plus a
-// `party_memberships` link when the row names a party. Parties are looked up
-// only (never created here) — the 'parties' phase is the sole source of `parties`
-// rows, so seeding order matters: parties, then leaders/mcas.
+// chain: better-auth `user` -> domain `users` -> `leaders`, with the row's party
+// (if any) denormalized directly onto that `leaders`/`campaigns` row (a person can
+// switch parties between terms/cycles, so it's per-term, not a person-level fact).
+// Parties are looked up only (never created here) — the 'parties' phase is the
+// sole source of `parties` rows, so seeding order matters: parties, then leaders/mcas.
 import { randomUUID } from 'node:crypto';
 import { and, eq, isNull, or } from 'drizzle-orm';
 import { hashPassword } from 'better-auth/crypto';
-import { campaigns, contacts, experience, leaders, parties, partyMemberships, pillars, positions, users } from '../../src/lib/server/db/schema';
+import { campaigns, contacts, experience, leaders, parties, pillars, positions, users } from '../../src/lib/server/db/schema';
 import { user as authUsers, account } from '../../src/lib/server/db/auth.schema';
 import { generateLeaderSlug, slugify, splitName, type AnyDb } from './names';
 import { modeledSeatOffice } from './offices';
@@ -205,7 +206,7 @@ async function findMainCampaign(db: AnyDb, opts: { subjectUserId: number; cycleY
  * still creates it when missing. `verifiedAt` makes the run public/ballot-eligible. */
 async function ensureAspirantCampaign(
 	db: AnyDb,
-	opts: { subjectUserId: number; positionId: number; cycleYear: number; name: string }
+	opts: { subjectUserId: number; positionId: number; cycleYear: number; name: string; partyId: number | null }
 ): Promise<number> {
 	const existing = await findMainCampaign(db, opts);
 	if (existing) return existing;
@@ -217,6 +218,7 @@ async function ensureAspirantCampaign(
 			leaderId: null,
 			positionId: opts.positionId,
 			cycleYear: opts.cycleYear,
+			partyId: opts.partyId,
 			verifiedAt: new Date(),
 			title: `${opts.name}'s Campaign`,
 			description: `${opts.name}'s campaign for office.`
@@ -261,7 +263,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 		}
 
 		// Person-level idempotency check runs BEFORE the seat-availability guard below, so an
-		// already-seeded current still gets a chance to backfill a missing party_membership
+		// already-seeded current still gets a chance to backfill a missing partyId
 		// (e.g. the parties table was rebuilt after leaders/mcas already ran) instead of being
 		// short-circuited by "this seat already has an current."
 		const email = `${slugify(row.name)}@seed.leaders.ke`;
@@ -278,16 +280,7 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 			const existingLeader = await findLeader(db, row.name, row.title, row.region);
 			if (existingLeader) {
 				if (partyId) {
-					const [existingMembership] = await db
-						.select({ id: partyMemberships.id })
-						.from(partyMemberships)
-						.where(
-							and(eq(partyMemberships.subjectUserId, existingLeader.userId), eq(partyMemberships.partyId, partyId), isNull(partyMemberships.deletedAt))
-						);
-					if (!existingMembership) {
-						const startAt = row.status === 'aspirant' ? ASPIRANT_START : INCUMBENT_START;
-						await db.insert(partyMemberships).values({ partyId, subjectUserId: existingLeader.userId, role: 'Member', startAt });
-					}
+					await db.update(leaders).set({ partyId }).where(and(eq(leaders.id, existingLeader.id), isNull(leaders.partyId)));
 				}
 				const campId = row.pillars?.length
 					? await (async () => {
@@ -345,12 +338,9 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 			if (row.status === 'aspirant') {
 				// A run for office, not a held term: no leaders row. The campaign IS the
 				// candidacy, so (unlike a held officeholder) it's created here if missing —
-				// party membership attaches to the person directly.
-				if (partyId) {
-					await tx.insert(partyMemberships).values({ partyId, subjectUserId: domainUserId, role: 'Member', startAt: ASPIRANT_START });
-				}
+				// the party this run is contested under attaches to the campaign itself.
 				const cycleYear = (toDate(row.startAt) ?? ASPIRANT_START).getFullYear();
-				const campId = await ensureAspirantCampaign(tx, { subjectUserId: domainUserId, positionId: position.id, cycleYear, name: row.name });
+				const campId = await ensureAspirantCampaign(tx, { subjectUserId: domainUserId, positionId: position.id, cycleYear, name: row.name, partyId });
 				await applyProfile(tx, domainUserId, campId, position.id, row);
 				return;
 			}
@@ -359,16 +349,13 @@ export async function seedPeople(db: AnyDb, rows: PersonRow[], label: string) {
 			await tx.insert(leaders).values({
 				userId: domainUserId,
 				positionId: position.id,
+				partyId,
 				status: row.status,
 				startAt,
 				endAt: toDate(row.endAt),
 				description: row.description ?? null,
 				verifiedAt: new Date() // held office is public
 			});
-
-			if (partyId) {
-				await tx.insert(partyMemberships).values({ partyId, subjectUserId: domainUserId, role: 'Member', startAt });
-			}
 
 			// Campaigns are only ever created by the explicit 'campaigns' phase — look
 			// one up if this term's pillars need somewhere to attach, never create one.

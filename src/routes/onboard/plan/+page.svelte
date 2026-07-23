@@ -27,7 +27,7 @@
 	const priceOf = (tier: string) => data.rates[band]?.[tier]?.[cycle] ?? null;
 	const cycleSuffix = $derived(annual ? '/yr' : '/mo');
 
-	// Forwards everything step 3 carried here (firstName/otherNames/status/partyId/
+	// Forwards everything step 3 carried here (firstName/otherNames/status/
 	// positionId/myRole/nationalId, or linkSubjectId) straight into checkout, plus
 	// this step's own tier/band/cycle choice.
 	function checkoutHref(tier: string) {

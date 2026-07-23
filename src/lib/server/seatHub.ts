@@ -2,7 +2,7 @@
 // (for single-region national seats like President) /[position] directly.
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, parties, partyMemberships, pillars, positions, users } from '$lib/server/db/schema';
+import { campaigns, parties, pillars, positions, users } from '$lib/server/db/schema';
 import {
 	ACTIVE_CYCLE,
 	findPositionByPath,
@@ -28,21 +28,10 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 	let regime = regimeYear ?? ACTIVE_CYCLE;
 	const isActiveRegime = regime === ACTIVE_CYCLE;
 
-	// Live party per PERSON (membership is person-scoped) — covers holders,
-	// formers AND the 2027 contestants fetched below.
-	const personIds = rows.map((r) => r.users.id);
-	const partyRows = personIds.length
-		? await db
-				.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
-				.from(partyMemberships)
-				.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-				.where(and(inArray(partyMemberships.subjectUserId, personIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
-		: [];
-	const partyByPerson = new Map(partyRows.map((p) => [p.userId, p.partyName]));
-
-	const toCard = (r: (typeof rows)[number]) => {
+	// Party is per-term (leaders.partyId), not a person-level fact — resolved by id
+	// below, batched across held terms AND the 2027 contestants fetched further down.
+	const toCard = (r: (typeof rows)[number], party: string | null) => {
 		const name = fullName(r.users);
-		const party = partyByPerson.get(r.users.id) ?? null;
 		return {
 			name,
 			initials: name
@@ -84,7 +73,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 	// aspirants have no leaders row. Past regimes list no contestants (the holder IS the result).
 	const runRows = isActiveRegime
 		? await db
-				.select({ users, verifiedAt: campaigns.verifiedAt })
+				.select({ users, verifiedAt: campaigns.verifiedAt, partyId: campaigns.partyId })
 				.from(campaigns)
 				.innerJoin(positions, eq(campaigns.positionId, positions.id))
 				.innerJoin(users, eq(campaigns.subjectUserId, users.id))
@@ -99,19 +88,15 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 					)
 				)
 		: [];
-	// Contestants' live party (person-scoped, they may not appear in `rows` above).
-	const contestantIds = runRows.map((r) => r.users.id).filter((id) => !partyByPerson.has(id));
-	if (contestantIds.length) {
-		const extra = await db
-			.select({ userId: partyMemberships.subjectUserId, partyName: parties.name })
-			.from(partyMemberships)
-			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(inArray(partyMemberships.subjectUserId, contestantIds), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-		for (const e of extra) partyByPerson.set(e.userId, e.partyName);
-	}
+
+	// Batch-resolve every partyId seen (held terms + runs) to its name in one query.
+	const partyIds = [...new Set([...rows.map((r) => r.leaders.partyId), ...runRows.map((r) => r.partyId)].filter((id): id is number => id !== null))];
+	const partyNameRows = partyIds.length ? await db.select({ id: parties.id, name: parties.name }).from(parties).where(inArray(parties.id, partyIds)) : [];
+	const partyNameById = new Map(partyNameRows.map((p) => [p.id, p.name]));
+
 	const dbContestants = runRows.map((r) => {
 		const name = fullName(r.users);
-		const party = partyByPerson.get(r.users.id) ?? null;
+		const party = r.partyId ? (partyNameById.get(r.partyId) ?? null) : null;
 		return {
 			name,
 			initials: name
@@ -147,7 +132,8 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 	}
 
 	// History: every recorded term for this seat, most recent first. Aspirants
-	// stay off the timeline until elected.
+	// stay off the timeline until elected. Party is THIS term's own (leaders.partyId),
+	// not the person's current one — they may have switched since.
 	const history = rows
 		.filter((r) => r.leaders.status !== 'aspirant')
 		.map((r) => ({
@@ -155,6 +141,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 			path: leaderPath(r.users),
 			status: r.leaders.status,
 			verified: !!r.leaders.verifiedAt,
+			party: r.leaders.partyId ? (partyNameById.get(r.leaders.partyId) ?? null) : null,
 			startYear: r.leaders.startAt.getFullYear(),
 			endYear: r.leaders.endAt?.getFullYear() ?? null
 		}))
@@ -214,7 +201,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 		regionLabel,
 		boundary,
 		breadcrumb,
-		current: currentRow ? toCard(currentRow) : null,
+		current: currentRow ? toCard(currentRow, currentRow.leaders.partyId ? (partyNameById.get(currentRow.leaders.partyId) ?? null) : null) : null,
 		delivery,
 		contestants: dbContestants,
 		history,

@@ -2,7 +2,7 @@
 	type Props = {
 		title: string;
 		href?: string;
-		subtitle?: string;
+		subtitle?: string | null;
 		description?: string | null;
 		dateLabel: string;
 		unsaved?: boolean;

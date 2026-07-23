@@ -7,7 +7,6 @@ import {
 	followers,
 	leaders,
 	parties,
-	partyMemberships,
 	pillars,
 	pledges,
 	positions,
@@ -102,14 +101,12 @@ async function computeLeaderMetrics(
 	} satisfies LeaderMetrics;
 }
 
-/** This person's current live membership name (no end date), or null. */
-async function currentPartyName(subjectUserId: number): Promise<string | null> {
-	const [row] = await db
-		.select({ partyName: parties.name })
-		.from(partyMemberships)
-		.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-		.where(and(eq(partyMemberships.subjectUserId, subjectUserId), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-	return row?.partyName ?? null;
+/** A partyId resolved to its name, or null — party is per-term/per-run, not a
+ * person-level fact (see docs on leaders.partyId/campaigns.partyId). */
+async function partyName(partyId: number | null): Promise<string | null> {
+	if (!partyId) return null;
+	const [row] = await db.select({ name: parties.name }).from(parties).where(eq(parties.id, partyId));
+	return row?.name ?? null;
 }
 
 /**
@@ -135,7 +132,7 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	const position = leadsWithRun ? activeRun!.positions : currentTerm!.positions;
 	const status = leadsWithRun ? 'aspirant' : currentTerm!.leaders.status;
 	let campaignId = 0;
-	const party: string | null = await currentPartyName(row.users.id);
+	const party = await partyName(leadsWithRun ? activeRun!.campaigns.partyId : (currentTerm!.leaders.partyId ?? null));
 	if (leadsWithRun) {
 		campaignId = activeRun!.campaigns.id;
 	} else {

@@ -1,18 +1,29 @@
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, isNull, isNotNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { parties, partyMemberships } from '$lib/server/db/schema';
+import { campaigns, leaders, parties } from '$lib/server/db/schema';
 import { slugify } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	const rows = await db.select().from(parties).where(isNull(parties.deletedAt)).orderBy(parties.name);
 
-	const memberCounts = await db
-		.select({ partyId: partyMemberships.partyId, n: count() })
-		.from(partyMemberships)
-		.where(and(isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
-		.groupBy(partyMemberships.partyId);
-	const countByPartyId = new Map(memberCounts.map((m) => [m.partyId, m.n]));
+	// Members: distinct people with a live term or run recording this party
+	// (partyId is per-term/per-run, not a person-level fact — see leaders.partyId).
+	const [termRows, runRows] = await Promise.all([
+		db.select({ partyId: leaders.partyId, userId: leaders.userId }).from(leaders).where(and(isNull(leaders.deletedAt), isNotNull(leaders.partyId))),
+		db
+			.select({ partyId: campaigns.partyId, userId: campaigns.subjectUserId })
+			.from(campaigns)
+			.where(and(isNull(campaigns.deletedAt), isNull(campaigns.parentCampaignId), isNotNull(campaigns.partyId)))
+	]);
+	const membersByPartyId = new Map<number, Set<number>>();
+	for (const r of [...termRows, ...runRows]) {
+		if (!r.partyId) continue;
+		const set = membersByPartyId.get(r.partyId) ?? new Set<number>();
+		set.add(r.userId);
+		membersByPartyId.set(r.partyId, set);
+	}
+	const countByPartyId = new Map([...membersByPartyId.entries()].map(([partyId, users]) => [partyId, users.size]));
 
 	return {
 		parties: rows.map((p) => ({

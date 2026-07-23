@@ -4,9 +4,9 @@
 // a bespoke admin-only layout. Every non-deactivated profile is public;
 // verifiedAt is a "Verified" badge only (see docs/URLDiscovery.md), not a
 // visibility gate — an application goes live as soon as it exists.
-import { and, count, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, experience, followers, managers, parties, partyMemberships, pillars, positions, posts, tags } from '$lib/server/db/schema';
+import { campaigns, contacts, experience, followers, managers, parties, pillars, positions, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
 import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
@@ -76,8 +76,7 @@ export async function loadPublicProfileData(
 		contactRows,
 		reviewRows,
 		reviewPillarOptions,
-		flaggedReviewCounts,
-		[partyRow]
+		flaggedReviewCounts
 	] = await Promise.all([
 		db.select({ n: count() }).from(pillars).where(and(eq(pillars.campaignId, leadCampaignId), isNull(pillars.deletedAt))),
 		db
@@ -109,16 +108,18 @@ export async function loadPublicProfileData(
 			.where(and(eq(contacts.userId, row.users.id), isNull(contacts.deletedAt))),
 		listApprovedReviews(row.users.id, opts.viewerId),
 		listReviewPillarOptions(leadCampaignId),
-		getFlaggedReviewCounts(row.users.id),
-		// The person's live party (membership is person-scoped, so a pure aspirant
-		// with no leaders row still has one) — drives the party badge on the profile.
-		db
-			.select({ name: parties.name })
-			.from(partyMemberships)
-			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(eq(partyMemberships.subjectUserId, row.users.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
-			.limit(1)
+		getFlaggedReviewCounts(row.users.id)
 	]);
+
+	// Party is per-term/per-run (leaders.partyId / campaigns.partyId), not a
+	// person-level fact — a person can switch parties between terms. Batch-resolve
+	// every partyId this profile needs: the lead seat's own (headline badge) plus
+	// each historical Track Record entry's own (shown "as of" that term, not today's).
+	const leadPartyId = leadsWithRun ? activeRun!.campaigns.partyId : (currentTerm?.leaders.partyId ?? null);
+	const trackRecordPartyIds = terms.map((t) => t.leaders.partyId);
+	const partyIds = [...new Set([leadPartyId, ...trackRecordPartyIds].filter((id): id is number => id !== null))];
+	const partyNameRows = partyIds.length ? await db.select({ id: parties.id, name: parties.name }).from(parties).where(inArray(parties.id, partyIds)) : [];
+	const partyNameById = new Map(partyNameRows.map((p) => [p.id, p.name]));
 
 	const myReview = opts.viewerId ? await getMyReview(row.users.id, opts.viewerId) : null;
 
@@ -136,6 +137,8 @@ export async function loadPublicProfileData(
 			seatPath: `/${positionSlug(t.positions.title)}/${slugify(t.positions.region)}`,
 			status: t.leaders.status,
 			note: t.leaders.description,
+			// This term's OWN party, not whatever the person holds today.
+			party: t.leaders.partyId ? (partyNameById.get(t.leaders.partyId) ?? null) : null,
 			startYear: t.leaders.startAt.getFullYear(),
 			endYear: t.leaders.endAt?.getFullYear() ?? null
 		}));
@@ -146,7 +149,7 @@ export async function loadPublicProfileData(
 			slug: row.users.slug,
 			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
 			photoUrl: row.users.photoUrl,
-			party: (partyRow?.name ?? null) as string | null,
+			party: leadPartyId ? (partyNameById.get(leadPartyId) ?? null) : null,
 			regionLabel: leadPosition.region,
 			positionTitle: leadPosition.title,
 			positionId: leadPosition.id,
@@ -165,7 +168,7 @@ export async function loadPublicProfileData(
 			professional: [
 				...trackRecordItems.map((t) => ({
 					title: `${t.positionTitle}, ${t.regionLabel}`,
-					institution: undefined as string | undefined,
+					institution: t.party ?? undefined,
 					href: t.seatPath as string | undefined,
 					description: t.note,
 					badge: t.status as string | undefined,

@@ -18,8 +18,8 @@
 		parties?: { id: number; name: string }[];
 		photoUrl?: string | null;
 		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];
-		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null }[];
-		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; slug: string | null; hasLeader: boolean; verified: boolean };
+		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null; partyId: number | null; partyName: string | null }[];
+		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; hasActiveTerm?: boolean; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { complete: boolean; missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
 	let {
@@ -103,6 +103,8 @@
 	type PendingLeadership = {
 		positionId: number;
 		positionLabel: string;
+		partyId: number | null;
+		partyName: string | null;
 		description: string;
 		from: string; // ISO date (YYYY-MM-DD)
 		to: string | null;
@@ -134,6 +136,7 @@
 	let expTo = $state('');
 
 	let leadPositionId = $state<number | ''>('');
+	let leadPartyId = $state<number | ''>('');
 	let leadDescription = $state('');
 	let leadFrom = $state('');
 	let leadTo = $state('');
@@ -169,14 +172,18 @@
 		if (!leadPositionId || !leadFrom || leadDateInvalid) return;
 		const position = data.positions.find((p) => p.id === leadPositionId);
 		if (!position) return;
+		const party = leadPartyId ? data.parties?.find((p) => p.id === leadPartyId) : null;
 		pendingLeadership.push({
 			positionId: leadPositionId,
 			positionLabel: `${position.title}, ${position.region}`,
+			partyId: leadPartyId || null,
+			partyName: party?.name ?? null,
 			description: leadDescription.trim(),
 			from: leadFrom,
 			to: leadTo || null
 		});
 		leadPositionId = '';
+		leadPartyId = '';
 		leadDescription = leadFrom = leadTo = '';
 		leadResetKey++;
 		adding = null;
@@ -307,9 +314,9 @@
 						class="mt-1.5 w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading focus:ring-0 focus:outline-none {errorClass()}"
 					/>
 				</label>
-				{#if data.parties}
+				{#if data.parties && data.form.hasActiveTerm}
 					<label class="">
-						<span class="text-sm font-medium text-heading">Party</span>
+						<span class="text-sm font-medium text-heading">Party (current term)</span>
 						<select
 							name="partyId"
 							bind:value={partyId}
@@ -384,6 +391,7 @@
 						{#each visibleLeadership as item (item.id)}
 							<ExperienceBlock
 								title="{item.positionTitle}, {item.region}"
+								subtitle={item.partyName}
 								description={item.description}
 								dateLabel="{item.from}–{item.to ?? 'present'}"
 								onRemove={() => removeExistingLeadership(item.id)}
@@ -392,6 +400,7 @@
 						{#each pendingLeadership as item, i (i)}
 							<ExperienceBlock
 								title={item.positionLabel}
+								subtitle={item.partyName}
 								description={item.description}
 								dateLabel="{formatDate(item.from)}–{item.to ? formatDate(item.to) : 'present'}"
 								unsaved
@@ -499,6 +508,20 @@
 								required={false}
 								bind:value={leadPositionId}
 							/>
+							{#if data.parties}
+								<label class="block">
+									<span class="text-sm font-medium text-heading">Party held under</span>
+									<select
+										bind:value={leadPartyId}
+										class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+									>
+										<option value="">Independent (no party)</option>
+										{#each data.parties as party (party.id)}
+											<option value={party.id}>{party.name}</option>
+										{/each}
+									</select>
+								</label>
+							{/if}
 							<label class="block">
 								<span class="text-sm font-medium text-heading">Description</span>
 								<input

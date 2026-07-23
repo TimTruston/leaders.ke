@@ -4,7 +4,7 @@
 // run is public; verifiedAt is a "Verified" badge only (see docs/URLDiscovery.md).
 import { and, asc, count, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, donations, followers, parties, partyMemberships, pillars, pledges, posts } from '$lib/server/db/schema';
+import { campaigns, donations, followers, parties, pillars, pledges, posts } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, resolveCurrentTerm, resolveCurrentTermByUserId } from '$lib/server/leader';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
@@ -68,12 +68,12 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 
 	const [mainCampaign] = campaignId
 		? await db
-				.select({ id: campaigns.id, title: campaigns.title, description: campaigns.description, fundraisingGoal: campaigns.fundraisingGoal })
+				.select({ id: campaigns.id, title: campaigns.title, description: campaigns.description, fundraisingGoal: campaigns.fundraisingGoal, partyId: campaigns.partyId })
 				.from(campaigns)
 				.where(and(eq(campaigns.id, campaignId), isNull(campaigns.deletedAt)))
 		: [];
 
-	const [pillarRows, postRows, [followerRow], reviewRows, reviewPillarOptions, flaggedReviewCounts, [pledgeRow], [raisedRow], [partyRow]] = await Promise.all([
+	const [pillarRows, postRows, [followerRow], reviewRows, reviewPillarOptions, flaggedReviewCounts, [pledgeRow], [raisedRow]] = await Promise.all([
 		db
 			.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus, evidence: pillars.evidence })
 			.from(pillars)
@@ -100,17 +100,16 @@ export async function loadCampaignWorkspaceData(row: CampaignRun, viewerId?: num
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
-			.where(and(eq(donations.campaignId, mainCampaign?.id ?? 0), eq(donations.status, 'confirmed'), isNull(donations.deletedAt))),
-		// The person's live party (person-scoped, so a pure aspirant has one too).
-		db
-			.select({ name: parties.name })
-			.from(partyMemberships)
-			.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-			.where(and(eq(partyMemberships.subjectUserId, row.users.id), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)))
-			.limit(1)
+			.where(and(eq(donations.campaignId, mainCampaign?.id ?? 0), eq(donations.status, 'confirmed'), isNull(donations.deletedAt)))
 	]);
 
 	const myReview = viewerId ? await getMyReview(row.users.id, viewerId) : null;
+
+	// Party is per-run (campaigns.partyId), not a person-level fact — this page is
+	// specifically about the RUN (see resolveCampaignRun), so it's this run's own.
+	const [partyRow] = mainCampaign?.partyId
+		? await db.select({ name: parties.name }).from(parties).where(eq(parties.id, mainCampaign.partyId))
+		: [];
 
 	return {
 		title: mainCampaign?.title ?? '',

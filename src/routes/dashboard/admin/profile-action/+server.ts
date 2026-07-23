@@ -7,12 +7,12 @@ import { redirectWithFlash } from '$lib/server/flash';
 import { getProfileAdminMeta, notifyManagersOfStatusChange } from '$lib/server/profiles';
 import { graduateCampaign } from '$lib/server/candidates';
 import { reviewClaim } from '$lib/server/claims';
-import { reviewVerification } from '$lib/server/verifications';
+import { ACTIVE_CYCLE } from '$lib/server/leader';
 import type { RequestHandler } from './$types';
 
 // The admin control bar on any leader dashboard posts here — the lifecycle actions
-// (Deactivate/Activate, Declare Winner, Delete) and the inline decision forms
-// (claim + verification review). A plain POST + 303 back, like /dashboard/notifications;
+// (Deactivate/Activate, Declare Winner, Delete, Verify identity/campaign) and the
+// inline claim decision form. A plain POST + 303 back, like /dashboard/notifications;
 // the confirm modal in the layout gates the destructive ones.
 export const POST: RequestHandler = async (event) => {
 	const { domainUser } = await requireAdmin(event);
@@ -33,17 +33,6 @@ export const POST: RequestHandler = async (event) => {
 		await reviewClaim(Number(form.get('claimId')), domainUser.id, 'rejected', '');
 		redirect(303, next);
 	}
-	if (action === 'reviewVerification') {
-		await reviewVerification(
-			Number(form.get('verificationId')),
-			domainUser.id,
-			form.get('outcome') === 'approved' ? 'approved' : 'rejected',
-			String(form.get('notes') ?? '').trim(),
-			String(form.get('slug') ?? '').trim()
-		);
-		redirect(303, next);
-	}
-
 	if (!profileId) redirect(303, next);
 
 	if (action === 'deactivate') {
@@ -76,6 +65,21 @@ export const POST: RequestHandler = async (event) => {
 		}
 	} else if (action === 'unverifyIdentity') {
 		await db.update(users).set({ verifiedAt: null }).where(eq(users.id, profileId));
+	} else if (action === 'verifyCampaign') {
+		// Direct toggle, same pattern as identity — no submit/review queue. Gated on
+		// the IEBC certificate being uploaded (the run's equivalent of ID scans).
+		const [run] = await db
+			.select({ id: campaigns.id, iebcCertificateUrl: campaigns.iebcCertificateUrl })
+			.from(campaigns)
+			.where(and(eq(campaigns.subjectUserId, profileId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		if (run?.iebcCertificateUrl) {
+			await db.update(campaigns).set({ verifiedAt: new Date() }).where(eq(campaigns.id, run.id));
+		}
+	} else if (action === 'unverifyCampaign') {
+		await db
+			.update(campaigns)
+			.set({ verifiedAt: null })
+			.where(and(eq(campaigns.subjectUserId, profileId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 	}
 
 	redirect(303, next);

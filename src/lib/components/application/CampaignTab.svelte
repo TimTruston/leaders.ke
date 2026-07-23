@@ -7,6 +7,7 @@
 	// `data` and hosts ?/save.
 	type TabData = {
 		positions: { id: number; title: string; region: string }[];
+		parties?: { id: number; name: string }[];
 		cycles: number[];
 		campaign: {
 			title: string;
@@ -14,6 +15,7 @@
 			cycleYear: number;
 			description: string;
 			iebcCertificateUrl: string | null;
+			partyId: number | null;
 			verified: boolean;
 		};
 	};
@@ -23,6 +25,9 @@
 	let description = $state(data.campaign.description);
 	// The IEBC PDF rides the same ?/save submit; show its name once picked.
 	let certName = $state<string | null>(null);
+	// "other" reveals the free-text partyOther input (see resolveOtherParty server-side).
+	let partyId = $state(data.campaign.partyId ? String(data.campaign.partyId) : '');
+	let partyOther = $state('');
 
 	const missing = $derived(new Set((form as { missingFields?: string[] } | undefined)?.missingFields ?? []));
 	const starClass = (field: string) => (missing.has(field) ? 'text-red-500' : 'text-muted');
@@ -96,6 +101,35 @@
 		</div>
 		{#if missing.has('positionId')}
 			<p class="-mt-3 text-sm font-medium text-red-500">{form?.error}</p>
+		{/if}
+
+		<!-- Party contested under: per-run, not per-person — can differ from the party
+		this person last held a term under. -->
+		{#if data.parties}
+			<label class="block">
+				<span class="text-sm font-medium text-heading">Party</span>
+				<select
+					name="partyId"
+					bind:value={partyId}
+					class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:outline-none"
+				>
+					<option value="">Independent (no party)</option>
+					{#each data.parties as party (party.id)}
+						<option value={String(party.id)}>{party.name}</option>
+					{/each}
+					<option value="other">Other (not listed)…</option>
+				</select>
+				{#if partyId === 'other'}
+					<input
+						type="text"
+						name="partyOther"
+						bind:value={partyOther}
+						required
+						placeholder="Party name"
+						class="mt-1.5 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading focus:border-primary focus:ring-0 focus:outline-none"
+					/>
+				{/if}
+			</label>
 		{/if}
 
 		<!-- Platform / description -->

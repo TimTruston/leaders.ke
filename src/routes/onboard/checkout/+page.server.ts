@@ -30,8 +30,6 @@ async function resolveSelection(sp: URLSearchParams) {
 		firstName: sp.get('firstName') ?? '',
 		otherNames: sp.get('otherNames') ?? '',
 		status: sp.get('status') ?? '',
-		partyId: sp.get('partyId') ?? '',
-		partyOther: sp.get('partyOther') ?? '',
 		positionId: sp.get('positionId') ?? '',
 		myRole: sp.get('myRole') ?? '',
 		nationalId: sp.get('nationalId') ?? ''

@@ -19,10 +19,10 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { and, eq, isNull, like, or } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull, like, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { contacts, leaders, parties, partyMemberships, positions, users } from '../src/lib/server/db/schema';
+import { contacts, leaders, parties, positions, users } from '../src/lib/server/db/schema';
 import { user as authUsers } from '../src/lib/server/db/auth.schema';
 import { seedPeople, type ContactRow, type PersonRow } from './lib/people';
 import { slugify } from './lib/names';
@@ -249,11 +249,11 @@ async function analyze(db: ReturnType<typeof drizzle>): Promise<Analysis> {
 	const userIdBySeedEmail = new Map(seedEmailRows.map((r) => [r.email, r.userId]));
 
 	const partyRows = await db.select({ name: parties.name, abbreviation: parties.abbreviation }).from(parties);
-	// People who already carry a live party membership — enrich never touches those.
+	// People whose current term already carries a partyId — enrich never touches those.
 	const memberUserIds = new Set(
-		(await db.select({ userId: partyMemberships.subjectUserId }).from(partyMemberships).where(isNull(partyMemberships.deletedAt))).map((r) => r.userId)
+		(await db.select({ userId: leaders.userId }).from(leaders).where(and(isNull(leaders.deletedAt), isNotNull(leaders.partyId)))).map((r) => r.userId)
 	);
-	// seedPeople resolves a membership by EXACT name/abbreviation, so flag on that.
+	// seedPeople resolves a party by EXACT name/abbreviation, so flag on that.
 	const knownPartyExact = new Set(partyRows.flatMap((p) => [p.name, p.abbreviation]).filter(Boolean) as string[]);
 	const partyNameKeyByAbbrKey = new Map(partyRows.filter((p) => p.abbreviation).map((p) => [partyKey(p.abbreviation!), partyKey(p.name)]));
 
@@ -654,16 +654,14 @@ async function apply(db: ReturnType<typeof drizzle>, a: Analysis) {
 				.select({ id: parties.id })
 				.from(parties)
 				.where(or(eq(parties.name, e.party), eq(parties.abbreviation, e.party)));
-			const [existing] = party
-				? await db
-						.select({ id: partyMemberships.id })
-						.from(partyMemberships)
-						.where(and(eq(partyMemberships.subjectUserId, e.userId), isNull(partyMemberships.deletedAt)))
-				: [];
-			if (party && !existing) {
-				// Same convention as seedPeople: current members' terms start at the 2022 swearing-in.
-				await db.insert(partyMemberships).values({ partyId: party.id, subjectUserId: e.userId, role: 'Member', startAt: new Date('2022-09-13T00:00:00+03:00') });
-				membershipsAdded++;
+			if (party) {
+				// Fill-gap only: never overwrites an existing partyId on the term.
+				const result = await db
+					.update(leaders)
+					.set({ partyId: party.id })
+					.where(and(eq(leaders.id, e.leaderId), isNull(leaders.partyId)))
+					.returning({ id: leaders.id });
+				if (result.length) membershipsAdded++;
 			}
 		}
 	}

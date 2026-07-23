@@ -6,7 +6,6 @@ import { user as authUsers } from '$lib/server/db/auth.schema';
 import { getRouteLeaderContext, requireDashboardUser } from '$lib/server/dashboard';
 import { leaderPath, fullName, getRunCampaign, resolveCurrentTerm } from '$lib/server/leader';
 import { listAmbassadorAssignments } from '$lib/server/ambassador';
-import { getPendingVerification, getLatestRejection } from '$lib/server/verifications';
 import { getPlatformSettings } from '$lib/server/settings';
 import { signoffComplete, type ManagerRoles } from '$lib/utils/campaignRoles';
 import { listUnreadNotifications } from '$lib/server/notifications';
@@ -53,14 +52,11 @@ export const load: LayoutServerLoad = async (event) => {
 
 	const ambassadorAssignments = await listAmbassadorAssignments(domainUser.id);
 
-	// Submit Application (top-right, apply mode) is gated on every one of the 4 tabs
-	// being filled in — website/social links are the only optional Contacts fields.
-	// `application` names the exact missing field per tab so the UI can flag which tab
-	// (a `*` on its title) and which field (listed below each tab's save button) still
-	// needs attention, instead of only disabling the Submit button.
+	// A profile goes live at payment, no submission/review step — `application` is
+	// pure form-completeness validation: it names the exact missing field per tab so
+	// the UI can flag which tab (a `*` on its title) and which field (listed below
+	// each tab's save button) still needs attention.
 	let applicationComplete = false;
-	let pendingVerification = false;
-	let rejection: Awaited<ReturnType<typeof getLatestRejection>> = null;
 	let application: ApplicationChecklist | null = null;
 	if (ctx && !ctx.verified) {
 		const settings = await getPlatformSettings();
@@ -138,10 +134,6 @@ export const load: LayoutServerLoad = async (event) => {
 			application.team.complete &&
 			application.documentation.complete &&
 			application.signoff.complete;
-		pendingVerification = !!(await getPendingVerification(runCampaign?.id ?? 0));
-		// Only meaningful when nothing's pending — a fresh re-submission supersedes the
-		// old rejection (getLatestRejection returns null once they resubmit).
-		if (!pendingVerification) rejection = await getLatestRejection(runCampaign?.id ?? 0);
 	}
 
 	// Every profile the viewer manages — the switcher lists them ALL, not just the
@@ -176,8 +168,6 @@ export const load: LayoutServerLoad = async (event) => {
 		isAmbassador: ambassadorAssignments.length > 0,
 		applicationComplete,
 		application,
-		pendingVerification,
-		rejection,
 		leaderContext: ctx
 			? {
 					leaderId: ctx.leader?.id ?? null,

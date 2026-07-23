@@ -9,10 +9,10 @@
 //    rewrites it on the profile tab later).
 //  - The slug is minted at creation, not admin approval — the page can be paid for and
 //    published without an admin in the loop.
-import { and, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, desc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { leaders, managers, parties, partyMemberships, positions, profileClaims, users } from '$lib/server/db/schema';
-import { createPhantomUser, fullName, generateLeaderSlug, leaderPath, resolveOtherParty } from '$lib/server/leader';
+import { campaigns, leaders, managers, parties, positions, profileClaims, users } from '$lib/server/db/schema';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
 import { notifyUser } from '$lib/server/notifications';
@@ -99,28 +99,40 @@ export async function findMatchingProfiles(firstName: string, otherNames: string
 		.where(and(inArray(managers.subjectUserId, ids), eq(managers.isActive, true), isNull(managers.deletedAt)));
 	const ownedIds = new Set(managed.map((m) => m.subjectUserId));
 
-	// Lead seat per person: a held non-former term beats a former one (bulk, no N+1).
-	const termRows = await db
-		.select({ userId: leaders.userId, status: leaders.status, title: positions.title, region: positions.region })
-		.from(leaders)
-		.innerJoin(positions, eq(leaders.positionId, positions.id))
-		.where(and(inArray(leaders.userId, ids), isNull(leaders.deletedAt)));
-	const seatBySubject = new Map<number, { title: string; region: string; status: string }>();
+	// Lead seat + its party per person: a held non-former term beats a former one,
+	// beats an active-cycle run (bulk, no N+1). Party is per-term/per-run, not a
+	// person-level fact — this picks whichever row IS the lead seat's own party.
+	const [termRows, runRows] = await Promise.all([
+		db
+			.select({ userId: leaders.userId, status: leaders.status, title: positions.title, region: positions.region, partyId: leaders.partyId })
+			.from(leaders)
+			.innerJoin(positions, eq(leaders.positionId, positions.id))
+			.where(and(inArray(leaders.userId, ids), isNull(leaders.deletedAt))),
+		db
+			.select({ userId: campaigns.subjectUserId, title: positions.title, region: positions.region, partyId: campaigns.partyId })
+			.from(campaigns)
+			.innerJoin(positions, eq(campaigns.positionId, positions.id))
+			.where(and(inArray(campaigns.subjectUserId, ids), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)))
+	]);
+	const seatBySubject = new Map<number, { title: string; region: string; status: string; partyId: number | null }>();
 	for (const t of termRows) {
 		const held = seatBySubject.get(t.userId);
 		if (!held || (held.status === 'former' && t.status !== 'former')) {
-			seatBySubject.set(t.userId, { title: t.title, region: t.region, status: t.status });
+			seatBySubject.set(t.userId, { title: t.title, region: t.region, status: t.status, partyId: t.partyId });
+		}
+	}
+	for (const r of runRows) {
+		const held = seatBySubject.get(r.userId);
+		if (!held || held.status === 'former') {
+			seatBySubject.set(r.userId, { title: r.title, region: r.region, status: 'aspirant', partyId: r.partyId });
 		}
 	}
 
-	// Live party per person (bulk).
-	const partyRows = await db
-		.select({ subjectUserId: partyMemberships.subjectUserId, name: parties.name, abbreviation: parties.abbreviation })
-		.from(partyMemberships)
-		.innerJoin(parties, eq(partyMemberships.partyId, parties.id))
-		.where(and(inArray(partyMemberships.subjectUserId, ids), isNull(partyMemberships.deletedAt), isNull(partyMemberships.endAt)));
-	const partyBySubject = new Map<number, string>();
-	for (const p of partyRows) if (!partyBySubject.has(p.subjectUserId)) partyBySubject.set(p.subjectUserId, p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name);
+	const partyIds = [...new Set([...seatBySubject.values()].map((s) => s.partyId).filter((id): id is number => id !== null))];
+	const partyRows = partyIds.length
+		? await db.select({ id: parties.id, name: parties.name, abbreviation: parties.abbreviation }).from(parties).where(inArray(parties.id, partyIds))
+		: [];
+	const partyNameById = new Map(partyRows.map((p) => [p.id, p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name]));
 
 	return withSlug
 		.filter((c) => !ownedIds.has(c.id))
@@ -133,7 +145,7 @@ export async function findMatchingProfiles(firstName: string, otherNames: string
 				initials: initialsOf(name),
 				slug: c.slug!,
 				photoUrl: c.photoUrl,
-				party: partyBySubject.get(c.id) ?? null,
+				party: seat?.partyId ? (partyNameById.get(seat.partyId) ?? null) : null,
 				positionTitle: seat?.title ?? '',
 				region: seat?.region ?? '',
 				status: seat?.status ?? 'aspirant',
@@ -152,11 +164,6 @@ export type OnboardInput = {
 	firstName: string;
 	otherNames: string;
 	status: OnboardStatus;
-	partyId: number | null;
-	// The typed name for an unregistered party ("Other" option) — resolved to a
-	// real parties.id (via resolveOtherParty) only at create/link time, not here,
-	// since that needs the database. partyId and partyOther are never both set.
-	partyOther: string | null;
 	positionId: number | null;
 	myRole: string;
 	nationalId: string;
@@ -170,8 +177,6 @@ export type OnboardRawInput = {
 	firstName: string;
 	otherNames: string;
 	status: string;
-	partyId: string; // "" = missing, "none" = Independent, "other" = partyOther, else a parties.id
-	partyOther: string;
 	positionId: string;
 	myRole: string;
 	nationalId: string;
@@ -181,8 +186,6 @@ export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: O
 	const firstName = raw.firstName.trim();
 	const otherNames = raw.otherNames.trim();
 	const status = raw.status;
-	const partyRaw = raw.partyId.trim();
-	const partyOtherRaw = raw.partyOther.trim();
 	const positionId = Number(raw.positionId) || null;
 	const myRole = raw.myRole.trim();
 	const nationalId = raw.nationalId.trim();
@@ -190,15 +193,11 @@ export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: O
 	if (!firstName || /\s/.test(firstName)) return { ok: false, error: 'First name is required and must be a single word.' };
 	if (!otherNames) return { ok: false, error: 'Other names are required.' };
 	if (!(status in ONBOARD_STATUS_LABELS)) return { ok: false, error: 'Choose whether the leader is a new aspirant, current, or former.' };
-	if (!partyRaw) return { ok: false, error: 'Choose a party, or Independent / none.' };
-	if (partyRaw === 'other' && !partyOtherRaw) return { ok: false, error: 'Enter the party name.' };
 	if (!positionId) return { ok: false, error: 'Choose the elective position.' };
 	if (!myRole || !(CAMPAIGN_ROLES as readonly string[]).includes(myRole)) return { ok: false, error: 'Choose your role.' };
 	if (!isValidNationalId(nationalId)) return { ok: false, error: 'Enter a valid national ID number (7–8 digits).' };
 
-	const partyId = partyRaw !== 'none' && partyRaw !== 'other' ? Number(partyRaw) || null : null;
-	const partyOther = partyRaw === 'other' ? partyOtherRaw : null;
-	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, partyId, partyOther, positionId, myRole, nationalId } };
+	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, positionId, myRole, nationalId } };
 }
 
 /** Whether a seeded profile is still linkable — has a slug and no active manager.
@@ -237,10 +236,9 @@ export async function createProfile(domainUserId: number, input: OnboardInput): 
 	// The account holder's own national ID (their sign-off attestation) lives on their user row.
 	if (input.nationalId) await db.update(users).set({ nationalId: input.nationalId }).where(eq(users.id, domainUserId));
 
-	const partyId = input.partyId ?? (input.partyOther ? await resolveOtherParty(input.partyOther) : null);
-	if (partyId) {
-		await db.insert(partyMemberships).values({ partyId, subjectUserId: phantom.id, role: 'Member', startAt: new Date() });
-	}
+	// Party isn't collected here: there's no leaders/campaigns row yet to attach it
+	// to (a fresh application is bio-only until the owner adds a term or a run) —
+	// it's set on the "+ Elected" term editor or the Campaign tab instead.
 
 	// The creator becomes the profile's first admin manager, carrying their sign-off
 	// (role + national ID) — the same shape the Team tab and admin control bar read.
