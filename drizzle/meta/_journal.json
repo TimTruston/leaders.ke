@@ -414,6 +414,20 @@
       "when": 1784663004493,
       "tag": "0058_bitter_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1784791839841,
+      "tag": "0059_shocking_mysterio",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1784793263144,
+      "tag": "0060_bumpy_gideon",
+      "breakpoints": true
     }
   ]
 }

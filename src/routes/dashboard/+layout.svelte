@@ -117,12 +117,11 @@
 					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/manifesto`, label: 'Manifesto' },
-					{ href: `${base}/posts`, label: 'Posts' },
+					{ href: `${base}/posts`, label: 'News' },
 					{ href: `${base}/reviews`, label: 'Reviews' },
 					{ href: `${base}/followers`, label: 'Followers' },
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
 					{ href: `${base}/fundraising`, label: 'Fundraising' },
-					{ href: `${base}/pr`, label: 'PR desk' },
 					{ href: `${base}/competitors`, label: 'Competitors' }
 				];
 			case 'admin':

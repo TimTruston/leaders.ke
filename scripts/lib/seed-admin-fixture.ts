@@ -38,7 +38,7 @@ import {
 	users
 } from '../../src/lib/server/db/schema';
 import { user as authUsers, account } from '../../src/lib/server/db/auth.schema';
-import { splitName, type AnyDb } from './names';
+import { slugify, splitName, type AnyDb } from './names';
 
 const LEADER_NAME = 'Example Leader';
 const LEADER_SLUG = 'example-leader';
@@ -233,6 +233,7 @@ export async function seedAdminFixture(db: AnyDb) {
 					subjectUserId: leaderUserId,
 					campaignId: campaign.id,
 					title: pr.title,
+					slug: slugify(pr.title),
 					body: pr.body,
 					aiSummary: LOREM_LINE,
 					medium: 'web',

@@ -383,17 +383,25 @@ export const posts = pgTable('posts', {
   subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }),
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
+  // Permanent /news/[slug] identity for a public web post (suffixed "-2" etc on
+  // collision). Null for non-web posts (broadcasts) and aggregated mentions.
+  slug: varchar('slug', { length: 160 }),
   body: text('body').notNull(),
   aiSummary: text('ai_summary'),
   manualSummary: text('manual_summary'),
   medium: varchar('medium', { length: 50 }).notNull(), // 'web' | 'sms' | 'whatsapp'
   approved: boolean('approved').default(false).notNull(),
   public: boolean('public').default(false).notNull(),
-  votes: integer('votes').default(0).notNull(),
+  votes: integer('votes').default(0).notNull(), // "likes" in the News CMS
+  views: integer('views').default(0).notNull(),
+  tags: jsonb('tags').$type<string[]>().default([]).notNull(), // free-form author tags, News CMS "Tags" section
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }), // News CMS "Archive" section; distinct from deletedAt
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
+}, (t) => [
+  uniqueIndex('one_post_per_slug').on(t.slug).where(sql`${t.deletedAt} is null`),
+]);
 
 // 8.1 FEATURED
 // A post that's been paid to appear promoted on the homepage or directory.
