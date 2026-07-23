@@ -261,7 +261,18 @@
 			<!-- Right side: fixed square photo (a fixed size beats aspect-ratio here, which
 			the flex column was compressing). -->
 			<div class="flex flex-col shrink-0">
-				<span class="text-sm font-medium text-heading">Photo <span class={starClass('Photo')}>*</span></span>
+				<div class="flex items-center justify-between gap-2">
+					<span class="text-sm font-medium text-heading">Photo <span class={starClass('Photo')}>*</span></span>
+					{#if stagedPhotoUrl}
+						<button
+							type="submit"
+							disabled={saving || (claimAttestation && !attested)}
+							class="rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-on-primary transition hover:brightness-95 disabled:opacity-60"
+						>
+							{saving ? 'Saving…' : 'Save'}
+						</button>
+					{/if}
+				</div>
 				<label
 					class="group relative mt-1.5 block aspect-square shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-2 size-40 sm:size-50"
 				>

@@ -435,6 +435,110 @@ export async function getRunCampaign(subjectUserId: number) {
 	return c ?? null;
 }
 
+// One application tab's completion state: whether it's done, and the labels of the
+// fields still missing (shared with the layout nav and each tab page).
+export type TabChecklist = { complete: boolean; missing: string[] };
+export type ApplicationChecklist = {
+	profile: TabChecklist;
+	contacts: TabChecklist;
+	campaign: TabChecklist;
+	team: TabChecklist;
+	documentation: TabChecklist;
+	/** The applicant's attestation: role, national ID, and their ID images. */
+	signoff: TabChecklist;
+};
+
+// Each entry: whether the field is still missing, and the human label shown for it.
+const toTab = (rows: (boolean | string)[][]): TabChecklist => {
+	const missing = rows.filter(([isMissing]) => isMissing).map(([, label]) => label as string);
+	return { complete: missing.length === 0, missing };
+};
+
+/** Pure form-completeness validation for an unverified profile: names the exact
+ * missing field per tab (Profile/Contacts/Campaign/Team/Documentation/Sign-off) so
+ * the dashboard nav can flag which tab (a `*` on its title) and the Submit for
+ * Verification modal can list exactly what's outstanding. Shared by the layout load
+ * (nav flags) and the requestVerification action (server-side re-check before
+ * emailing admins — never trust the client's view of "complete"). */
+export async function getApplicationChecklist(ctx: LeaderContext): Promise<{ application: ApplicationChecklist; applicationComplete: boolean }> {
+	const settings = await getPlatformSettings();
+	const requiredManagers = settings.requiredTeamManagers;
+	const requiredSignoffs = settings.requiredSignoffs;
+
+	const [contactRows, managerRows] = await Promise.all([
+		db
+			.select({ channel: contacts.channel, value: contacts.value })
+			.from(contacts)
+			.where(and(eq(contacts.userId, ctx.profileUser.id), isNull(contacts.deletedAt))),
+		// Active team, each with their own sign-off roles and whether their account
+		// email is verified — the two verification gates count across the whole team.
+		db
+			.select({ userId: managers.userId, roles: managers.roles, emailVerified: authUsers.emailVerified, idFrontUrl: users.idFrontUrl, idBackUrl: users.idBackUrl })
+			.from(managers)
+			.innerJoin(users, eq(managers.userId, users.id))
+			.innerJoin(authUsers, eq(users.authUserId, authUsers.id))
+			.where(and(eq(managers.subjectUserId, ctx.profileUser.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
+	]);
+
+	const verifiedManagers = managerRows.filter((m) => m.emailVerified).length;
+	const completedSignoffs = managerRows.filter((m) => signoffComplete(m.roles as ManagerRoles, m)).length;
+
+	// Verification targets the RUN (campaign): the IEBC cert and the request live on it.
+	const runCampaign = await getRunCampaign(ctx.profileUser.id);
+
+	// Each entry: the human label shown to the user, and whether it's still missing.
+	const profileMissing = [
+		[!ctx.profileUser.firstName, 'First name'],
+		[!ctx.profileUser.otherNames, 'Other names'],
+		[!ctx.profileUser.bio, 'Bio']
+	];
+	// The Campaign tab holds the run: seat, title, platform, IEBC certificate
+	// (only required for completeness when the admin setting turns that gate on).
+	const campaignMissing = [
+		[!runCampaign?.positionId, 'Seat contested'],
+		[!runCampaign?.title, 'Campaign title'],
+		[!runCampaign?.description, 'Campaign platform'],
+		[settings.requireIebcForVerification && !runCampaign?.iebcCertificateUrl, 'IEBC Certificate of Clearance']
+	];
+	const contactsMissing = [
+		[!ctx.profileUser.address, 'Office / address'],
+		[!contactRows.some((c) => c.channel === 'sms'), 'Phone number'],
+		[!contactRows.some((c) => c.channel === 'email'), 'Email address']
+	];
+	// Team gate: enough email-verified managers (admin-set count).
+	const managersShort = requiredManagers - verifiedManagers;
+	const teamMissing =
+		managersShort > 0
+			? [`${managersShort} more verified team member${managersShort === 1 ? '' : 's'} (${requiredManagers} needed)`]
+			: [];
+	const docsMissing = [[!ctx.profileUser.photoUrl, 'Photo']];
+	// Sign-off gate: enough managers who've each completed their own sign-off
+	// (role + national ID + ID images). Each manager attests on the Team tab
+	// under their own entry; the per-field prompts live there.
+	const signoffsShort = requiredSignoffs - completedSignoffs;
+	const signoffMissing =
+		signoffsShort > 0
+			? [`${requiredSignoffs} completed sign-off${signoffsShort === 1 ? '' : 's'} required`]
+			: [];
+	const application: ApplicationChecklist = {
+		profile: toTab(profileMissing),
+		contacts: toTab(contactsMissing),
+		campaign: toTab(campaignMissing),
+		team: { complete: teamMissing.length === 0, missing: teamMissing },
+		documentation: toTab(docsMissing),
+		signoff: { complete: signoffMissing.length === 0, missing: signoffMissing }
+	};
+	const applicationComplete =
+		application.profile.complete &&
+		application.contacts.complete &&
+		application.campaign.complete &&
+		application.team.complete &&
+		application.documentation.complete &&
+		application.signoff.complete;
+
+	return { application, applicationComplete };
+}
+
 /** Finds a DIFFERENT account whose sign-off is already complete (role + national ID +
  * both ID images) with the same national ID, if any — not a hard block (could be a
  * genuine duplicate account for the same person), just a flag surfaced on the admin
