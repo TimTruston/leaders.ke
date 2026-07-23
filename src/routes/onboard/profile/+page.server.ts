@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
-import { assertClaimable, ONBOARD_STATUS_LABELS, validateOnboardInput, type OnboardStatus } from '$lib/server/onboard';
+import { assertClaimable, validateOnboardInput } from '$lib/server/onboard';
 import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -28,15 +28,21 @@ export const load: PageServerLoad = async (event) => {
 	// as query params (see the layout stepper) — no client-side persistence needed,
 	// the URL already has it all. These win over both the claim-target and the
 	// citizen's-own-name defaults below.
-	const isStepBack = !!(sp.get('status') || sp.get('positionId') || sp.get('myRole'));
+	const isStepBack = !!(sp.get('myRole') || sp.get('currentPositionId') || sp.get('formerPositionId') || sp.get('aspirantPositionId'));
 	const stepBack = isStepBack
 		? {
 				firstName: sp.get('firstName') ?? '',
 				otherNames: sp.get('otherNames') ?? '',
-				status: sp.get('status') ?? '',
-				positionId: Number(sp.get('positionId') ?? 0) || ('' as const),
 				myRole: sp.get('myRole') ?? '',
-				nationalId: sp.get('nationalId') ?? '',
+				currentChecked: sp.get('currentChecked') ?? '',
+				currentPositionId: Number(sp.get('currentPositionId') ?? 0) || ('' as const),
+				formerChecked: sp.get('formerChecked') ?? '',
+				formerPositionId: Number(sp.get('formerPositionId') ?? 0) || ('' as const),
+				formerFromYear: sp.get('formerFromYear') ?? '',
+				formerToYear: sp.get('formerToYear') ?? '',
+				aspirantChecked: sp.get('aspirantChecked') ?? '',
+				aspirantPositionId: Number(sp.get('aspirantPositionId') ?? 0) || ('' as const),
+				aspirantYear: sp.get('aspirantYear') ?? '',
 				linkSubjectId: Number(sp.get('linkSubjectId') ?? 0) || null
 			}
 		: null;
@@ -50,7 +56,6 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		positions: positionRows,
 		roles: CAMPAIGN_ROLES,
-		statusOptions: (Object.keys(ONBOARD_STATUS_LABELS) as OnboardStatus[]).map((value) => ({ value, label: ONBOARD_STATUS_LABELS[value] })),
 		// Stepping back wins; else the claim target's name; else the citizen's own —
 		// the common case is a leader onboarding themselves. Same shape every branch
 		// (empty strings for fields that branch doesn't have) so the client can read
@@ -58,13 +63,16 @@ export const load: PageServerLoad = async (event) => {
 		defaults: stepBack ?? {
 			firstName: claimTarget?.firstName ?? domainUser.firstName,
 			otherNames: claimTarget?.otherNames ?? domainUser.otherNames,
-			status: '' as const,
-			positionId: '' as const,
 			myRole: '',
-			// A prior onboarding submission already saved this account's own national
-			// ID (see onboard.ts) — prefill it so a repeat visit (another profile,
-			// another claim) doesn't ask the citizen to retype their own ID number.
-			nationalId: domainUser.nationalId ?? '',
+			currentChecked: '',
+			currentPositionId: '' as const,
+			formerChecked: '',
+			formerPositionId: '' as const,
+			formerFromYear: '',
+			formerToYear: '',
+			aspirantChecked: '',
+			aspirantPositionId: '' as const,
+			aspirantYear: '',
 			linkSubjectId: null
 		},
 		preselectSubjectId: stepBack?.linkSubjectId ?? claimTarget?.id ?? null,
@@ -85,10 +93,16 @@ export const actions: Actions = {
 		const raw = {
 			firstName: String(form.get('firstName') ?? ''),
 			otherNames: String(form.get('otherNames') ?? ''),
-			status: String(form.get('status') ?? ''),
-			positionId: String(form.get('positionId') ?? ''),
 			myRole: String(form.get('myRole') ?? ''),
-			nationalId: String(form.get('nationalId') ?? '')
+			currentChecked: String(form.get('currentChecked') ?? ''),
+			currentPositionId: String(form.get('currentPositionId') ?? ''),
+			formerChecked: String(form.get('formerChecked') ?? ''),
+			formerPositionId: String(form.get('formerPositionId') ?? ''),
+			formerFromYear: String(form.get('formerFromYear') ?? ''),
+			formerToYear: String(form.get('formerToYear') ?? ''),
+			aspirantChecked: String(form.get('aspirantChecked') ?? ''),
+			aspirantPositionId: String(form.get('aspirantPositionId') ?? ''),
+			aspirantYear: String(form.get('aspirantYear') ?? '')
 		};
 		const linkSubjectId = Number(form.get('leaderId') ?? 0) || null; // set when a matching card was confirmed
 		const values = { ...raw, linkSubjectId };
@@ -103,14 +117,22 @@ export const actions: Actions = {
 
 		// Carry everything into Plan (step 4) as query params — Checkout's Pay action
 		// re-validates and actually creates/links the profile once payment succeeds.
-		const params = new URLSearchParams({
-			firstName: validated.input.firstName,
-			otherNames: validated.input.otherNames,
-			status: validated.input.status,
-			positionId: String(validated.input.positionId),
-			myRole: validated.input.myRole,
-			nationalId: validated.input.nationalId
-		});
+		const params = new URLSearchParams({ firstName: validated.input.firstName, otherNames: validated.input.otherNames, myRole: validated.input.myRole });
+		if (validated.input.current) {
+			params.set('currentChecked', 'on');
+			params.set('currentPositionId', String(validated.input.current.positionId));
+		}
+		if (validated.input.former) {
+			params.set('formerChecked', 'on');
+			params.set('formerPositionId', String(validated.input.former.positionId));
+			params.set('formerFromYear', String(validated.input.former.fromYear));
+			params.set('formerToYear', String(validated.input.former.toYear));
+		}
+		if (validated.input.aspirant) {
+			params.set('aspirantChecked', 'on');
+			params.set('aspirantPositionId', String(validated.input.aspirant.positionId));
+			params.set('aspirantYear', String(validated.input.aspirant.year));
+		}
 		if (linkSubjectId) params.set('linkSubjectId', String(linkSubjectId));
 		redirect(303, `/onboard/plan?${params}`);
 	}

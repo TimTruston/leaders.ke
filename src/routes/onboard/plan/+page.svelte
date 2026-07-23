@@ -6,20 +6,15 @@
 
 	const fmt = new Intl.NumberFormat('en-KE');
 
-	// Office band drives the price (same mapping as the public /pricing page).
-	const bands = [
-		{ band: 'ward', label: 'MCA' },
-		{ band: 'regional', label: 'Governor, Senator, MP, Woman Rep' },
-		{ band: 'national', label: 'President & Vice President' }
-	];
 	const tiers = [
 		{ tier: 'aspirant', name: 'Aspirant', tagline: 'Launch your bid', highlights: ['1 campaign page', '1 campaign manager', '100 ambassadors', '10,000 subscriptions'] },
 		{ tier: 'influencer', name: 'Influencer', tagline: 'Grow your movement', highlights: ['3 campaign pages', '1,000 ambassadors / campaign', 'IEBC blue-check', 'Private voter register', 'Fundraise for campaigns'] },
 		{ tier: 'mobilizer', name: 'Mobilizer', tagline: 'Command the race', highlights: ['Unlimited everything', 'Competitor & sentiment analytics', 'Daily AI audio broadcast', '5 GB storage'] }
 	];
 
-	// Prefilled from the seat chosen on Profile (its band); falls back to the most
-	// common candidate office when no position was picked.
+	// The seat named on Profile drives pricing directly — no re-asking via a band
+	// toggle. Falls back to the most common candidate band on the rare path where
+	// no position resolved (e.g. a hand-edited step-back URL missing one).
 	let band = $state(data.defaultBand ?? 'regional');
 	let annual = $state(false);
 	const cycle = $derived(annual ? 'annual' : 'monthly');
@@ -27,11 +22,12 @@
 	const priceOf = (tier: string) => data.rates[band]?.[tier]?.[cycle] ?? null;
 	const cycleSuffix = $derived(annual ? '/yr' : '/mo');
 
-	// Forwards everything step 3 carried here (firstName/otherNames/status/
-	// positionId/myRole/nationalId, or linkSubjectId) straight into checkout, plus
-	// this step's own tier/band/cycle choice.
+	// Forwards everything step 3 carried here (firstName/otherNames/myRole, the
+	// current/former/aspirant checkbox fields, or linkSubjectId) straight into
+	// checkout, plus this step's own tier/cycle choice. band isn't forwarded —
+	// checkout re-derives the office (and its band) from the declared seat itself.
 	function checkoutHref(tier: string) {
-		return `/onboard/checkout${page.url.search}&tier=${tier}&band=${band}&cycle=${cycle}`;
+		return `/onboard/checkout${page.url.search}&tier=${tier}&cycle=${cycle}`;
 	}
 
 	let hovered = $state<number | null>(null);
@@ -42,18 +38,23 @@
 
 <div class="text-center">
 	<h1 class="text-2xl font-bold text-heading">Pick a plan for {data.subjectName}</h1>
-	<p class="mx-auto mt-2 max-w-xl text-sm text-muted">Select your office to see your price, then choose the package that fits your campaign.</p>
+	<p class="mx-auto mt-2 max-w-xl text-sm text-muted">Choose the package that fits your campaign.</p>
 </div>
 
-<!-- Office selector -->
+<!-- Office: the exact seat named on Profile, not a band category — pricing follows
+it directly. Only falls back to a pickable band toggle when nothing resolved. -->
 <div class="mt-6 flex justify-center">
-	<div class="w-full overflow-x-auto">
-		<div class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1" role="group" aria-label="Office">
-			{#each bands as b (b.band)}
-				<button type="button" aria-pressed={band === b.band} onclick={() => (band = b.band)} class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {band === b.band ? 'bg-primary text-on-primary' : 'text-muted hover:text-heading'}">{b.label}</button>
-			{/each}
+	{#if data.seatLabel}
+		<span class="rounded-full border border-border bg-surface-2 px-4 py-1.5 text-sm font-semibold text-heading">{data.seatLabel}</span>
+	{:else}
+		<div class="w-full overflow-x-auto">
+			<div class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1" role="group" aria-label="Office">
+				{#each [{ band: 'ward', label: 'MCA' }, { band: 'regional', label: 'Governor, Senator, MP, Woman Rep' }, { band: 'national', label: 'President & Vice President' }] as b (b.band)}
+					<button type="button" aria-pressed={band === b.band} onclick={() => (band = b.band)} class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {band === b.band ? 'bg-primary text-on-primary' : 'text-muted hover:text-heading'}">{b.label}</button>
+				{/each}
+			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 
 <!-- Package cards -->

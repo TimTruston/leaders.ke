@@ -5,12 +5,10 @@ import { db } from '$lib/server/db';
 import { managers, payments, pricing, subscriptions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
-import { BILLING_CYCLES, PRICE_BANDS, SUBSCRIPTION_TIERS } from '$lib/server/packages';
-import { assertClaimable, createProfile, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment, validateOnboardInput } from '$lib/server/onboard';
+import { BILLING_CYCLES, SUBSCRIPTION_TIERS } from '$lib/server/packages';
+import { assertClaimable, createProfile, getSeatInfo, leadPositionId, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment, validateOnboardInput } from '$lib/server/onboard';
 import { fullName } from '$lib/server/leader';
 import type { Actions, PageServerLoad } from './$types';
-
-const BAND_LABELS: Record<string, string> = { ward: 'MCA', regional: 'Governor / Senator / MP / Woman Rep', national: 'President & Vice President' };
 
 // Resolves + authorizes the checkout selection (plan + the onboard step 3 fields
 // carried in via query params), and reads the live rate for it. Shared by the load
@@ -19,9 +17,8 @@ const BAND_LABELS: Record<string, string> = { ward: 'MCA', regional: 'Governor /
 // URL-resolution rules, so reading event.url there directly would find nothing).
 async function resolveSelection(sp: URLSearchParams) {
 	const tier = String(sp.get('tier') ?? '');
-	const band = String(sp.get('band') ?? '');
 	const cycle = String(sp.get('cycle') ?? '');
-	if (!(SUBSCRIPTION_TIERS as readonly string[]).includes(tier) || !(PRICE_BANDS as readonly string[]).includes(band) || !(BILLING_CYCLES as readonly string[]).includes(cycle)) {
+	if (!(SUBSCRIPTION_TIERS as readonly string[]).includes(tier) || !(BILLING_CYCLES as readonly string[]).includes(cycle)) {
 		error(400, 'Invalid plan selection.');
 	}
 
@@ -29,13 +26,32 @@ async function resolveSelection(sp: URLSearchParams) {
 	const raw = {
 		firstName: sp.get('firstName') ?? '',
 		otherNames: sp.get('otherNames') ?? '',
-		status: sp.get('status') ?? '',
-		positionId: sp.get('positionId') ?? '',
 		myRole: sp.get('myRole') ?? '',
-		nationalId: sp.get('nationalId') ?? ''
+		currentChecked: sp.get('currentChecked') ?? '',
+		currentPositionId: sp.get('currentPositionId') ?? '',
+		formerChecked: sp.get('formerChecked') ?? '',
+		formerPositionId: sp.get('formerPositionId') ?? '',
+		formerFromYear: sp.get('formerFromYear') ?? '',
+		formerToYear: sp.get('formerToYear') ?? '',
+		aspirantChecked: sp.get('aspirantChecked') ?? '',
+		aspirantPositionId: sp.get('aspirantPositionId') ?? '',
+		aspirantYear: sp.get('aspirantYear') ?? ''
 	};
 	const validated = validateOnboardInput(raw);
 	if (!validated.ok) error(400, validated.error);
+
+	// The office (and the band that prices it) is derived from the declared seat
+	// itself, never trusted from a passed `band` param — a stale link (from before
+	// this page auto-derived the band) or a hand-edited one must never silently
+	// price or label the wrong office. Same priority as Plan (leadPositionId).
+	const positionId = leadPositionId({
+		aspirantPositionId: validated.input.aspirant?.positionId,
+		currentPositionId: validated.input.current?.positionId,
+		formerPositionId: validated.input.former?.positionId
+	});
+	const seat = positionId ? (await getSeatInfo([positionId])).get(positionId) : null;
+	if (!seat) error(400, 'That leadership position no longer exists.');
+	const { band, label: seatLabel } = seat;
 
 	let subjectName: string;
 	if (linkSubjectId) {
@@ -57,13 +73,13 @@ async function resolveSelection(sp: URLSearchParams) {
 		.where(and(eq(pricing.band, band as 'ward'), eq(pricing.tier, tier as 'aspirant'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
 	if (!rate) error(400, 'No price is set for that plan yet.');
 
-	return { tier, band, cycle, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
+	return { tier, band, cycle, seatLabel, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
 }
 
 export const load: PageServerLoad = async (event) => {
 	await requireDashboardUser(event);
 	const sel = await resolveSelection(event.url.searchParams);
-	return { tier: sel.tier, band: sel.band, cycle: sel.cycle, amount: sel.amount, bandLabel: BAND_LABELS[sel.band] ?? sel.band, subjectName: sel.subjectName, passthrough: event.url.search.slice(1) };
+	return { tier: sel.tier, cycle: sel.cycle, amount: sel.amount, seatLabel: sel.seatLabel, subjectName: sel.subjectName, passthrough: event.url.search.slice(1) };
 };
 
 export const actions: Actions = {

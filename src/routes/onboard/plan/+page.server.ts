@@ -1,10 +1,11 @@
 import { redirect } from '@sveltejs/kit';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { positions, users } from '$lib/server/db/schema';
+import { users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { listCurrentPricing } from '$lib/server/packages';
 import { fullName } from '$lib/server/leader';
+import { getSeatInfo, leadPositionId } from '$lib/server/onboard';
 import type { PageServerLoad } from './$types';
 
 // Step 4 of the onboarding wizard: pick one of the three packages. No profile exists
@@ -40,14 +41,14 @@ export const load: PageServerLoad = async (event) => {
 		rates[r.band][r.tier][r.billingCycle] = r.amount;
 	}
 
-	// Prefill the office toggle from the seat chosen on Profile — the position
-	// already carries the band (ward/regional/national) that drives pricing.
-	const positionId = Number(sp.get('positionId') ?? 0) || null;
-	let defaultBand: string | null = null;
-	if (positionId) {
-		const [position] = await db.select({ band: positions.band }).from(positions).where(eq(positions.id, positionId));
-		defaultBand = position?.band ?? null;
-	}
+	// The office pricing is based on: Profile already named the exact seat, so this
+	// page states it plainly rather than asking again via a vague band toggle.
+	const positionId = leadPositionId({
+		aspirantPositionId: Number(sp.get('aspirantPositionId') ?? 0) || null,
+		currentPositionId: Number(sp.get('currentPositionId') ?? 0) || null,
+		formerPositionId: Number(sp.get('formerPositionId') ?? 0) || null
+	});
+	const seat = positionId ? (await getSeatInfo([positionId])).get(positionId) : null;
 
-	return { subjectName, rates, defaultBand };
+	return { subjectName, rates, defaultBand: seat?.band ?? null, seatLabel: seat?.label ?? null };
 };

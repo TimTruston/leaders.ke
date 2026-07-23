@@ -13,10 +13,22 @@
 	// persistence needed, the server already resolved which one applies.
 	let firstName = $state(form?.values?.firstName ?? data.defaults.firstName);
 	let otherNames = $state(form?.values?.otherNames ?? data.defaults.otherNames);
-	let status = $state(form?.values?.status ?? data.defaults.status);
 	let myRole = $state(form?.values?.myRole ?? data.defaults.myRole);
-	let positionId = $state<number | ''>((form?.values?.positionId ? Number(form.values.positionId) : 0) || data.defaults.positionId);
-	let nationalId = $state(form?.values?.nationalId ?? data.defaults.nationalId);
+
+	// Three independent checkboxes — not mutually exclusive. A former Governor now
+	// running for Senate checks both Former leader and Candidate, each keeping its
+	// own seat (+ years).
+	let currentChecked = $state((form?.values?.currentChecked ?? data.defaults.currentChecked) === 'on');
+	let currentPositionId = $state<number | ''>((form?.values?.currentPositionId ? Number(form.values.currentPositionId) : 0) || data.defaults.currentPositionId);
+
+	let formerChecked = $state((form?.values?.formerChecked ?? data.defaults.formerChecked) === 'on');
+	let formerPositionId = $state<number | ''>((form?.values?.formerPositionId ? Number(form.values.formerPositionId) : 0) || data.defaults.formerPositionId);
+	let formerFromYear = $state(form?.values?.formerFromYear ?? data.defaults.formerFromYear);
+	let formerToYear = $state(form?.values?.formerToYear ?? data.defaults.formerToYear);
+
+	let aspirantChecked = $state((form?.values?.aspirantChecked ?? data.defaults.aspirantChecked) === 'on');
+	let aspirantPositionId = $state<number | ''>((form?.values?.aspirantPositionId ? Number(form.values.aspirantPositionId) : 0) || data.defaults.aspirantPositionId);
+	let aspirantYear = $state(form?.values?.aspirantYear ?? data.defaults.aspirantYear);
 
 	// Profile Matcher (RHS): fetched live as the name fills in.
 	type Match = {
@@ -79,10 +91,10 @@
 	const canSubmit = $derived(!selectedSubjectId || legalConfirmed);
 </script>
 
-<svelte:head><title>Create Your Profile</title></svelte:head>
+<svelte:head><title>Create a Profile</title></svelte:head>
 
 <div class="mx-auto max-w-5xl">
-	<h1 class="text-2xl font-bold text-heading">Create Your Profile</h1>
+	<h1 class="text-2xl font-bold text-heading">Leader's Profile</h1>
 	<p class="mt-1 text-sm text-muted">Describe the leader below. If they already have a page, link it instead of creating a duplicate.</p>
 
 	{#if form?.error}
@@ -92,8 +104,6 @@
 	<form method="post" use:enhance={() => { submitting = true; return async ({ update }) => { await update({ reset: false }); submitting = false; }; }} class="mt-6 grid gap-4 lg:gap-8 lg:grid-cols-2">
 		<!-- LHS: describe the leader -->
 		<div class="space-y-4">
-			<h2 class="text-sm font-semibold text-heading">Describe the leader below…</h2>
-
 			<div class="grid gap-4 sm:grid-cols-2">
 				<label class="block">
 					<span class="text-sm font-medium text-heading">First name</span>
@@ -105,32 +115,91 @@
 				</label>
 			</div>
 
-			<fieldset>
-				<legend class="text-sm font-medium text-heading">Has the leader ever been elected before?</legend>
-				<div class="mt-2 space-y-2">
-					{#each data.statusOptions as opt (opt.value)}
-						<label class="flex items-center gap-2 text-sm text-heading">
-							<input type="radio" name="status" value={opt.value} bind:group={status} required class="text-primary focus:ring-ring" />
-							{opt.label}
-						</label>
-					{/each}
-				</div>
-			</fieldset>
-
-			<PositionSelector positions={data.positions} verified={false} initialPositionId={positionId || null} bind:value={positionId} />
-
 			<label class="block">
-				<span class="text-sm font-medium text-heading">My role</span>
+				<span class="text-sm font-medium text-heading">Your role</span>
 				<select name="myRole" bind:value={myRole} required class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
 					<option value="" disabled>Select your role…</option>
 					{#each data.roles as role (role)}<option value={role}>{role}</option>{/each}
 				</select>
 			</label>
 
-			<label class="block">
-				<span class="text-sm font-medium text-heading">National ID <span class="text-muted">· Sign off</span></span>
-				<input name="nationalId" bind:value={nationalId} inputmode="numeric" pattern={'[0-9]{7,8}'} maxlength="8" required placeholder="7–8 digits" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-			</label>
+			<fieldset class="space-y-3">
+				<legend class="text-sm font-medium text-heading">Leadership status <span class="text-muted">· check all that apply</span></legend>
+
+				<!-- Existing leader -->
+				<div class="rounded-xl border border-border p-3">
+					<label class="flex items-center gap-2 text-sm font-medium text-heading">
+						<input type="checkbox" name="currentChecked" bind:checked={currentChecked} class="rounded text-primary focus:ring-ring" />
+						Existing leader
+					</label>
+					{#if currentChecked}
+						<div class="mt-3">
+							<PositionSelector
+								positions={data.positions}
+								verified={false}
+								name="currentPositionId"
+								label="What is the current leadership position?"
+								initialPositionId={currentPositionId || null}
+								bind:value={currentPositionId}
+							/>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Former leader -->
+				<div class="rounded-xl border border-border p-3">
+					<label class="flex items-center gap-2 text-sm font-medium text-heading">
+						<input type="checkbox" name="formerChecked" bind:checked={formerChecked} class="rounded text-primary focus:ring-ring" />
+						Former leader
+					</label>
+					{#if formerChecked}
+						<div class="mt-3 space-y-3">
+							<PositionSelector
+								positions={data.positions}
+								verified={false}
+								name="formerPositionId"
+								label="What was the leadership position?"
+								initialPositionId={formerPositionId || null}
+								bind:value={formerPositionId}
+							/>
+							<div class="grid grid-cols-2 gap-3">
+								<label class="block">
+									<span class="text-xs font-medium text-muted">From year</span>
+									<input name="formerFromYear" bind:value={formerFromYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2013" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+								</label>
+								<label class="block">
+									<span class="text-xs font-medium text-muted">To year</span>
+									<input name="formerToYear" bind:value={formerToYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2017" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+								</label>
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Candidate / campaigning -->
+				<div class="rounded-xl border border-border p-3">
+					<label class="flex items-center gap-2 text-sm font-medium text-heading">
+						<input type="checkbox" name="aspirantChecked" bind:checked={aspirantChecked} class="rounded text-primary focus:ring-ring" />
+						Candidate/Campaigning
+					</label>
+					{#if aspirantChecked}
+						<div class="mt-3 space-y-3">
+							<PositionSelector
+								positions={data.positions}
+								verified={false}
+								name="aspirantPositionId"
+								label="Select the leadership position?"
+								initialPositionId={aspirantPositionId || null}
+								bind:value={aspirantPositionId}
+							/>
+							<label class="block">
+								<span class="text-xs font-medium text-muted">Year</span>
+								<input name="aspirantYear" bind:value={aspirantYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2027" class="mt-1 w-full max-w-40 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+							</label>
+						</div>
+					{/if}
+				</div>
+			</fieldset>
 		</div>
 
 		<!-- RHS: Matching Profiles -->

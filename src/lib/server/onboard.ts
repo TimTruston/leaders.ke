@@ -1,12 +1,14 @@
 // The "Create Your Profile" onboarding wizard (User Flows v2, step 3) — the single
-// entry every leader/aspirant/manager takes. The form's status radio + chosen seat
-// feed the live Profile Matcher (RHS); on submit the citizen either LINKS an existing
-// seeded profile (a claim) or CREATES a fresh one, then moves on to /onboard/plan.
+// entry every leader/aspirant/manager takes. The name fields feed the live Profile
+// Matcher (RHS); on submit the citizen either LINKS an existing seeded profile (a
+// claim) or CREATES a fresh one, then moves on to /onboard/plan. The status
+// checkboxes (existing/former/candidate) aren't mutually exclusive — a former
+// leader can also be a current candidate — so each carries its own seat (+ years).
 //
 // Deliberate simplifications for this step (see the flowcharts doc):
-//  - No leaders/campaign row is written here. The status + seat are matcher hints only,
-//    persisted onto the new profile's bio (it's not public until payment, and the owner
-//    rewrites it on the profile tab later).
+//  - No leaders/campaign row is written here. The checked status(es) + seat(s) are
+//    matcher hints only, persisted onto the new profile's bio (it's not public until
+//    payment, and the owner rewrites it on the profile tab later).
 //  - The slug is minted at creation, not admin approval — the page can be paid for and
 //    published without an admin in the loop.
 import { and, desc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
@@ -14,15 +16,8 @@ import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, parties, positions, profileClaims, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
-import { CAMPAIGN_ROLES, isValidNationalId } from '$lib/utils/campaignRoles';
+import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 import { notifyUser } from '$lib/server/notifications';
-
-export type OnboardStatus = 'aspirant' | 'current' | 'former';
-export const ONBOARD_STATUS_LABELS: Record<OnboardStatus, string> = {
-	aspirant: 'New aspirant (never held an elective position)',
-	current: 'Current leader',
-	former: 'Former leader'
-};
 
 export type MatchingProfile = {
 	subjectUserId: number;
@@ -160,13 +155,20 @@ export async function findMatchingProfiles(firstName: string, otherNames: string
 		.map(({ score: _score, ...rest }) => rest);
 }
 
+// A citizen can check more than one box at once (e.g. a former Governor now
+// running for Senate) — each box is independent, carrying only the fields its
+// own status needs, not a single exclusive "status" choice.
+export type OnboardCurrent = { positionId: number };
+export type OnboardFormer = { positionId: number; fromYear: number; toYear: number };
+export type OnboardAspirant = { positionId: number; year: number };
+
 export type OnboardInput = {
 	firstName: string;
 	otherNames: string;
-	status: OnboardStatus;
-	positionId: number | null;
 	myRole: string;
-	nationalId: string;
+	current: OnboardCurrent | null;
+	former: OnboardFormer | null;
+	aspirant: OnboardAspirant | null;
 };
 
 // Raw strings as they travel through form fields / query params — validated once
@@ -176,28 +178,65 @@ export type OnboardInput = {
 export type OnboardRawInput = {
 	firstName: string;
 	otherNames: string;
-	status: string;
-	positionId: string;
 	myRole: string;
-	nationalId: string;
+	currentChecked: string;
+	currentPositionId: string;
+	formerChecked: string;
+	formerPositionId: string;
+	formerFromYear: string;
+	formerToYear: string;
+	aspirantChecked: string;
+	aspirantPositionId: string;
+	aspirantYear: string;
 };
+
+const MIN_YEAR = 1963; // Kenyan independence — no term/run predates it
+const MAX_YEAR = ACTIVE_CYCLE + 20; // generous headroom for a future cycle
+
+function validYear(raw: string): number | null {
+	const year = Number(raw);
+	return Number.isInteger(year) && year >= MIN_YEAR && year <= MAX_YEAR ? year : null;
+}
 
 export function validateOnboardInput(raw: OnboardRawInput): { ok: true; input: OnboardInput } | { ok: false; error: string } {
 	const firstName = raw.firstName.trim();
 	const otherNames = raw.otherNames.trim();
-	const status = raw.status;
-	const positionId = Number(raw.positionId) || null;
 	const myRole = raw.myRole.trim();
-	const nationalId = raw.nationalId.trim();
 
 	if (!firstName || /\s/.test(firstName)) return { ok: false, error: 'First name is required and must be a single word.' };
 	if (!otherNames) return { ok: false, error: 'Other names are required.' };
-	if (!(status in ONBOARD_STATUS_LABELS)) return { ok: false, error: 'Choose whether the leader is a new aspirant, current, or former.' };
-	if (!positionId) return { ok: false, error: 'Choose the elective position.' };
 	if (!myRole || !(CAMPAIGN_ROLES as readonly string[]).includes(myRole)) return { ok: false, error: 'Choose your role.' };
-	if (!isValidNationalId(nationalId)) return { ok: false, error: 'Enter a valid national ID number (7–8 digits).' };
 
-	return { ok: true, input: { firstName, otherNames, status: status as OnboardStatus, positionId, myRole, nationalId } };
+	let current: OnboardCurrent | null = null;
+	if (raw.currentChecked === 'on') {
+		const positionId = Number(raw.currentPositionId) || null;
+		if (!positionId) return { ok: false, error: 'Choose the current leadership position.' };
+		current = { positionId };
+	}
+
+	let former: OnboardFormer | null = null;
+	if (raw.formerChecked === 'on') {
+		const positionId = Number(raw.formerPositionId) || null;
+		if (!positionId) return { ok: false, error: 'Choose the former leadership position.' };
+		const fromYear = validYear(raw.formerFromYear);
+		const toYear = validYear(raw.formerToYear);
+		if (!fromYear || !toYear) return { ok: false, error: 'Enter valid from/to years for the former position.' };
+		if (toYear < fromYear) return { ok: false, error: 'The "to" year can\'t be before the "from" year.' };
+		former = { positionId, fromYear, toYear };
+	}
+
+	let aspirant: OnboardAspirant | null = null;
+	if (raw.aspirantChecked === 'on') {
+		const positionId = Number(raw.aspirantPositionId) || null;
+		if (!positionId) return { ok: false, error: 'Choose the leadership position being contested.' };
+		const year = validYear(raw.aspirantYear);
+		if (!year) return { ok: false, error: 'Enter a valid election year.' };
+		aspirant = { positionId, year };
+	}
+
+	if (!current && !former && !aspirant) return { ok: false, error: 'Check at least one: existing leader, former leader, or candidate.' };
+
+	return { ok: true, input: { firstName, otherNames, myRole, current, former, aspirant } };
 }
 
 /** Whether a seeded profile is still linkable — has a slug and no active manager.
@@ -215,15 +254,35 @@ export async function assertClaimable(subjectUserId: number): Promise<{ ok: true
 	return { ok: true };
 }
 
-/** The status + seat the citizen declared, kept on the new profile's bio as a matcher
- * hint (bio is not public before payment and the owner replaces it on the profile tab). */
-async function bioHint(status: OnboardStatus, positionId: number | null): Promise<string> {
-	let seat = '';
-	if (positionId) {
-		const [p] = await db.select({ title: positions.title, region: positions.region }).from(positions).where(eq(positions.id, positionId));
-		if (p) seat = `${p.title}, ${p.region}`;
-	}
-	return [ONBOARD_STATUS_LABELS[status], seat].filter(Boolean).join(' · ');
+/** Which declared seat leads the whole flow, when more than one box is checked:
+ * the seat being run for beats the one currently held beats one held in the past —
+ * the plan/price this wizard sells is for the 2027 RUN, so that's what should drive
+ * Plan's office display and Checkout's price/label if it's present at all. */
+export function leadPositionId(seats: { aspirantPositionId?: number | null; currentPositionId?: number | null; formerPositionId?: number | null }): number | null {
+	return seats.aspirantPositionId || seats.currentPositionId || seats.formerPositionId || null;
+}
+
+/** A seat's display label ("President, Kenya") + its price band — null if the
+ * position no longer exists. Batches every id needed at once (bioHint may need up
+ * to three) rather than one query per lookup. */
+export async function getSeatInfo(positionIds: number[]): Promise<Map<number, { label: string; band: string }>> {
+	if (positionIds.length === 0) return new Map();
+	const rows = await db.select({ id: positions.id, title: positions.title, region: positions.region, band: positions.band }).from(positions).where(inArray(positions.id, positionIds));
+	return new Map(rows.map((p) => [p.id, { label: `${p.title}, ${p.region}`, band: p.band }]));
+}
+
+/** The status(es) + seat(s) the citizen declared, kept on the new profile's bio as a
+ * matcher hint (bio is not public before payment and the owner replaces it on the
+ * profile tab). A person can carry more than one — e.g. a former Governor now
+ * running for Senate — so this joins whichever boxes were checked. */
+async function bioHint(input: OnboardInput): Promise<string> {
+	const ids = [input.current?.positionId, input.former?.positionId, input.aspirant?.positionId].filter((id): id is number => !!id);
+	const seats = await getSeatInfo(ids);
+	const parts: string[] = [];
+	if (input.current) parts.push(`Current leader — ${seats.get(input.current.positionId)?.label ?? ''}`);
+	if (input.former) parts.push(`Former leader — ${seats.get(input.former.positionId)?.label ?? ''} (${input.former.fromYear}–${input.former.toYear})`);
+	if (input.aspirant) parts.push(`Candidate — ${seats.get(input.aspirant.positionId)?.label ?? ''} (${input.aspirant.year})`);
+	return parts.join(' · ');
 }
 
 /** No matching profile — mint a brand-new one the citizen owns (source=applied). Returns
@@ -231,21 +290,19 @@ async function bioHint(status: OnboardStatus, positionId: number | null): Promis
 export async function createProfile(domainUserId: number, input: OnboardInput): Promise<{ slug: string; subjectUserId: number }> {
 	const phantom = await createPhantomUser(input.firstName, input.otherNames);
 	const slug = await generateLeaderSlug(fullName({ firstName: input.firstName, otherNames: input.otherNames }));
-	await db.update(users).set({ slug, bio: await bioHint(input.status, input.positionId) }).where(eq(users.id, phantom.id));
-
-	// The account holder's own national ID (their sign-off attestation) lives on their user row.
-	if (input.nationalId) await db.update(users).set({ nationalId: input.nationalId }).where(eq(users.id, domainUserId));
+	await db.update(users).set({ slug, bio: await bioHint(input) }).where(eq(users.id, phantom.id));
 
 	// Party isn't collected here: there's no leaders/campaigns row yet to attach it
 	// to (a fresh application is bio-only until the owner adds a term or a run) —
 	// it's set on the "+ Elected" term editor or the Campaign tab instead.
 
-	// The creator becomes the profile's first admin manager, carrying their sign-off
-	// (role + national ID) — the same shape the Team tab and admin control bar read.
+	// The creator becomes the profile's first admin manager — the same shape the
+	// Team tab and admin control bar read. National ID/sign-off isn't collected
+	// here anymore; it's completed later on the Team tab, per manager.
 	await db.insert(managers).values({
 		userId: domainUserId,
 		subjectUserId: phantom.id,
-		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined }
+		roles: { admin: true, title: input.myRole || undefined }
 	});
 
 	return { slug, subjectUserId: phantom.id };
@@ -269,12 +326,10 @@ export async function linkProfile(domainUserId: number, input: OnboardInput, sub
 		.where(and(eq(managers.subjectUserId, subjectUserId), eq(managers.isActive, true), isNull(managers.deletedAt)));
 	if (owner) throw new Error('That profile has just been claimed by someone else.');
 
-	if (input.nationalId) await db.update(users).set({ nationalId: input.nationalId }).where(eq(users.id, domainUserId));
-
 	await db.insert(managers).values({
 		userId: domainUserId,
 		subjectUserId,
-		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined }
+		roles: { admin: true, title: input.myRole || undefined }
 	});
 
 	// Access is granted immediately (above), but this row is what gives admin
