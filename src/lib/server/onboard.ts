@@ -6,15 +6,18 @@
 // leader can also be a current candidate — so each carries its own seat (+ years).
 //
 // Deliberate simplifications for this step (see the flowcharts doc):
-//  - No leaders/campaign row is written here. The checked status(es) + seat(s) are
-//    matcher hints only, persisted onto the new profile's bio (it's not public until
-//    payment, and the owner rewrites it on the profile tab later).
+//  - Only a FRESH create writes real rows (createProfile): Former leader becomes a
+//    real Track Record entry (leaders, status='former') and Candidate becomes the
+//    real 2027 run (campaigns), both written once payment succeeds. A claim
+//    (linkProfile) never writes either — the seeded profile already has its own
+//    real history, so onboarding's guess would only risk duplicating it; there the
+//    checked boxes stay matcher hints (bio + profileClaims.evidence) only.
 //  - The slug is minted at creation, not admin approval — the page can be paid for and
 //    published without an admin in the loop.
 import { and, desc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, parties, positions, profileClaims, users } from '$lib/server/db/schema';
-import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, leaderPath, resolveOtherParty } from '$lib/server/leader';
+import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, getOrCreateRunCampaign, leaderPath, resolveOtherParty } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 import { notifyUser } from '$lib/server/notifications';
@@ -335,9 +338,26 @@ export async function createProfile(domainUserId: number, rawInput: OnboardInput
 	const slug = await generateLeaderSlug(fullName({ firstName: input.firstName, otherNames: input.otherNames }));
 	await db.update(users).set({ slug, bio: await bioHint(input) }).where(eq(users.id, phantom.id));
 
-	// Party isn't collected here: there's no leaders/campaigns row yet to attach it
-	// to (a fresh application is bio-only until the owner adds a term or a run) —
-	// it's set on the "+ Elected" term editor or the Campaign tab instead.
+	// Former leader -> a real Track Record entry, the same shape the "+ Elected"
+	// term editor writes (see the Profile tab's pendingLeadership handling).
+	if (input.former) {
+		await db.insert(leaders).values({
+			userId: phantom.id,
+			positionId: input.former.positionId,
+			partyId: input.former.partyId,
+			status: 'former',
+			startAt: new Date(`${input.former.fromYear}-01-01T00:00:00+03:00`),
+			endAt: new Date(`${input.former.toYear}-01-01T00:00:00+03:00`)
+		});
+	}
+
+	// Candidate -> the actual 2027 run, via the same lazy-create every dashboard
+	// tab uses (getOrCreateRunCampaign) — cycleYear is always ACTIVE_CYCLE (2027),
+	// same as everywhere else; the year the citizen typed is display-only (bioHint).
+	if (input.aspirant) {
+		const run = await getOrCreateRunCampaign(phantom.id, input.aspirant.positionId, domainUserId, fullName(input));
+		if (input.aspirant.partyId) await db.update(campaigns).set({ partyId: input.aspirant.partyId }).where(eq(campaigns.id, run.id));
+	}
 
 	// The creator becomes the profile's first admin manager — the same shape the
 	// Team tab and admin control bar read. National ID/sign-off isn't collected
