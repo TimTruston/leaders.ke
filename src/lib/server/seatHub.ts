@@ -1,6 +1,6 @@
 // Shared loader for the seat civic hub, used by both /[position]/[region] and
 // (for single-region national seats like President) /[position] directly.
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, parties, pillars, positions, users } from '$lib/server/db/schema';
 import {
@@ -82,6 +82,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 						eq(positions.id, positionRow.id),
 						eq(campaigns.cycleYear, ACTIVE_CYCLE),
 						isNull(campaigns.parentCampaignId),
+						isNotNull(campaigns.verifiedAt),
 						isNull(campaigns.leaderId), // dropped once graduated into a term (that IS the current holder)
 						isNull(campaigns.deletedAt),
 						isNull(users.deletedAt)

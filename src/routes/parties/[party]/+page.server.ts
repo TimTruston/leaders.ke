@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { and, count, eq, inArray, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, followers, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -40,6 +40,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					eq(campaigns.partyId, party.id),
 					eq(campaigns.cycleYear, ACTIVE_CYCLE),
 					isNull(campaigns.parentCampaignId),
+					isNotNull(campaigns.verifiedAt),
 					isNull(campaigns.deletedAt),
 					isNull(users.deletedAt)
 				)

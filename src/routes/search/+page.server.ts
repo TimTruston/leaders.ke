@@ -1,4 +1,4 @@
-import { and, eq, exists, inArray, ilike, isNull, or, sql } from 'drizzle-orm';
+import { and, eq, exists, inArray, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { alliances, campaigns, experience, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(leaders.deletedAt),
+				isNotNull(leaders.verifiedAt),
 				isNull(users.deletedAt),
 				or(
 					ilike(users.firstName, like),
@@ -93,6 +94,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt),
 				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
@@ -133,10 +135,10 @@ export const load: PageServerLoad = async ({ url }) => {
 				isNull(experience.deletedAt),
 				isNull(users.deletedAt),
 				or(ilike(experience.title, like), ilike(experience.institution, like)),
-				// Only surface people with a held term or a run to point at.
+				// Only surface people who are publicly visible: a verified held term or a verified run.
 				or(
-					exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, users.id), isNull(leaders.deletedAt)))),
-					exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, users.id), isNull(campaigns.deletedAt))))
+					exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, users.id), isNotNull(leaders.verifiedAt), isNull(leaders.deletedAt)))),
+					exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, users.id), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt))))
 				)
 			)
 		)

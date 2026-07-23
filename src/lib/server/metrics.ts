@@ -1,6 +1,6 @@
 // Public leader metrics shared by /rank/[position] and /compare.
 // The engagement score is deliberately transparent: citizens can recompute it.
-import { and, count, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	campaigns,
@@ -128,6 +128,7 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	// Lead seat: a live/held term if any, else the active run (aspirant, no leaders row).
 	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
 	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
+	if (!verified) return null;
 
 	const position = leadsWithRun ? activeRun!.positions : currentTerm!.positions;
 	const status = leadsWithRun ? 'aspirant' : currentTerm!.leaders.status;
@@ -158,6 +159,7 @@ export async function randomVerifiedAspirantPath(positionTitle: string): Promise
 				eq(positions.title, positionTitle),
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt)
 			)
@@ -208,7 +210,7 @@ export async function listPositionMetrics(
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
 
 	// 2027 runs (campaigns) at this position — the aspirants.
 	const runRows = await db
@@ -228,6 +230,7 @@ export async function listPositionMetrics(
 				eq(positions.title, positionTitle),
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt)
 			)

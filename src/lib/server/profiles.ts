@@ -16,6 +16,7 @@ import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
 import { seatPath } from '$lib/utils/seat';
 import { formatKenyanPhoneDisplay } from '$lib/utils/phone';
 import { notifyUser } from '$lib/server/notifications';
+import { getPlatformSettings } from '$lib/server/settings';
 
 export type ProfileSource = 'seeded' | 'applied' | 'claimed';
 export type ProfileVerified = 'pending' | 'approved' | 'rejected' | 'deleted' | null;
@@ -258,14 +259,10 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	verified: ProfileVerified;
 	deactivated: boolean;
 	graduatableCampaignId: number | null;
-	// Identity badge (users.verifiedAt — see docs/URLDiscovery.md): confirms
-	// nationalId + both ID scans + the profile photo belong to this person.
-	// identityDocsComplete gates whether the control bar's Verify button can act.
-	identityVerified: boolean;
-	identityDocsComplete: boolean;
 	// Campaign badge (campaigns.verifiedAt): a direct admin toggle, same pattern as
-	// identity — no submit/review queue. campaignDocsComplete (the IEBC certificate
-	// uploaded) gates whether the control bar's Verify button can act.
+	// identity — no submit/review queue. campaignDocsComplete gates whether the
+	// control bar's Verify button can act — only checks the IEBC certificate when
+	// platform_settings.requireIebcForVerification is on (off by default).
 	campaignVerified: boolean;
 	campaignDocsComplete: boolean;
 	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
@@ -284,12 +281,7 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 			firstName: users.firstName,
 			otherNames: users.otherNames,
 			slug: users.slug,
-			deletedAt: users.deletedAt,
-			verifiedAt: users.verifiedAt,
-			nationalId: users.nationalId,
-			idFrontUrl: users.idFrontUrl,
-			idBackUrl: users.idBackUrl,
-			photoUrl: users.photoUrl
+			deletedAt: users.deletedAt
 		})
 		.from(users)
 		.where(eq(users.id, subjectUserId));
@@ -353,6 +345,10 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		.from(campaigns)
 		.where(and(eq(campaigns.subjectUserId, subjectUserId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
 
+	// Admin-tunable: the IEBC certificate isn't required until settings turn it
+	// on (off by default — certs aren't issued until closer to nominations).
+	const { requireIebcForVerification } = await getPlatformSettings();
+
 	const source: ProfileSource = claim ? 'claimed' : application ? 'applied' : 'seeded';
 
 	// 'applied' is a direct admin toggle now (campaigns.verifiedAt) — no more
@@ -368,10 +364,8 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		verified,
 		deactivated: !!person?.deletedAt,
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
-		identityVerified: !!person?.verifiedAt,
-		identityDocsComplete: !!(person?.nationalId && person.idFrontUrl && person.idBackUrl && person.photoUrl),
 		campaignVerified: !!run?.verifiedAt,
-		campaignDocsComplete: !!run?.iebcCertificateUrl,
+		campaignDocsComplete: requireIebcForVerification ? !!run?.iebcCertificateUrl : true,
 		application: application
 			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
 			: null,

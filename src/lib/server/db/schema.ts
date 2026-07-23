@@ -965,11 +965,16 @@ export const platformSettings = pgTable('platform_settings', {
   // Rows per page on every paginated dashboard list (campaign posts/reviews/
   // followers/broadcasts/PR, admin tables, citizen invites).
   pageSize: integer('page_size').default(50).notNull(),
-  // Verification gate: how many email-verified managers a campaign needs on its
+  // Checklist gate: how many email-verified managers a campaign needs on its
   // team, and how many of them must complete their own sign-off (role + national
-  // ID + ID images), before an application can be submitted.
+  // ID + ID images), before the profile reads as "complete".
   requiredTeamManagers: integer('required_team_managers').default(2).notNull(),
   requiredSignoffs: integer('required_signoffs').default(1).notNull(),
+  // Campaign verification gate: whether the admin's Verify-campaign action
+  // requires the IEBC Certificate of Clearance to be uploaded first. Off by
+  // default — certificates aren't issued until closer to the 2027 nominations,
+  // so requiring one earlier would make every campaign unverifiable.
+  requireIebcForVerification: boolean('require_iebc_for_verification').default(false).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

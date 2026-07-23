@@ -1,4 +1,4 @@
-import { and, count, desc, eq, isNull, ne } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, isNull, ne } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
 import { campaigns, followers, leaders, pillars, posts, tags, users } from '$lib/server/db/schema';
@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 	const { ctx } = await requireLeader(event);
 	const seatId = ctx.position?.id ?? 0;
 
-	// Rivals at this seat: other held terms, plus other 2027 runs (aspirants).
+	// Rivals at this seat: other held terms, plus other verified 2027 runs (aspirants).
 	const [heldRivals, runRivals] = await Promise.all([
 		db
 			.select({ userId: users.id, users, status: leaders.status, verified: leaders.verifiedAt })
@@ -27,6 +27,7 @@ export const load: PageServerLoad = async (event) => {
 					eq(campaigns.positionId, seatId),
 					eq(campaigns.cycleYear, ACTIVE_CYCLE),
 					isNull(campaigns.parentCampaignId),
+					isNotNull(campaigns.verifiedAt),
 					isNull(campaigns.deletedAt),
 					isNull(users.deletedAt),
 					ne(campaigns.subjectUserId, ctx.profileUser.id)

@@ -1,6 +1,6 @@
-import { and, desc, count, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, desc, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { posts, users } from '$lib/server/db/schema';
+import { posts, users, leaders, campaigns } from '$lib/server/db/schema';
 import { fullName, leaderPath } from '$lib/server/leader';
 import { plainText } from '$lib/utils/richtext';
 import { getPageSize } from '$lib/server/settings';
@@ -18,10 +18,20 @@ export const load: PageServerLoad = async ({ url }) => {
 	const pageSize = await getPageSize();
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
 
+	// Only posts from a publicly visible person: a verified held term, or a
+	// verified aspirant campaign — same gate the rest of the platform uses.
+	const [verifiedLeaderRows, verifiedCampaignRows] = await Promise.all([
+		db.select({ id: leaders.userId }).from(leaders).where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt))),
+		db.select({ id: campaigns.subjectUserId }).from(campaigns).where(and(isNull(campaigns.deletedAt), isNotNull(campaigns.verifiedAt)))
+	]);
+	const publicUserIds = [...new Set([...verifiedLeaderRows, ...verifiedCampaignRows].map((r) => r.id).filter((id): id is number => id !== null))];
+
+	if (publicUserIds.length === 0) return { articles: [], total: 0, page, pageSize };
+
 	// Team-authored (creatorId set — excludes aggregated news mentions), published,
-	// not-deactivated. verifiedAt is a badge only (see docs/URLDiscovery.md), not
-	// a visibility gate — every account is public.
+	// not-deactivated.
 	const filter = and(
+		inArray(posts.subjectUserId, publicUserIds),
 		isNotNull(posts.creatorId),
 		isNotNull(posts.slug),
 		eq(posts.medium, 'web'),

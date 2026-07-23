@@ -232,14 +232,12 @@
 						</span>
 					{/if}
 				</h1>
-				{#if data.leaderContext.verified}
-					<a
-						href={data.leaderContext.publicPath}
-						class="rounded-full border border-primary px-3 py-2 text-xs font-semibold text-primary transition bg-surface hover:bg-primary hover:text-on-primary"
-					>
-						Preview &#8599;
-					</a>
-				{/if}
+				<a
+					href={data.leaderContext.publicPath}
+					class="rounded-full border border-primary px-3 py-2 text-xs font-semibold text-primary transition bg-surface hover:bg-primary hover:text-on-primary"
+				>
+					Preview &#8599;
+				</a>
 			{:else}
 				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
 			{/if}
@@ -299,10 +297,6 @@
 				title="Review-workflow state: seeded → —; claimed → latest claim outcome; applied → run verified/latest request; soft-deleted → deleted."
 				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.verified === 'approved' ? 'bg-primary-soft text-on-primary' : ac.verified === 'pending' ? 'border border-primary text-primary' : 'border border-border text-muted'}"
 			>{ac.verified ?? '—'}</span>
-			<span
-				title="Identity badge: confirms nationalId + both ID scans + the profile photo belong to this person. Set once per person, reused across every profile they manage. Never a visibility gate (see docs/URLDiscovery.md)."
-				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold {ac.identityVerified ? 'bg-primary-soft text-on-primary' : 'border border-border text-muted'}"
-			>{ac.identityVerified ? 'Identity verified' : 'Identity unverified'}</span>
 			<!-- An approved claim granted access immediately at payment time (see onboard.ts),
 			so unlike the pending decision form below, this stays reviewable indefinitely —
 			rejecting later deactivates the manager row and restores the profile from its
@@ -347,36 +341,20 @@
 						class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
 					>Delete</button>
 				{/if}
-				{#if ac.identityVerified}
-					<button
-						type="button"
-						onclick={() => (adminAction = { action: 'unverifyIdentity', title: 'Remove identity verification?', body: `${ac.profileName} loses the Identity verified badge until an admin re-confirms their documents.`, confirmLabel: 'Remove' })}
-						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
-					>Unverify identity</button>
-				{:else}
-					<button
-						type="button"
-						disabled={!ac.identityDocsComplete}
-						title={ac.identityDocsComplete ? '' : 'Needs nationalId + both ID scans + a profile photo before this can be confirmed.'}
-						onclick={() => (adminAction = { action: 'verifyIdentity', title: 'Verify identity?', body: `Confirms ${ac.profileName}'s national ID, ID scans and profile photo all belong to them. This badge carries over to every profile they manage.`, confirmLabel: 'Verify' })}
-						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-primary"
-					>Verify identity</button>
-				{/if}
-				{#if ac.campaignVerified}
-					<button
-						type="button"
-						onclick={() => (adminAction = { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `${ac.profileName}'s campaign loses its Verified badge until an admin re-confirms it.`, confirmLabel: 'Remove' })}
-						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
-					>Unverify campaign</button>
-				{:else}
-					<button
-						type="button"
-						disabled={!ac.campaignDocsComplete}
-						title={ac.campaignDocsComplete ? '' : 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.'}
-						onclick={() => (adminAction = { action: 'verifyCampaign', title: 'Verify campaign?', body: `Confirms ${ac.profileName}'s 2027 run and shows the Verified badge publicly.`, confirmLabel: 'Verify' })}
-						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-primary"
-					>Verify campaign</button>
-				{/if}
+				<!-- Single toggle: label always reflects current state, and either
+				direction goes through the same confirm modal. -->
+				<button
+					type="button"
+					disabled={!ac.campaignVerified && !ac.campaignDocsComplete}
+					title={!ac.campaignVerified && !ac.campaignDocsComplete ? 'Needs the IEBC Certificate of Clearance uploaded on the Campaign tab before this can be confirmed.' : ''}
+					onclick={() =>
+						(adminAction = ac.campaignVerified
+							? { action: 'unverifyCampaign', title: 'Remove campaign verification?', body: `Removes the Verified badge on the campaign.`, confirmLabel: 'Remove' }
+							: { action: 'verifyCampaign', title: 'Verify campaign?', body: `Shows the Verified badge on the campaign.`, confirmLabel: 'Verify' })}
+					class="rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 {ac.campaignVerified
+						? 'bg-primary-soft text-on-primary hover:brightness-95'
+						: 'border border-primary text-primary hover:bg-primary hover:text-on-primary disabled:hover:bg-transparent disabled:hover:text-primary'}"
+				>Campaign {ac.campaignVerified ? 'Verified' : 'Unverified'}</button>
 			</div>
 
 			<!-- Claim decision (was the Team-tab banner): approve grants the claimant manager

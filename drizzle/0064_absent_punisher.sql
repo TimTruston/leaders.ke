@@ -1,0 +1,1 @@
+ALTER TABLE "platform_settings" ADD COLUMN "require_iebc_for_verification" boolean DEFAULT false NOT NULL;

@@ -66,11 +66,11 @@ Applies everywhere a code/link is sent
 		<!-- Lifetime invite limits live on the Packages page (part of what a package buys). -->
 
 		<div class="rounded-2xl border border-border bg-surface p-5">
-			<h2 class="font-semibold text-heading">Application verification gate</h2>
+			<h2 class="font-semibold text-heading">Profile completeness checklist</h2>
 			<p class="mt-1 text-xs text-muted">
-				Before an application can be submitted for verification: how many email-verified managers a
-				campaign needs on its team, and how many of them must complete their own sign-off (role,
-				national ID, and ID images) on the Team tab.
+				How many email-verified managers a campaign needs on its team, and how many of them must
+				complete their own sign-off (role, national ID, and ID images) on the Team tab, before the
+				profile checklist reads as complete.
 			</p>
 			<div class="mt-2 space-y-3">
 				<label class="block">
@@ -94,6 +94,24 @@ Applies everywhere a code/link is sent
 					/>
 				</label>
 			</div>
+		</div>
+
+		<div class="rounded-2xl border border-border bg-surface p-5">
+			<h2 class="font-semibold text-heading">Campaign verification gate</h2>
+			<p class="mt-1 text-xs text-muted">
+				Whether the "Verify campaign" action on a profile's admin control bar requires the IEBC
+				Certificate of Clearance to already be uploaded. Leave off until closer to nominations —
+				certificates aren't issued yet.
+			</p>
+			<label class="mt-2 flex items-center gap-2">
+				<input
+					type="checkbox"
+					name="requireIebcForVerification"
+					checked={data.settings.requireIebcForVerification}
+					class="rounded border-border text-primary focus:ring-ring"
+				/>
+				<span class="text-sm text-heading">Require IEBC certificate before verifying a campaign</span>
+			</label>
 		</div>
 
 		<div class="rounded-2xl border border-border bg-surface p-5">

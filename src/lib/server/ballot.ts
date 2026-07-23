@@ -1,7 +1,7 @@
-// Candidate resolution for /vote/2027 (the ballot simulator). Surfaces every
-// 2027 run (campaign) — a real ballot lists candidates, which are runs for
-// office, not held terms. ACTIVE_CYCLE (2027) is the cycle this ballot covers.
-import { and, eq, isNull } from 'drizzle-orm';
+// Candidate resolution for /vote/2027 (the ballot simulator). Only surfaces
+// verified 2027 runs (campaigns) — a real ballot lists candidates, which are runs
+// for office, not held terms. ACTIVE_CYCLE (2027) is the cycle this ballot covers.
+import { and, eq, isNull, isNotNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath } from '$lib/server/leader';
@@ -51,7 +51,7 @@ function toCandidate(row: {
 	};
 }
 
-/** 2027 runs (campaigns) for one position title + exact region name. */
+/** Verified 2027 runs (campaigns) for one position title + exact region name. */
 async function verifiedCampaignsFor(title: string, region: string): Promise<Candidate[]> {
 	const rows = await db
 		.select({ campaigns, users })
@@ -64,6 +64,7 @@ async function verifiedCampaignsFor(title: string, region: string): Promise<Cand
 				eq(positions.region, region),
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt)
 			)

@@ -4,7 +4,7 @@
 // pages stay position-first: /<position>/<region> (or just /<position> for
 // single-region national seats like President).
 import { randomUUID } from 'node:crypto';
-import { and, desc, eq, ilike, isNull } from 'drizzle-orm';
+import { and, desc, eq, ilike, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, leaders, managers, parties, positions, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -338,8 +338,8 @@ async function resolveTermForUser(userRow: typeof users.$inferSelect) {
 	return { row, terms, currentTerm, activeRun };
 }
 
-/** All leaders (joined to person + seat) for one position/region pair, not
- * deactivated. verifiedAt is a badge only, not a visibility gate. Resolves the seat first
+/** All verified leaders (joined to person + seat) for one position/region pair —
+ * public seat-hub pages only ever show verified profiles. Resolves the seat first
  * (positions is small and mostly static) so the leaders query is scoped to that
  * ONE seat's positionId in SQL, instead of scanning every leader nationwide. */
 export async function listLeadersForSeat(position: string, region: string) {
@@ -351,7 +351,7 @@ export async function listLeadersForSeat(position: string, region: string) {
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(eq(leaders.positionId, positionRow.id), isNull(leaders.deletedAt), isNull(users.deletedAt)));
+		.where(and(eq(leaders.positionId, positionRow.id), isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt)));
 }
 
 /**

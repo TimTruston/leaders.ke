@@ -2,7 +2,7 @@
 // grid, folded into the seat taxonomy). Batched like the /rank pages: 3 queries
 // per request no matter how many leaders the position has, filters applied
 // server-side, and only the requested page's cards ship.
-import { and, count, eq, inArray, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, followers, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -83,7 +83,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
+		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
 
 	// 2027 runs (campaigns) at this position — the aspirants (no leaders row).
 	const runRows = await db
@@ -105,6 +105,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			and(
 				eq(positions.title, positionTitle),
 				isNull(campaigns.parentCampaignId),
+				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt)
 			)

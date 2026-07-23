@@ -21,6 +21,7 @@ export const actions: Actions = {
 		const pageSize = Number(form.get('pageSize'));
 		const requiredTeamManagers = Number(form.get('requiredTeamManagers'));
 		const requiredSignoffs = Number(form.get('requiredSignoffs'));
+		const requireIebcForVerification = form.get('requireIebcForVerification') === 'on';
 
 		// Lifetime invite limits live on the Packages page (part of what a package buys).
 		for (const [label, value] of [
@@ -53,6 +54,7 @@ export const actions: Actions = {
 				pageSize,
 				requiredTeamManagers,
 				requiredSignoffs,
+				requireIebcForVerification,
 				updatedAt: new Date()
 			})
 			.where(eq(platformSettings.id, 1));

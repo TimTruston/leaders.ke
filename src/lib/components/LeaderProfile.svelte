@@ -92,21 +92,13 @@
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.name}
 							<!-- A badge only: every profile is public regardless (see docs/URLDiscovery.md). -->
-							{#if leader.verified}
-								<span
-									title="An admin has manually confirmed the facts on this seat/candidacy (see docs/URLDiscovery.md)."
-									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
-								>
-									<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
-										<path
-											fill-rule="evenodd"
-											d="M8.6 3.8a4.5 4.5 0 0 0-1.4 1 4.5 4.5 0 0 0-3.8 3.7 4.5 4.5 0 0 0 0 5 4.5 4.5 0 0 0 3.7 3.8 4.5 4.5 0 0 0 5 0 4.5 4.5 0 0 0 3.8-3.7 4.5 4.5 0 0 0 0-5 4.5 4.5 0 0 0-3.7-3.8 4.5 4.5 0 0 0-3.6-1Zm7 6.7a.75.75 0 1 0-1.2-.9l-3.2 4.3-1.7-1.7a.75.75 0 1 0-1 1l2.3 2.4a.75.75 0 0 0 1.1-.1l3.7-5Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-									Verified
-								</span>
-							{/if}
+							<span
+								title="An admin has manually confirmed the facts on this seat/candidacy (see docs/URLDiscovery.md)."
+								class="inline-flex items-center gap-1 rounded-full {leader.verified? 'bg-primary-soft text-on-primary' : 'bg-surface-3 text-on-mute'} px-2.5 py-1 text-xs font-semibold "
+							>
+								<span>{leader.verified? '✓' : '✗'}</span>
+								<span>{leader.verified? 'Verified' : 'Unverified'}</span>
+							</span>
 						</h1>
 						<p class="mt-1 text-sm text-muted">
 							<span class="capitalize">{leader.status}</span>
