@@ -1,6 +1,6 @@
 // Public leader metrics shared by /rank/[position] and /compare.
 // The engagement score is deliberately transparent: citizens can recompute it.
-import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	campaigns,
@@ -117,8 +117,8 @@ async function currentPartyName(subjectUserId: number): Promise<string | null> {
  * which only ever needs two leaders, so it fetches exactly those instead of
  * computing the whole register and discarding all but two. resolveCurrentTerm
  * picks the same canonical (non-former) term the full listing dedups to, so the
- * numbers match. Returns null for an unknown or unverified leader (only verified
- * profiles are public).
+ * numbers match. Returns null for an unknown person, or one with neither a held
+ * term nor a run.
  */
 export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetrics | null> {
 	const slug = path.replace(/^\//, '').trim();
@@ -126,11 +126,11 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	const resolved = await resolveCurrentTerm(slug);
 	if (!resolved) return null;
 	const { row, currentTerm, activeRun } = resolved;
+	if (!currentTerm && !activeRun) return null;
 
 	// Lead seat: a live/held term if any, else the active run (aspirant, no leaders row).
 	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
 	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
-	if (!verified) return null;
 
 	const position = leadsWithRun ? activeRun!.positions : currentTerm!.positions;
 	const status = leadsWithRun ? 'aspirant' : currentTerm!.leaders.status;
@@ -148,8 +148,8 @@ export async function getLeaderMetricsByPath(path: string): Promise<LeaderMetric
 	return computeLeaderMetrics({ user: row.users, position, status, verified, campaignId }, party);
 }
 
-/** A random verified aspirant path for one position (e.g. the /compare default).
- * An aspirant is a verified 2027 run (campaign), not a leaders row. */
+/** A random aspirant path for one position (e.g. the /compare default). An
+ * aspirant is a 2027 run (campaign), not a leaders row. */
 export async function randomVerifiedAspirantPath(positionTitle: string): Promise<string | null> {
 	const rows = await db
 		.select({ slug: users.slug })
@@ -161,8 +161,8 @@ export async function randomVerifiedAspirantPath(positionTitle: string): Promise
 				eq(positions.title, positionTitle),
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
-				isNotNull(campaigns.verifiedAt),
-				isNull(campaigns.deletedAt)
+				isNull(campaigns.deletedAt),
+				isNull(users.deletedAt)
 			)
 		);
 	const slugs = rows.map((r) => r.slug).filter((s): s is string => !!s);
@@ -187,8 +187,8 @@ export type RankedLeaderMetrics = {
 };
 
 /**
- * One position's verified leaders (every status: current, aspirant, former)
- * ranked by engagement score, paginated server-side. Batched: 5 queries total
+ * One position's leaders (every status: current, aspirant, former) ranked by
+ * engagement score, paginated server-side. Batched: 5 queries total
  * no matter how many leaders the position has — the whole set must be scored to
  * rank it, but only the requested page's rows ship to the client.
  */
@@ -211,9 +211,9 @@ export async function listPositionMetrics(
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), eq(positions.title, positionTitle)));
+		.where(and(isNull(leaders.deletedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
 
-	// Verified 2027 runs (campaigns) at this position — the aspirants.
+	// 2027 runs (campaigns) at this position — the aspirants.
 	const runRows = await db
 		.select({
 			userId: users.id,
@@ -231,8 +231,8 @@ export async function listPositionMetrics(
 				eq(positions.title, positionTitle),
 				eq(campaigns.cycleYear, ACTIVE_CYCLE),
 				isNull(campaigns.parentCampaignId),
-				isNotNull(campaigns.verifiedAt),
-				isNull(campaigns.deletedAt)
+				isNull(campaigns.deletedAt),
+				isNull(users.deletedAt)
 			)
 		);
 

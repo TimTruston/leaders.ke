@@ -1,9 +1,9 @@
 // Quick-jump autocomplete for the header search: leaders grouped by seat family
 // (Executive / Parliament / MCAs) plus parties. The static groups (platform
 // pages, regions) live client-side in QuickSearch.svelte — this endpoint only
-// answers what needs the DB. Verified profiles only, same rule as /search.
+// answers what needs the DB. Every non-deactivated profile, same rule as /search.
 import { json } from '@sveltejs/kit';
-import { and, eq, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, eq, ilike, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, parties, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -39,9 +39,9 @@ export const GET: RequestHandler = async ({ url }) => {
 			.from(leaders)
 			.innerJoin(users, eq(leaders.userId, users.id))
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
-			.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), nameMatch))
+			.where(and(isNull(leaders.deletedAt), isNull(users.deletedAt), nameMatch))
 			.limit(5),
-		// Verified 2027 runs (campaigns) — aspirants with no leaders row.
+		// 2027 runs (campaigns) — aspirants with no leaders row.
 		db
 			.select({
 				slug: users.slug,
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			.from(campaigns)
 			.innerJoin(users, eq(campaigns.subjectUserId, users.id))
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
-			.where(and(isNull(campaigns.parentCampaignId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt), isNull(users.deletedAt), nameMatch))
+			.where(and(isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt), isNull(users.deletedAt), nameMatch))
 			.limit(5),
 		db
 			.select({ name: parties.name, abbreviation: parties.abbreviation })

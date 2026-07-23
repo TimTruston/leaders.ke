@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	};
 
 	// Members are PEOPLE (membership is person-scoped); the seat shown per member is
-	// resolved below from their held terms and verified 2027 runs.
+	// resolved below from their held terms and 2027 runs.
 	const memberRows = await db
 		.select({ role: partyMemberships.role, users })
 		.from(partyMemberships)
@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const memberIds = memberRows.map((r) => r.users.id);
 	if (memberIds.length === 0) return { party: partyData, members: [] };
 
-	// Each member's lead seat (current term > verified 2027 run > latest former) +
+	// Each member's lead seat (current term > 2027 run > latest former) +
 	// follower counts, all person-keyed.
 	const [termRows, runRows, followerRows] = await Promise.all([
 		db
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			.innerJoin(positions, eq(leaders.positionId, positions.id))
 			.where(and(inArray(leaders.userId, memberIds), isNull(leaders.deletedAt))),
 		db
-			.select({ userId: campaigns.subjectUserId, title: positions.title, region: positions.region })
+			.select({ userId: campaigns.subjectUserId, title: positions.title, region: positions.region, verifiedAt: campaigns.verifiedAt })
 			.from(campaigns)
 			.innerJoin(positions, eq(campaigns.positionId, positions.id))
 			.where(
@@ -54,7 +54,6 @@ export const load: PageServerLoad = async ({ params }) => {
 					inArray(campaigns.subjectUserId, memberIds),
 					eq(campaigns.cycleYear, ACTIVE_CYCLE),
 					isNull(campaigns.parentCampaignId),
-					isNotNull(campaigns.verifiedAt),
 					isNull(campaigns.deletedAt)
 				)
 			),
@@ -76,7 +75,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	for (const r of runRows) {
 		const held = seatBy.get(r.userId);
 		if (!held || held.status === 'former') {
-			seatBy.set(r.userId, { title: r.title, region: r.region, status: 'aspirant', verified: true });
+			seatBy.set(r.userId, { title: r.title, region: r.region, status: 'aspirant', verified: !!r.verifiedAt });
 		}
 	}
 

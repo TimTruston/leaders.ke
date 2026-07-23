@@ -4,16 +4,16 @@ import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campa
 import type { PageServerLoad } from './$types';
 
 // /previews/[userId]/[year]: the campaign workspace of an application with no
-// public slug yet — the slugless twin of /[leader]/[year]. Keyed by the person's
-// user id and gated by resolveCampaignRun to an admin, the profile's own person,
-// or one of its active managers (everyone else gets a 404). Read-only: the
-// public follow/donate/review/ask actions belong to the live /[leader]/[year].
+// public slug yet — the slugless twin of /[leader]/[year], keyed by the person's
+// user id since there's no slug to resolve by until an admin approves one. Public,
+// same as everywhere else (see docs/URLDiscovery.md). Read-only: the public
+// follow/donate/review/ask actions belong to the live /[leader]/[year].
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const recordPath = `/previews/${params.userId}`;
 	if (Number(params.year) !== ACTIVE_CYCLE) redirect(302, recordPath);
 
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
-	const row = await resolveCampaignRun(Number(params.userId), { viewerId: viewer?.id, isAdmin: !!viewer?.adminAt });
+	const row = await resolveCampaignRun(Number(params.userId));
 	if (!row) error(404, 'Campaign not found');
 	// Once approved the run is public — hand off to the canonical /[slug]/[year] URL.
 	if (row.verified && row.users.slug) redirect(302, campaignPath({ slug: row.users.slug }, Number(params.year)));

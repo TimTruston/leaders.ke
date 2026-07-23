@@ -1,4 +1,4 @@
-import { and, eq, exists, inArray, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, eq, exists, inArray, ilike, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { alliances, campaigns, experience, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -18,7 +18,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(leaders.deletedAt),
-				isNotNull(leaders.verifiedAt),
 				isNull(users.deletedAt),
 				or(
 					ilike(users.firstName, like),
@@ -84,8 +83,8 @@ export const load: PageServerLoad = async ({ url }) => {
 		};
 	});
 
-	// Verified 2027 runs (campaigns) matching by name/bio — aspirants with no leaders
-	// row. Appended after held-office results, skipping anyone already matched above.
+	// 2027 runs (campaigns) matching by name/bio — aspirants with no leaders row.
+	// Appended after held-office results, skipping anyone already matched above.
 	const heldSlugs = new Set(matchedLeaders.map((r) => r.users.slug));
 	const runMatches = await db
 		.select({
@@ -95,7 +94,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			photoUrl: users.photoUrl,
 			bio: users.bio,
 			title: positions.title,
-			region: positions.region
+			region: positions.region,
+			verifiedAt: campaigns.verifiedAt
 		})
 		.from(campaigns)
 		.innerJoin(users, eq(campaigns.subjectUserId, users.id))
@@ -103,7 +103,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(
 			and(
 				isNull(campaigns.parentCampaignId),
-				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt),
 				or(ilike(users.firstName, like), ilike(users.otherNames, like), ilike(users.bio, like), ilike(positions.title, like), ilike(positions.region, like))
@@ -118,7 +117,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		leaderResults.push({
 			name,
 			initials: name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
-			verified: true,
+			verified: !!r.verifiedAt,
 			photoUrl: r.photoUrl,
 			path: leaderPath({ slug: r.slug }),
 			positionTitle: r.title,
@@ -144,10 +143,10 @@ export const load: PageServerLoad = async ({ url }) => {
 				isNull(experience.deletedAt),
 				isNull(users.deletedAt),
 				or(ilike(experience.title, like), ilike(experience.institution, like)),
-				// Only surface people who are publicly visible: a verified held term or a verified run.
+				// Only surface people with a held term or a run to point at.
 				or(
-					exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, users.id), isNotNull(leaders.verifiedAt), isNull(leaders.deletedAt)))),
-					exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, users.id), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt))))
+					exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, users.id), isNull(leaders.deletedAt)))),
+					exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, users.id), isNull(campaigns.deletedAt))))
 				)
 			)
 		)

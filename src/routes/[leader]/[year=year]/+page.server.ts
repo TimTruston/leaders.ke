@@ -11,15 +11,14 @@ import type { Actions, PageServerLoad } from './$types';
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
 // tracker, updates, citizen reviews, vote pledges, fundraising and the AI
 // constituent chat. Only the active cycle has a workspace; other years bounce
-// to the permanent record. An admin, the profile's own person, or one of its
-// active managers may preview it before it's verified/public — see
-// resolveCampaignRun; everyone else still gets the verified-only gate.
+// to the permanent record. Public as soon as the run exists — verifiedAt is a
+// "Verified" badge only (see docs/URLDiscovery.md), not a visibility gate.
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const recordPath = leaderPath({ slug: params.leader });
 	if (Number(params.year) !== ACTIVE_CYCLE) redirect(302, recordPath);
 
 	const viewer = locals.user ? await getDomainUser(locals.user.id) : null;
-	const row = await resolveCampaignRun(params.leader, { viewerId: viewer?.id, isAdmin: !!viewer?.adminAt });
+	const row = await resolveCampaignRun(params.leader);
 	if (!row) error(404, 'Campaign not found');
 
 	const workspace = await loadCampaignWorkspaceData(row, viewer?.id);

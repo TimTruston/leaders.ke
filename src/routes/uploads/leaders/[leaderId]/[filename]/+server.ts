@@ -1,10 +1,10 @@
 // Serves campaign-application documents (photo, ID front/back, IEBC certificate)
 // from local disk. ID scans and the IEBC cert are never public: only an active
 // manager of that leader, or a platform admin, may fetch them. The profile PHOTO
-// is the one exception — once the profile is verified, it's exactly what the
-// public /[leader] page displays, so it's servable to anyone (no auth) at that point.
+// is the one exception — once the profile has a held term or a run, it's exactly
+// what the public /[leader] page displays, so it's servable to anyone (no auth).
 import { error } from '@sveltejs/kit';
-import { and, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { env } from '$env/dynamic/private';
@@ -29,25 +29,25 @@ export const GET: RequestHandler = async (event) => {
 		error(404, 'Not found');
 	}
 
-	// Public exception: this file is the person's profile photo AND the profile is
-	// verified (a public term or a verified run) — exactly what /[leader] renders.
+	// Public exception: this file is the person's profile photo AND they have a
+	// held term or a run — exactly what /[leader] renders.
 	const requestedPath = `/uploads/leaders/${subjectUserId}/${filename}`;
 	const [subject] = await db.select({ photoUrl: users.photoUrl }).from(users).where(and(eq(users.id, subjectUserId), isNull(users.deletedAt)));
 	let isPublicPhoto = false;
 	if (subject?.photoUrl === requestedPath) {
-		const [verifiedTerms, verifiedRuns] = await Promise.all([
+		const [terms, runs] = await Promise.all([
 			db
 				.select({ id: leaders.id })
 				.from(leaders)
-				.where(and(eq(leaders.userId, subjectUserId), isNotNull(leaders.verifiedAt), isNull(leaders.deletedAt)))
+				.where(and(eq(leaders.userId, subjectUserId), isNull(leaders.deletedAt)))
 				.limit(1),
 			db
 				.select({ id: campaigns.id })
 				.from(campaigns)
-				.where(and(eq(campaigns.subjectUserId, subjectUserId), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt)))
+				.where(and(eq(campaigns.subjectUserId, subjectUserId), isNull(campaigns.deletedAt)))
 				.limit(1)
 		]);
-		isPublicPhoto = verifiedTerms.length > 0 || verifiedRuns.length > 0;
+		isPublicPhoto = terms.length > 0 || runs.length > 0;
 	}
 
 	if (!isPublicPhoto) {

@@ -1,6 +1,6 @@
 // Shared loader for the seat civic hub, used by both /[position]/[region] and
 // (for single-region national seats like President) /[position] directly.
-import { and, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, parties, partyMemberships, pillars, positions, users } from '$lib/server/db/schema';
 import {
@@ -80,7 +80,7 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 			.toSorted((a, b) => b.leaders.startAt.getTime() - a.leaders.startAt.getTime())[0];
 		if (currentRow) regime = currentRow.leaders.startAt.getFullYear();
 	}
-	// Contestants for the active cycle are verified 2027 runs (campaigns) at this seat —
+	// Contestants for the active cycle are 2027 runs (campaigns) at this seat —
 	// aspirants have no leaders row. Past regimes list no contestants (the holder IS the result).
 	const runRows = isActiveRegime
 		? await db
@@ -93,7 +93,6 @@ export async function loadSeatHub(position: string, region: string, regimeYear?:
 						eq(positions.id, positionRow.id),
 						eq(campaigns.cycleYear, ACTIVE_CYCLE),
 						isNull(campaigns.parentCampaignId),
-						isNotNull(campaigns.verifiedAt),
 						isNull(campaigns.leaderId), // dropped once graduated into a term (that IS the current holder)
 						isNull(campaigns.deletedAt),
 						isNull(users.deletedAt)

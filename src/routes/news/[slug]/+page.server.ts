@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { and, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { posts, users, leaders, campaigns } from '$lib/server/db/schema';
+import { posts, users } from '$lib/server/db/schema';
 import { fullName, leaderPath } from '$lib/server/leader';
 import type { PageServerLoad } from './$types';
 
@@ -21,20 +21,6 @@ export const load: PageServerLoad = async ({ params }) => {
 			)
 		);
 	if (!row) error(404, 'Article not found');
-
-	// Same public-visibility gate as the /news list: a verified held term or a
-	// verified aspirant campaign.
-	const [[heldTerm], [aspirantRun]] = await Promise.all([
-		db
-			.select({ id: leaders.id })
-			.from(leaders)
-			.where(and(eq(leaders.userId, row.author.id), isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt))),
-		db
-			.select({ id: campaigns.id })
-			.from(campaigns)
-			.where(and(eq(campaigns.subjectUserId, row.author.id), isNull(campaigns.deletedAt), isNotNull(campaigns.verifiedAt)))
-	]);
-	if (!heldTerm && !aspirantRun) error(404, 'Article not found');
 
 	const authorName = fullName(row.author);
 	const initials = authorName

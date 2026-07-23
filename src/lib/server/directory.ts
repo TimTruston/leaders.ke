@@ -2,7 +2,7 @@
 // grid, folded into the seat taxonomy). Batched like the /rank pages: 3 queries
 // per request no matter how many leaders the position has, filters applied
 // server-side, and only the requested page's cards ship.
-import { and, count, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, count, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, followers, leaders, parties, partyMemberships, positions, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, leaderPath, slugify } from '$lib/server/leader';
@@ -60,6 +60,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 		region: string;
 		startAt: Date;
 		endAt: Date | null;
+		verifiedAt: Date | null;
 	};
 
 	// Held terms (current/former) at this position.
@@ -74,14 +75,15 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			status: leaders.status,
 			region: positions.region,
 			startAt: leaders.startAt,
-			endAt: leaders.endAt
+			endAt: leaders.endAt,
+			verifiedAt: leaders.verifiedAt
 		})
 		.from(leaders)
 		.innerJoin(positions, eq(leaders.positionId, positions.id))
 		.innerJoin(users, eq(leaders.userId, users.id))
-		.where(and(isNull(leaders.deletedAt), isNotNull(leaders.verifiedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
+		.where(and(isNull(leaders.deletedAt), isNull(users.deletedAt), eq(positions.title, positionTitle)));
 
-	// Verified 2027 runs (campaigns) at this position — the aspirants (no leaders row).
+	// 2027 runs (campaigns) at this position — the aspirants (no leaders row).
 	const runRows = await db
 		.select({
 			userId: users.id,
@@ -90,7 +92,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			otherNames: users.otherNames,
 			photoUrl: users.photoUrl,
 			region: positions.region,
-			cycleYear: campaigns.cycleYear
+			cycleYear: campaigns.cycleYear,
+			verifiedAt: campaigns.verifiedAt
 		})
 		.from(campaigns)
 		.innerJoin(positions, eq(campaigns.positionId, positions.id))
@@ -99,7 +102,6 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			and(
 				eq(positions.title, positionTitle),
 				isNull(campaigns.parentCampaignId),
-				isNotNull(campaigns.verifiedAt),
 				isNull(campaigns.deletedAt),
 				isNull(users.deletedAt)
 			)
@@ -116,7 +118,8 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			status: 'aspirant',
 			region: r.region,
 			startAt: new Date(r.cycleYear, 7, 10), // election day of the cycle, for ordering only
-			endAt: null
+			endAt: null,
+			verifiedAt: r.verifiedAt
 		}))
 	];
 
@@ -219,7 +222,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 			countyLabel: p.region,
 			positionTitle,
 			status: p.status,
-			verified: true,
+			verified: !!p.verifiedAt,
 			followers: p.followerCount
 		} satisfies DirectoryCard;
 	});

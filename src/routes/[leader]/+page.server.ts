@@ -21,14 +21,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 };
 
 // Resolves a slug to its public review target: the person id plus the lead campaign
-// (for pillar validation). Null when the profile isn't public (unverified term/run).
+// (for pillar validation). Null when there's no held term or run to review at all.
 async function publicLead(slug: string): Promise<{ subjectId: number; leadCampaignId: number } | null> {
 	const resolved = await resolveCurrentTerm(slug);
 	if (!resolved) return null;
 	const { row, currentTerm, activeRun } = resolved;
 	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
-	const leadVerified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
-	if (!leadVerified) return null;
+	if (!currentTerm && !activeRun) return null;
 	let leadCampaignId = 0;
 	if (leadsWithRun) {
 		leadCampaignId = activeRun!.campaigns.id;

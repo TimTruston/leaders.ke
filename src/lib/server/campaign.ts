@@ -1,31 +1,27 @@
 // Shared loader behind the /[leader]/[year] campaign workspace — extracted so an
-// admin (reviewing a pending application/claim) and the applicant themselves (or
-// an active manager) can preview a not-yet-verified campaign through the exact
-// same Campaign component real citizens will eventually see, reached via
-// LeaderProfile's "Open campaign" link. Anyone else still hits the verified gate.
+// admin preview and the real public page render through the exact same Campaign
+// component, reached via LeaderProfile's "Open campaign" link. Every non-deactivated
+// run is public; verifiedAt is a "Verified" badge only (see docs/URLDiscovery.md).
 import { and, asc, count, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, donations, followers, managers, parties, partyMemberships, pillars, pledges, positions, posts } from '$lib/server/db/schema';
+import { campaigns, donations, followers, parties, partyMemberships, pillars, pledges, posts } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, resolveCurrentTerm, resolveCurrentTermByUserId } from '$lib/server/leader';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
 
 /** Resolves the seat + run a /[leader]/[year] workspace leads with (the run itself
  * whenever one exists — even for an incumbent running for a different seat than
  * they hold — else the held term, for a pure officeholder with no declared run).
- * Verified is required UNLESS the viewer is an admin, the profile's own person, or
- * one of its active managers — the same "can this account see the draft" rule
- * used elsewhere for admin/claim previews. */
+ * Null only when the person has neither a held term nor a run. */
 export async function resolveCampaignRun(
 	// A public slug, or a person's user id for a slugless preview (see
-	// /previews/[userId]/[year] — an unverified application has no slug yet).
-	idOrSlug: string | number,
-	opts: { viewerId?: number; isAdmin?: boolean } = {}
+	// /previews/[userId]/[year] — an application has no slug until an admin
+	// approves it and mints one, regardless of the verifiedAt badge).
+	idOrSlug: string | number
 ) {
 	const resolved =
 		typeof idOrSlug === 'number' ? await resolveCurrentTermByUserId(idOrSlug) : await resolveCurrentTerm(idOrSlug);
 	if (!resolved) return null;
-	const { row, currentTerm } = resolved;
-	let { activeRun } = resolved;
+	const { row, currentTerm, activeRun } = resolved;
 	// This page is specifically about the 2027 RUN, not the person's general "lead
 	// identity" (that distinction belongs to the /[leader] profile page instead) —
 	// so an existing run always wins here, even for an incumbent running for a
@@ -34,34 +30,8 @@ export async function resolveCampaignRun(
 	const leadsWithRun = !!activeRun;
 	const verified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
 
-	if (!verified) {
-		const canPreview =
-			opts.isAdmin ||
-			opts.viewerId === row.users.id ||
-			(opts.viewerId
-				? !!(
-						await db
-							.select({ id: managers.id })
-							.from(managers)
-							.where(and(eq(managers.userId, opts.viewerId), eq(managers.subjectUserId, row.users.id), isNull(managers.deletedAt)))
-					)[0]
-				: false);
-		if (!canPreview) return null;
-
-		// resolveCurrentTerm's activeRun is verified-only (drives public resolution).
-		// A previewer with no held term and no verified run yet is a pure aspirant
-		// whose draft run hasn't been verified — fall back to their current-cycle
-		// run regardless of verified state (same pattern as publicProfile.ts).
-		if (!currentTerm && !activeRun) {
-			const [draftRun] = await db
-				.select()
-				.from(campaigns)
-				.innerJoin(positions, eq(campaigns.positionId, positions.id))
-				.where(and(eq(campaigns.subjectUserId, row.users.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
-			if (!draftRun) return null;
-			activeRun = draftRun;
-		}
-	}
+	// Nothing to show at all (no held term, no run) — 404, same as /[leader].
+	if (!currentTerm && !activeRun) return null;
 
 	const stillLeadsWithRun = !!activeRun;
 	let campaignId = 0;

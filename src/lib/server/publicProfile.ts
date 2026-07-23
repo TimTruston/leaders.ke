@@ -1,11 +1,9 @@
 // Shared data loader behind the public /[leader] page — extracted so admin
 // previews (a pending application's live profile, a pending claim's staged
 // overlay) can render through the exact same LeaderProfile component instead of
-// a bespoke admin-only layout. `isAdmin` bypasses the verified gate (an admin
-// reviewing a submission needs to see the draft); the profile's own person or
-// one of its active managers bypasses it too (the applicant previewing their
-// own not-yet-verified submission); everything else is identical to what a
-// citizen would see once the profile goes public.
+// a bespoke admin-only layout. Every non-deactivated profile is public;
+// verifiedAt is a "Verified" badge only (see docs/URLDiscovery.md), not a
+// visibility gate — an application goes live as soon as it exists.
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, contacts, experience, followers, managers, parties, partyMemberships, pillars, positions, posts, tags } from '$lib/server/db/schema';
@@ -24,12 +22,10 @@ export async function loadPublicProfileData(
 	const resolved =
 		typeof idOrSlug === 'number' ? await resolveCurrentTermByUserId(idOrSlug) : await resolveCurrentTerm(idOrSlug);
 	if (!resolved) return null;
-	const { row, terms, currentTerm } = resolved;
-	let { activeRun } = resolved;
+	const { row, terms, currentTerm, activeRun } = resolved;
 
-	// The profile's own person or one of its active managers may preview it
-	// unverified too, same as an admin — computed once, reused for the bypass
-	// below and for `canClaim` further down.
+	// Whether the viewer manages this profile — used for `canClaim`/`canEdit` below
+	// (editing access), not for visibility (every non-deactivated profile is public).
 	const viewerIsManager = opts.viewerId
 		? opts.viewerId === row.users.id ||
 			!!(
@@ -39,7 +35,6 @@ export async function loadPublicProfileData(
 					.where(and(eq(managers.userId, opts.viewerId), eq(managers.subjectUserId, row.users.id), isNull(managers.deletedAt)))
 			)[0]
 		: false;
-	const canPreview = !!opts.isAdmin || viewerIsManager;
 
 	// Only seeded/unowned profiles are claimable — an applied (or already-claimed)
 	// profile has an active manager, so "claim this" must not appear for it.
@@ -50,25 +45,12 @@ export async function loadPublicProfileData(
 			.where(and(eq(managers.subjectUserId, row.users.id), eq(managers.isActive, true), isNull(managers.deletedAt)))
 	)[0];
 
-	// resolveCurrentTerm's activeRun is verified-only (it drives public resolution).
-	// A previewer with no held term and no verified run yet is a pure aspirant
-	// whose draft run hasn't been verified — fall back to their current-cycle
-	// run regardless of verified state.
-	if (!activeRun && canPreview) {
-		const [draftRun] = await db
-			.select()
-			.from(campaigns)
-			.innerJoin(positions, eq(campaigns.positionId, positions.id))
-			.where(and(eq(campaigns.subjectUserId, row.users.id), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
-		if (draftRun) activeRun = draftRun;
-	}
-
 	const leadsWithRun = (!currentTerm || currentTerm.leaders.status === 'former') && !!activeRun;
 	const leadPosition = leadsWithRun ? activeRun!.positions : (currentTerm?.positions ?? activeRun?.positions ?? null);
 	const leadStatus = leadsWithRun ? 'aspirant' : (currentTerm?.leaders.status ?? 'aspirant');
 	const leadVerified = leadsWithRun ? !!activeRun!.campaigns.verifiedAt : !!currentTerm?.leaders.verifiedAt;
 
-	if (!leadPosition || (!leadVerified && !canPreview)) return null;
+	if (!leadPosition) return null;
 
 	let leadCampaignId = 0;
 	if (leadsWithRun) {
