@@ -1,0 +1,4 @@
+ALTER TABLE "users" ADD COLUMN "pending_current_position_id" integer;--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "pending_current_party_id" integer;--> statement-breakpoint
+ALTER TABLE "users" ADD CONSTRAINT "users_pending_current_position_id_positions_id_fk" FOREIGN KEY ("pending_current_position_id") REFERENCES "public"."positions"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "users" ADD CONSTRAINT "users_pending_current_party_id_parties_id_fk" FOREIGN KEY ("pending_current_party_id") REFERENCES "public"."parties"("id") ON DELETE set null ON UPDATE no action;

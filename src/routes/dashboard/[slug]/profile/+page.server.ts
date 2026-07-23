@@ -30,13 +30,19 @@ export const load: PageServerLoad = async (event) => {
 		.where(isNull(parties.deletedAt))
 		.orderBy(asc(parties.name));
 
+	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
+	const subject = ctx?.profileUser ?? domainUser;
+
 	// Party is per-term (leaders.partyId), not a person-level fact — this Party
 	// select only applies to a HELD term being actively edited (ctx.leader). A pure
 	// aspirant declares theirs on the Campaign tab instead (campaigns.partyId).
-	const partyId = ctx?.leader?.partyId ?? null;
-
-	// Managers edit the leader's profile, not their own; profileUser is whoever the page is about.
-	const subject = ctx?.profileUser ?? domainUser;
+	// A "current" claim that collided with an already-seeded incumbent never got a
+	// real leaders row (see onboard.ts's notifyAdminsOfLeaderConflict) — the party
+	// they claimed lives on users.pendingCurrentPartyId instead, purely so this tab
+	// still shows it (and lets them edit it) while an admin resolves the conflict.
+	const hasRealCurrentTerm = ctx?.leader?.status === 'current';
+	const pendingClaim = !hasRealCurrentTerm && subject.pendingCurrentPositionId != null;
+	const partyId = hasRealCurrentTerm ? (ctx!.leader!.partyId ?? null) : pendingClaim ? subject.pendingCurrentPartyId : null;
 
 	const [existingExperience, otherLeadershipRows] = ctx
 		? await Promise.all([
@@ -99,7 +105,8 @@ export const load: PageServerLoad = async (event) => {
 			bio: subject.bio ?? '',
 			positionId: ctx?.position?.id ?? null,
 			partyId,
-			hasActiveTerm: !!ctx?.leader,
+			hasActiveTerm: hasRealCurrentTerm || pendingClaim,
+			pendingClaim,
 			slug: subject.slug ?? null,
 			hasLeader: !!ctx,
 			verified: (ctx?.verified ?? false)
@@ -159,7 +166,12 @@ export const actions: Actions = {
 
 		// Party only applies when editing an active HELD term (ctx.leader) — a pure
 		// aspirant has no leaders row yet to attach it to (see the Campaign tab instead).
-		if (ctx?.leader) {
+		// A "current" claim that collided with an already-seeded incumbent has no real
+		// leaders row either (see onboard.ts) — its party lives on
+		// users.pendingCurrentPartyId instead, editable here until an admin resolves it.
+		const hasRealCurrentTerm = ctx?.leader?.status === 'current';
+		const pendingClaim = !hasRealCurrentTerm && ctx?.profileUser.pendingCurrentPositionId != null;
+		if (hasRealCurrentTerm || pendingClaim) {
 			if (partyRaw === 'other' && !partyOtherRaw) return fail(400, { error: 'Enter the party name.' });
 			let partyId = partyRaw && partyRaw !== 'other' ? Number(partyRaw) || null : null; // null = independent
 			if (partyId) {
@@ -171,7 +183,11 @@ export const actions: Actions = {
 			} else if (partyRaw === 'other') {
 				partyId = await resolveOtherParty(partyOtherRaw);
 			}
-			await db.update(leaders).set({ partyId }).where(eq(leaders.id, ctx.leader.id));
+			if (hasRealCurrentTerm) {
+				await db.update(leaders).set({ partyId }).where(eq(leaders.id, ctx!.leader!.id));
+			} else {
+				await db.update(users).set({ pendingCurrentPartyId: partyId }).where(eq(users.id, ctx!.profileUser.id));
+			}
 		}
 
 		for (const e of pendingExperience) {

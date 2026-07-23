@@ -14,13 +14,18 @@
 //    checked boxes stay matcher hints (bio + profileClaims.evidence) only.
 //  - The slug is minted at creation, not admin approval — the page can be paid for and
 //    published without an admin in the loop.
-import { and, desc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, desc, eq, ilike, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { campaigns, leaders, managers, parties, positions, profileClaims, users } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, createPhantomUser, fullName, generateLeaderSlug, getOrCreateRunCampaign, leaderPath, resolveOtherParty } from '$lib/server/leader';
-import { seatPath } from '$lib/utils/seat';
 import { CAMPAIGN_ROLES } from '$lib/utils/campaignRoles';
 import { notifyUser } from '$lib/server/notifications';
+
+/** Every platform admin's user id — shared by the two admin-notification helpers below. */
+async function listAdminIds(): Promise<number[]> {
+	const rows = await db.select({ id: users.id }).from(users).where(and(isNotNull(users.adminAt), isNull(users.deletedAt)));
+	return rows.map((r) => r.id);
+}
 
 export type MatchingProfile = {
 	subjectUserId: number;
@@ -330,6 +335,47 @@ async function bioHint(input: OnboardInput): Promise<string> {
 	return parts.join(' · ');
 }
 
+/** A citizen's "Existing leader" or "Former leader" claim collided with an
+ * already-seeded holder of the same seat (current: only one holder at a time,
+ * platform-wide; former: two people's stated years overlap) — createProfile
+ * doesn't write the row either way (never bump/replace a real leader's record
+ * automatically), so this is admins' only signal the claim exists and needs a
+ * human to decide which one is right. Includes the claimed party since that part
+ * of the claim isn't itself in conflict — only the seat/time is. */
+async function notifyAdminsOfLeaderConflict(opts: {
+	subjectUserId: number;
+	subjectSlug: string;
+	positionId: number;
+	incumbentUserId: number;
+	partyId: number | null;
+	claimLabel: string; // e.g. "currently holds" or "held from 2013 to 2017"
+	recordedLabel: string; // e.g. "already recorded under" or "overlaps a record already held by"
+}) {
+	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
+	const [incumbent] = await db.select({ firstName: users.firstName, otherNames: users.otherNames, slug: users.slug }).from(users).where(eq(users.id, opts.incumbentUserId));
+	const [position] = await db.select({ title: positions.title, region: positions.region }).from(positions).where(eq(positions.id, opts.positionId));
+	const [party] = opts.partyId ? await db.select({ name: parties.name }).from(parties).where(eq(parties.id, opts.partyId)) : [];
+	const adminIds = await listAdminIds();
+
+	const subjectName = subject ? fullName(subject) : 'A new profile';
+	const incumbentName = incumbent ? fullName(incumbent) : 'the recorded incumbent';
+	const seatLabel = position ? `${position.title}, ${position.region}` : 'a seat';
+	const incumbentLink = incumbent?.slug ? `\n<a href="/${incumbent.slug}">Click here to view the recorded incumbent</a>` : '';
+	const partySuffix = party ? ` (claimed party: ${party.name})` : '';
+
+	await Promise.all(
+		adminIds.map((adminId) =>
+			notifyUser(adminId, {
+				kind: 'claim',
+				title: 'Conflicting leader claim',
+				body: `${subjectName} claims to have ${opts.claimLabel} ${seatLabel}${partySuffix}, which ${opts.recordedLabel} ${incumbentName}. Review and reassign if the new claim is correct.\n<a href="/${opts.subjectSlug}">Click here to view the new profile</a>${incumbentLink}`,
+				href: `/dashboard/${opts.subjectSlug}/profile`,
+				linkLabel: 'Click here to open the new profile'
+			})
+		)
+	);
+}
+
 /** No matching profile — mint a brand-new one the citizen owns (source=applied). Returns
  * the new profile's slug so the wizard can carry it into plans/checkout. */
 export async function createProfile(domainUserId: number, rawInput: OnboardInput): Promise<{ slug: string; subjectUserId: number }> {
@@ -338,17 +384,84 @@ export async function createProfile(domainUserId: number, rawInput: OnboardInput
 	const slug = await generateLeaderSlug(fullName({ firstName: input.firstName, otherNames: input.otherNames }));
 	await db.update(users).set({ slug, bio: await bioHint(input) }).where(eq(users.id, phantom.id));
 
+	// Existing leader -> the real ACTIVE term (status 'current'), not just a bio hint.
+	// This has to exist whenever Former is also checked: buildContext resolves the
+	// dashboard's "current term" context to whichever leaders row isn't former, or —
+	// with no such row — falls back to the most recent one regardless of status, so
+	// a former-only row would otherwise get mistaken for the active term (wrong
+	// party shown as "current", and it'd never appear as Track Record history since
+	// that list excludes whatever resolves as the active term).
+	if (input.current) {
+		// Only one 'current' leader per seat, platform-wide (one_current_per_position)
+		// — if a sitting incumbent is already on record there, this citizen's claim
+		// conflicts with it and can't be auto-resolved (could be a stale seed row, or
+		// the citizen could be wrong); falls back to the bio hint (same as before)
+		// plus an admin notification, rather than a payment-time 500 or silently
+		// bumping the recorded incumbent.
+		const [incumbent] = await db.select({ id: leaders.id, userId: leaders.userId }).from(leaders).where(and(eq(leaders.positionId, input.current.positionId), eq(leaders.status, 'current'), isNull(leaders.deletedAt)));
+		if (!incumbent) {
+			await db.insert(leaders).values({
+				userId: phantom.id,
+				positionId: input.current.positionId,
+				partyId: input.current.partyId,
+				status: 'current',
+				startAt: new Date()
+			});
+		} else {
+			// No real row, but the Profile tab still needs to show what the citizen
+			// claimed (party especially) rather than silently dropping it — parked here
+			// until an admin resolves the conflict one way or the other.
+			await db.update(users).set({ pendingCurrentPositionId: input.current.positionId, pendingCurrentPartyId: input.current.partyId }).where(eq(users.id, phantom.id));
+			await notifyAdminsOfLeaderConflict({
+				subjectUserId: phantom.id,
+				subjectSlug: slug,
+				positionId: input.current.positionId,
+				incumbentUserId: incumbent.userId,
+				partyId: input.current.partyId,
+				claimLabel: 'currently held',
+				recordedLabel: 'is already recorded under'
+			});
+		}
+	}
+
 	// Former leader -> a real Track Record entry, the same shape the "+ Elected"
-	// term editor writes (see the Profile tab's pendingLeadership handling).
+	// term editor writes (see the Profile tab's pendingLeadership handling). Two
+	// different people can each genuinely have held a seat "former"ly at DIFFERENT
+	// times, so only an OVERLAPPING year range is a real conflict — not just any
+	// other former row at the same seat.
 	if (input.former) {
-		await db.insert(leaders).values({
-			userId: phantom.id,
-			positionId: input.former.positionId,
-			partyId: input.former.partyId,
-			status: 'former',
-			startAt: new Date(`${input.former.fromYear}-01-01T00:00:00+03:00`),
-			endAt: new Date(`${input.former.toYear}-01-01T00:00:00+03:00`)
-		});
+		const overlap = await db
+			.select({ id: leaders.id, userId: leaders.userId })
+			.from(leaders)
+			.where(
+				and(
+					eq(leaders.positionId, input.former.positionId),
+					eq(leaders.status, 'former'),
+					isNull(leaders.deletedAt),
+					sql`extract(year from ${leaders.startAt}) <= ${input.former.toYear}`,
+					sql`extract(year from coalesce(${leaders.endAt}, ${leaders.startAt})) >= ${input.former.fromYear}`
+				)
+			);
+		if (overlap.length > 0) {
+			await notifyAdminsOfLeaderConflict({
+				subjectUserId: phantom.id,
+				subjectSlug: slug,
+				positionId: input.former.positionId,
+				incumbentUserId: overlap[0].userId,
+				partyId: input.former.partyId,
+				claimLabel: `held from ${input.former.fromYear} to ${input.former.toYear}`,
+				recordedLabel: 'overlaps a term already recorded under'
+			});
+		} else {
+			await db.insert(leaders).values({
+				userId: phantom.id,
+				positionId: input.former.positionId,
+				partyId: input.former.partyId,
+				status: 'former',
+				startAt: new Date(`${input.former.fromYear}-01-01T00:00:00+03:00`),
+				endAt: new Date(`${input.former.toYear}-01-01T00:00:00+03:00`)
+			});
+		}
 	}
 
 	// Candidate -> the actual 2027 run, via the same lazy-create every dashboard
@@ -423,7 +536,7 @@ export async function notifyAdminsOfNewProfile(opts: {
 }) {
 	const [subject] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.subjectUserId));
 	const [actor] = await db.select({ firstName: users.firstName, otherNames: users.otherNames }).from(users).where(eq(users.id, opts.actorUserId));
-	const admins = await db.select({ id: users.id }).from(users).where(and(isNotNull(users.adminAt), isNull(users.deletedAt)));
+	const adminIds = await listAdminIds();
 
 	const profileName = subject ? fullName(subject) : 'A profile';
 	const actorName = actor ? fullName(actor) : 'A citizen';
@@ -433,8 +546,8 @@ export async function notifyAdminsOfNewProfile(opts: {
 	const endsAtLabel = opts.subscriptionEndsAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
 
 	await Promise.all(
-		admins.map((admin) =>
-			notifyUser(admin.id, {
+		adminIds.map((adminId) =>
+			notifyUser(adminId, {
 				kind: 'claim',
 				title: opts.kind === 'claimed' ? 'A profile was claimed' : 'A new profile was created',
 				// href covers the Dashboard link (notifyUser appends it); Preview isn't

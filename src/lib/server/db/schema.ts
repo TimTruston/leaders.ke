@@ -65,6 +65,14 @@ export const users = pgTable('users', {
   // verifiedAt (see docs/URLDiscovery.md); never a visibility gate.
   verifiedAt: timestamp('verified_at', { withTimezone: true }),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
+  // An onboarding "Existing leader" claim that collided with an already-seeded
+  // incumbent at the same seat (see onboard.ts's notifyAdminsOfLeaderConflict) —
+  // no real `leaders` row could be written (only one 'current' per seat,
+  // platform-wide), so the claimed seat/party live here instead, purely so the
+  // Profile tab can still show what the citizen said pending an admin's review.
+  // Cleared once an admin resolves the conflict one way or the other.
+  pendingCurrentPositionId: integer('pending_current_position_id').references(() => positions.id, { onDelete: 'set null' }),
+  pendingCurrentPartyId: integer('pending_current_party_id').references(() => parties.id, { onDelete: 'set null' }),
   // Channel-level opt-in for platform notifications (new posts from followed leaders,
   // invite alerts, etc.) — simple on/off per channel, not per notification category.
   notificationPrefs: jsonb('notification_prefs')

@@ -19,7 +19,7 @@
 		photoUrl?: string | null;
 		existingExperience: { id: number; type: string; title: string; institution: string; description?: string | null; from: number | null; to: number | null }[];
 		existingLeadership: { id: number; positionTitle: string; region: string; description: string | null; from: number; to: number | null; partyId: number | null; partyName: string | null }[];
-		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; hasActiveTerm?: boolean; slug: string | null; hasLeader: boolean; verified: boolean };
+		form: { firstName: string; otherNames: string; bio: string; positionId: number | null; partyId?: number | null; hasActiveTerm?: boolean; pendingClaim?: boolean; slug: string | null; hasLeader: boolean; verified: boolean };
 		application?: { profile: { complete: boolean; missing: string[] }; documentation?: { missing: string[] } } | null;
 	};
 	let {
@@ -328,6 +328,9 @@
 				{#if data.parties && data.form.hasActiveTerm}
 					<label class="">
 						<span class="text-sm font-medium text-heading">Party (current term)</span>
+						{#if data.form.pendingClaim}
+							<p class="mt-0.5 text-xs text-muted">This seat is already recorded under someone else — an admin is reviewing the conflict. Your claimed party is saved either way.</p>
+						{/if}
 						<select
 							name="partyId"
 							bind:value={partyId}
