@@ -20,15 +20,21 @@
 	// own seat (+ years).
 	let currentChecked = $state((form?.values?.currentChecked ?? data.defaults.currentChecked) === 'on');
 	let currentPositionId = $state<number | ''>((form?.values?.currentPositionId ? Number(form.values.currentPositionId) : 0) || data.defaults.currentPositionId);
+	let currentPartyId = $state(form?.values?.currentPartyId ?? data.defaults.currentPartyId);
+	let currentPartyOther = $state(form?.values?.currentPartyOther ?? data.defaults.currentPartyOther);
 
 	let formerChecked = $state((form?.values?.formerChecked ?? data.defaults.formerChecked) === 'on');
 	let formerPositionId = $state<number | ''>((form?.values?.formerPositionId ? Number(form.values.formerPositionId) : 0) || data.defaults.formerPositionId);
 	let formerFromYear = $state(form?.values?.formerFromYear ?? data.defaults.formerFromYear);
 	let formerToYear = $state(form?.values?.formerToYear ?? data.defaults.formerToYear);
+	let formerPartyId = $state(form?.values?.formerPartyId ?? data.defaults.formerPartyId);
+	let formerPartyOther = $state(form?.values?.formerPartyOther ?? data.defaults.formerPartyOther);
 
 	let aspirantChecked = $state((form?.values?.aspirantChecked ?? data.defaults.aspirantChecked) === 'on');
 	let aspirantPositionId = $state<number | ''>((form?.values?.aspirantPositionId ? Number(form.values.aspirantPositionId) : 0) || data.defaults.aspirantPositionId);
 	let aspirantYear = $state(form?.values?.aspirantYear ?? data.defaults.aspirantYear);
+	let aspirantPartyId = $state(form?.values?.aspirantPartyId ?? data.defaults.aspirantPartyId);
+	let aspirantPartyOther = $state(form?.values?.aspirantPartyOther ?? data.defaults.aspirantPartyOther);
 
 	// Profile Matcher (RHS): fetched live as the name fills in.
 	type Match = {
@@ -133,7 +139,7 @@
 						Existing leader
 					</label>
 					{#if currentChecked}
-						<div class="mt-3">
+						<div class="mt-3 space-y-3">
 							<PositionSelector
 								positions={data.positions}
 								verified={false}
@@ -142,6 +148,22 @@
 								initialPositionId={currentPositionId || null}
 								bind:value={currentPositionId}
 							/>
+							<div class="grid grid-cols-2 gap-3">
+								<label class="block">
+									<span class="text-xs font-medium text-muted">Party</span>
+									<select name="currentPartyId" bind:value={currentPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
+										<option value="">Independent (no party)</option>
+										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
+										<option value="other">Other (not listed)…</option>
+									</select>
+								</label>
+								{#if currentPartyId === 'other'}
+									<label class="block">
+										<span class="text-xs font-medium text-muted">Party name</span>
+										<input name="currentPartyOther" bind:value={currentPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+									</label>
+								{/if}
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -171,6 +193,20 @@
 									<span class="text-xs font-medium text-muted">To year</span>
 									<input name="formerToYear" bind:value={formerToYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2017" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
 								</label>
+								<label class="block">
+									<span class="text-xs font-medium text-muted">Party</span>
+									<select name="formerPartyId" bind:value={formerPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
+										<option value="">Independent (no party)</option>
+										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
+										<option value="other">Other (not listed)…</option>
+									</select>
+								</label>
+								{#if formerPartyId === 'other'}
+									<label class="block">
+										<span class="text-xs font-medium text-muted">Party name</span>
+										<input name="formerPartyOther" bind:value={formerPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+									</label>
+								{/if}
 							</div>
 						</div>
 					{/if}
@@ -180,7 +216,7 @@
 				<div class="rounded-xl border border-border p-3">
 					<label class="flex items-center gap-2 text-sm font-medium text-heading">
 						<input type="checkbox" name="aspirantChecked" bind:checked={aspirantChecked} class="rounded text-primary focus:ring-ring" />
-						Candidate/Campaigning
+						Candidate
 					</label>
 					{#if aspirantChecked}
 						<div class="mt-3 space-y-3">
@@ -192,10 +228,26 @@
 								initialPositionId={aspirantPositionId || null}
 								bind:value={aspirantPositionId}
 							/>
-							<label class="block">
-								<span class="text-xs font-medium text-muted">Year</span>
-								<input name="aspirantYear" bind:value={aspirantYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2027" class="mt-1 w-full max-w-40 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
-							</label>
+							<div class="grid grid-cols-2 gap-3">
+								<label class="block">
+									<span class="text-xs font-medium text-muted">Year</span>
+									<input name="aspirantYear" bind:value={aspirantYear} inputmode="numeric" pattern={'[0-9]{4}'} maxlength="4" placeholder="e.g. 2027" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+								</label>
+								<label class="block">
+									<span class="text-xs font-medium text-muted">Party</span>
+									<select name="aspirantPartyId" bind:value={aspirantPartyId} class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none">
+										<option value="">Independent (no party)</option>
+										{#each data.parties as party (party.id)}<option value={String(party.id)}>{party.name}</option>{/each}
+										<option value="other">Other (not listed)…</option>
+									</select>
+								</label>
+								{#if aspirantPartyId === 'other'}
+									<label class="block">
+										<span class="text-xs font-medium text-muted">Party name</span>
+										<input name="aspirantPartyOther" bind:value={aspirantPartyOther} required placeholder="Party name" class="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-heading focus:border-primary focus:outline-none" />
+									</label>
+								{/if}
+							</div>
 						</div>
 					{/if}
 				</div>

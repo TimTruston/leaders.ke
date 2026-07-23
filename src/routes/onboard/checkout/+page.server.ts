@@ -29,13 +29,19 @@ async function resolveSelection(sp: URLSearchParams) {
 		myRole: sp.get('myRole') ?? '',
 		currentChecked: sp.get('currentChecked') ?? '',
 		currentPositionId: sp.get('currentPositionId') ?? '',
+		currentPartyId: sp.get('currentPartyId') ?? '',
+		currentPartyOther: sp.get('currentPartyOther') ?? '',
 		formerChecked: sp.get('formerChecked') ?? '',
 		formerPositionId: sp.get('formerPositionId') ?? '',
 		formerFromYear: sp.get('formerFromYear') ?? '',
 		formerToYear: sp.get('formerToYear') ?? '',
+		formerPartyId: sp.get('formerPartyId') ?? '',
+		formerPartyOther: sp.get('formerPartyOther') ?? '',
 		aspirantChecked: sp.get('aspirantChecked') ?? '',
 		aspirantPositionId: sp.get('aspirantPositionId') ?? '',
-		aspirantYear: sp.get('aspirantYear') ?? ''
+		aspirantYear: sp.get('aspirantYear') ?? '',
+		aspirantPartyId: sp.get('aspirantPartyId') ?? '',
+		aspirantPartyOther: sp.get('aspirantPartyOther') ?? ''
 	};
 	const validated = validateOnboardInput(raw);
 	if (!validated.ok) error(400, validated.error);

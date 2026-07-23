@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { positions, users } from '$lib/server/db/schema';
+import { parties, positions, users } from '$lib/server/db/schema';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { fullName } from '$lib/server/leader';
 import { assertClaimable, validateOnboardInput } from '$lib/server/onboard';
@@ -36,13 +36,19 @@ export const load: PageServerLoad = async (event) => {
 				myRole: sp.get('myRole') ?? '',
 				currentChecked: sp.get('currentChecked') ?? '',
 				currentPositionId: Number(sp.get('currentPositionId') ?? 0) || ('' as const),
+				currentPartyId: sp.get('currentPartyId') ?? '',
+				currentPartyOther: sp.get('currentPartyOther') ?? '',
 				formerChecked: sp.get('formerChecked') ?? '',
 				formerPositionId: Number(sp.get('formerPositionId') ?? 0) || ('' as const),
 				formerFromYear: sp.get('formerFromYear') ?? '',
 				formerToYear: sp.get('formerToYear') ?? '',
+				formerPartyId: sp.get('formerPartyId') ?? '',
+				formerPartyOther: sp.get('formerPartyOther') ?? '',
 				aspirantChecked: sp.get('aspirantChecked') ?? '',
 				aspirantPositionId: Number(sp.get('aspirantPositionId') ?? 0) || ('' as const),
 				aspirantYear: sp.get('aspirantYear') ?? '',
+				aspirantPartyId: sp.get('aspirantPartyId') ?? '',
+				aspirantPartyOther: sp.get('aspirantPartyOther') ?? '',
 				linkSubjectId: Number(sp.get('linkSubjectId') ?? 0) || null
 			}
 		: null;
@@ -53,8 +59,15 @@ export const load: PageServerLoad = async (event) => {
 		.where(isNull(positions.deletedAt))
 		.orderBy(asc(positions.title), asc(positions.region));
 
+	const partyRows = await db
+		.select({ id: parties.id, name: parties.name, abbreviation: parties.abbreviation })
+		.from(parties)
+		.where(isNull(parties.deletedAt))
+		.orderBy(asc(parties.name));
+
 	return {
 		positions: positionRows,
+		parties: partyRows.map((p) => ({ id: p.id, name: p.abbreviation ? `${p.name} (${p.abbreviation})` : p.name })),
 		roles: CAMPAIGN_ROLES,
 		// Stepping back wins; else the claim target's name; else the citizen's own —
 		// the common case is a leader onboarding themselves. Same shape every branch
@@ -66,13 +79,19 @@ export const load: PageServerLoad = async (event) => {
 			myRole: '',
 			currentChecked: '',
 			currentPositionId: '' as const,
+			currentPartyId: '',
+			currentPartyOther: '',
 			formerChecked: '',
 			formerPositionId: '' as const,
 			formerFromYear: '',
 			formerToYear: '',
+			formerPartyId: '',
+			formerPartyOther: '',
 			aspirantChecked: '',
 			aspirantPositionId: '' as const,
 			aspirantYear: '',
+			aspirantPartyId: '',
+			aspirantPartyOther: '',
 			linkSubjectId: null
 		},
 		preselectSubjectId: stepBack?.linkSubjectId ?? claimTarget?.id ?? null,
@@ -96,13 +115,19 @@ export const actions: Actions = {
 			myRole: String(form.get('myRole') ?? ''),
 			currentChecked: String(form.get('currentChecked') ?? ''),
 			currentPositionId: String(form.get('currentPositionId') ?? ''),
+			currentPartyId: String(form.get('currentPartyId') ?? ''),
+			currentPartyOther: String(form.get('currentPartyOther') ?? ''),
 			formerChecked: String(form.get('formerChecked') ?? ''),
 			formerPositionId: String(form.get('formerPositionId') ?? ''),
 			formerFromYear: String(form.get('formerFromYear') ?? ''),
 			formerToYear: String(form.get('formerToYear') ?? ''),
+			formerPartyId: String(form.get('formerPartyId') ?? ''),
+			formerPartyOther: String(form.get('formerPartyOther') ?? ''),
 			aspirantChecked: String(form.get('aspirantChecked') ?? ''),
 			aspirantPositionId: String(form.get('aspirantPositionId') ?? ''),
-			aspirantYear: String(form.get('aspirantYear') ?? '')
+			aspirantYear: String(form.get('aspirantYear') ?? ''),
+			aspirantPartyId: String(form.get('aspirantPartyId') ?? ''),
+			aspirantPartyOther: String(form.get('aspirantPartyOther') ?? '')
 		};
 		const linkSubjectId = Number(form.get('leaderId') ?? 0) || null; // set when a matching card was confirmed
 		const values = { ...raw, linkSubjectId };
@@ -121,17 +146,35 @@ export const actions: Actions = {
 		if (validated.input.current) {
 			params.set('currentChecked', 'on');
 			params.set('currentPositionId', String(validated.input.current.positionId));
+			if (validated.input.current.partyOther) {
+				params.set('currentPartyId', 'other');
+				params.set('currentPartyOther', validated.input.current.partyOther);
+			} else if (validated.input.current.partyId) {
+				params.set('currentPartyId', String(validated.input.current.partyId));
+			}
 		}
 		if (validated.input.former) {
 			params.set('formerChecked', 'on');
 			params.set('formerPositionId', String(validated.input.former.positionId));
 			params.set('formerFromYear', String(validated.input.former.fromYear));
 			params.set('formerToYear', String(validated.input.former.toYear));
+			if (validated.input.former.partyOther) {
+				params.set('formerPartyId', 'other');
+				params.set('formerPartyOther', validated.input.former.partyOther);
+			} else if (validated.input.former.partyId) {
+				params.set('formerPartyId', String(validated.input.former.partyId));
+			}
 		}
 		if (validated.input.aspirant) {
 			params.set('aspirantChecked', 'on');
 			params.set('aspirantPositionId', String(validated.input.aspirant.positionId));
 			params.set('aspirantYear', String(validated.input.aspirant.year));
+			if (validated.input.aspirant.partyOther) {
+				params.set('aspirantPartyId', 'other');
+				params.set('aspirantPartyOther', validated.input.aspirant.partyOther);
+			} else if (validated.input.aspirant.partyId) {
+				params.set('aspirantPartyId', String(validated.input.aspirant.partyId));
+			}
 		}
 		if (linkSubjectId) params.set('linkSubjectId', String(linkSubjectId));
 		redirect(303, `/onboard/plan?${params}`);
