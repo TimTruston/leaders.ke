@@ -122,7 +122,7 @@
 					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/followers`, label: 'Followers' },
 					{ href: `${base}/delivery`, label: 'Delivery' },
-					{ href: `${base}/campaign`, label: 'Campaign + Manifesto' },
+					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/posts`, label: 'News' },
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
 					{ href: `${base}/reviews`, label: 'Reviews' },

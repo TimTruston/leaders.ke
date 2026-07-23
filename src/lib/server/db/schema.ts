@@ -162,6 +162,22 @@ export const experience = pgTable('experience', {
   index('experience_subject_idx').on(t.subjectUserId),
 ]);
 
+// One concrete thing a leader delivered under a SPECIFIC term (current or past) —
+// distinct from `pillars` (a campaign RUN's forward-looking promises with a status).
+// Scoped to `leaders.id`, not the person, so it groups correctly when someone has
+// held more than one seat/term.
+export const deliveries = pgTable('deliveries', {
+  id: serial('id').primaryKey(),
+  leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'cascade' }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('deliveries_leader_idx').on(t.leaderId),
+]);
+
 // 4. MANIFESTO PILLARS - A leader's policy platform
 
 // Public delivery tracker: every pillar carries a status citizens can verify.
