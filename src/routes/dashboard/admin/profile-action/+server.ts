@@ -66,6 +66,16 @@ export const POST: RequestHandler = async (event) => {
 	} else if (action === 'declareWinner') {
 		const meta = await getProfileAdminMeta(profileId);
 		if (meta.graduatableCampaignId) await graduateCampaign(meta.graduatableCampaignId);
+	} else if (action === 'verifyIdentity') {
+		// Confirms nationalId + both ID scans + the profile photo all belong to this
+		// person — once per PERSON, reused across every profile they manage (see
+		// docs/URLDiscovery.md). A badge only, never a visibility gate.
+		const [subject] = await db.select().from(users).where(eq(users.id, profileId));
+		if (subject?.nationalId && subject.idFrontUrl && subject.idBackUrl && subject.photoUrl) {
+			await db.update(users).set({ verifiedAt: new Date() }).where(eq(users.id, profileId));
+		}
+	} else if (action === 'unverifyIdentity') {
+		await db.update(users).set({ verifiedAt: null }).where(eq(users.id, profileId));
 	}
 
 	redirect(303, next);

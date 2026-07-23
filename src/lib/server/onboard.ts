@@ -247,8 +247,7 @@ export async function createProfile(domainUserId: number, input: OnboardInput): 
 	await db.insert(managers).values({
 		userId: domainUserId,
 		subjectUserId: phantom.id,
-		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined },
-		verifiedAt: new Date()
+		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined }
 	});
 
 	return { slug, subjectUserId: phantom.id };
@@ -277,8 +276,7 @@ export async function linkProfile(domainUserId: number, input: OnboardInput, sub
 	await db.insert(managers).values({
 		userId: domainUserId,
 		subjectUserId,
-		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined },
-		verifiedAt: new Date()
+		roles: { admin: true, title: input.myRole || undefined, nationalId: input.nationalId || undefined }
 	});
 
 	// Access is granted immediately (above), but this row is what gives admin

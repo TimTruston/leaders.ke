@@ -234,8 +234,7 @@ export const actions: Actions = {
 			await db.insert(managers).values({
 				userId: domainUser.id,
 				subjectUserId: subjectId,
-				roles: { admin: true },
-				verifiedAt: new Date()
+				roles: { admin: true }
 			});
 		}
 

@@ -314,8 +314,7 @@ export async function seedAdminFixture(db: AnyDb) {
 			userId: m.userId,
 			subjectUserId: leaderUserId,
 			roles: { admin: true, title: m.title },
-			isActive: true,
-			verifiedAt: new Date()
+			isActive: true
 		});
 	}
 

@@ -428,6 +428,13 @@
       "when": 1784793263144,
       "tag": "0060_bumpy_gideon",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1784798617579,
+      "tag": "0061_short_stark_industries",
+      "breakpoints": true
     }
   ]
 }

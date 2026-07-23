@@ -346,6 +346,10 @@
 				title="Review-workflow state: seeded → —; claimed → latest claim outcome; applied → run verified/latest request; soft-deleted → deleted."
 				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize {ac.verified === 'approved' ? 'bg-primary-soft text-on-primary' : ac.verified === 'pending' ? 'border border-primary text-primary' : 'border border-border text-muted'}"
 			>{ac.verified ?? '—'}</span>
+			<span
+				title="Identity badge: confirms nationalId + both ID scans + the profile photo belong to this person. Set once per person, reused across every profile they manage. Never a visibility gate (see docs/URLDiscovery.md)."
+				class="cursor-help rounded-full px-2.5 py-0.5 text-xs font-semibold {ac.identityVerified ? 'bg-primary-soft text-on-primary' : 'border border-border text-muted'}"
+			>{ac.identityVerified ? 'Identity verified' : 'Identity unverified'}</span>
 			<!-- An approved claim granted access immediately at payment time (see onboard.ts),
 			so unlike the pending decision form below, this stays reviewable indefinitely —
 			rejecting later deactivates the manager row and restores the profile from its
@@ -389,6 +393,21 @@
 						onclick={() => (adminAction = { action: 'delete', title: 'Delete this profile?', body: `Soft-deletes ${ac.profileName}'s profile and all its terms, campaigns and claims. It disappears from every leader surface.`, confirmLabel: 'Delete' })}
 						class="rounded-full border border-red-500/40 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-500/10"
 					>Delete</button>
+				{/if}
+				{#if ac.identityVerified}
+					<button
+						type="button"
+						onclick={() => (adminAction = { action: 'unverifyIdentity', title: 'Remove identity verification?', body: `${ac.profileName} loses the Identity verified badge until an admin re-confirms their documents.`, confirmLabel: 'Remove' })}
+						class="rounded-full border border-border px-3 py-1 text-xs font-semibold text-heading transition hover:bg-surface"
+					>Unverify identity</button>
+				{:else}
+					<button
+						type="button"
+						disabled={!ac.identityDocsComplete}
+						title={ac.identityDocsComplete ? '' : 'Needs nationalId + both ID scans + a profile photo before this can be confirmed.'}
+						onclick={() => (adminAction = { action: 'verifyIdentity', title: 'Verify identity?', body: `Confirms ${ac.profileName}'s national ID, ID scans and profile photo all belong to them. This badge carries over to every profile they manage.`, confirmLabel: 'Verify' })}
+						class="rounded-full border border-primary px-3 py-1 text-xs font-semibold text-primary transition hover:bg-primary hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-primary"
+					>Verify identity</button>
 				{/if}
 			</div>
 

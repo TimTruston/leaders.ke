@@ -59,6 +59,11 @@ export const users = pgTable('users', {
   nationalId: varchar('national_id', { length: 20 }),
   idFrontUrl: text('id_front_url'),
   idBackUrl: text('id_back_url'),
+  // An admin has manually confirmed nationalId + idFrontUrl + idBackUrl + photoUrl
+  // all belong to this person — set once, reused across every profile they manage
+  // (identity doesn't change per profile). A badge only, like every other
+  // verifiedAt (see docs/URLDiscovery.md); never a visibility gate.
+  verifiedAt: timestamp('verified_at', { withTimezone: true }),
   adminAt: timestamp('admin_at', { withTimezone: true }), // platform admin, set manually for now (no self-serve path)
   // Channel-level opt-in for platform notifications (new posts from followed leaders,
   // invite alerts, etc.) — simple on/off per channel, not per notification category.
@@ -241,7 +246,8 @@ export const managers = pgTable('managers', {
   // images live on the manager's own users row (idFrontUrl/idBackUrl), not here.
   roles: jsonb('roles').$type<ManagerRoles>().default({}).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
-  verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  // Identity verification moved to users.verifiedAt (one per PERSON, reused across
+  // every profile they manage) — this dead write-only column is gone.
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [

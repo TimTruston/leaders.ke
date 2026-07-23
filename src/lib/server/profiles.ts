@@ -268,6 +268,11 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	verified: ProfileVerified;
 	deactivated: boolean;
 	graduatableCampaignId: number | null;
+	// Identity badge (users.verifiedAt — see docs/URLDiscovery.md): confirms
+	// nationalId + both ID scans + the profile photo belong to this person.
+	// identityDocsComplete gates whether the control bar's Verify button can act.
+	identityVerified: boolean;
+	identityDocsComplete: boolean;
 	application: { id: number; applicantId: number; applicantName: string; email: string | null; phone: string | null } | null;
 	// The pending decisions the admin control bar surfaces inline (moved off the
 	// Team/Campaign tabs): a live claim to approve/reject, and a run verification.
@@ -280,7 +285,18 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 	approvedClaimId: number | null;
 }> {
 	const [person] = await db
-		.select({ id: users.id, firstName: users.firstName, otherNames: users.otherNames, slug: users.slug, deletedAt: users.deletedAt })
+		.select({
+			id: users.id,
+			firstName: users.firstName,
+			otherNames: users.otherNames,
+			slug: users.slug,
+			deletedAt: users.deletedAt,
+			verifiedAt: users.verifiedAt,
+			nationalId: users.nationalId,
+			idFrontUrl: users.idFrontUrl,
+			idBackUrl: users.idBackUrl,
+			photoUrl: users.photoUrl
+		})
 		.from(users)
 		.where(eq(users.id, subjectUserId));
 
@@ -367,6 +383,8 @@ export async function getProfileAdminMeta(subjectUserId: number): Promise<{
 		verified,
 		deactivated: !!person?.deletedAt,
 		graduatableCampaignId: run && run.verifiedAt && !run.leaderId ? run.id : null,
+		identityVerified: !!person?.verifiedAt,
+		identityDocsComplete: !!(person?.nationalId && person.idFrontUrl && person.idBackUrl && person.photoUrl),
 		application: application
 			? { id: application.id, applicantId: application.applicantId, applicantName: fullName({ firstName: application.first, otherNames: application.other }), ...contactsFor(application.applicantId) }
 			: null,

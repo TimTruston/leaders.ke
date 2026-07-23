@@ -57,14 +57,6 @@
 {/snippet}
 
 <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-	{#if !leader.verified}
-		<!-- Only admins ever see an unverified profile here (the load function 404s
-		everyone else): reviewing a submission is the whole point. -->
-		<div class="mb-6 rounded-2xl border border-border bg-surface-2 px-4 py-3 text-sm font-medium text-heading">
-			Preview: this profile is hidden from the public until it gets verified.
-		</div>
-	{/if}
-
 	<!-- Breadcrumb: current campaign's seat if vying, else last held seat -->
 	<div class="flex flex-wrap items-center justify-between gap-3">
 		<nav class="text-sm text-muted" aria-label="Breadcrumb">
@@ -99,10 +91,10 @@
 					<div class="min-w-0">
 						<h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-heading sm:text-3xl">
 							{leader.name}
-							<!-- Unverified profiles reach here only as admin previews, so the
-							badge is gated instead of assumed. -->
+							<!-- A badge only: every profile is public regardless (see docs/URLDiscovery.md). -->
 							{#if leader.verified}
 								<span
+									title="An admin has manually confirmed the facts on this seat/candidacy (see docs/URLDiscovery.md)."
 									class="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-on-primary"
 								>
 									<svg viewBox="0 0 24 24" fill="currentColor" class="size-4 text-primary">
