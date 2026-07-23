@@ -8,11 +8,11 @@
 
 	type Item = { label: string; sub: string; path: string };
 	type Group = { name: string; items: Item[] };
-	type GroupName = 'Platform' | 'Regions' | 'Executive' | 'Parliament' | 'MCAs' | 'Parties';
+	type GroupName = 'Platform' | 'Regions' | 'Executive' | 'Parliament' | 'MCAs' | 'Parties' | 'News' | 'Topics';
 
 	let {
 		open = $bindable(false),
-		include = ['Platform', 'Regions', 'Executive', 'Parliament', 'MCAs', 'Parties'],
+		include = ['Platform', 'Regions', 'Executive', 'Parliament', 'MCAs', 'Parties', 'News', 'Topics'],
 		expand = true,
 		hotkey = false,
 		placeholder,
@@ -53,11 +53,13 @@
 
 	let query = $state('');
 	let highlighted = $state(0);
-	let dbGroups = $state<{ executive: Item[]; parliament: Item[]; mcas: Item[]; parties: Item[] }>({
+	let dbGroups = $state<{ executive: Item[]; parliament: Item[]; mcas: Item[]; parties: Item[]; news: Item[]; tags: Item[] }>({
 		executive: [],
 		parliament: [],
 		mcas: [],
-		parties: []
+		parties: [],
+		news: [],
+		tags: []
 	});
 	let input = $state<HTMLInputElement | null>(null);
 
@@ -68,7 +70,7 @@
 		const q = query.trim();
 		clearTimeout(timer);
 		if (q.length < 2) {
-			dbGroups = { executive: [], parliament: [], mcas: [], parties: [] };
+			dbGroups = { executive: [], parliament: [], mcas: [], parties: [], news: [], tags: [] };
 			return;
 		}
 		const seq = ++requestSeq;
@@ -94,7 +96,9 @@
 			{ name: 'MCAs', items: dbGroups.mcas },
 			{ name: 'Platform', items: filterStatic(PLATFORM, q) },
 			{ name: 'Regions', items: filterStatic(REGIONS, q) },
-			{ name: 'Parties', items: dbGroups.parties }
+			{ name: 'Parties', items: dbGroups.parties },
+			{ name: 'News', items: dbGroups.news },
+			{ name: 'Topics', items: dbGroups.tags }
 		].filter((g) => include.includes(g.name as GroupName) && g.items.length > 0);
 	});
 	const flat = $derived(groups.flatMap((g) => g.items));

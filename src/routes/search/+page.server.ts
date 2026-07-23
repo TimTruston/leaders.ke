@@ -1,12 +1,13 @@
 import { and, eq, exists, inArray, ilike, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { alliances, campaigns, experience, leaders, parties, positions, users } from '$lib/server/db/schema';
+import { alliances, campaigns, experience, leaders, parties, positions, posts, users } from '$lib/server/db/schema';
 import { fullName, leaderPath, slugify } from '$lib/server/leader';
+import { plainText } from '$lib/utils/richtext';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const q = (url.searchParams.get('q') ?? '').trim();
-	if (!q) return { q, leaders: [], experience: [], parties: [], alliances: [] };
+	if (!q) return { q, leaders: [], experience: [], parties: [], alliances: [], news: [], tags: [] };
 
 	const like = `%${q}%`;
 	const nameConcat = sql`${users.firstName} || ' ' || ${users.otherNames}`;
@@ -215,11 +216,72 @@ export const load: PageServerLoad = async ({ url }) => {
 		path: `/alliances/${slugify(a.title)}`
 	}));
 
+	// Team-authored, published /news articles from a publicly visible person —
+	// same gate as the /news list itself. Title/body match only — a tag match
+	// surfaces as its own Topics entry below, not the (unrelated) post title.
+	const publicPostGate = (idCol: typeof users.id) =>
+		or(
+			exists(db.select({ x: sql`1` }).from(leaders).where(and(eq(leaders.userId, idCol), isNotNull(leaders.verifiedAt), isNull(leaders.deletedAt)))),
+			exists(db.select({ x: sql`1` }).from(campaigns).where(and(eq(campaigns.subjectUserId, idCol), isNotNull(campaigns.verifiedAt), isNull(campaigns.deletedAt))))
+		);
+	const newsRows = await db
+		.select({ post: posts, author: users })
+		.from(posts)
+		.innerJoin(users, eq(posts.subjectUserId, users.id))
+		.where(
+			and(
+				isNotNull(posts.creatorId),
+				isNotNull(posts.slug),
+				eq(posts.medium, 'web'),
+				eq(posts.public, true),
+				isNull(posts.archivedAt),
+				isNull(posts.deletedAt),
+				isNull(users.deletedAt),
+				or(ilike(posts.title, like), ilike(posts.body, like)),
+				publicPostGate(users.id)
+			)
+		)
+		.limit(10);
+	const newsResults = newsRows.map((r) => {
+		const excerpt = plainText(r.post.body);
+		return {
+			title: r.post.title,
+			excerpt: excerpt.length > 200 ? `${excerpt.slice(0, 200)}…` : excerpt,
+			path: `/news/${r.post.slug}`,
+			authorName: fullName(r.author)
+		};
+	});
+
+	// Topic tags matching the query, from publicly visible posts — the actual tag
+	// is the result, not the post title it happens to live on.
+	// posts.tags is a jsonb string array — matches if any tag itself contains the query.
+	const tagMatch = sql`exists (select 1 from jsonb_array_elements_text(${posts.tags}) as t(tag) where t.tag ilike ${like})`;
+	const tagRows = await db
+		.select({ tags: posts.tags })
+		.from(posts)
+		.innerJoin(users, eq(posts.subjectUserId, users.id))
+		.where(
+			and(
+				isNotNull(posts.creatorId),
+				eq(posts.medium, 'web'),
+				eq(posts.public, true),
+				isNull(posts.archivedAt),
+				isNull(posts.deletedAt),
+				isNull(users.deletedAt),
+				tagMatch,
+				publicPostGate(users.id)
+			)
+		)
+		.limit(40);
+	const matchingTags = [...new Set(tagRows.flatMap((r) => r.tags ?? []).filter((t) => t.toLowerCase().includes(q.toLowerCase())))].slice(0, 10);
+
 	return {
 		q,
 		leaders: leaderResults.map(({ rank, ...rest }) => rest),
 		experience: experienceResults,
 		parties: partyResults,
-		alliances: allianceResults
+		alliances: allianceResults,
+		news: newsResults,
+		tags: matchingTags.map((tag) => ({ tag, path: `/news?tag=${encodeURIComponent(tag)}` }))
 	};
 };

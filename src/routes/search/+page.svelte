@@ -7,7 +7,9 @@
 		data.leaders.length > 0 ||
 			data.experience.length > 0 ||
 			data.parties.length > 0 ||
-			data.alliances.length > 0
+			data.alliances.length > 0 ||
+			data.news.length > 0 ||
+			data.tags.length > 0
 	);
 </script>
 
@@ -73,6 +75,37 @@
 					</a>
 				{/each}
 			</div>
+		</div>
+	{/if}
+
+	{#if data.tags.length > 0}
+		<div class="mt-10">
+			<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">Topics</h2>
+			<div class="mt-3 flex flex-wrap gap-1.5">
+				{#each data.tags as t (t.tag)}
+					<a
+						href={t.path}
+						class="rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-muted transition hover:border-primary hover:text-primary"
+					>
+						{t.tag}
+					</a>
+				{/each}
+			</div>
+		</div>
+	{/if}
+
+	{#if data.news.length > 0}
+		<div class="mt-10">
+			<h2 class="text-sm font-semibold tracking-wide text-muted uppercase">News</h2>
+			<ul class="mt-3 space-y-2">
+				{#each data.news as article (article.path)}
+					<li class="rounded-xl bg-surface-2 px-4 py-3 text-sm">
+						<a href={article.path} class="font-medium text-heading hover:text-primary">{article.title}</a>
+						<span class="text-muted"> — {article.authorName}</span>
+						{#if article.excerpt}<p class="mt-1 text-muted">{article.excerpt}</p>{/if}
+					</li>
+				{/each}
+			</ul>
 		</div>
 	{/if}
 
