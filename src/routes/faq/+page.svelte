@@ -18,8 +18,8 @@
 					a: 'Open their public page and follow with just your name and a phone or email. The channel you provide becomes how their campaign updates reach you, and every message carries an opt-out.'
 				},
 				{
-					q: 'What is the ballot simulator?',
-					a: 'Vote 2027 lets you simulate your full six-seat ballot (President, Governor, Senator, Woman Rep, MP, MCA) and share a result page that carries no personal information.'
+					q: 'Where are the voter tools — ballot simulator, voter education, key dates?',
+					a: 'On our citizen platform, vote.ke: simulate your full six-seat ballot, learn how registration and voting work, and track key 2027 dates. leaders.ke focuses on the leaders themselves.'
 				},
 				{
 					q: 'Can I review a leader?',
@@ -48,7 +48,7 @@
 				},
 				{
 					q: 'How do broadcasts work?',
-					a: 'Compose once and send to your followers filtered by ward or county. Email works today; SMS and WhatsApp broadcasts arrive with the credits system.'
+					a: "Compose once and send to your followers filtered by ward or county. Email works today; SMS and WhatsApp send using your package's monthly credits."
 				},
 				{
 					q: 'Can an AI answer my constituents?',
@@ -86,7 +86,7 @@
 			items: [
 				{
 					q: 'What does it cost?',
-					a: 'Citizens pay nothing. Campaigns subscribe monthly on one of three tiers (Aspirant, Influencer, Mobilizer) scaled to the office — see the Pricing page for the matrix.'
+					a: 'Citizens pay nothing. Campaigns subscribe monthly on one of three packages (Kickstart, Mobilize, Dominate) at one flat rate for every office — see the Pricing page.'
 				},
 				{
 					q: 'When do I pay?',

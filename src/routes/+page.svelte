@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import Countdown from '$lib/components/Countdown.svelte';
 	import SloganCycler from '$lib/components/SloganCycler.svelte';
 	import WordCycler from '$lib/components/WordCycler.svelte';
 
 	// The homepage sells to the paying customer (candidates and currents);
-	// citizens get the directory, news and countdown as the public layer.
+	// citizens get the directory + news as the public layer and vote.ke as their home.
+	const voteBase = env.PUBLIC_VOTE_BASE_URL ?? 'https://vote.ke';
 
 	// The hero headline is two cycling halves: any left word reads naturally with
 	// any right word, so the pairs don't need to line up.
@@ -32,29 +34,29 @@
 		{
 			title: 'Followers & broadcasts',
 			description:
-				'Grow a follower base from your page, then reach them by ward via email, SMS and WhatsApp.',
-			live: false,
+				'Grow a follower base from your page, then reach them by ward — email today, SMS and WhatsApp on credits.',
+			live: true,
 			icon: 'M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Z'
 		},
 		{
 			title: 'Reviews & fundraising',
 			description:
-				'Citizens review your leadership and pledge their votes, while you collect campaign donations via M-Pesa.',
-			live: false,
+				'Citizens review your leadership and pledge their votes, while you collect campaign donations.',
+			live: true,
 			icon: 'M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
 		},
 		{
 			title: 'PR desk',
 			description:
 				'Every news mention tagged to you, AI-drafted responses, and crisis alerts when coverage turns.',
-			live: false,
+			live: true,
 			icon: 'M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5'
 		},
 		{
 			title: 'AI chat & competitor watch',
 			description:
 				'An AI that answers constituent questions from your manifesto, plus a live view of your rivals.',
-			live: false,
+			live: true,
 			icon: 'M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z'
 		}
 	];
@@ -71,7 +73,7 @@
 		},
 		{
 			title: 'Pick a package',
-			description: 'Pay for the package that fits your race, from MCA to President, via M-Pesa.'
+			description: 'One flat rate for every office, MCA to President — pick a tier and pay via M-Pesa.'
 		},
 		{
 			title: 'Go public',
@@ -161,8 +163,8 @@
 				<SloganCycler />
 			</div>
 			<p class="mt-4 max-w-lg text-base leading-relaxed">
-				A verified profile, your manifesto, your followers and your PR, all in one place. Built for
-				candidates and currents; open to every citizen ahead of the 2027 General Elections.
+				A verified profile, your manifesto, your followers and your PR, all in one place. Built
+				for candidates, current officeholders, and the teams behind them.
 			</p>
 			<div class="mt-8 flex flex-wrap gap-3">
 				<a
@@ -177,11 +179,12 @@
 				>
 					Explore leaders
 				</a>
+				<!-- Citizens get deflected to the citizen platform; this page sells to leaders. -->
 				<a
-					href="/vote/2027"
+					href={voteBase}
 					class="rounded-full border border-border bg-surface px-6 py-3 font-semibold text-heading transition hover:bg-surface-2"
 				>
-					Simulate my 2027 ballot
+					Voter? Head to vote.ke
 				</a>
 			</div>
 		</div>
