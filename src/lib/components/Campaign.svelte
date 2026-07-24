@@ -218,6 +218,12 @@
 						rows="2"
 						required
 						placeholder="e.g. What is the plan for water in my ward?"
+						onkeydown={(e) => {
+							if (e.key === 'Enter' && !e.shiftKey) {
+								e.preventDefault();
+								e.currentTarget.form?.requestSubmit();
+							}
+						}}
 						class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 					></textarea>
 					<button

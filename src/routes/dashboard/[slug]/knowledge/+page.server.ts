@@ -11,6 +11,7 @@ import { db } from '$lib/server/db';
 import { faqEntries, knowledgeDocuments } from '$lib/server/db/schema';
 import { requireLeader } from '$lib/server/dashboard';
 import { redirectWithFlash } from '$lib/server/flash';
+import { previewLinkContent } from '$lib/server/linkExtract';
 import { saveKnowledgeDocument } from '$lib/server/storage';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -89,6 +90,44 @@ export const actions: Actions = {
 		const id = Number(form.get('id') ?? 0);
 		if (!id) return fail(400, { error: 'Nothing to remove.' });
 		await db.update(knowledgeDocuments).set({ deletedAt: new Date() }).where(and(eq(knowledgeDocuments.id, id), eq(knowledgeDocuments.subjectUserId, ctx.profileUser.id)));
+		return { saved: true };
+	},
+
+	// Step 1 of the link flow: fetch and extract, but don't save yet — the team
+	// reviews (and can edit) what was pulled out before it becomes grounding
+	// content the AI actually quotes from. YouTube links get title + description +
+	// a best-effort transcript (see $lib/server/linkExtract); anything else gets
+	// the page's readable text.
+	previewLink: async (event) => {
+		const { ctx } = await requireLeader(event);
+		if (!ctx.verified) return fail(400, { error: 'Verify your profile first.' });
+		const form = await event.request.formData();
+		const url = String(form.get('url') ?? '').trim();
+		if (!url) return fail(400, { error: 'Paste a link first.' });
+
+		try {
+			const preview = await previewLinkContent(url);
+			return { previewed: true, preview };
+		} catch (err) {
+			return fail(400, { error: err instanceof Error ? err.message : 'Could not fetch that link.' });
+		}
+	},
+
+	// Step 2: save the (possibly hand-edited) preview as a document. fileUrl points
+	// at the original source link itself, not a locally hosted file — there's
+	// nothing to serve, the team can already open the source directly.
+	addLink: async (event) => {
+		const { ctx } = await requireLeader(event);
+		if (!ctx.verified) return fail(400, { error: 'Verify your profile first.' });
+		const form = await event.request.formData();
+		const title = String(form.get('title') ?? '').trim();
+		const content = String(form.get('content') ?? '').trim();
+		const sourceUrl = String(form.get('sourceUrl') ?? '').trim();
+		if (!title) return fail(400, { error: 'Give the document a title.' });
+		if (!content) return fail(400, { error: 'There is no text to save — fetch a link first.' });
+		if (!sourceUrl) return fail(400, { error: 'Missing source link.' });
+
+		await db.insert(knowledgeDocuments).values({ subjectUserId: ctx.profileUser.id, title, fileUrl: sourceUrl, mimeType: 'text/plain', extractedText: content });
 		return { saved: true };
 	}
 };

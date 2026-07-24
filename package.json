@@ -61,6 +61,8 @@
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.110.0",
-		"unpdf": "^1.6.2"
+		"node-html-parser": "^9.0.0",
+		"unpdf": "^1.6.2",
+		"youtubei.js": "^17.2.0"
 	}
 }

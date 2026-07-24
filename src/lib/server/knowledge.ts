@@ -14,7 +14,7 @@ export async function getGroundingExtras(subjectUserId: number) {
 			.where(and(eq(faqEntries.subjectUserId, subjectUserId), isNull(faqEntries.deletedAt)))
 			.orderBy(asc(faqEntries.sortOrder), asc(faqEntries.id)),
 		db
-			.select({ title: knowledgeDocuments.title, extractedText: knowledgeDocuments.extractedText })
+			.select({ title: knowledgeDocuments.title, extractedText: knowledgeDocuments.extractedText, fileUrl: knowledgeDocuments.fileUrl })
 			.from(knowledgeDocuments)
 			.where(and(eq(knowledgeDocuments.subjectUserId, subjectUserId), isNull(knowledgeDocuments.deletedAt)))
 	]);
@@ -22,8 +22,11 @@ export async function getGroundingExtras(subjectUserId: number) {
 		faqs: faqRows,
 		// Only documents with extracted text are useful grounding — a PDF still
 		// pending text extraction (see saveKnowledgeDocument) has nothing to quote.
+		// url rides along so the AI can point a citizen straight at the source
+		// (e.g. a YouTube video whose transcript isn't available) instead of just
+		// declining — see groundingText in $lib/server/ai.ts.
 		documents: docRows
-			.filter((d): d is { title: string; extractedText: string } => !!d.extractedText)
-			.map((d) => ({ title: d.title, text: d.extractedText }))
+			.filter((d): d is { title: string; extractedText: string; fileUrl: string } => !!d.extractedText)
+			.map((d) => ({ title: d.title, text: d.extractedText, url: d.fileUrl }))
 	};
 }
