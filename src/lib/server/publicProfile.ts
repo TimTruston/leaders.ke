@@ -6,7 +6,7 @@
 // visibility gate — an application goes live as soon as it exists.
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { campaigns, contacts, deliveries, experience, followers, managers, parties, pillars, positions, posts, tags } from '$lib/server/db/schema';
+import { campaigns, contacts, deliveries, experience, followers, managers, parties, pillars, pledges, positions, posts, tags } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, campaignPath, fullName, resolveCurrentTerm, resolveCurrentTermByUserId, slugify } from '$lib/server/leader';
 import { positionSlug, SINGULAR_SLUG_BY_TITLE } from '$lib/utils/seat';
 import { getFlaggedReviewCounts, getMyReview, listApprovedReviews, listReviewPillarOptions } from '$lib/server/reviews';
@@ -70,6 +70,7 @@ export async function loadPublicProfileData(
 		[pillarRow],
 		[followerRow],
 		[contestantRow],
+		[pledgeRow],
 		latestPost,
 		pillarStatusRows,
 		mentionRows,
@@ -100,6 +101,13 @@ export async function loadPublicProfileData(
 					isNull(campaigns.deletedAt)
 				)
 			),
+		// Person-scoped across every campaign they've run (not just the lead one) —
+		// same convention as the campaign workspace's own pledgeCount.
+		db
+			.select({ n: count() })
+			.from(pledges)
+			.innerJoin(campaigns, eq(pledges.campaignId, campaigns.id))
+			.where(and(eq(campaigns.subjectUserId, row.users.id), isNull(pledges.deletedAt))),
 		db
 			.select({ title: posts.title, createdAt: posts.createdAt })
 			.from(posts)
@@ -256,6 +264,7 @@ export async function loadPublicProfileData(
 		delivery: { total: pillarStatusRows.length, delivered: deliveredCount, inProgress: inProgressCount },
 		deliveryGroups,
 		numContestants: contestantRow.n,
+		pledgeCount: pledgeRow.n,
 		reviews: reviewRows,
 		reviewPillarOptions,
 		flaggedReviewCounts,

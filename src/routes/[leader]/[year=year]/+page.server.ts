@@ -8,6 +8,7 @@ import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/review
 import { answerConstituentQuestion } from '$lib/server/ai';
 import { enforceAskRateLimit } from '$lib/server/aiRateLimit';
 import { getGroundingExtras } from '$lib/server/knowledge';
+import { findConstituencyBySlug, findCountyBySlug, findWardBySlug, nameToSlugs } from '$lib/data/geo';
 import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
@@ -67,6 +68,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		flaggedReviewCounts: workspace.flaggedReviewCounts,
 		myReview: workspace.myReview,
 		signedIn: !!locals.user,
+		// Lets the Follow/Fund blocks prefill (and for Follow, hide) the name/email/
+		// geo fields for a signed-in citizen instead of asking them to retype their
+		// own details. hasLocation (county set) is the signal the whole
+		// county/constituency/ward picker is already known — Follow submits the
+		// slugs as hidden fields instead of showing GeoSelect again.
+		viewerProfile: viewer
+			? {
+					name: fullName(viewer),
+					email: locals.user?.email ?? '',
+					hasLocation: !!viewer.county,
+					...nameToSlugs(viewer)
+				}
+			: null,
 		pledgeCount: workspace.pledgeCount,
 		fundraising: workspace.fundraising
 	};
@@ -82,7 +96,9 @@ export const actions: Actions = {
 		const form = await event.request.formData();
 		const name = String(form.get('name') ?? '').trim();
 		const contact = String(form.get('contact') ?? '').trim();
-		const ward = String(form.get('ward') ?? '').trim();
+		const countySlug = String(form.get('county') ?? '').trim();
+		const constituencySlug = String(form.get('constituency') ?? '').trim();
+		const wardSlug = String(form.get('ward') ?? '').trim();
 		if (!name || !contact) return fail(400, { error: 'Your name and a phone or email are required.' });
 
 		const isEmail = contact.includes('@');
@@ -90,6 +106,21 @@ export const actions: Actions = {
 		const phoneNumber = isEmail ? null : contact.replace(/[^\d+]/g, '');
 		if (!isEmail && (phoneNumber?.length ?? 0) < 9) {
 			return fail(400, { error: 'Enter a valid phone number or email address.' });
+		}
+
+		// Optional, same as before ward alone was — GeoSelect's cascading UI already
+		// prevents a mismatched combination client-side, this just doesn't trust
+		// that blindly. No county falls back to the campaign's own seat region,
+		// same default this used before county/constituency existed as fields.
+		const county = countySlug ? findCountyBySlug(countySlug) : undefined;
+		if (countySlug && !county) return fail(400, { error: 'Select a valid county.' });
+		const constituency = constituencySlug ? findConstituencyBySlug(constituencySlug) : undefined;
+		if (constituencySlug && (!constituency || !county?.constituencies.includes(constituency))) {
+			return fail(400, { error: 'Select a valid constituency for that county.' });
+		}
+		const ward = wardSlug ? findWardBySlug(wardSlug) : undefined;
+		if (wardSlug && (!ward || !constituency?.wards.includes(ward))) {
+			return fail(400, { error: 'Select a valid ward for that constituency.' });
 		}
 
 		// App-layer dedupe for account-less follows: one live follow per contact per leader.
@@ -116,8 +147,9 @@ export const actions: Actions = {
 			name,
 			emailAddress,
 			phoneNumber,
-			county: row.positions.region,
-			ward: ward || null,
+			county: county?.name ?? row.positions.region,
+			constituency: constituency?.name ?? null,
+			ward: ward?.name ?? null,
 			digest: 'leader',
 			digestId: row.users.id,
 			// Contact channel doubles as the digest opt-in; SMS numbers get WhatsApp later, not assumed.

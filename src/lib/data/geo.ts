@@ -115,3 +115,23 @@ export function findWardBySlug(slug: string): Ward | undefined {
 	}
 	return undefined;
 }
+
+/** GeoSelect works in slugs, but a person's saved location (users.county/
+ * constituency/ward, same shape as followers') stores plain .name — resolving
+ * the actual objects (rather than naively re-slugifying the stored name) gets the
+ * right slug even for a constituency/ward whose name repeats elsewhere in Kenya
+ * (those get a "(County)"-qualified seatName, which is what's actually slugified). */
+export function nameToSlugs(location: {
+	county?: string | null;
+	constituency?: string | null;
+	ward?: string | null;
+}): { countySlug: string; constituencySlug: string; wardSlug: string } {
+	const county = counties.find((c) => c.name === location.county);
+	const constituency = county?.constituencies.find((c) => c.name === location.constituency);
+	const ward = constituency?.wards.find((w) => w.name === location.ward);
+	return {
+		countySlug: county ? geoSlug(county.name) : '',
+		constituencySlug: constituency ? geoSlug(constituency.seatName) : '',
+		wardSlug: ward ? geoSlug(ward.seatName) : ''
+	};
+}

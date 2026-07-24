@@ -2,6 +2,7 @@
 	import Avatar from '$lib/components/Avatar.svelte';
 	import { enhance } from '$app/forms';
 	import Reviews from '$lib/components/Reviews.svelte';
+	import GeoSelect from '$lib/components/GeoSelect.svelte';
 	import { renderRichText } from '$lib/utils/richtext';
 	import PencilIcon from './svgs/PencilIcon.svelte';
 
@@ -17,6 +18,12 @@
 
 	let following = $state(false);
 	let asking = $state(false);
+	// Only rendered when the viewer's location isn't already known (see
+	// data.viewerProfile.hasLocation below) — an anonymous visitor, or a signed-in
+	// citizen who hasn't set one on their account yet.
+	let followCounty = $state('');
+	let followConstituency = $state('');
+	let followWard = $state('');
 
 	const progress = $derived(
 		data.fundraising.goal > 0
@@ -265,26 +272,40 @@
 							};
 						}}
 					>
-						<input
-							type="text"
-							name="name"
-							required
-							placeholder="Your name"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						/>
-						<input
-							type="text"
-							name="contact"
-							required
-							placeholder="Phone or email"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						/>
-						<input
-							type="text"
-							name="ward"
-							placeholder="Your ward (optional)"
-							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-						/>
+						{#if data.viewerProfile}
+							<!-- Signed in: name/email are already known, so they're never
+							re-asked — submitted as hidden fields instead of blank inputs. -->
+							<input type="hidden" name="name" value={data.viewerProfile.name} />
+							<input type="hidden" name="contact" value={data.viewerProfile.email} />
+						{:else}
+							<input
+								type="text"
+								name="name"
+								required
+								placeholder="Your name"
+								class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+							/>
+							<input
+								type="text"
+								name="contact"
+								required
+								placeholder="Phone or email"
+								class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+							/>
+						{/if}
+						{#if data.viewerProfile?.hasLocation}
+							<!-- Already set on their account — submitted as hidden fields
+							instead of asking them to pick it again. -->
+							<input type="hidden" name="county" value={data.viewerProfile.countySlug} />
+							<input type="hidden" name="constituency" value={data.viewerProfile.constituencySlug} />
+							<input type="hidden" name="ward" value={data.viewerProfile.wardSlug} />
+						{:else}
+							<p class="text-xs text-muted">Optional - receive area-targeted updates.</p>
+							<GeoSelect bind:county={followCounty} bind:constituency={followConstituency} bind:ward={followWard} />
+							<input type="hidden" name="county" value={followCounty} />
+							<input type="hidden" name="constituency" value={followConstituency} />
+							<input type="hidden" name="ward" value={followWard} />
+						{/if}
 						<button
 							type="submit"
 							disabled={following}
@@ -328,6 +349,7 @@
 							type="text"
 							name="donorName"
 							required
+							value={data.viewerProfile?.name ?? ''}
 							placeholder="Your name"
 							class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
 						/>

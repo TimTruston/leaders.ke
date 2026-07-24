@@ -5,7 +5,7 @@ import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ownVerifiedContacts, requireDashboardUser } from '$lib/server/dashboard';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
-import { counties, findConstituencyBySlug, findCountyBySlug, findWardBySlug, geoSlug } from '$lib/data/geo';
+import { findConstituencyBySlug, findCountyBySlug, findWardBySlug, nameToSlugs } from '$lib/data/geo';
 import type { Actions, PageServerLoad } from './$types';
 
 type NotificationPrefs = { email: boolean; sms: boolean; whatsapp: boolean };
@@ -28,21 +28,7 @@ export const load: PageServerLoad = async (event) => {
 		// Values already OTP-verified on this account: re-typing one shows
 		// "✓ Verified" immediately instead of offering another round-trip.
 		ownVerified: (await ownVerifiedContacts(domainUser.id)).lists,
-		// GeoSelect works in slugs (built from seatName, which some constituencies/
-		// wards qualify with "(County)" to dedupe repeated names), but county/
-		// constituency/ward are stored as plain .name (matching followers' geo
-		// columns) — resolve the actual objects to get back to the right slug,
-		// rather than naively re-slugifying the stored name.
-		...(() => {
-			const county = counties.find((c) => c.name === domainUser.county);
-			const constituency = county?.constituencies.find((c) => c.name === domainUser.constituency);
-			const ward = constituency?.wards.find((w) => w.name === domainUser.ward);
-			return {
-				countySlug: county ? geoSlug(county.name) : '',
-				constituencySlug: constituency ? geoSlug(constituency.seatName) : '',
-				wardSlug: ward ? geoSlug(ward.seatName) : ''
-			};
-		})()
+		...nameToSlugs(domainUser)
 	};
 };
 
