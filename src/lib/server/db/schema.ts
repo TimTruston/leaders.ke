@@ -194,6 +194,39 @@ export const deliveries = pgTable('deliveries', {
   index('deliveries_experience_idx').on(t.experienceId),
 ]);
 
+// One Q&A pair a team writes for the AI Chat feature (Knowledge tab) — on the
+// PERSON (not a run), same convention as `experience`. sortOrder is the team's own
+// display/priority order (also the order fed to the AI); lower first.
+export const faqEntries = pgTable('faq_entries', {
+  id: serial('id').primaryKey(),
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  question: varchar('question', { length: 500 }).notNull(),
+  answer: text('answer').notNull(),
+  sortOrder: integer('sort_order').default(0).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('faq_entries_subject_idx').on(t.subjectUserId),
+]);
+
+// A source document a team uploads for the AI Chat feature (Knowledge tab) —
+// manifestos, policy briefs, position papers, etc. extractedText is what actually
+// feeds the AI's grounding context; null while a format isn't text-extractable yet
+// (see saveKnowledgeDocument) — the file itself still uploads and lists either way.
+export const knowledgeDocuments = pgTable('knowledge_documents', {
+  id: serial('id').primaryKey(),
+  subjectUserId: integer('subject_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  fileUrl: text('file_url').notNull(),
+  mimeType: varchar('mime_type', { length: 100 }).notNull(),
+  extractedText: text('extracted_text'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
+}, (t) => [
+  index('knowledge_documents_subject_idx').on(t.subjectUserId),
+]);
+
 // 4. MANIFESTO PILLARS - A leader's policy platform
 
 // Public delivery tracker: every pillar carries a status citizens can verify.

@@ -126,7 +126,12 @@
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
 					{ href: `${base}/reviews`, label: 'Reviews' },
 					{ href: `${base}/fundraising`, label: 'Fundraising' },
-					{ href: `${base}/competitors`, label: 'Competition' }
+					{ href: `${base}/competitors`, label: 'Competition' },
+					// Exception to "every listed tab is always reachable": the AI Chat
+					// feature only ever answers on the public profile, which itself only
+					// exists once verified — so this tab stays hidden, not just disabled,
+					// until then (see the Knowledge tab's own load guard).
+					...(data.leaderContext?.verified ? [{ href: `${base}/knowledge`, label: 'Knowledge' }] : [])
 				];
 			case 'admin':
 				return [

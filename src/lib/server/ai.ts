@@ -12,6 +12,11 @@ export type LeaderGrounding = {
 	bio: string;
 	pillars: { title: string; summary: string; deliveryStatus?: string; evidence?: string | null }[];
 	posts: { title: string; body: string }[];
+	// Knowledge tab (see $lib/server/knowledge.ts) — a team-curated FAQ plus
+	// extracted text from uploaded source documents. Optional: older call sites
+	// that haven't been updated to fetch these still work, just with less grounding.
+	faqs?: { question: string; answer: string }[];
+	documents?: { title: string; text: string }[];
 };
 
 export type ConstituentAnswer = {
@@ -27,11 +32,19 @@ function groundingText(leader: LeaderGrounding): string {
 		)
 		.join('\n');
 	const posts = leader.posts.map((p) => `- ${p.title}: ${p.body}`).join('\n');
+	const faqs = (leader.faqs ?? []).map((f) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
+	const documents = (leader.documents ?? [])
+		.map((d) => `--- ${d.title} ---\n${d.text}`)
+		.join('\n\n');
 	return [
 		`Leader: ${leader.name}, ${leader.status} for ${leader.positionTitle}, ${leader.regionLabel}, Kenya.`,
 		leader.bio ? `Bio: ${leader.bio}` : '',
 		pillars ? `Manifesto pillars:\n${pillars}` : 'No manifesto published yet.',
-		posts ? `Recent public updates:\n${posts}` : 'No public updates yet.'
+		posts ? `Recent public updates:\n${posts}` : 'No public updates yet.',
+		// FAQs take priority over free-form documents — a team member wrote these
+		// answers exactly as they want a citizen to read them.
+		faqs ? `Team-written FAQ (prefer this wording when it answers the question):\n${faqs}` : '',
+		documents ? `Source documents:\n${documents}` : ''
 	]
 		.filter(Boolean)
 		.join('\n\n');
@@ -62,7 +75,9 @@ async function askClaude(leader: LeaderGrounding, question: string): Promise<str
 	return textBlock?.text ?? 'No answer available right now; please try again.';
 }
 
-// Dev fallback: rank pillars/posts by word overlap with the question and quote the best matches.
+// Dev fallback: rank FAQs/pillars/posts by word overlap with the question and quote
+// the best matches. FAQs win when they match — a team member wrote that answer
+// specifically for this question.
 function heuristicAnswer(leader: LeaderGrounding, question: string): string {
 	const words = question
 		.toLowerCase()
@@ -71,6 +86,11 @@ function heuristicAnswer(leader: LeaderGrounding, question: string): string {
 
 	const score = (text: string) =>
 		words.reduce((n, w) => (text.toLowerCase().includes(w) ? n + 1 : n), 0);
+
+	const bestFaq = [...(leader.faqs ?? [])]
+		.map((f) => ({ f, s: score(`${f.question} ${f.answer}`) }))
+		.sort((a, b) => b.s - a.s)[0];
+	if (bestFaq && bestFaq.s > 0) return bestFaq.f.answer;
 
 	const bestPillar = [...leader.pillars]
 		.map((p) => ({ p, s: score(`${p.title} ${p.summary}`) }))

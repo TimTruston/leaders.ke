@@ -51,3 +51,38 @@ export async function saveLeaderDocument(subjectUserId: number, kind: UploadKind
 
 	return `/uploads/leaders/${subjectUserId}/${filename}`;
 }
+
+const KNOWLEDGE_MIME: Record<string, string> = {
+	'application/pdf': 'pdf',
+	'text/plain': 'txt',
+	'text/markdown': 'md'
+};
+
+/** Saves a Knowledge-tab source document (see faqEntries/knowledgeDocuments in
+ * schema.ts) and returns its URL plus whatever text could be extracted for the AI
+ * grounding context. Text formats (.txt/.md) extract immediately; PDF text
+ * extraction isn't wired up yet (no parsing dependency in this project yet) — the
+ * file still uploads and lists, extractedText is just null until that lands. */
+export async function saveKnowledgeDocument(
+	subjectUserId: number,
+	file: File
+): Promise<{ fileUrl: string; extractedText: string | null }> {
+	if (file.size > MAX_UPLOAD_BYTES) {
+		throw new Error('File is larger than 10 MB.');
+	}
+	const ext = KNOWLEDGE_MIME[file.type];
+	if (!ext) {
+		throw new Error('That file must be a PDF, plain text (.txt), or Markdown (.md) document.');
+	}
+
+	const filename = `${randomUUID()}.${ext}`;
+	const localDir = env.STORAGE_LOCAL_DIR || '.uploads';
+	const dir = path.join(process.cwd(), localDir, 'knowledge', String(subjectUserId));
+	await mkdir(dir, { recursive: true });
+
+	const buffer = Buffer.from(await file.arrayBuffer());
+	await writeFile(path.join(dir, filename), buffer);
+
+	const extractedText = ext === 'pdf' ? null : buffer.toString('utf-8');
+	return { fileUrl: `/uploads/knowledge/${subjectUserId}/${filename}`, extractedText };
+}

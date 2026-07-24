@@ -6,6 +6,7 @@ import { ACTIVE_CYCLE, fullName, getDomainUser, resolveCurrentTerm } from '$lib/
 import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
+import { getGroundingExtras } from '$lib/server/knowledge';
 import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]: the permanent leader record — bio, verified track record across
@@ -90,7 +91,7 @@ export const actions: Actions = {
 		const lead = await publicLead(event.params.leader);
 		if (!lead) return fail(404, { error: 'Leader not found.' });
 
-		const [pillarRows, postRows] = await Promise.all([
+		const [pillarRows, postRows, extras] = await Promise.all([
 			lead.leadCampaignId
 				? db
 						.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus, evidence: pillars.evidence })
@@ -102,7 +103,8 @@ export const actions: Actions = {
 				.from(posts)
 				.where(and(eq(posts.subjectUserId, lead.subjectId), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
-				.limit(10)
+				.limit(10),
+			getGroundingExtras(lead.subjectId)
 		]);
 		const grounding = {
 			name: lead.name,
@@ -111,7 +113,8 @@ export const actions: Actions = {
 			status: lead.status,
 			bio: lead.bio,
 			pillars: pillarRows,
-			posts: postRows
+			posts: postRows,
+			...extras
 		};
 
 		const { answer, source } = await answerConstituentQuestion(grounding, question);

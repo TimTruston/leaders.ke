@@ -6,6 +6,7 @@ import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderP
 import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
+import { getGroundingExtras } from '$lib/server/knowledge';
 import type { Actions, PageServerLoad } from './$types';
 
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
@@ -177,7 +178,7 @@ export const actions: Actions = {
 		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(404, { error: 'Campaign not found.' });
 
-		const [pillarRows, postRows] = await Promise.all([
+		const [pillarRows, postRows, extras] = await Promise.all([
 			db
 				.select({ title: pillars.title, summary: pillars.summary, deliveryStatus: pillars.deliveryStatus, evidence: pillars.evidence })
 				.from(pillars)
@@ -187,7 +188,8 @@ export const actions: Actions = {
 				.from(posts)
 				.where(and(eq(posts.subjectUserId, row.users.id), eq(posts.medium, 'web'), eq(posts.public, true), isNull(posts.deletedAt)))
 				.orderBy(desc(posts.createdAt))
-				.limit(10)
+				.limit(10),
+			getGroundingExtras(row.users.id)
 		]);
 		const grounding = {
 			name: fullName(row.users),
@@ -196,7 +198,8 @@ export const actions: Actions = {
 			status: row.status,
 			bio: row.users.bio ?? '',
 			pillars: pillarRows,
-			posts: postRows
+			posts: postRows,
+			...extras
 		};
 
 		const { answer, source } = await answerConstituentQuestion(grounding, question);
