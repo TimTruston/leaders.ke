@@ -62,6 +62,11 @@ export const load: LayoutServerLoad = async (event) => {
 
 	return {
 		firstName: domainUser.firstName,
+		// Shown next to the citizen "Welcome" header (dashboard/+layout.svelte) —
+		// set on /dashboard/account, optional.
+		county: domainUser.county,
+		constituency: domainUser.constituency,
+		ward: domainUser.ward,
 		// Unread decision notifications (verification/claim outcomes), bannered until dismissed.
 		notifications: await listUnreadNotifications(domainUser.id),
 		adminControls,

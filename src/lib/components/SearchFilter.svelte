@@ -45,9 +45,16 @@
 			<option value={c.seatName}>{c.seatName}</option>
 		{/each}
 	</select>
+{:else if lockTitle === 'MP'}
+	<select bind:value={region} class={pillSelect} aria-label="Constituency">
+		<option value="">All constituencies</option>
+		{#each regions as r (r)}
+			<option value={r}>{r}</option>
+		{/each}
+	</select>
 {:else if lockTitle !== 'President'}
-	<select bind:value={region} class={pillSelect} aria-label="Region">
-		<option value="">All regions</option>
+	<select bind:value={region} class={pillSelect} aria-label="County">
+		<option value="">All counties</option>
 		{#each regions as r (r)}
 			<option value={r}>{r}</option>
 		{/each}

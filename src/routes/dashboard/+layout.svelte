@@ -252,7 +252,25 @@
 					</a>
 				{/if}
 			{:else}
-				<h1 class="text-2xl font-bold text-heading">Welcome, {data.firstName}</h1>
+				<h1 class="text-2xl font-bold text-heading">
+					Welcome, {data.firstName}
+					{#if mode === 'citizen'}
+						<span class="ml-1 align-middle rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted">
+							Citizen
+						</span>
+					{/if}
+				</h1>
+				{#if mode === 'citizen'}
+					{#if data.county || data.constituency || data.ward}
+						<p class="text-sm text-muted">
+							{[data.county, data.constituency, data.ward].filter(Boolean).join(', ')}
+						</p>
+					{:else}
+						<a href="/dashboard/account" class="text-sm font-medium text-primary hover:underline">
+							Set your region
+						</a>
+					{/if}
+				{/if}
 			{/if}
 		</div>
 
@@ -282,7 +300,7 @@
 				{/if}
 			{:else if activeAssignment}
 				<p class="text-sm text-muted">Ambassador of {activeAssignment.name}</p>
-			{:else}
+			{:else if mode !== 'citizen'}
 				<p class="text-sm text-muted uppercase">{mode}</p>
 			{/if}
 

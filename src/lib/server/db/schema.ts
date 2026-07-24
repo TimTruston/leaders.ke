@@ -36,6 +36,14 @@ export const users = pgTable('users', {
   otherNames: varchar('other_names', { length: 100 }).notNull(), // surname + any middle names, e.g. "Van Der Berg"
   bio: text('bio'),
   address: varchar('address', { length: 200 }),
+  // Where this PERSON lives — set on their own /dashboard/account, same
+  // county/constituency/ward shape as followers' geo columns (which already
+  // power ward/constituency-targeted broadcasts). Null until they set it; not
+  // required. Plain names (not slugs) — matches $lib/data/geo.ts's County/
+  // Constituency/Ward .name, resolved from GeoSelect's slugs at save time.
+  county: varchar('county', { length: 100 }),
+  constituency: varchar('constituency', { length: 100 }),
+  ward: varchar('ward', { length: 100 }),
   socials: jsonb('socials').$type<Record<string, string>>().default({}).notNull(), // platform -> profile URL, e.g. { twitter: 'https://...' }
   // Permanent /[slug] identity, e.g. "kalonzo-musyoka" (suffixed "-2" etc on collision).
   // Lives here (not on leaders) because it's the PERSON's URL: one user can have several

@@ -5,6 +5,7 @@ import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
 import { ownVerifiedContacts, requireDashboardUser } from '$lib/server/dashboard';
 import { normalizeKenyanPhone } from '$lib/utils/phone';
+import { counties, findConstituencyBySlug, findCountyBySlug, findWardBySlug, geoSlug } from '$lib/data/geo';
 import type { Actions, PageServerLoad } from './$types';
 
 type NotificationPrefs = { email: boolean; sms: boolean; whatsapp: boolean };
@@ -26,7 +27,22 @@ export const load: PageServerLoad = async (event) => {
 		verified: domainUser.verified,
 		// Values already OTP-verified on this account: re-typing one shows
 		// "✓ Verified" immediately instead of offering another round-trip.
-		ownVerified: (await ownVerifiedContacts(domainUser.id)).lists
+		ownVerified: (await ownVerifiedContacts(domainUser.id)).lists,
+		// GeoSelect works in slugs (built from seatName, which some constituencies/
+		// wards qualify with "(County)" to dedupe repeated names), but county/
+		// constituency/ward are stored as plain .name (matching followers' geo
+		// columns) — resolve the actual objects to get back to the right slug,
+		// rather than naively re-slugifying the stored name.
+		...(() => {
+			const county = counties.find((c) => c.name === domainUser.county);
+			const constituency = county?.constituencies.find((c) => c.name === domainUser.constituency);
+			const ward = constituency?.wards.find((w) => w.name === domainUser.ward);
+			return {
+				countySlug: county ? geoSlug(county.name) : '',
+				constituencySlug: constituency ? geoSlug(constituency.seatName) : '',
+				wardSlug: ward ? geoSlug(ward.seatName) : ''
+			};
+		})()
 	};
 };
 
@@ -51,6 +67,9 @@ export const actions: Actions = {
 		const otherNames = String(form.get('otherNames') ?? '').trim();
 		const smsPhoneInput = String(form.get('smsPhone') ?? '').trim();
 		const whatsappPhoneInput = String(form.get('whatsappPhone') ?? '').trim();
+		const countySlug = String(form.get('county') ?? '').trim();
+		const constituencySlug = String(form.get('constituency') ?? '').trim();
+		const wardSlug = String(form.get('ward') ?? '').trim();
 		const notificationPrefs: NotificationPrefs = {
 			email: form.get('notifyEmail') === 'on',
 			sms: form.get('notifySms') === 'on',
@@ -76,7 +95,31 @@ export const actions: Actions = {
 			return fail(400, { error: 'Verify your new WhatsApp number (tap Verify) before saving.' });
 		}
 
-		await db.update(users).set({ firstName, otherNames, notificationPrefs }).where(eq(users.id, domainUser.id));
+		// Each level must actually nest under the one above — GeoSelect's cascading
+		// UI already prevents a mismatched combination client-side, this just
+		// doesn't trust that blindly.
+		const county = countySlug ? findCountyBySlug(countySlug) : undefined;
+		if (countySlug && !county) return fail(400, { error: 'Select a valid county.' });
+		const constituency = constituencySlug ? findConstituencyBySlug(constituencySlug) : undefined;
+		if (constituencySlug && (!constituency || !county?.constituencies.includes(constituency))) {
+			return fail(400, { error: 'Select a valid constituency for that county.' });
+		}
+		const ward = wardSlug ? findWardBySlug(wardSlug) : undefined;
+		if (wardSlug && (!ward || !constituency?.wards.includes(ward))) {
+			return fail(400, { error: 'Select a valid ward for that constituency.' });
+		}
+
+		await db
+			.update(users)
+			.set({
+				firstName,
+				otherNames,
+				notificationPrefs,
+				county: county?.name ?? null,
+				constituency: constituency?.name ?? null,
+				ward: ward?.name ?? null
+			})
+			.where(eq(users.id, domainUser.id));
 		// better-auth keeps its own `name` (shown in the global header) separate from
 		// our firstName/otherNames — sync it here so the two never drift apart again.
 		await db.update(authUsers).set({ name: `${firstName} ${otherNames}`.trim() }).where(eq(authUsers.id, authUser.id));

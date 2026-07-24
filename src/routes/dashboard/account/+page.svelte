@@ -2,9 +2,16 @@
 	import { enhance } from '$app/forms';
 	import PhoneInput from '$lib/components/contact/PhoneInput.svelte';
 	import EmailInput from '$lib/components/contact/EmailInput.svelte';
+	import GeoSelect from '$lib/components/GeoSelect.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+
+	// GeoSelect binds slugs; the hidden inputs below carry them into this native
+	// form submission (same pattern PhoneInput/EmailInput already use).
+	let county = $state(data.countySlug);
+	let constituency = $state(data.constituencySlug);
+	let ward = $state(data.wardSlug);
 
 	// PhoneInput only exposes `value` (bindable), no `name` — a hidden input carries
 	// the bound value into the form's native submission.
@@ -123,6 +130,21 @@
 				</svg>
 				Notify
 			</label>
+		</div>
+
+		<div class="mt-2 rounded-2xl border border-border bg-surface-2 p-4">
+			<div class="flex flex-col sm:flex-row items-baseline justify-between">
+				<h2 class="text-sm font-semibold text-heading">Your location</h2>
+				<p class="text-xs text-muted">
+					Get targetted news and updates for your area.
+				</p>
+			</div>
+			<div class="mt-3">
+				<GeoSelect bind:county bind:constituency bind:ward />
+			</div>
+			<input type="hidden" name="county" value={county} />
+			<input type="hidden" name="constituency" value={constituency} />
+			<input type="hidden" name="ward" value={ward} />
 		</div>
 
 		<div class="mt-8 grid grid-cols-2 gap-2">
