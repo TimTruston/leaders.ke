@@ -1,5 +1,9 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import Countdown from './Countdown.svelte';
+
+	// Citizen destinations live on the vote.ke app.
+	const voteBase = env.PUBLIC_VOTE_BASE_URL ?? 'https://vote.ke';
 
 	// Site-wide footer: link directory grouped by audience, with the brand blurb
 	// and the compliance line the old two-line footer carried.
@@ -11,17 +15,18 @@
 				{ href: '/presidents', label: 'Claim Your Page' },
 				{ href: '/features', label: 'Features' },
 				{ href: '/parties', label: 'Parties' },
-				{ href: '/pricing', label: 'Pricing' }
+				{ href: '/pricing', label: 'Pricing' },
+				{ href: '/news', label: 'News' }
 			]
 		},
 		{
 			title: 'For citizens',
 			links: [
-				{ href: '/vote/2027', label: 'My 2027 Vote' },
+				{ href: `${voteBase}/ballot`, label: 'My 2027 Vote' },
 				{ href: '/presidents', label: 'Leaders' },
 				{ href: '/rank/presidents', label: 'Ranks' },
 				{ href: '/compare', label: 'Compare' },
-				{ href: '/why-vote', label: 'Why Vote?' }
+				{ href: `${voteBase}/why-vote`, label: 'Why Vote?' }
 			]
 		},
 		{
@@ -50,8 +55,8 @@
 			<div class="sm:col-span-2">
 				<a href="/" class="text-lg font-bold text-heading">leaders.ke</a>
 				<p class="mt-2 max-w-xs text-sm leading-relaxed text-muted">
-					The digital town hall of Kenya: a neutral civic information directory connecting
-					citizens and the leaders who serve them.
+					Campaign platform for Smart Kenya's leaders. For voter tools and education, visit
+					<a href={voteBase} class="font-medium text-primary hover:underline">vote.ke</a>.
 				</p>
 				<!-- Election countdown, same block as the vote.ke footer; capped to the blurb's width -->
 				<div class="mt-4 max-w-xs text-center">
@@ -74,16 +79,22 @@
 				</nav>
 			{/each}
 		</div>
-		<a href="/"
-			aria-hidden="true"
-			class="flex select-none items-center justify-center gap-[0.08em] -ml-[0.1em] text-[18cqw] font-bold leading-none tracking-tighter text-primary/20"
-		>
-			<span class="">leaders.ke</span>
-		</a>
+		<!-- Clipped to a fixed height, top-aligned: "leaders.ke" has a descender (the
+		"g"), which at this size otherwise bleeds past leading-none's line box into
+		the row below. Top-aligning (not centering) inside the shorter box means only
+		that descender gets clipped, not the tops of the letters. -->
+		<div class="h-[16cqw] overflow-hidden">
+			<a href="/"
+				aria-hidden="true"
+				class="flex select-none items-start justify-center gap-[0.08em] -ml-[0.1em] text-[18cqw] font-bold leading-none tracking-tighter text-primary/20"
+			>
+				<span class="">leaders.ke</span>
+			</a>
+		</div>
 		<div
 			class="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted sm:flex-row"
 		>
-			<p>© {new Date().getFullYear()} leaders.ke - Neutral civic information directory</p>
+			<p>© {new Date().getFullYear()} leaders.ke - Campaign platform for Smart Kenya's leaders</p>
 			<p>Adhering to IEBC regulations &amp; the Data Protection Act (2019)</p>
 		</div>
 	</div>
