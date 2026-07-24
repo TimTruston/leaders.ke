@@ -2,17 +2,16 @@
 // "From a link" form) for review before it's saved as a knowledge_documents row.
 // YouTube URLs get special handling via youtubei.js (an Innertube client — the
 // same private API youtube.com's own web player calls) for title/description,
-// which is solid. Transcript is still best-effort: YouTube's get_transcript
-// endpoint now requires a BotGuard-derived PO token (proof-of-origin) that neither
-// this library nor a bare fetch supplies out of the box — confirmed by testing
-// against several real videos, where title/description came back fine but
-// get_transcript itself 400'd with "Precondition check failed" every time.
-// Solving that requires bgutils-js + a JS sandbox to run Google's BotGuard
-// challenge, real anti-bot circumvention infrastructure, not just an API client —
-// out of scope here. So this tries, and degrades to title + description only
-// when it fails, same as it would if YouTube changes something else later.
+// which is solid. Transcript uses the `youtube-transcript` package instead —
+// Innertube's own get_transcript endpoint now requires a BotGuard-derived PO
+// token neither client supplies, while youtube-transcript pulls the caption
+// track directly (InnerTube Android client context, falling back to scraping
+// the timedtext URL out of the watch page HTML), which still works without one.
+// Still best-effort: a video with captions disabled has nothing to fetch either
+// way, so this degrades to title + description only when it fails.
 import { parse as parseHtml } from 'node-html-parser';
 import { Innertube } from 'youtubei.js';
+import { YoutubeTranscript } from 'youtube-transcript';
 
 let innertube: Innertube | null = null;
 async function getInnertube(): Promise<Innertube> {
@@ -98,20 +97,15 @@ function extractYouTubeVideoId(url: URL): string | null {
 
 async function extractYouTubeTranscript(videoId: string): Promise<string | null> {
 	try {
-		const yt = await getInnertube();
-		const info = await yt.getInfo(videoId);
-		const transcriptInfo = await info.getTranscript();
-		const segments = transcriptInfo.transcript.content?.body?.initial_segments ?? [];
+		const segments = await YoutubeTranscript.fetchTranscript(videoId);
 		const text = segments
-			.map((s) => ('snippet' in s ? s.snippet?.toString() : ''))
-			.filter(Boolean)
+			.map((s) => s.text)
 			.join(' ')
 			.trim();
 		return text || null;
 	} catch (err) {
-		// YouTube's get_transcript endpoint currently requires a BotGuard-derived PO
-		// token this client doesn't supply (see the file header) — expected to fail
-		// for now, not logged as an error.
+		// No captions on this video, or YouTube changed something again — degrade to
+		// title + description only, not logged as an error.
 		console.log(`[linkExtract] transcript unavailable for ${videoId}: ${err instanceof Error ? err.message : err}`);
 		return null;
 	}
