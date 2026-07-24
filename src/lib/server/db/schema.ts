@@ -867,6 +867,23 @@ export const messages = pgTable('messages', {
   index('messages_conversation_idx').on(t.conversationId),
 ]);
 
+// One AI Chat "ask" attempt (see $lib/server/aiRateLimit.ts) — logged purely to
+// enforce the anti-abuse rate limit (5/day per session AND per IP, whichever hits
+// first), never read back as chat history. anonId reuses the same long-lived
+// 'anon_id' device cookie the /vote/2027 ballot simulator sets, so a visitor's cap
+// persists across visits without needing an account. Global across every leader's
+// chat, not per-profile — the point is capping overall Anthropic API spend a
+// scripted burst could rack up, not any one leader's usage specifically.
+export const aiAskEvents = pgTable('ai_ask_events', {
+  id: serial('id').primaryKey(),
+  anonId: varchar('anon_id', { length: 32 }),
+  ipAddress: varchar('ip_address', { length: 45 }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('ai_ask_events_anon_idx').on(t.anonId, t.createdAt),
+  index('ai_ask_events_ip_idx').on(t.ipAddress, t.createdAt),
+]);
+
 // 21. PLEDGES (a citizen pledging their vote to a campaign, created by the
 // /vote/2027 ballot simulator. Signed-in voters pledge by userId; anonymous
 // voters by anonId, a long-lived device cookie. Insert code enforces that at

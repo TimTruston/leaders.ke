@@ -62,7 +62,10 @@ async function askClaude(leader: LeaderGrounding, question: string): Promise<str
 	const settings = await getPlatformSettings();
 	const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 	const response = await client.messages.create({
-		model: 'claude-opus-4-8',
+		// Sonnet 5 over Opus: ~7-8x cheaper per message (roughly $9 vs $65 per 1000
+		// messages at typical grounding-context lengths) for a feature that's already
+		// instructed to answer in 200-300 characters — not worth Opus's premium here.
+		model: 'claude-sonnet-5',
 		max_tokens: 1024,
 		thinking: { type: 'adaptive' },
 		system: [

@@ -6,6 +6,7 @@ import { ACTIVE_CYCLE, fullName, getDomainUser, resolveCurrentTerm } from '$lib/
 import { loadPublicProfileData } from '$lib/server/publicProfile';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
+import { enforceAskRateLimit } from '$lib/server/aiRateLimit';
 import { getGroundingExtras } from '$lib/server/knowledge';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -87,6 +88,9 @@ export const actions: Actions = {
 		if (!question || question.length < 5) {
 			return fail(400, { error: 'Ask a question of at least a few words.' });
 		}
+
+		const rateLimit = await enforceAskRateLimit(event);
+		if (!rateLimit.ok) return fail(429, { error: rateLimit.error });
 
 		const lead = await publicLead(event.params.leader);
 		if (!lead) return fail(404, { error: 'Leader not found.' });

@@ -6,6 +6,7 @@ import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderP
 import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
+import { enforceAskRateLimit } from '$lib/server/aiRateLimit';
 import { getGroundingExtras } from '$lib/server/knowledge';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -174,6 +175,9 @@ export const actions: Actions = {
 		if (!question || question.length < 5) {
 			return fail(400, { error: 'Ask a question of at least a few words.' });
 		}
+
+		const rateLimit = await enforceAskRateLimit(event);
+		if (!rateLimit.ok) return fail(429, { error: rateLimit.error });
 
 		const row = await resolveCampaignRun(event.params.leader);
 		if (!row) return fail(404, { error: 'Campaign not found.' });
