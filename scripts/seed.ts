@@ -16,19 +16,20 @@
 //
 // Dependency order: system-user -> positions -> parties -> leaders -> mcas -> photos
 // -> scraped -> campaigns -> pillars -> issues -> news -> admin-fixture -> notable-knowledge
-// -> demo-logins (admin-fixture needs system-user + positions: it turns the ADMIN_EMAIL
-// account into a dev-only demo leader, visible only to a signed-in admin since it stays
-// unverified). (leaders/mcas look up parties by title and seed each person's
-// `leadership[]` terms as extra `leaders` rows in the same pass; photos matches shipped
-// static/leaders/<slug>.jpg files against every seeded slug; scraped layers the REAL
-// register (thousands of MPs/history from scripts/out/*.json) on top — see
+// -> notable-deliveries -> demo-logins (admin-fixture needs system-user + positions: it
+// turns the ADMIN_EMAIL account into a dev-only demo leader, visible only to a signed-in
+// admin since it stays unverified). (leaders/mcas look up parties by title and seed each
+// person's `leadership[]` terms as extra `leaders` rows in the same pass; photos matches
+// shipped static/leaders/<slug>.jpg files against every seeded slug; scraped layers the
+// REAL register (thousands of MPs/history from scripts/out/*.json) on top — see
 // seedScrapedPipeline below; campaigns/pillars look up leaders; issues only needs
 // positions and the system user as creatorId; notable-knowledge (Knowledge tab FAQ +
-// documents, see scripts/data/notable-knowledge.ts) and demo-logins (grants a real,
-// loginable account to specific notable already-seeded profiles, sharing ADMIN_PASSWORD)
-// both look up their target people by slug, so they run last. system-user runs first,
-// unconditionally, so on a fresh DB its id is the lowest/first user id — it's also the
-// ADMIN_EMAIL/PASSWORD account. pillar-templates and platform-settings have no
+// documents), notable-deliveries (Delivery-tab items, pinned — see
+// scripts/data/notable-deliveries.ts), and demo-logins (grants a real, loginable account
+// to specific notable already-seeded profiles, sharing ADMIN_PASSWORD) all look up their
+// target people by slug, so they run last. system-user runs first, unconditionally, so on
+// a fresh DB its id is the lowest/first user id — it's also the ADMIN_EMAIL/PASSWORD
+// account. pillar-templates and platform-settings have no
 // dependency, run any time.)
 //
 // `scraped` runs the full scraped-roster pipeline (scripts/seed-scraped.ts and the
@@ -57,6 +58,7 @@ import { seedPlatformSettings } from './lib/seed-platform-settings';
 import { seedPackages } from './lib/seed-packages';
 import { seedAdminFixture } from './lib/seed-admin-fixture';
 import { seedNotableKnowledge } from './lib/seed-notable-knowledge';
+import { seedNotableDeliveries } from './lib/seed-notable-deliveries';
 import { seedDemoLogins } from './lib/seed-demo-logins';
 
 // Runs one scraped-pipeline script as a child process (each owns its own DB
@@ -110,6 +112,7 @@ const { values } = parseArgs({
 		packages: { type: 'boolean', default: false },
 		'admin-fixture': { type: 'boolean', default: false },
 		'notable-knowledge': { type: 'boolean', default: false },
+		'notable-deliveries': { type: 'boolean', default: false },
 		'demo-logins': { type: 'boolean', default: false }
 	},
 	strict: true
@@ -164,6 +167,7 @@ if (runAll || values['admin-fixture']) await seedAdminFixture(db);
 // Depends on leaders/scraped/campaigns already having seeded these specific
 // profiles (looked up by slug) — runs last for that reason.
 if (runAll || values['notable-knowledge']) await seedNotableKnowledge(db);
+if (runAll || values['notable-deliveries']) await seedNotableDeliveries(db);
 if (runAll || values['demo-logins']) await seedDemoLogins(db);
 
 await client.end();

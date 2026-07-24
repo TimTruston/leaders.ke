@@ -350,7 +350,8 @@
 			<div class="mt-10 border-t border-border pt-8">
 				<h2 class="text-lg font-semibold text-heading">Manifesto</h2>
 				<p class="mt-1 text-sm text-muted">
-					The promises that citizens see on your public page, in the order you add them. {#if orderedPillars.length > 1} Drag to reorder. {/if}
+					The promises for this run — what you plan to do, in the order you add them. {#if orderedPillars.length > 1} Drag to reorder. {/if}
+					Already delivered something? Log it on the Delivery tab instead.
 				</p>
 
 				<ol class="mt-6 space-y-4">

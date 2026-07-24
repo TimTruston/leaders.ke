@@ -1,12 +1,16 @@
 // Seeds manifesto pillars from src/lib/data/pillars.json. Mirrors the `pillars`
-// table (pillars now belong to a campaign, not a leader directly). Stub file —
-// empty until real pillar content is supplied; add rows shaped like PillarRow
-// below and re-run `bun run db:seed -- --pillars`.
+// table (pillars now belong to a campaign, not a leader directly). Add rows
+// shaped like PillarRow below and re-run `bun run db:seed -- --pillars`.
 import { and, eq, isNull } from 'drizzle-orm';
 import { campaigns, pillars } from '../../src/lib/server/db/schema';
 import { findLeader } from './people';
 import type { AnyDb } from './names';
 import pillarsData from '../../src/lib/data/pillars.json';
+
+// Mirrors $lib/server/leader's ACTIVE_CYCLE — that module imports $env/dynamic/private
+// (via $lib/server/db), which breaks under a plain `bun run` outside SvelteKit (same
+// reason names.ts keeps its own slugify instead of importing the app's).
+const ACTIVE_CYCLE = 2027;
 
 type PillarRow = {
 	leaderName: string;
@@ -36,10 +40,21 @@ export async function seedPillars(db: AnyDb) {
 			missingCampaign++;
 			continue;
 		}
-		const [campaign] = await db
+		// A graduated/re-election campaign (leaderId set) takes priority; otherwise
+		// fall back to this person's active-cycle run (leaderId null — a held
+		// officeholder pursuing a DIFFERENT seat, e.g. president, this cycle, same
+		// lookup $lib/server/leader's publicLead uses to pick which campaign's
+		// pillars the public profile page actually reads).
+		let [campaign] = await db
 			.select({ id: campaigns.id })
 			.from(campaigns)
 			.where(and(eq(campaigns.leaderId, leader.id), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		if (!campaign) {
+			[campaign] = await db
+				.select({ id: campaigns.id })
+				.from(campaigns)
+				.where(and(eq(campaigns.subjectUserId, leader.userId), eq(campaigns.cycleYear, ACTIVE_CYCLE), isNull(campaigns.parentCampaignId), isNull(campaigns.deletedAt)));
+		}
 		if (!campaign) {
 			console.warn(`no campaign found for ${row.leaderName} (run the campaigns phase first), skipping pillar`);
 			missingCampaign++;

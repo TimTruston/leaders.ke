@@ -24,7 +24,10 @@
 
 <div>
 	<h2 class="text-xl font-bold text-heading">Delivery</h2>
-	<p class="text-sm text-muted">List what you delivered under each of your terms or roles.</p>
+	<p class="text-sm text-muted">
+		What you've already delivered under each of your terms or roles — this is the past, described and proven.
+		For promises and plans, use the Campaign tab instead.
+	</p>
 	<p class="mt-1 text-sm font-medium text-heading">
 		Pinned {data.pinnedCount}/{data.maxPinned} — only pinned deliveries show on your public profile.
 	</p>
@@ -40,11 +43,17 @@
 	{:else}
 		<div class="mt-6 space-y-6">
 			{#each groups as group (group.target.target)}
-				<div class="rounded-2xl border border-border bg-surface p-5">
-					<h3 class="font-semibold text-heading">
-						{group.target.label}
-						<span class="ml-1 text-sm font-normal text-muted">({group.target.from ?? '—'}–{group.target.to ?? 'present'})</span>
-					</h3>
+				<details class="group rounded-2xl border border-border bg-surface p-5" open={groups.length === 1}>
+					<summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-heading">
+						<span>
+							{group.target.label}
+							<span class="ml-1 text-sm font-normal text-muted">({group.target.from ?? '—'}–{group.target.to ?? 'present'})</span>
+						</span>
+						<span class="flex shrink-0 items-center gap-2">
+							<span class="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-semibold text-muted">{group.items.length}</span>
+							<span class="text-muted transition group-open:rotate-180">▾</span>
+						</span>
+					</summary>
 					{#if group.items.length === 0}
 						<p class="mt-2 text-sm text-muted">Nothing listed yet.</p>
 					{:else}
@@ -103,7 +112,7 @@
 							{/each}
 						</ul>
 					{/if}
-				</div>
+				</details>
 			{/each}
 
 			<div class="rounded-2xl border border-border bg-surface-2 p-5">

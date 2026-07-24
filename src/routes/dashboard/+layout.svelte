@@ -120,7 +120,7 @@
 					{ href: `${base}/contacts`, label: 'Contacts' },
 					{ href: `${base}/team`, label: 'Team' },
 					{ href: `${base}/followers`, label: 'Followers' },
-					{ href: `${base}/delivery`, label: 'Delivery' },
+					{ href: `${base}/delivery`, label: 'Delivered' },
 					{ href: `${base}/campaign`, label: 'Campaign' },
 					{ href: `${base}/posts`, label: 'News' },
 					{ href: `${base}/broadcasts`, label: 'Broadcasts' },
