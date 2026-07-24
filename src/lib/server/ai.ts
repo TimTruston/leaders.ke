@@ -3,6 +3,7 @@
 // set; otherwise a keyword-match fallback keeps the feature testable in dev.
 import { env } from '$env/dynamic/private';
 import Anthropic from '@anthropic-ai/sdk';
+import { getPlatformSettings } from '$lib/server/settings';
 
 export type LeaderGrounding = {
 	name: string;
@@ -51,21 +52,23 @@ function groundingText(leader: LeaderGrounding): string {
 }
 
 async function askClaude(leader: LeaderGrounding, question: string): Promise<string> {
+	// Admin-editable on the Settings page (Settings → AI Chat): platformSystemPrompt
+	// governs the assistant everywhere, leaderSystemPrompt layers on top for
+	// per-leader answers specifically. See DEFAULT_PLATFORM_SYSTEM_PROMPT /
+	// DEFAULT_LEADER_SYSTEM_PROMPT in schema.ts for what a fresh platform ships with.
+	const settings = await getPlatformSettings();
 	const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 	const response = await client.messages.create({
 		model: 'claude-opus-4-8',
 		max_tokens: 1024,
 		thinking: { type: 'adaptive' },
 		system: [
-			'You answer citizens\' questions about a Kenyan political leader on leaders.ke.',
-			'Ground every claim ONLY in the profile below. If the answer is not in the profile,',
-			'say the campaign has not published a position on that and suggest following the',
-			'campaign or asking the team directly. Never invent promises, positions or facts.',
-			'Stay neutral in tone, keep answers under 120 words, plain language.',
+			settings.platformSystemPrompt,
+			'',
+			settings.leaderSystemPrompt,
 			'',
 			groundingText(leader)
-		].join('\n')
-	,
+		].join('\n'),
 		messages: [{ role: 'user', content: question }]
 	});
 	if (response.stop_reason === 'refusal') {

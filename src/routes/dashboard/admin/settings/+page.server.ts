@@ -22,6 +22,8 @@ export const actions: Actions = {
 		const requiredTeamManagers = Number(form.get('requiredTeamManagers'));
 		const requiredSignoffs = Number(form.get('requiredSignoffs'));
 		const requireIebcForVerification = form.get('requireIebcForVerification') === 'on';
+		const platformSystemPrompt = String(form.get('platformSystemPrompt') ?? '').trim();
+		const leaderSystemPrompt = String(form.get('leaderSystemPrompt') ?? '').trim();
 
 		// Lifetime invite limits live on the Packages page (part of what a package buys).
 		for (const [label, value] of [
@@ -33,6 +35,8 @@ export const actions: Actions = {
 		] as const) {
 			if (!Number.isInteger(value) || value < 1) return fail(400, { error: `${label} must be a whole number of at least 1.` });
 		}
+		if (!platformSystemPrompt) return fail(400, { error: 'The platform system prompt cannot be empty.' });
+		if (!leaderSystemPrompt) return fail(400, { error: 'The leader system prompt cannot be empty.' });
 
 		// Comma/whitespace-separated words, normalized to lowercase and deduped.
 		// These block new leader slugs only — existing slugs are untouched.
@@ -55,6 +59,8 @@ export const actions: Actions = {
 				requiredTeamManagers,
 				requiredSignoffs,
 				requireIebcForVerification,
+				platformSystemPrompt,
+				leaderSystemPrompt,
 				updatedAt: new Date()
 			})
 			.where(eq(platformSettings.id, 1));

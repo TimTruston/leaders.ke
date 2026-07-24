@@ -115,8 +115,8 @@
 	<div class="mt-6 rounded-2xl border border-border bg-surface p-5">
 		<h3 class="font-semibold text-heading">Source documents</h3>
 		<p class="mt-1 text-sm text-muted">
-			Manifestos, policy briefs, position papers. PDF, .txt or .md — under 10 MB. Text files feed the AI right away;
-			PDF text extraction is coming soon, so for now prefer .txt/.md for anything you want the AI to actually quote from.
+			Manifestos, policy briefs, position papers. PDF, .txt or .md — under 10 MB. Text is pulled out automatically and
+			feeds the AI right away; a scanned PDF with no real text layer won't have anything to extract.
 		</p>
 
 		{#if data.documents.length === 0}

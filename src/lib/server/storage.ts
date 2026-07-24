@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { env } from '$env/dynamic/private';
+import { extractText, getDocumentProxy } from 'unpdf';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB — generous for a phone photo/scan or a short PDF
 
@@ -60,9 +61,10 @@ const KNOWLEDGE_MIME: Record<string, string> = {
 
 /** Saves a Knowledge-tab source document (see faqEntries/knowledgeDocuments in
  * schema.ts) and returns its URL plus whatever text could be extracted for the AI
- * grounding context. Text formats (.txt/.md) extract immediately; PDF text
- * extraction isn't wired up yet (no parsing dependency in this project yet) — the
- * file still uploads and lists, extractedText is just null until that lands. */
+ * grounding context. Text formats (.txt/.md) extract immediately; PDFs are parsed
+ * via unpdf (pure-JS, no native binary — safe for a serverless/edge deploy target).
+ * extractedText is null only when a PDF has no extractable text (e.g. a scanned
+ * image with no text layer) — the file still uploads and lists either way. */
 export async function saveKnowledgeDocument(
 	subjectUserId: number,
 	file: File
@@ -83,6 +85,19 @@ export async function saveKnowledgeDocument(
 	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(path.join(dir, filename), buffer);
 
-	const extractedText = ext === 'pdf' ? null : buffer.toString('utf-8');
+	let extractedText: string | null;
+	if (ext === 'pdf') {
+		try {
+			const pdf = await getDocumentProxy(new Uint8Array(buffer));
+			const { text } = await extractText(pdf, { mergePages: true });
+			extractedText = text.trim() || null;
+		} catch (err) {
+			console.error(`PDF text extraction failed for ${filename}:`, err);
+			extractedText = null;
+		}
+	} else {
+		extractedText = buffer.toString('utf-8');
+	}
+
 	return { fileUrl: `/uploads/knowledge/${subjectUserId}/${filename}`, extractedText };
 }

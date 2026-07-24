@@ -60,6 +60,7 @@
 		"vitest-browser-svelte": "^2.1.1"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "^0.110.0"
+		"@anthropic-ai/sdk": "^0.110.0",
+		"unpdf": "^1.6.2"
 	}
 }

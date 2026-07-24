@@ -512,6 +512,13 @@
       "when": 1784863282933,
       "tag": "0072_flawless_monster_badoon",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1784865772677,
+      "tag": "0073_tiny_living_mummy",
+      "breakpoints": true
     }
   ]
 }

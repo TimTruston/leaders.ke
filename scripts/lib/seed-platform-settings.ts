@@ -11,7 +11,7 @@ export async function seedPlatformSettings(db: AnyDb) {
 
 	if (!existing) {
 		await db.insert(platformSettings).values({ id: 1 });
-		console.log('[platform-settings] seeded defaults (blocked slugs included)');
+		console.log('[platform-settings] seeded defaults (blocked slugs + AI Chat system prompts included)');
 		return;
 	}
 

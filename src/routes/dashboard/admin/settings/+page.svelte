@@ -148,6 +148,37 @@ Applies everywhere a code/link is sent
 			></textarea>
 		</div>
 
+		<!-- AI Chat system prompts: how the assistant behaves everywhere (platform-wide)
+		     and specifically when answering about one leader's profile. Both need room
+		     to breathe, so each spans the full grid width. -->
+		<div class="rounded-2xl border border-border bg-surface p-5 md:col-span-3">
+			<h2 class="font-semibold text-heading">AI Chat — platform system prompt</h2>
+			<p class="mt-1 text-xs text-muted">
+				Governs the AI Chat assistant everywhere it runs, before any leader-specific instructions apply:
+				overall tone, honesty rules, neutrality between candidates, and what it does when it doesn't know an answer.
+			</p>
+			<textarea
+				name="platformSystemPrompt"
+				rows="8"
+				value={data.settings.platformSystemPrompt}
+				class="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 font-mono text-xs text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+			></textarea>
+		</div>
+
+		<div class="rounded-2xl border border-border bg-surface p-5 md:col-span-3">
+			<h2 class="font-semibold text-heading">AI Chat — leader system prompt</h2>
+			<p class="mt-1 text-xs text-muted">
+				Layers on top of the platform prompt specifically for answers about one leader's own profile:
+				how to represent their record and plans, and how to handle questions outside what they've published.
+			</p>
+			<textarea
+				name="leaderSystemPrompt"
+				rows="8"
+				value={data.settings.leaderSystemPrompt}
+				class="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 font-mono text-xs text-heading focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
+			></textarea>
+		</div>
+
 		<button
 			type="submit"
 			disabled={saving}
