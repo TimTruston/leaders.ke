@@ -141,7 +141,7 @@
 
 				<!-- Revealed under the hovered/active package -->
 				<a
-					href="/signup"
+					href="/onboard/profile"
 					tabindex={active === t ? 0 : -1}
 					aria-hidden={active === t ? undefined : 'true'}
 					class="mt-6 rounded-full bg-primary px-4 py-2.5 text-center font-semibold text-on-primary transition-all duration-300 hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none {active ===
@@ -260,7 +260,7 @@
 					{#each tiers as tier (tier)}
 						<td class="px-4 py-3">
 							<a
-								href="/signup"
+								href="/onboard/profile"
 								class="inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none"
 							>
 								Get started

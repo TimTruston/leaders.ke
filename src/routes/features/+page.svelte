@@ -304,7 +304,7 @@
 		</p>
 		<div class="mt-2 flex flex-wrap justify-center gap-3">
 			<a
-				href="/signup"
+				href="/onboard/profile"
 				class="rounded-full bg-surface px-6 py-3 font-semibold text-heading transition hover:bg-surface-2"
 			>
 				Claim your profile

@@ -155,7 +155,7 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 					Try clearing a filter, or claim this space for your own campaign.
 				</p>
 				<a
-					href="/signup"
+					href="/onboard/profile"
 					class="mt-4 inline-block rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
 				>
 					Claim your profile
@@ -179,7 +179,7 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 			Claim your profile, get verified against IEBC records, and mobilize your team!
 		</p>
 		<a
-			href="/signup"
+			href="/onboard/profile"
 			class="mt-5 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition hover:brightness-95"
 		>
 			Get verified

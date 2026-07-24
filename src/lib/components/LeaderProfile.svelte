@@ -98,15 +98,6 @@
 							<p class="font-medium text-heading">
 								{fmt.format(leader.followers)} followers · {fmt.format(data.pledgeCount)} vote pledges
 							</p>
-							{#if data.campaign}
-							<a href={data.campaign.path} class="font-semibold text-primary hover:underline">
-								🚀 {data.campaign.year} Campaign
-							</a>
-							{:else if data.isVying}
-							<p class="font-medium text-heading">
-								No Campaign Listed
-							</p>
-							{/if}
 						</div>
 					</div>
 				</div>
@@ -200,6 +191,16 @@
 
 		<!-- Sidebar: Ask, contact, claim status, seat links -->
 		<div class="space-y-6">
+			
+			{#if data.campaign}
+				<a href={data.campaign.path} class="block w-full border border-primary rounded-full px-4 py-2 text-lg text-primary text-center font-semibold transition hover:brightness-95 disabled:opacity-60">
+					🚀 {data.campaign.year} Campaign
+				</a>
+			{:else if data.isVying}
+				<p class="block w-full border border-border rounded-full px-4 py-2 text-lg text-muted text-center font-semibold ">
+					No Campaign Listed
+				</p>
+			{/if}
 
 			{#if !preview}
 				<!-- Ask the leader (AI) -->

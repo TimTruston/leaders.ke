@@ -139,7 +139,7 @@
 			<div class="mt-6 lg:mt-8 rounded-2xl border border-dashed border-border p-6 text-center">
 				<p class="text-sm text-muted">No declared contestants for this seat yet.</p>
 				<a
-					href="/signup"
+					href="/onboard/profile"
 					class="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95"
 				>
 					Be the first: claim your profile

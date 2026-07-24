@@ -168,7 +168,7 @@
 			</p>
 			<div class="mt-8 flex flex-wrap gap-3">
 				<a
-					href="/signup"
+					href="/onboard/profile"
 					class="rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none"
 				>
 					🚀 Get onboard

@@ -147,7 +147,7 @@
 					Log in
 				</a>
 				<a
-					href="/signup"
+					href="/onboard/profile"
 					class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none"
 				>
 					Get started

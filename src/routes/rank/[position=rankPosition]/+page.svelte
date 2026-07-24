@@ -84,7 +84,7 @@
 	</div>
 
 	<p class="mt-4 text-center text-sm text-muted">
-		Want to move up? <a href="/signup" class="font-semibold text-primary hover:underline">Claim your profile</a>
+		Want to move up? <a href="/onboard/profile" class="font-semibold text-primary hover:underline">Claim your profile</a>
 		and start building your base, or
 		<a href="/compare" class="font-semibold text-primary hover:underline">compare two leaders side by side</a>.
 	</p>
