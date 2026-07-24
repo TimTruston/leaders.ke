@@ -48,8 +48,13 @@
 	];
 </script>
 
-<footer class="relative overflow-hidden border-t border-border bg-surface-2 @container">
-	<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+<footer class="relative overflow-hidden border-t border-border bg-surface-2">
+	<!-- @container here (not on <footer>): the giant "leaders.ke" background text
+	below is sized in cqw units, meant to scale against THIS box's width. With
+	@container on the full-bleed <footer> instead, cqw resolved against the whole
+	viewport on screens wider than max-w-7xl, making the text wider than the box
+	it's actually centered in — this row's own overflow-hidden then cropped it. -->
+	<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 @container">
 		<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
 			<!-- Brand -->
 			<div class="sm:col-span-2">
