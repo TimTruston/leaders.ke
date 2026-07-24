@@ -1,15 +1,26 @@
 import { error, fail, redirect } from '@sveltejs/kit';
+import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { and, desc, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { donations, followers, managers, pillars, posts } from '$lib/server/db/schema';
 import { ACTIVE_CYCLE, fullName, getDomainUser, getOrCreateMainCampaign, leaderPath } from '$lib/server/leader';
 import { resolveCampaignRun, loadCampaignWorkspaceData } from '$lib/server/campaign';
+import { ownVerifiedContacts } from '$lib/server/dashboard';
 import { handleDeleteReviewAction, handleReviewAction } from '$lib/server/reviews';
 import { answerConstituentQuestion } from '$lib/server/ai';
 import { enforceAskRateLimit } from '$lib/server/aiRateLimit';
 import { getGroundingExtras } from '$lib/server/knowledge';
 import { findConstituencyBySlug, findCountyBySlug, findWardBySlug, nameToSlugs } from '$lib/data/geo';
+import { sendEmail, siteUrl } from '$lib/server/email';
+import { sendSms } from '$lib/server/sms';
 import type { Actions, PageServerLoad } from './$types';
+
+const CONFIRM_CODE_TTL_MS = 10 * 60_000;
+const CONFIRM_CODE_MAX_ATTEMPTS = 5;
+
+function hashConfirmCode(code: string) {
+	return createHash('sha256').update(code).digest('hex');
+}
 
 // /[leader]/[year]: the active campaign workspace — manifesto with delivery
 // tracker, updates, citizen reviews, vote pledges, fundraising and the AI
@@ -143,6 +154,21 @@ export const actions: Actions = {
 			return fail(400, { error: 'You already follow this campaign with that contact.' });
 		}
 
+		// Double opt-in, both channels — skipped only when it's a signed-in citizen
+		// using their own already-verified account email/phone (Campaign.svelte
+		// hides the field and submits that value directly in that case, so there's
+		// nothing left to prove). A guest, or a signed-in citizen whose account
+		// contact isn't verified yet, has to confirm and stays excluded from
+		// broadcasts (see the broadcasts recipient query) until they do. Nothing
+		// else happens if they never do.
+		const viewerDomainUser = event.locals.user ? await getDomainUser(event.locals.user.id) : null;
+		const emailAlreadyVerified = isEmail && emailAddress === (event.locals.user?.email ?? '').toLowerCase() && !!viewerDomainUser?.verified.email;
+		const phoneAlreadyVerified =
+			!isEmail && !!phoneNumber && !!viewerDomainUser && (await ownVerifiedContacts(viewerDomainUser.id)).check('sms', phoneNumber);
+		const needsConfirm = isEmail ? !emailAlreadyVerified : !phoneAlreadyVerified;
+		const confirmToken = needsConfirm && isEmail ? randomBytes(24).toString('hex') : null;
+		const confirmCode = needsConfirm && !isEmail ? String(randomInt(0, 1_000_000)).padStart(6, '0') : null;
+
 		await db.insert(followers).values({
 			name,
 			emailAddress,
@@ -154,10 +180,76 @@ export const actions: Actions = {
 			digestId: row.users.id,
 			// Contact channel doubles as the digest opt-in; SMS numbers get WhatsApp later, not assumed.
 			email: isEmail,
-			sms: !isEmail
+			sms: !isEmail,
+			confirmToken,
+			confirmCodeHash: confirmCode ? hashConfirmCode(confirmCode) : null,
+			confirmCodeExpiresAt: confirmCode ? new Date(Date.now() + CONFIRM_CODE_TTL_MS) : null,
+			confirmedAt: needsConfirm ? null : new Date()
 		});
 
-		return { followed: true, name };
+		const leaderName = fullName(row.users);
+		if (needsConfirm && emailAddress) {
+			const confirmUrl = siteUrl(`/follow/confirm/${confirmToken}`);
+			await sendEmail({
+				to: emailAddress,
+				subject: `Confirm you're following ${leaderName}`,
+				text: `Hi ${name},\n\nConfirm you'd like to follow ${leaderName}'s campaign and get their updates:\n${confirmUrl}\n\nIf you didn't request this, just ignore this email.`,
+				html: `<p>Hi ${name},</p><p>Confirm you'd like to follow ${leaderName}'s campaign and get their updates:</p><p><a href="${confirmUrl}">Confirm my subscription</a></p><p>If you didn't request this, just ignore this email.</p>`
+			});
+		} else if (needsConfirm && phoneNumber && confirmCode) {
+			await sendSms(phoneNumber, `Your leaders.ke code to confirm following ${leaderName} is ${confirmCode}. It expires in 10 minutes.`);
+		}
+
+		return { followed: true, name, needsConfirm, isEmail, phoneNumber: isEmail ? undefined : phoneNumber };
+	},
+
+	confirmPhone: async (event) => {
+		const row = await resolveCampaignRun(event.params.leader);
+		if (!row) return fail(400, { error: 'Campaign not found.' });
+
+		const form = await event.request.formData();
+		const phoneNumber = String(form.get('phone') ?? '').replace(/[^\d+]/g, '');
+		const code = String(form.get('code') ?? '').trim();
+		if (!phoneNumber || !code) return fail(400, { error: 'Enter the code we texted you.' });
+
+		const [follower] = await db
+			.select()
+			.from(followers)
+			.where(
+				and(
+					eq(followers.digest, 'leader'),
+					eq(followers.digestId, row.users.id),
+					eq(followers.phoneNumber, phoneNumber),
+					isNull(followers.deletedAt),
+					isNull(followers.confirmedAt)
+				)
+			)
+			.orderBy(desc(followers.createdAt))
+			.limit(1);
+
+		// `locked: true` on these three means no resubmit of this form can ever
+		// succeed (wrong code below is the only retryable failure) — Campaign.svelte
+		// disables the code input/button rather than let the citizen keep trying.
+		if (!follower?.confirmCodeHash || !follower.confirmCodeExpiresAt) {
+			return fail(400, { error: 'No pending confirmation for that number. Follow again to get a new code.', locked: true });
+		}
+		if (follower.confirmAttempts >= CONFIRM_CODE_MAX_ATTEMPTS) {
+			return fail(400, { error: 'Too many attempts. Follow again to get a new code.', locked: true });
+		}
+		if (follower.confirmCodeExpiresAt < new Date()) {
+			return fail(400, { error: 'That code expired. Follow again to get a new one.', locked: true });
+		}
+
+		if (hashConfirmCode(code) !== follower.confirmCodeHash) {
+			await db
+				.update(followers)
+				.set({ confirmAttempts: follower.confirmAttempts + 1 })
+				.where(eq(followers.id, follower.id));
+			return fail(400, { error: 'Incorrect code.', phoneNumber });
+		}
+
+		await db.update(followers).set({ confirmedAt: new Date() }).where(eq(followers.id, follower.id));
+		return { confirmed: true, name: follower.name };
 	},
 
 	review: async (event) => {

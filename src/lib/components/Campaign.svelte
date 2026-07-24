@@ -24,6 +24,14 @@
 	let followCounty = $state('');
 	let followConstituency = $state('');
 	let followWard = $state('');
+	// A phone-only follow needing the texted code before it counts as confirmed
+	// (see the `follow`/`confirmPhone` actions) swaps the Follow form for a
+	// code-entry step — tracked client-side (not just off `form`) so a failed
+	// code submission re-renders the same step instead of falling back to the
+	// original Follow form.
+	let awaitingPhoneCode = $state(false);
+	let pendingPhone = $state('');
+	let confirmingPhone = $state(false);
 
 	const progress = $derived(
 		data.fundraising.goal > 0
@@ -96,9 +104,6 @@
 							<p class="font-medium text-heading">
 								{fmt.format(leader.followers)} followers · {fmt.format(data.pledgeCount)} vote pledges
 							</p>
-							<a href={data.recordPath} class="font-semibold text-primary hover:underline">
-								Full profile →
-							</a>
 						</div>
 					</div>
 				</div>
@@ -192,6 +197,10 @@
 
 		<!-- Sidebar -->
 		<div class="space-y-6">
+			
+			<a href={data.recordPath} class="block w-full border border-primary rounded-full px-4 py-2 text-lg text-primary text-center font-semibold transition hover:brightness-95 disabled:opacity-60">
+				Full Profile →
+			</a>
 
 			<!-- Ask the campaign (AI) -->
 			<div class="rounded-3xl border border-primary bg-surface p-6">
@@ -250,9 +259,61 @@
 					Get updates from {leader.name.split(' ')[0]}'s campaign. No account needed.
 				</p>
 
-				{#if form?.followed}
+				{#if awaitingPhoneCode}
+					{#if form?.confirmed}
+						<div class="mt-4 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+							Karibu {form.name}! You now follow this campaign and will get its broadcasts.
+						</div>
+					{:else}
+						{#if form?.error}
+							<div class="mt-4 rounded-2xl border border-border bg-surface-2 p-4 text-sm font-medium text-heading">
+								{form.error}
+							</div>
+						{:else}
+							<div class="mt-4 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
+								Almost there! We texted a code to confirm you're following - enter it below.
+							</div>
+						{/if}
+						<form
+							method="post"
+							action="?/confirmPhone"
+							class="mt-3 space-y-3"
+							use:enhance={() => {
+								confirmingPhone = true;
+								return async ({ result, update }) => {
+									confirmingPhone = false;
+									if (result.type === 'success' && result.data?.confirmed) awaitingPhoneCode = false;
+									await update();
+								};
+							}}
+						>
+							<input type="hidden" name="phone" value={pendingPhone} />
+							<input
+								type="text"
+								name="code"
+								required
+								inputmode="numeric"
+								maxlength="6"
+								disabled={form?.locked}
+								placeholder="6-digit code"
+								class="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-muted focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
+							/>
+							<button
+								type="submit"
+								disabled={confirmingPhone || form?.locked}
+								class="w-full rounded-full bg-primary px-4 py-2.5 font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none disabled:opacity-60"
+							>
+								{confirmingPhone ? 'Confirming…' : 'Confirm code'}
+							</button>
+						</form>
+					{/if}
+				{:else if form?.followed}
 					<div class="mt-4 rounded-2xl bg-primary-soft p-4 text-sm font-medium text-on-primary">
-						Karibu {form.name}! You now follow this campaign and will get its broadcasts.
+						{#if form.needsConfirm && form.isEmail}
+							Almost there, {form.name}! Check your email and click the link to confirm your subscription.
+						{:else}
+							Karibu {form.name}! You now follow this campaign and will get its broadcasts.
+						{/if}
 					</div>
 				{:else}
 					{#if form?.error}
@@ -266,8 +327,12 @@
 						class="mt-4 space-y-3"
 						use:enhance={() => {
 							following = true;
-							return async ({ update }) => {
+							return async ({ result, update }) => {
 								following = false;
+								if (result.type === 'success' && result.data?.followed && result.data.needsConfirm && !result.data.isEmail) {
+									awaitingPhoneCode = true;
+									pendingPhone = String(result.data.phoneNumber ?? '');
+								}
 								await update();
 							};
 						}}

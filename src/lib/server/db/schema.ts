@@ -592,6 +592,20 @@ export const followers = pgTable('followers', {
   email: boolean('email').default(false).notNull(),
   sms: boolean('sms').default(false).notNull(),
   whatsapp: boolean('whatsapp').default(false).notNull(),
+  // Double opt-in, both channels: null confirmedAt means broadcasts skip this row
+  // (see the broadcasts recipient query) until it's proven. Skipped only when it's
+  // a signed-in citizen using their own already-verified account email/phone —
+  // there's nothing left to prove in that case. A guest, or a signed-in citizen
+  // whose account contact isn't verified yet, has to confirm: email gets a
+  // click-through link (confirmToken, never cleared after confirming, so a stale
+  // link stays a harmless idempotent re-confirm rather than "invalid"); phone gets
+  // a texted 6-digit code (confirmCodeHash, checked against confirmAttempts to
+  // block brute-forcing the code before confirmCodeExpiresAt).
+  confirmToken: varchar('confirm_token', { length: 64 }),
+  confirmCodeHash: varchar('confirm_code_hash', { length: 64 }),
+  confirmCodeExpiresAt: timestamp('confirm_code_expires_at', { withTimezone: true }),
+  confirmAttempts: integer('confirm_attempts').default(0).notNull(),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
   // Who recruited this follower (ambassador/manager adding a citizen via the
   // dashboard, blueprint funnel A); null for self-service follows.
   addedBy: integer('added_by').references(() => users.id),
@@ -1035,8 +1049,8 @@ export const DEFAULT_LEADER_SYSTEM_PROMPT = `You are now answering on behalf of 
 // (scripts/lib/seed-platform-settings.ts backfills these into an existing row).
 export const DEFAULT_BLOCKED_SLUGS = [
   // routes a leader slug must never shadow
-  'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'my-vote', 'leaders', 'pricing',
-  'compare', 'rank', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
+  'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'follow', 'leaders', 'pricing',
+  'compare', 'rank', 'ranks', 'vote', 'voter', 'my-vote', 'search', 'parties', 'alliances', 'invite', 'claim',
   // position words: the seat-hub routes (/president, /mca/...) and the /rank
   // plurals — no leader may take a seat name as their personal URL
   'president', 'presidents', 'deputy-president', 'deputy-presidents',

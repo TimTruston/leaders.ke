@@ -76,7 +76,11 @@ export const actions: Actions = {
 			eq(followers.digestId, ctx.profileUser.id),
 			isNull(followers.deletedAt),
 			eq(followers.email, true),
-			isNotNull(followers.emailAddress)
+			isNotNull(followers.emailAddress),
+			// Skips a follow still pending its double opt-in (confirm-link click
+			// for email, texted code for phone — see the `follow`/`confirmPhone`
+			// actions on the campaign workspace page).
+			isNotNull(followers.confirmedAt)
 		];
 		const [kind, value] = audience.split(':');
 		if (kind === 'county' && value) conditions.push(eq(followers.county, value));
