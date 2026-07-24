@@ -49,13 +49,14 @@
 		return () => document.removeEventListener('click', onClick);
 	});
 
-	// Nav only lists built pages; Positions/Issues/News return as their phases ship.
+	// Nav only lists built pages; Positions/Issues return as their phases ship.
 	const links = [
 		{ href: '/presidents', label: 'All' },
 		{ href: '/rank/presidents', label: 'Ranks' },
 		{ href: '/compare', label: 'Compare' },
 		{ href: '/features', label: 'Features' },
-		{ href: '/pricing', label: 'Pricing' }
+		{ href: '/pricing', label: 'Pricing' },
+		{ href: '/news', label: 'News' }
 	];
 
 	// Mobile nav: the desktop links are hidden below md, so a hamburger opens a stacked panel.

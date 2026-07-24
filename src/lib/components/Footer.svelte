@@ -11,8 +11,8 @@
 		{
 			title: 'For leaders',
 			links: [
-				{ href: '/onboard/profile', label: 'Launch Your Campaign' },
 				{ href: '/presidents', label: 'Claim Your Page' },
+				{ href: '/onboard/profile', label: 'Get Onboard' },
 				{ href: '/features', label: 'Features' },
 				{ href: '/parties', label: 'Parties' },
 				{ href: '/pricing', label: 'Pricing' },

@@ -171,7 +171,7 @@
 					href="/signup"
 					class="rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition hover:brightness-95 focus:ring-0 focus:ring-ring focus:outline-none"
 				>
-					Claim your profile
+					🚀 Get onboard
 				</a>
 				<a
 					href="/presidents"

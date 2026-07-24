@@ -22,7 +22,7 @@
 	<div class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
 		<h1 class="text-4xl font-bold tracking-tight text-heading">News</h1>
 		<p class="mt-3 text-lg leading-relaxed text-muted">
-			Updates, announcements, and campaign news, straight from leaders and candidates themselves.
+			Updates, announcements, and campaign news, straight from leaders and candidates themselves — plus mentions in the wider press.
 		</p>
 	</div>
 </div>
@@ -46,20 +46,35 @@
 			{/if}
 
 			<div class="divide-y divide-border">
-				{#each data.articles as article (article.slug)}
+				{#each data.articles as article (article.kind + article.id)}
 					<article class="py-8 first:pt-0">
 						<div class="flex items-center gap-2.5">
-							<a href={article.authorPath} class="shrink-0">
+							{#if article.authorPath !== '#'}
+								<a href={article.authorPath} class="shrink-0">
+									<Avatar name={article.authorName} initials={article.authorInitials} photoUrl={article.authorPhotoUrl} sizeClass="size-9" textClass="text-sm" />
+								</a>
+							{:else}
 								<Avatar name={article.authorName} initials={article.authorInitials} photoUrl={article.authorPhotoUrl} sizeClass="size-9" textClass="text-sm" />
-							</a>
+							{/if}
 							<div class="text-sm">
-								<a href={article.authorPath} class="font-semibold text-heading hover:text-primary">{article.authorName}</a>
+								{#if article.authorPath !== '#'}
+									<a href={article.authorPath} class="font-semibold text-heading hover:text-primary">{article.authorName}</a>
+								{:else}
+									<span class="font-semibold text-heading">{article.authorName}</span>
+								{/if}
 								<span class="text-muted"> · {dateFmt.format(new Date(article.createdAt))}</span>
+								{#if article.kind === 'mention'}
+									<span class="rounded-full border border-border bg-surface-2 px-2 py-0.5 text-xs font-medium text-muted">Mention</span>
+								{/if}
 							</div>
 						</div>
 
 						<h2 class="mt-4 text-2xl font-bold text-heading">
-							<a href="/news/{article.slug}" class="hover:text-primary">{article.title}</a>
+							{#if article.external}
+								<a href={article.href} target="_blank" rel="noopener" class="hover:text-primary">{article.title} ↗</a>
+							{:else}
+								<a href={article.href} class="hover:text-primary">{article.title}</a>
+							{/if}
 						</h2>
 						<p class="mt-3 leading-relaxed text-muted">{article.excerpt}</p>
 
@@ -78,7 +93,11 @@
 									{/each}
 								</div>
 							{/if}
-							<a href="/news/{article.slug}" class="ml-auto text-sm font-semibold text-primary hover:underline">Read more →</a>
+							{#if article.external}
+								<a href={article.href} target="_blank" rel="noopener" class="ml-auto text-sm font-semibold text-primary hover:underline">Read on source site ↗</a>
+							{:else}
+								<a href={article.href} class="ml-auto text-sm font-semibold text-primary hover:underline">Read more →</a>
+							{/if}
 						</div>
 					</article>
 				{:else}
