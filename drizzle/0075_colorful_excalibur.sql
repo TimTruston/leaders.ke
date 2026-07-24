@@ -1,11 +1,14 @@
+-- pricing-v2: pricing/packages are pure rate-card config fully replaced by the new
+-- flat-per-tier model (see src/lib/data/packages.json + `bun run db:seed -- --packages`),
+-- so their old per-band rows are cleared rather than remapped — remapping them would
+-- collide 3-to-1 on the new tier-only unique indexes below (national/regional/ward
+-- rows for the same tier). subscriptions.tier and platform_settings.invite_limits DO
+-- hold real data, so those are remapped in place instead of cleared.
+DELETE FROM "packages";--> statement-breakpoint
+DELETE FROM "pricing";--> statement-breakpoint
 ALTER TABLE "packages" ALTER COLUMN "tier" SET DATA TYPE text;--> statement-breakpoint
 ALTER TABLE "pricing" ALTER COLUMN "tier" SET DATA TYPE text;--> statement-breakpoint
 ALTER TABLE "subscriptions" ALTER COLUMN "tier" SET DATA TYPE text;--> statement-breakpoint
--- pricing-v2: remap the old tier names to the new ones before recreating the enum
--- (drizzle-kit's own generated cast would fail on existing 'aspirant'/'influencer'/
--- 'mobilizer' rows, since those values don't exist in the new enum).
-UPDATE "packages" SET "tier" = CASE "tier" WHEN 'aspirant' THEN 'kickstart' WHEN 'influencer' THEN 'mobilize' WHEN 'mobilizer' THEN 'dominate' ELSE "tier" END;--> statement-breakpoint
-UPDATE "pricing" SET "tier" = CASE "tier" WHEN 'aspirant' THEN 'kickstart' WHEN 'influencer' THEN 'mobilize' WHEN 'mobilizer' THEN 'dominate' ELSE "tier" END;--> statement-breakpoint
 UPDATE "subscriptions" SET "tier" = CASE "tier" WHEN 'aspirant' THEN 'kickstart' WHEN 'influencer' THEN 'mobilize' WHEN 'mobilizer' THEN 'dominate' ELSE "tier" END;--> statement-breakpoint
 UPDATE "platform_settings" SET "invite_limits" = jsonb_build_object('kickstart', ("invite_limits"->>'aspirant')::int, 'mobilize', ("invite_limits"->>'influencer')::int, 'dominate', ("invite_limits"->>'mobilizer')::int) WHERE "invite_limits" ? 'aspirant';--> statement-breakpoint
 DROP TYPE "public"."subscription_tier";--> statement-breakpoint
