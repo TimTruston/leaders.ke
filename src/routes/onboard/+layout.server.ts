@@ -1,6 +1,7 @@
 import { redirect, type Cookies } from '@sveltejs/kit';
 import { requireDashboardUser } from '$lib/server/dashboard';
 import { setFlash } from '$lib/server/flash';
+import { getPlatformSettings } from '$lib/server/settings';
 import type { LayoutServerLoad } from './$types';
 
 // Queues this gate's message on TOP of any flash already staged (e.g. "That number
@@ -16,7 +17,8 @@ function stackFlash(cookies: Cookies, existing: string | null | undefined, path:
 	redirect(302, path);
 }
 
-// Gates the whole onboarding wizard: signed in, and both email + phone verified
+// Gates the whole onboarding wizard: signed in, and (when the admin Settings
+// page's onboarding verification gate requires it) both email + phone verified
 // (OTP) — the "Claim this profile" button and the citizen dashboard CTA both land
 // here first. An unauthenticated visitor round-trips through login/signup via
 // ?next so they come straight back to the onboard URL they clicked (preserving
@@ -26,7 +28,8 @@ export const load: LayoutServerLoad = async (event) => {
 		redirect(302, `/login?next=${encodeURIComponent(event.url.pathname + event.url.search)}`);
 	}
 	const { domainUser } = await requireDashboardUser(event);
-	
+	const settings = await getPlatformSettings();
+
 	// Arrived via "Claim this profile" (?profile=<slug> on /onboard/profile) vs the
 	// citizen dashboard's "Create Your Profile" CTA — only the wording differs.
 	const claiming = !!event.url.searchParams.get('profile');
@@ -35,10 +38,10 @@ export const load: LayoutServerLoad = async (event) => {
 	// chases it after a successful OTP, instead of stranding the citizen on
 	// /dashboard/account.
 	const accountPath = `/dashboard/account?next=${encodeURIComponent(event.url.pathname + event.url.search)}`;
-	if (!domainUser.verified?.email) {
+	if (settings.requireEmailVerification && !domainUser.verified?.email) {
 		stackFlash(event.cookies, event.locals.flash, accountPath, `Verify your email to allow you to ${claiming ? 'claim' : 'create'} a Leader's Profile.`);
 	}
-	if (!domainUser.verified?.sms) {
+	if (settings.requirePhoneVerification && !domainUser.verified?.sms) {
 		stackFlash(event.cookies, event.locals.flash, accountPath, `Verify your phone number to allow you to ${claiming ? 'claim' : 'create'} a Leader's Profile.`);
 	}
 

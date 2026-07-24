@@ -1077,6 +1077,11 @@ export const platformSettings = pgTable('platform_settings', {
   // default — certificates aren't issued until closer to the 2027 nominations,
   // so requiring one earlier would make every campaign unverifiable.
   requireIebcForVerification: boolean('require_iebc_for_verification').default(false).notNull(),
+  // Onboarding gate (src/routes/onboard/+layout.server.ts): whether a citizen must
+  // verify their email/phone (OTP) before they can create or claim a leader profile.
+  // On by default — off only makes sense for a demo/low-friction environment.
+  requireEmailVerification: boolean('require_email_verification').default(true).notNull(),
+  requirePhoneVerification: boolean('require_phone_verification').default(true).notNull(),
   // AI Chat behavior (see $lib/server/ai.ts): platformSystemPrompt governs the
   // assistant everywhere it runs; leaderSystemPrompt layers on top specifically for
   // per-leader profile answers. Both editable on the admin Settings page.

@@ -540,6 +540,13 @@
       "when": 1784884142244,
       "tag": "0076_conscious_silver_surfer",
       "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "7",
+      "when": 1784885075222,
+      "tag": "0077_normal_vanisher",
+      "breakpoints": true
     }
   ]
 }

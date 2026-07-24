@@ -1,0 +1,2 @@
+ALTER TABLE "platform_settings" ADD COLUMN "require_email_verification" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+ALTER TABLE "platform_settings" ADD COLUMN "require_phone_verification" boolean DEFAULT true NOT NULL;

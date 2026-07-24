@@ -115,6 +115,33 @@ Applies everywhere a code/link is sent
 		</div>
 
 		<div class="rounded-2xl border border-border bg-surface p-5">
+			<h2 class="font-semibold text-heading">Onboarding verification gate</h2>
+			<p class="mt-1 text-xs text-muted">
+				Whether a citizen must verify their email/phone (OTP) before they can create or claim a
+				leader profile. Leave both on in production — turning either off is really only for a
+				low-friction demo environment.
+			</p>
+			<label class="mt-2 flex items-center gap-2">
+				<input
+					type="checkbox"
+					name="requireEmailVerification"
+					checked={data.settings.requireEmailVerification}
+					class="rounded border-border text-primary focus:ring-ring"
+				/>
+				<span class="text-sm text-heading">Require email verification to onboard</span>
+			</label>
+			<label class="mt-2 flex items-center gap-2">
+				<input
+					type="checkbox"
+					name="requirePhoneVerification"
+					checked={data.settings.requirePhoneVerification}
+					class="rounded border-border text-primary focus:ring-ring"
+				/>
+				<span class="text-sm text-heading">Require phone verification to onboard</span>
+			</label>
+		</div>
+
+		<div class="rounded-2xl border border-border bg-surface p-5">
 			<h2 class="font-semibold text-heading">List pagination</h2>
 			<p class="mt-1 text-xs text-muted">
 				Rows per page on every paginated dashboard list: campaign posts, reviews, followers,

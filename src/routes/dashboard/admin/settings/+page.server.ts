@@ -22,6 +22,8 @@ export const actions: Actions = {
 		const requiredTeamManagers = Number(form.get('requiredTeamManagers'));
 		const requiredSignoffs = Number(form.get('requiredSignoffs'));
 		const requireIebcForVerification = form.get('requireIebcForVerification') === 'on';
+		const requireEmailVerification = form.get('requireEmailVerification') === 'on';
+		const requirePhoneVerification = form.get('requirePhoneVerification') === 'on';
 		const platformSystemPrompt = String(form.get('platformSystemPrompt') ?? '').trim();
 		const leaderSystemPrompt = String(form.get('leaderSystemPrompt') ?? '').trim();
 
@@ -59,6 +61,8 @@ export const actions: Actions = {
 				requiredTeamManagers,
 				requiredSignoffs,
 				requireIebcForVerification,
+				requireEmailVerification,
+				requirePhoneVerification,
 				platformSystemPrompt,
 				leaderSystemPrompt,
 				updatedAt: new Date()
