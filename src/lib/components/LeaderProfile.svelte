@@ -210,7 +210,7 @@
 					</p>
 					{#if form?.asked}
 						<div class="mt-3 rounded-2xl bg-surface-2 p-4">
-							<p class="text-xs font-semibold text-muted">You asked: {form.question}</p>
+							<p class="text-xs font-semibold text-muted">You: {form.question}</p>
 							<p class="mt-2 text-sm leading-relaxed whitespace-pre-line">{form.answer}</p>
 							<p class="mt-2 text-xs text-muted">
 								{form.answerSource === 'ai' ? 'AI answer, grounded in campaign material.' : 'Matched from campaign material.'}

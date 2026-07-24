@@ -29,7 +29,6 @@ const SEED_MANAGED_TABLES = [
 	'followers',
 	'files',
 	'parties',
-	'party_memberships',
 	'alliances',
 	'alliance_memberships',
 	'subscriptions',

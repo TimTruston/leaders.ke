@@ -17,7 +17,10 @@ export type LeaderGrounding = {
 	// extracted text from uploaded source documents. Optional: older call sites
 	// that haven't been updated to fetch these still work, just with less grounding.
 	faqs?: { question: string; answer: string }[];
-	documents?: { title: string; text: string }[];
+	// url is set only for a link-sourced document (an external http(s) source, e.g.
+	// a YouTube video or article — see $lib/server/knowledge.ts) so the AI can point
+	// a citizen straight at it. Null for an uploaded file, which has no public URL.
+	documents?: { title: string; text: string; url?: string | null }[];
 };
 
 export type ConstituentAnswer = {
@@ -35,7 +38,7 @@ function groundingText(leader: LeaderGrounding): string {
 	const posts = leader.posts.map((p) => `- ${p.title}: ${p.body}`).join('\n');
 	const faqs = (leader.faqs ?? []).map((f) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
 	const documents = (leader.documents ?? [])
-		.map((d) => `--- ${d.title} ---\n${d.text}`)
+		.map((d) => `--- ${d.title}${d.url ? ` (source: ${d.url})` : ''} ---\n${d.text}`)
 		.join('\n\n');
 	return [
 		`Leader: ${leader.name}, ${leader.status} for ${leader.positionTitle}, ${leader.regionLabel}, Kenya.`,
