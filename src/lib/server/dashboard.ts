@@ -1,11 +1,36 @@
 // Shared guards for /dashboard pages: every page needs the signed-in domain user,
 // and most need a leader context (own profile or a managed one).
 import { redirect } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { Cookies, RequestEvent } from '@sveltejs/kit';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { getDomainUser, getLeaderContext, getLeaderContextBySlug, isPlatformAdmin, type LeaderContext } from '$lib/server/leader';
 import { contacts as contactsTable, managers, type users } from '$lib/server/db/schema';
+
+// A one-shot flag set right before a login/signup redirect lands on plain
+// '/dashboard' (never on an explicit next= like an invite link — see the login
+// action) — landing on /dashboard consumes it once to decide whether to bounce
+// straight into a manager's own campaign dash instead of the citizen Overview.
+// Cookie (not a query param) because the Google OAuth round-trip controls its own
+// callback URL — this is the only channel that survives it. Session-scoped, no
+// maxAge: gone with the browser session if never consumed.
+const POST_LOGIN_COOKIE = 'post_login';
+
+export function flagPostLogin(cookies: Cookies) {
+	cookies.set(POST_LOGIN_COOKIE, '1', { path: '/', httpOnly: true, sameSite: 'lax' });
+}
+
+/** Consumes the post-login flag (if set) and, only for an actual leader/manager,
+ * returns where '/dashboard' root should redirect instead of showing the citizen
+ * Overview. Null means "show Overview as normal" — a plain citizen, an
+ * ambassador-only account, or a normal (non-post-login) visit, e.g. via the
+ * account switcher's own "Citizen" entry, which must still reach the Overview. */
+export async function postLoginRedirectTarget(cookies: Cookies, domainUserId: number): Promise<string | null> {
+	if (!cookies.get(POST_LOGIN_COOKIE)) return null;
+	cookies.delete(POST_LOGIN_COOKIE, { path: '/' });
+	const ctx = await getLeaderContext(domainUserId);
+	return ctx ? `/dashboard/${ctx.profileUser.slug}/profile` : null;
+}
 
 export type DashboardUser = {
 	authUser: NonNullable<RequestEvent['locals']['user']>;

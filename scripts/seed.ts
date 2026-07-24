@@ -15,17 +15,21 @@
 //   bun run db:seed -- --clear --leaders
 //
 // Dependency order: system-user -> positions -> parties -> leaders -> mcas -> photos
-// -> scraped -> campaigns -> pillars -> issues -> news -> admin-fixture (admin-fixture
-// needs system-user + positions: it turns the ADMIN_EMAIL account into a dev-only demo
-// leader, visible only to a signed-in admin since it stays unverified). (leaders/mcas
-// look up parties by title and seed each person's `leadership[]` terms as extra
-// `leaders` rows in the same pass; photos matches shipped static/leaders/<slug>.jpg
-// files against every seeded slug; scraped layers the REAL register (thousands of
-// MPs/history from scripts/out/*.json) on top — see seedScrapedPipeline below;
-// campaigns/pillars look up leaders; issues only needs positions and the system user
-// as creatorId. system-user runs first, unconditionally, so on a fresh DB its id is
-// the lowest/first user id — it's also the ADMIN_EMAIL/PASSWORD account. pillar-templates
-// and platform-settings have no dependency, run any time.)
+// -> scraped -> campaigns -> pillars -> issues -> news -> admin-fixture -> notable-knowledge
+// -> demo-logins (admin-fixture needs system-user + positions: it turns the ADMIN_EMAIL
+// account into a dev-only demo leader, visible only to a signed-in admin since it stays
+// unverified). (leaders/mcas look up parties by title and seed each person's
+// `leadership[]` terms as extra `leaders` rows in the same pass; photos matches shipped
+// static/leaders/<slug>.jpg files against every seeded slug; scraped layers the REAL
+// register (thousands of MPs/history from scripts/out/*.json) on top — see
+// seedScrapedPipeline below; campaigns/pillars look up leaders; issues only needs
+// positions and the system user as creatorId; notable-knowledge (Knowledge tab FAQ +
+// documents, see scripts/data/notable-knowledge.ts) and demo-logins (grants a real,
+// loginable account to specific notable already-seeded profiles, sharing ADMIN_PASSWORD)
+// both look up their target people by slug, so they run last. system-user runs first,
+// unconditionally, so on a fresh DB its id is the lowest/first user id — it's also the
+// ADMIN_EMAIL/PASSWORD account. pillar-templates and platform-settings have no
+// dependency, run any time.)
 //
 // `scraped` runs the full scraped-roster pipeline (scripts/seed-scraped.ts and the
 // five scripts after it — see seedScrapedPipeline) as child processes, same chain as
@@ -52,6 +56,8 @@ import { seedNews } from './lib/seed-news';
 import { seedPlatformSettings } from './lib/seed-platform-settings';
 import { seedPackages } from './lib/seed-packages';
 import { seedAdminFixture } from './lib/seed-admin-fixture';
+import { seedNotableKnowledge } from './lib/seed-notable-knowledge';
+import { seedDemoLogins } from './lib/seed-demo-logins';
 
 // Runs one scraped-pipeline script as a child process (each owns its own DB
 // connection/CLI flags — `--apply`, dry-run analysis, etc. — so this shells out
@@ -102,7 +108,9 @@ const { values } = parseArgs({
 		news: { type: 'boolean', default: false },
 		'platform-settings': { type: 'boolean', default: false },
 		packages: { type: 'boolean', default: false },
-		'admin-fixture': { type: 'boolean', default: false }
+		'admin-fixture': { type: 'boolean', default: false },
+		'notable-knowledge': { type: 'boolean', default: false },
+		'demo-logins': { type: 'boolean', default: false }
 	},
 	strict: true
 });
@@ -153,5 +161,9 @@ if (runAll || values['pillar-templates']) await seedPillarTemplates(db);
 if (runAll || values.issues) await seedIssues(db);
 if (runAll || values.news) await seedNews(db);
 if (runAll || values['admin-fixture']) await seedAdminFixture(db);
+// Depends on leaders/scraped/campaigns already having seeded these specific
+// profiles (looked up by slug) — runs last for that reason.
+if (runAll || values['notable-knowledge']) await seedNotableKnowledge(db);
+if (runAll || values['demo-logins']) await seedDemoLogins(db);
 
 await client.end();

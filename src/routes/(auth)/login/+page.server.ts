@@ -3,6 +3,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import { auth, googleAuthEnabled } from '$lib/server/auth';
+import { flagPostLogin } from '$lib/server/dashboard';
 import { db } from '$lib/server/db';
 import { contacts, users } from '$lib/server/db/schema';
 import { user as authUsers } from '$lib/server/db/auth.schema';
@@ -53,6 +54,10 @@ export const actions: Actions = {
 	google: async (event) => {
 		const form = await event.request.formData();
 		const next = safeNext(form.get('next')?.toString() ?? null);
+		// Managers should land on their own campaign dash, not the citizen Overview —
+		// only meaningful when next is the plain default, never on an explicit
+		// destination like an invite link (see flagPostLogin/postLoginRedirectTarget).
+		if (next === '/dashboard') flagPostLogin(event.cookies);
 		let url: string | undefined;
 		try {
 			const res = await auth.api.signInSocial({
@@ -114,6 +119,10 @@ export const actions: Actions = {
 		if (!domainUser?.verified.email) {
 			return redirect(302, `/verify/email?email=${email}&next=${encodeURIComponent(next)}`);
 		}
+
+		// Managers should land on their own campaign dash, not the citizen Overview —
+		// only for the plain default destination, never an explicit one (invite link etc).
+		if (next === '/dashboard') flagPostLogin(event.cookies);
 
 		return redirect(302, next);
 	}
