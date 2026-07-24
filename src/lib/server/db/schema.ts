@@ -1035,7 +1035,7 @@ export const DEFAULT_LEADER_SYSTEM_PROMPT = `You are now answering on behalf of 
 // (scripts/lib/seed-platform-settings.ts backfills these into an existing row).
 export const DEFAULT_BLOCKED_SLUGS = [
   // routes a leader slug must never shadow
-  'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'leaders', 'pricing',
+  'apply', 'account', 'admin', 'ambassador', 'citizen', 'invites', 'my-vote', 'leaders', 'pricing',
   'compare', 'rank', 'ranks', 'vote', 'search', 'parties', 'alliances', 'invite', 'claim',
   // position words: the seat-hub routes (/president, /mca/...) and the /rank
   // plurals — no leader may take a seat name as their personal URL

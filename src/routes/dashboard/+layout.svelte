@@ -76,7 +76,7 @@
 		if (second === 'admin') return 'admin';
 		// mobilize/* = ambassador work, deliberately a citizen tab: an ambassador is
 		// a citizen with extra duties, not a separate dashboard context.
-		if (!second || second === 'account' || second === 'invites' || second === 'mobilize') return 'citizen';
+		if (!second || second === 'account' || second === 'invites' || second === 'mobilize' || second === 'my-vote') return 'citizen';
 		return 'campaign';
 	});
 
@@ -97,7 +97,8 @@
 				// One tab per ambassador assignment, titled with the leader's name —
 				// ambassador work is part of citizen life, not a separate mode.
 				return [
-					{ href: '/dashboard', label: 'Overview' },
+					{ href: '/dashboard', label: 'Local News' },
+					{ href: '/dashboard/my-vote', label: 'My Vote' },
 					{ href: '/dashboard/invites', label: 'Invites' },
 					...data.ambassadorFor.map((a: { subjectId: number; name: string }) => ({
 						href: `/dashboard/mobilize/${a.subjectId}`,

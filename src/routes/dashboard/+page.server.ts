@@ -1,8 +1,12 @@
 import { redirect } from '@sveltejs/kit';
 import { postLoginRedirectTarget, requireDashboardUser } from '$lib/server/dashboard';
-import { listFollowedLeaders, listFollowedLeadersFeed, listMyPledges } from '$lib/server/citizen';
+import { listFollowedLeaders, listFollowedLeadersFeed } from '$lib/server/citizen';
 import type { PageServerLoad } from './$types';
 
+// The citizen mode's default landing tab ("Local News" — see the "My Vote" tab at
+// /dashboard/my-vote for the other half of what used to be one combined Overview
+// page). Stays at the root /dashboard path so the post-login redirect below still
+// has a stable target to check against.
 export const load: PageServerLoad = async (event) => {
 	const { domainUser } = await requireDashboardUser(event);
 
@@ -13,11 +17,10 @@ export const load: PageServerLoad = async (event) => {
 	const redirectTarget = await postLoginRedirectTarget(event.cookies, domainUser.id);
 	if (redirectTarget) redirect(302, redirectTarget);
 
-	const [followedLeaders, feed, pledges] = await Promise.all([
+	const [followedLeaders, feed] = await Promise.all([
 		listFollowedLeaders(domainUser.id),
-		listFollowedLeadersFeed(domainUser.id),
-		listMyPledges(domainUser.id)
+		listFollowedLeadersFeed(domainUser.id)
 	]);
 
-	return { followedLeaders, feed, pledges };
+	return { followedLeaders, feed };
 };

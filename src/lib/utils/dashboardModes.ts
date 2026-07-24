@@ -21,7 +21,7 @@ export type DashboardModesInput = {
 function modeFor(pathname: string): 'admin' | 'citizen' | 'campaign' {
 	const second = pathname.split('/')[2];
 	if (second === 'admin') return 'admin';
-	if (!second || second === 'account' || second === 'invites' || second === 'mobilize') return 'citizen';
+	if (!second || second === 'account' || second === 'invites' || second === 'mobilize' || second === 'my-vote') return 'citizen';
 	return 'campaign';
 }
 
