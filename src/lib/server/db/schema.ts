@@ -468,6 +468,10 @@ export const posts = pgTable('posts', {
   // Permanent /news/[slug] identity for a public web post (suffixed "-2" etc on
   // collision). Null for non-web posts (broadcasts) and aggregated mentions.
   slug: varchar('slug', { length: 160 }),
+  // Where an aggregated mention (creatorId null) was scraped from — /news links
+  // out to this instead of a local article page, since there's no slug for one.
+  // Null for a team's own post, which always has a slug instead.
+  sourceUrl: text('source_url'),
   body: text('body').notNull(),
   aiSummary: text('ai_summary'),
   manualSummary: text('manual_summary'),

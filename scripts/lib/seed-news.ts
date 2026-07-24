@@ -14,6 +14,7 @@ type NewsRow = {
 	body: string;
 	aiSummary: string;
 	leaderName: string | null;
+	sourceUrl?: string;
 };
 
 export async function seedNews(db: AnyDb) {
@@ -35,7 +36,7 @@ export async function seedNews(db: AnyDb) {
 
 		const [post] = await db
 			.insert(posts)
-			.values({ title: row.title, body: row.body, aiSummary: row.aiSummary, medium: 'web', approved: true, public: true })
+			.values({ title: row.title, body: row.body, aiSummary: row.aiSummary, sourceUrl: row.sourceUrl, medium: 'web', approved: true, public: true })
 			.returning({ id: posts.id });
 		await db.insert(tags).values({ postId: post.id, subjectUserId: leader.userId });
 		seeded++;
