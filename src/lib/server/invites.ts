@@ -13,16 +13,16 @@ import { activeTermForPerson, fullName, getRunCampaign } from '$lib/server/leade
 import { sendEmail } from '$lib/server/email';
 import { getPlatformSettings } from '$lib/server/settings';
 
-/** This person's current paid tier, defaulting to the free/lowest tier
- * ('aspirant') when they have no active subscription (billing is user-scoped). */
-async function getPersonTier(subjectUserId: number): Promise<'aspirant' | 'influencer' | 'mobilizer'> {
+/** This person's current paid tier, defaulting to the lowest tier ('kickstart')
+ * when they have no active subscription (billing is user-scoped). */
+async function getPersonTier(subjectUserId: number): Promise<'kickstart' | 'mobilize' | 'dominate'> {
 	const [row] = await db
 		.select({ tier: subscriptions.tier })
 		.from(subscriptions)
 		.where(and(eq(subscriptions.subjectUserId, subjectUserId), eq(subscriptions.status, 'active')))
 		.orderBy(desc(subscriptions.startAt))
 		.limit(1);
-	return row?.tier ?? 'aspirant';
+	return row?.tier ?? 'kickstart';
 }
 
 /** Whether an auth account already exists for this email — decides whether an

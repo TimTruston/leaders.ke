@@ -3,7 +3,7 @@
 	<meta name="description" content="The case for showing up on 10 August 2027." />
 </svelte:head>
 
-<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
 	<h1 class="text-3xl font-bold text-heading">Why vote?</h1>
 	<p class="mt-3 text-lg text-muted">
 		Six ballots decide who runs your country, your county, and your ward. Here's why yours counts.

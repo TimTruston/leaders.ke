@@ -5,80 +5,65 @@
 	const leftSet = ['Level Up', 'Catapult', 'Propel', 'Amplify', 'Strengthen'];
 	const rightSet = ['Leadership', 'Campaign', 'Publicity', 'Advocacy', 'Supporters'];
 
-	// Static pricing page driven by the blueprint's rate matrix + package benefits.
-	// Prices are monthly KES, keyed by office band (see positions.band: national | regional | ward).
+	// pricing-v2 (leaders.ke-pricing-v2.csv): one flat rate per tier — every
+	// office costs the same, no more per-band price matrix.
 
-	const tiers = ['Aspirant', 'Influencer', 'Mobilizer'] as const;
+	const tiers = ['Kickstart', 'Mobilize', 'Dominate'] as const;
 
-	// Rows are office bands; columns line up with `tiers`.
-	const priceMatrix = [
-		{ office: 'MCA', prices: [1000, 2500, 10000] },
-		{ office: 'Governor, Senator, MP, Woman Rep', prices: [3000, 7500, 30000] },
-		{ office: 'President & Vice President', prices: [5000, 12500, 50000] },
-	];
-	// Office selector drives the card prices; index lines up with priceMatrix rows.
-	let office = $state(0); // default MCA — the most common aspirant office
+	// One monthly KES price per tier, same for every office.
+	const prices = [2500, 12500, 50000];
 
-	// Card pitch: a short tagline + a few highlight perks per tier. Entry price = the ward (MCA) row.
+	// Card pitch: a short tagline + a few highlight perks per tier.
 	const packages = [
 		{
 			tagline: 'Launch your bid',
-			highlights: ['1 campaign page', '1 campaign manager', '100 ambassadors', '10,000 subscriptions']
+			highlights: ['2 campaign managers', '10 ambassadors', '10,000 citizen subscriptions', '500 credits/mo']
 		},
 		{
 			tagline: 'Grow your movement',
 			highlights: [
-				'3 campaign pages',
-				'1,000 ambassadors / campaign',
-				'IEBC blue-check',
-				'Private voter register',
-				'Fundraise for campaigns'
+				'5 campaign managers',
+				'100 ambassadors',
+				'100,000 citizen subscriptions',
+				'Analytics: page views, conversions, pledges',
+				'Agentic AI chat on your profile, campaign & channels',
+				'3,000 credits/mo'
 			]
 		},
 		{
 			tagline: 'Command the race',
 			highlights: [
-				'Unlimited everything',
-				'Competitor & sentiment analytics',
-				'Daily AI audio broadcast',
-				'5 GB storage'
+				'Unlimited managers, ambassadors & subscriptions',
+				'PR AI Agent — daily news research',
+				'Voter heatmap per ward',
+				'Sentiment Intelligence suite',
+				'15,000 credits/mo'
 			]
 		}
 	];
 
-	// Base features every package includes.
+	// Base features every package includes, regardless of tier.
 	const baseFeatures = [
-		'Custom leader profile, manifesto & media',
-		'Campaign pages, managers and ambassadors',
-		'Respond to citizens via email, SMS or WhatsApp',
-		'Post on the leaders.ke & tag other leaders',
-		'Automatically get tagged in top external news',
-		'Create & manage events, polls & pledges',
-		'An AI chat on your page, powered by your data',
-		'An AI powered audio brief of your profile',
-		'Analytics: page views, conversions, pledges'
+		'Custom page, neat link, QR code',
+		'Publish manifesto and past delivery',
+		'IEBC blue-check verification',
+		'Private voter register',
+		'Press desk — publish news, tag leaders, parties',
+		'Broadcast to citizens using credits*',
+		'Fundraising toolkit*'
 	];
 
 	// Comparison rows: same metric across all three tiers ("—" means not included).
 	const comparison = [
-		{ label: 'Campaign pages', values: ['1', '3', 'Unlimited'] },
-		{ label: 'Campaign managers', values: ['1', '5', 'Unlimited'] },
-		{ label: 'Ambassadors per campaign', values: ['100', '1,000', 'Unlimited'] },
-		{ label: 'Citizen subscriptions', values: ['10,000', '1,000,000', 'Unlimited'] },
-		{ label: 'File storage', values: ['100 MB', '1 GB', '5 GB'] },
-		{ label: 'Events per week', values: ['1', '3', 'Unlimited'] },
-		{ label: 'Profile link', values: ['/region/office/name', 'short /name', 'short /name'] },
-		{ label: 'IEBC blue-check verification', values: ['—', '✓', '✓'] },
-		{ label: 'View, join & create alliances', values: ['—', '✓', '✓'] },
-		{ label: 'Private voter register', values: ['—', '✓', '✓'] },
-		{ label: 'Public AI chat on profile', values: ['—', '✓', '✓'] },
-		{ label: 'Fundraise for campaigns', values: ['—', '✓', '✓'] },
-		{ label: 'Version history logs', values: ['—', '—', '✓'] },
-		{ label: 'Competitor & alliance metrics', values: ['—', '—', '✓'] },
-		{ label: 'Campaign sentiment analysis', values: ['—', '—', '✓'] },
-		{ label: 'Trending issues by region', values: ['—', '—', '✓'] },
-		{ label: 'Daily AI audio brief broadcast', values: ['—', '—', '✓'] },
-		{ label: 'Remove unwanted news tags', values: ['—', '—', '✓'] }
+		{ label: 'Campaign managers', values: ['2', '5', 'Unlimited'] },
+		{ label: 'Campaign ambassadors', values: ['10', '100', 'Unlimited'] },
+		{ label: 'Citizen subscriptions', values: ['10,000', '100,000', 'Unlimited'] },
+		{ label: 'Analytics: page views, conversions, pledges', values: ['—', '✓', '✓'] },
+		{ label: 'Agentic AI chat on profile, campaign, channels', values: ['—', '✓', '✓'] },
+		{ label: 'PR AI Agent — daily news research', values: ['—', '—', '✓'] },
+		{ label: 'Voter heatmap per ward', values: ['—', '—', '✓'] },
+		{ label: 'Sentiment Intelligence suite — campaign, competition', values: ['—', '—', '✓'] },
+		{ label: 'Credits included/mo', values: ['500', '3,000', '15,000'] }
 	];
 
 	const fmt = new Intl.NumberFormat('en-KE');
@@ -98,7 +83,7 @@
 	<title>Pricing — leaders.ke</title>
 	<meta
 		name="description"
-		content="leaders.ke subscription pricing: Aspirant, Influencer and Mobilizer packages priced by office."
+		content="leaders.ke subscription pricing: Kickstart, Mobilize and Dominate packages — one flat rate for every office."
 	/>
 </svelte:head>
 
@@ -108,32 +93,8 @@
 			<WordCycler words={leftSet}/> Your <WordCycler words={rightSet}/>
 		</h1>
 		<p class="mx-auto mt-4 max-w-xl text-base leading-relaxed">
-			Select your office below to view your packages. Hover to explore it.
+			One flat rate, any office. Hover a package to explore it.
 		</p>
-	</div>
-
-	<!-- Office selector: drives the card prices. Scrolls within its track on narrow screens (long labels). -->
-	<div class="mt-8 flex flex-col items-center gap-2 pb-4">
-		<div class="w-full overflow-x-auto">
-			<div
-				class="mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-surface-2 p-1"
-				role="group"
-				aria-label="Office"
-			>
-				{#each priceMatrix as row, o (row.office)}
-					<button
-						type="button"
-						aria-pressed={office === o}
-						onclick={() => (office = o)}
-						class="rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap transition {office === o
-							? 'bg-primary text-on-primary'
-							: 'text-muted hover:text-heading'}"
-					>
-						{priceMatrix[o].office}
-					</button>
-				{/each}
-			</div>
-		</div>
 	</div>
 
 	<!-- Interactive package cards -->
@@ -164,7 +125,7 @@
 
 				<p class="mt-4">
 					<span class="text-2xl font-extrabold tabular-nums text-heading">
-						KES {fmt.format(priceMatrix[office].prices[t] * cycleMultiplier)}
+						KES {fmt.format(prices[t] * cycleMultiplier)}
 					</span>
 					<span class="text-sm text-muted">{cycleSuffix}</span>
 				</p>
@@ -280,16 +241,14 @@
 				{/each}
 			</tbody>
 			<tfoot>
-				<!-- Price row: reflects the selected office + billing cycle -->
 				<tr class="border-t border-border bg-surface-2">
 					<th class="px-4 py-3 text-sm font-medium text-heading">
-						<!-- Office selector: drives the card prices -->
 						{!annual ? "Monthly" : "Annual"} Price
 					</th>
 					{#each tiers as tier, t (tier)}
 						<td class="px-4 py-3 text-sm tabular-nums">
 							<span class="font-semibold text-heading"
-								>KES {fmt.format(priceMatrix[office].prices[t] * cycleMultiplier)}</span
+								>KES {fmt.format(prices[t] * cycleMultiplier)}</span
 							>
 							<span class="text-muted">{cycleSuffix}</span>
 						</td>
@@ -297,17 +256,7 @@
 				</tr>
 				<!-- Get started row -->
 				<tr class="border-t border-border">
-					<td class="px-2">
-						<select
-								bind:value={office}
-								aria-label="Office"
-								class="rounded-full border border-border bg-surface-1 pl-4 pr-8 py-2 text-sm font-semibold text-on-primary focus:border-primary focus:ring-0 focus:ring-ring focus:outline-none"
-							>
-							{#each priceMatrix as row, o (row.office)}
-								<option value={o}>Vying for {row.office}</option>
-							{/each}
-						</select>
-					</td>
+					<td class="px-2"></td>
 					{#each tiers as tier (tier)}
 						<td class="px-4 py-3">
 							<a
@@ -360,9 +309,13 @@
 		</div>
 	</div>
 	
-	<!-- Price by office -->
+	<!-- Credits footnote -->
+	<div class="mt-4 text-center text-sm text-muted">
+		<p>* Credits meter broadcast sends: SMS costs 1 credit, WhatsApp costs 5 credits per message.</p>
+	</div>
+
 	<div class="mt-4 text-center">
-		<p class="mt-2 text-base">Packages are priced by the office you're vying for.</p>
+		<p class="mt-2 text-base">One flat rate, whatever office you're vying for.</p>
 		<p class="mt-2 text-base">Your payment helps us verify your candidature against IEBC records, continuously build and maintain our systems and pay for the infrastructure.</p>
 		<p class="mt-2 text-base">Your campaign page becomes accessible once it's verified and paid.</p>
 	</div>

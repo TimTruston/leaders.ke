@@ -7,9 +7,10 @@ export const vector = customType<{ data: number[] }>({
   dataType: () => 'vector(1536)', // Optimizing for OpenAI embeddings length
 });
 
-// Pricing band for a position. Groups don't follow boundary: MP is constituency-level but priced with 'regional'.
-// national = President/VP; regional = Governor/Senator/MP/Women Rep; ward = MCA
-// MP is constituency-level but priced with county group.
+// Seat classification (national = President/VP; regional = Governor/Senator/MP/
+// Women Rep; ward = MCA). No longer drives pricing (pricing-v2: one flat rate
+// card for every office — see the `pricing`/`packages` tables below) — kept
+// purely as a seat-level grouping for now, unused elsewhere.
 export const priceBandEnum = pgEnum('price_band', ['national', 'regional', 'ward']);
 
 // 1. POSITION (Elective & Nominated Leadership Positions)
@@ -19,7 +20,7 @@ export const positions = pgTable('positions', {
   region: varchar('region', { length: 100 }).notNull(), // e.g., 'Kiambu', 'Westlands'
   boundary: varchar('boundary', { length: 50 }).notNull(), // 'Country' | 'County' | 'Constituencies' | 'Ward'
   title: varchar('title', { length: 100 }).notNull(), // 'President', 'MP', 'MCA'
-  band: priceBandEnum('band').notNull(), // drives subscription pricing lookup
+  band: priceBandEnum('band').notNull(), // seat-level grouping only — see the comment on priceBandEnum
   isElected: boolean('is_elected').default(true).notNull(), // false means nominated
   currentLeaderId: integer('current_leader_id'), // Self-reference resolved in relations block
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -661,7 +662,9 @@ export const allianceMemberships = pgTable('alliance_memberships', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
-export const subscriptionTierEnum = pgEnum('subscription_tier', ['aspirant', 'influencer', 'mobilizer']);
+// pricing-v2: Kickstart < Mobilize < Dominate, one flat rate per tier for every
+// office (see `pricing`/`packages` below) — renamed from aspirant/influencer/mobilizer.
+export const subscriptionTierEnum = pgEnum('subscription_tier', ['kickstart', 'mobilize', 'dominate']);
 export const billingCycleEnum = pgEnum('billing_cycle', ['monthly', 'annual']);
 export const subscriptionStatusEnum = pgEnum('subscription_status', ['pending', 'active', 'expired', 'cancelled']);
 // How a subscription row came to exist: a fresh purchase, a same-tier renewal, or a tier change
@@ -700,10 +703,11 @@ export const subscriptions = pgTable('subscriptions', {
 ]);
 
 // 15. PRICING (fix 6 — SRC-independent subscription rate card, versioned so a rate change never rewrites history)
-// The current subscription rate for a given office band, tier, and billing cycle.
+// pricing-v2: one flat rate card for every office — a tier costs the same whether
+// you're running for MCA or President (see src/routes/pricing). Current subscription
+// rate for a given tier + billing cycle.
 export const pricing = pgTable('pricing', {
   id: serial('id').primaryKey(),
-  band: priceBandEnum('band').notNull(),
   tier: subscriptionTierEnum('tier').notNull(),
   billingCycle: billingCycleEnum('billing_cycle').notNull(),
   amount: integer('amount').notNull(), // KES
@@ -711,32 +715,30 @@ export const pricing = pgTable('pricing', {
   activeTo: timestamp('active_to', { withTimezone: true }), // null = current rate
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
-  // Only one current rate per (band, tier, cycle); superseded rows get activeTo set
+  // Only one current rate per (tier, cycle); superseded rows get activeTo set
   uniqueIndex('one_current_rate')
-    .on(t.band, t.tier, t.billingCycle)
+    .on(t.tier, t.billingCycle)
     .where(sql`${t.activeTo} is null`),
 ]);
 
-// What each package INCLUDES (the caps), one row per (band, tier) — prices live in
+// What each package INCLUDES (the caps), one row per tier — prices live in
 // `pricing` above. Seeded from src/lib/data/packages.json; admin-editable on
-// /dashboard/admin/packages. null = unlimited.
+// /dashboard/admin/packages. null = unlimited. creditsPerMonth funds metered
+// broadcast sends (SMS/WhatsApp) — see the Packages admin page's footnote.
 export type PackageFeatures = {
-  pages: number | null;
   managers: number | null;
   ambassadors: number | null;
   subscriptions: number | null;
-  storageMb: number | null;
-  eventsPerWeek: number | null;
+  creditsPerMonth: number | null;
 };
 
 export const packages = pgTable('packages', {
   id: serial('id').primaryKey(),
-  band: priceBandEnum('band').notNull(),
   tier: subscriptionTierEnum('tier').notNull(),
   features: jsonb('features').$type<PackageFeatures>().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
-  uniqueIndex('one_package_per_band_tier').on(t.band, t.tier),
+  uniqueIndex('one_package_per_tier').on(t.tier),
 ]);
 
 // 16. PAYMENTS (fix 5 — immutable ledger of actual charge events; subscriptions/credits reference these)
@@ -1049,8 +1051,8 @@ export const platformSettings = pgTable('platform_settings', {
   // mobilization (many unique invitees) is intentionally uncapped day-to-day;
   // this only bounds total invites ever sent, scaled to what they paid for.
   inviteLimits: jsonb('invite_limits')
-    .$type<{ aspirant: number; influencer: number; mobilizer: number }>()
-    .default({ aspirant: 10, influencer: 50, mobilizer: 200 })
+    .$type<{ kickstart: number; mobilize: number; dominate: number }>()
+    .default({ kickstart: 10, mobilize: 50, dominate: 200 })
     .notNull(),
   // Slugs no leader may take: the platform's own routes (a leader slug must never
   // shadow a top-level route or a /dashboard/<slug> second segment) plus words the

@@ -7,19 +7,16 @@
 	const fmt = new Intl.NumberFormat('en-KE');
 
 	const tiers = [
-		{ tier: 'aspirant', name: 'Aspirant', tagline: 'Launch your bid', highlights: ['1 campaign page', '1 campaign manager', '100 ambassadors', '10,000 subscriptions'] },
-		{ tier: 'influencer', name: 'Influencer', tagline: 'Grow your movement', highlights: ['3 campaign pages', '1,000 ambassadors / campaign', 'IEBC blue-check', 'Private voter register', 'Fundraise for campaigns'] },
-		{ tier: 'mobilizer', name: 'Mobilizer', tagline: 'Command the race', highlights: ['Unlimited everything', 'Competitor & sentiment analytics', 'Daily AI audio broadcast', '5 GB storage'] }
+		{ tier: 'kickstart', name: 'Kickstart', tagline: 'Launch your bid', highlights: ['2 campaign managers', '10 ambassadors', '10,000 citizen subscriptions', '500 credits/mo'] },
+		{ tier: 'mobilize', name: 'Mobilize', tagline: 'Grow your movement', highlights: ['5 campaign managers', '100 ambassadors', '100,000 citizen subscriptions', 'Analytics & agentic AI chat', '3,000 credits/mo'] },
+		{ tier: 'dominate', name: 'Dominate', tagline: 'Command the race', highlights: ['Unlimited managers & ambassadors', 'PR AI Agent & voter heatmap', 'Sentiment Intelligence suite', '15,000 credits/mo'] }
 	];
 
-	// Pricing is one flat set of 3 plans for every office — no seat is declared at
-	// onboarding to derive a band from, so this defaults to 'ward' (MCA) for now
-	// until flat, band-independent pricing replaces this entirely.
-	const band = 'ward';
+	// pricing-v2: one flat rate card for every office.
 	let annual = $state(false);
 	const cycle = $derived(annual ? 'annual' : 'monthly');
 
-	const priceOf = (tier: string) => data.rates[band]?.[tier]?.[cycle] ?? null;
+	const priceOf = (tier: string) => data.rates[tier]?.[cycle] ?? null;
 	const cycleSuffix = $derived(annual ? '/yr' : '/mo');
 
 	// Forwards everything step 3 carried here (firstName/otherNames/myRole, or

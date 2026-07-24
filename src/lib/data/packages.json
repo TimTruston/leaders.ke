@@ -1,18 +1,6 @@
 {
-	"$comment": "Package matrix per seat band and tier (docs/BLUEPRINT.md, Premium Packages). Prices in KES; annual = 10 x monthly (2 months free). Caps: null = unlimited; storageMb in megabytes; eventsPerWeek per week; subscriptions = citizen subscriber cap.",
-	"national": {
-		"aspirant": { "monthly": 5000, "annual": 50000, "pages": 1, "managers": 1, "ambassadors": 100, "subscriptions": 10000, "storageMb": 100, "eventsPerWeek": 1 },
-		"influencer": { "monthly": 25000, "annual": 250000, "pages": 3, "managers": 5, "ambassadors": 1000, "subscriptions": 1000000, "storageMb": 1024, "eventsPerWeek": 3 },
-		"mobilizer": { "monthly": 100000, "annual": 1000000, "pages": null, "managers": null, "ambassadors": null, "subscriptions": null, "storageMb": 5120, "eventsPerWeek": null }
-	},
-	"regional": {
-		"aspirant": { "monthly": 2500, "annual": 25000, "pages": 1, "managers": 1, "ambassadors": 100, "subscriptions": 10000, "storageMb": 100, "eventsPerWeek": 1 },
-		"influencer": { "monthly": 12500, "annual": 125000, "pages": 3, "managers": 5, "ambassadors": 1000, "subscriptions": 1000000, "storageMb": 1024, "eventsPerWeek": 3 },
-		"mobilizer": { "monthly": 50000, "annual": 500000, "pages": null, "managers": null, "ambassadors": null, "subscriptions": null, "storageMb": 5120, "eventsPerWeek": null }
-	},
-	"ward": {
-		"aspirant": { "monthly": 1000, "annual": 10000, "pages": 1, "managers": 1, "ambassadors": 100, "subscriptions": 10000, "storageMb": 100, "eventsPerWeek": 1 },
-		"influencer": { "monthly": 5000, "annual": 50000, "pages": 3, "managers": 5, "ambassadors": 1000, "subscriptions": 1000000, "storageMb": 1024, "eventsPerWeek": 3 },
-		"mobilizer": { "monthly": 20000, "annual": 200000, "pages": null, "managers": null, "ambassadors": null, "subscriptions": null, "storageMb": 5120, "eventsPerWeek": null }
-	}
+	"$comment": "pricing-v2 (leaders.ke-pricing-v2.csv): one flat rate per tier, every office costs the same. Prices in KES; annual = 10 x monthly (2 months free). Caps: null = unlimited. creditsPerMonth funds metered broadcast sends (SMS = 1 credit, WhatsApp = 5 credits).",
+	"kickstart": { "monthly": 2500, "annual": 25000, "managers": 2, "ambassadors": 10, "subscriptions": 10000, "creditsPerMonth": 500 },
+	"mobilize": { "monthly": 12500, "annual": 125000, "managers": 5, "ambassadors": 100, "subscriptions": 100000, "creditsPerMonth": 3000 },
+	"dominate": { "monthly": 50000, "annual": 500000, "managers": null, "ambassadors": null, "subscriptions": null, "creditsPerMonth": 15000 }
 }

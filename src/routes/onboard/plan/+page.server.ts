@@ -13,9 +13,7 @@ import type { PageServerLoad } from './$types';
 // via query params (read by +page.svelte to build the checkout link) rather than
 // round-tripping through the database.
 //
-// Pricing is moving to one flat set of 3 plans for every office — no seat is
-// declared at onboarding anymore to derive a band from, so this defaults to the
-// 'ward' (MCA) band's rates for now until that flat pricing table replaces bands entirely.
+// pricing-v2: one flat rate card for every office — no seat/band involved at all.
 export const load: PageServerLoad = async (event) => {
 	await requireDashboardUser(event);
 	const sp = event.url.searchParams;
@@ -36,12 +34,11 @@ export const load: PageServerLoad = async (event) => {
 		subjectName = `${firstName} ${otherNames}`;
 	}
 
-	// The live rate card, indexed [band][tier][cycle] for the client to price cards.
+	// The live rate card, indexed [tier][cycle] for the client to price cards.
 	const pricing = await listCurrentPricing();
-	const rates: Record<string, Record<string, Record<string, number>>> = {};
+	const rates: Record<string, Record<string, number>> = {};
 	for (const r of pricing) {
-		(rates[r.band] ??= {})[r.tier] ??= {};
-		rates[r.band][r.tier][r.billingCycle] = r.amount;
+		(rates[r.tier] ??= {})[r.billingCycle] = r.amount;
 	}
 
 	return { subjectName, rates };

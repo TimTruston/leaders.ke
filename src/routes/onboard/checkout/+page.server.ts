@@ -31,11 +31,6 @@ async function resolveSelection(sp: URLSearchParams) {
 	const validated = validateOnboardInput(raw);
 	if (!validated.ok) error(400, validated.error);
 
-	// Pricing is one flat set of 3 plans for every office — no seat is declared at
-	// onboarding anymore, so this defaults to 'ward' (MCA) for now until flat,
-	// band-independent pricing replaces this entirely.
-	const band = 'ward';
-
 	let subjectName: string;
 	if (linkSubjectId) {
 		// Re-check the link target is still claimable — it may have been taken by
@@ -53,10 +48,10 @@ async function resolveSelection(sp: URLSearchParams) {
 	const [rate] = await db
 		.select({ amount: pricing.amount })
 		.from(pricing)
-		.where(and(eq(pricing.band, band as 'ward'), eq(pricing.tier, tier as 'aspirant'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
+		.where(and(eq(pricing.tier, tier as 'kickstart'), eq(pricing.billingCycle, cycle as 'monthly'), isNull(pricing.activeTo)));
 	if (!rate) error(400, 'No price is set for that plan yet.');
 
-	return { tier, band, cycle, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
+	return { tier, cycle, amount: rate.amount, input: validated.input, linkSubjectId, subjectName };
 }
 
 export const load: PageServerLoad = async (event) => {
@@ -107,7 +102,7 @@ export const actions: Actions = {
 			.values({
 				subjectUserId: result.subjectUserId,
 				payerId: domainUser.id,
-				tier: sel.tier as 'aspirant',
+				tier: sel.tier as 'kickstart',
 				billingCycle: sel.cycle as 'monthly',
 				amount: sel.amount,
 				status: 'active',

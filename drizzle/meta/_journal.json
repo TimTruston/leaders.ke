@@ -526,6 +526,13 @@
       "when": 1784874118082,
       "tag": "0074_breezy_wild_child",
       "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "7",
+      "when": 1784881299361,
+      "tag": "0075_colorful_excalibur",
+      "breakpoints": true
     }
   ]
 }
